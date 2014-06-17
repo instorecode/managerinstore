@@ -5,7 +5,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Utilities {
-
+    public static void main(String[] args) {
+        System.out.println("ola mundo");
+    }
+    
     public static String md5(String t) throws NoSuchAlgorithmException {
 
         MessageDigest m = MessageDigest.getInstance("MD5");
