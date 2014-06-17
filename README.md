@@ -1,0 +1,4 @@
+managerinstore
+==============
+
+managerinstore
