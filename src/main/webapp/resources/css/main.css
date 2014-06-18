@@ -16,6 +16,9 @@
     padding-right: 20px;
 }
 
+.submenu {
+    height: 40px;
+}
 
 body {
     overflow-y: hidden;
@@ -39,6 +42,7 @@ body.login div.align{
 
 .content .over {
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .content .over::-webkit-scrollbar-track {
@@ -54,4 +58,47 @@ body.login div.align{
 .content .over::-webkit-scrollbar-thumb {
     background-color: transparent;
     border: 3px solid #dd4b39; 
+}
+
+.bbGrid-grid-nav.row {
+    padding-top: 10px;
+    height: 50px;
+    border-radius: 0px;
+    margin-top: -1px;
+}
+
+.bbGrid-container .bbGrid-pager-container-norowslist {
+    width: auto;
+}
+
+.bbGrid-container .bbGrid-pager-container {
+    width: auto !important;
+}
+
+.bbGrid-container .bbGrid-pager-container {
+    height: 26px;
+    width: 380px;
+    left: inherit;
+    margin-left: 10px;
+    position: absolute;
+}
+.prop {
+    background-color: whitesmoke;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-top: 2px; 
+    font-style: italic;
+    font-weight: bold;
+    text-align: right;
+}
+.val {
+    background-color: whitesmoke;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-top: 2px; 
+    border-left: 2px solid #FFF;
+    
+}
+.bbGrid-row td {
+    cursor: pointer;
 }

@@ -94,6 +94,20 @@
             <artifactId>jboss-transaction-api_1.2_spec</artifactId>
             <version>1.0.0.Final</version>
         </dependency>  
+        
+        <dependency>
+            <groupId>com.yahoo.platform.yui</groupId>
+            <artifactId>yuicompressor</artifactId>
+            <version>2.4.7</version>
+        </dependency>
+        
+        
+        <dependency>
+            <groupId>com.google.javascript</groupId>
+            <artifactId>closure-compiler</artifactId>
+            <version>r606</version>
+        </dependency>
+
     </dependencies>
 
     <build>

@@ -1,4 +1,50 @@
 jQuery(document).ready(function() {
+    jQuery.validator.setDefaults({
+        invalidHandler: function(form, validator) {
+            var errors = validator.numberOfInvalids();
+            if (errors) {
+                var message =' <ul></ul>';
+                $("#messageBox").html(message);
+                $("#messageBox").show();
+                
+            } else {
+                $("#messageBox").hide();
+            }
+        },
+        showErrors: function(errorMap, errorList) {
+            $("#messageBox ul").html('');    
+            jQuery.each(errorList , function(){
+                $("#messageBox ul").append('<li><i class="fa fa-exclamation-triangle"></i>&nbsp;&nbsp;'+this.message+'</li>');
+            });
+        }
+    });
+    /* Brazilian initialisation for the jQuery UI date picker plugin. */
+    /* Written by Leonildo Costa Silva (leocsilva@gmail.com). */
+    $.datepicker.regional['pt-BR'] = {
+        closeText: 'Fechar',
+        prevText: '&#x3c;Anterior',
+        nextText: 'Pr&oacute;ximo&#x3e;',
+        currentText: 'Hoje',
+        monthNames: ['Janeiro', 'Fevereiro', 'Mar&ccedil;o', 'Abril', 'Maio', 'Junho',
+            'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+        monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
+            'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+        dayNames: ['Domingo', 'Segunda-feira', 'Ter&ccedil;a-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sabado'],
+        dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'],
+        dayNamesMin: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'],
+        weekHeader: 'Sm',
+        dateFormat: 'dd/mm/yy',
+        firstDay: 0,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: ''};
+    $.datepicker.setDefaults($.datepicker.regional['pt-BR']);
+
+    $(".datepicker").datepicker({
+        changeMonth: true,
+        changeYear: true
+    });
+
     jQuery('.menuleft').resizable({handles: 'e'});
     formProccess();
 
@@ -47,6 +93,11 @@ jQuery(document).ready(function() {
             }
         });
         return false;
+    });
+
+    jQuery('[dropdown-toggle="true"]').dropdown();
+    jQuery('[data-mask]').each(function() {
+        jQuery(this).mask(jQuery(this).data('mask'));
     });
 });
 

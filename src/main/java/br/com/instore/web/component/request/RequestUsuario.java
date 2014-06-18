@@ -1,5 +1,6 @@
 package br.com.instore.web.component.request;
 
+import br.com.instore.web.component.session.SessionRepository;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.bean.FuncionalidadeBean;
@@ -20,14 +21,14 @@ public class RequestUsuario implements java.io.Serializable {
     @Inject
     private Result result;
     @Inject
-    private RequestRepository requestRepository;
+    private SessionRepository requestRepository;
     @Inject
     private SessionUsuario sessionUsuario;
 
     public RequestUsuario() {
     }
 
-    public RequestUsuario(Result result, RequestRepository requestRepository, SessionUsuario sessionUsuario) {
+    public RequestUsuario(Result result, SessionRepository requestRepository, SessionUsuario sessionUsuario) {
         this.result = result;
         this.requestRepository = requestRepository;
         this.sessionUsuario = sessionUsuario;
