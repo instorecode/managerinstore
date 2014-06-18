@@ -44,11 +44,11 @@ public class RequestUsuario implements java.io.Serializable {
 
                 result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Usuário logado com sucesso")).recursive().serialize();
             } else {
-                result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "E-mail / Senha inválidos.")).recursive().serialize();
+                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "E-mail / Senha inválidos.")).recursive().serialize();
             }
         } catch (Exception e) {
             e.printStackTrace();
-            result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "E-mail / Senha inválidos.")).recursive().serialize();
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "E-mail / Senha inválidos.")).recursive().serialize();
         }
     }
     

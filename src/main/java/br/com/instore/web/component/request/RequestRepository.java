@@ -2,6 +2,8 @@ package br.com.instore.web.component.request;
 
 import br.com.instore.core.orm.RepositoryViewer;
 import br.com.instore.web.component.session.SessionUsuario;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
@@ -17,4 +19,14 @@ public class RequestRepository extends RepositoryViewer implements java.io.Seria
     public RequestRepository(SessionUsuario sessaoUsuario) {
         this.sessaoUsuario = sessaoUsuario;
     }
+    
+    @PostConstruct
+    public void postConstruct() {
+        verifySession();
+    }
+    
+    @PreDestroy
+    public void preDestroy() {
+        finalize();
+    }         
 }
