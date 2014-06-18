@@ -10,7 +10,7 @@ import br.com.caelum.vraptor.interceptor.AcceptsWithAnnotations;
 import br.com.caelum.vraptor.interceptor.SimpleInterceptorStack;
 import br.com.instore.web.annotation.NotRestrict;
 import br.com.instore.web.annotation.Restrict;
-import br.com.instore.web.component.request.RequestRepository;
+import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.controller.HomeController;
 import javax.enterprise.context.RequestScoped;

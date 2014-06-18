@@ -10,7 +10,7 @@ import br.com.caelum.vraptor.interceptor.SimpleInterceptorStack;
 import br.com.instore.core.orm.bean.FuncionalidadeBean;
 import br.com.instore.core.orm.bean.property.Funcionalidade;
 import br.com.instore.web.annotation.Restrict;
-import br.com.instore.web.component.request.RequestRepository;
+import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.controller.HomeController;
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ public class RestrictAccessValidator {
     @Inject
     private Result result;
     @Inject
-    private RequestRepository requestRepository;
+    private SessionRepository requestRepository;
 
     @AroundCall
     public void intercept(SimpleInterceptorStack stack) {
@@ -80,9 +80,9 @@ public class RestrictAccessValidator {
         List<FuncionalidadeBean> funcionalidadeBeanList = requestRepository.query(FuncionalidadeBean.class).eq(Funcionalidade.PARENTE, fb.getIdfuncionalidade()).findAll();
         return funcionalidadeBeanList;
     }
-
+ 
     public String constructMenu(Integer parente, String currentMappinId) {
-        String url = "http://" + request.getServerName() +":"+ request.getServerPort() + request.getContextPath() + "/";
+        String url = "http://" + request.getServerName() +":"+ request.getServerPort() + request.getContextPath();
         String html = "";
         if (parente == null) {
             parente = 0;
