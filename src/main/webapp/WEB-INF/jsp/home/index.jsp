@@ -7,14 +7,14 @@
 <c:set var="url_js" value="http://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/resources/js/"></c:set>
 <c:set var="url_img" value="http://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/resources/img/"></c:set>
 
-    <compress:html enabled="true" removeComments="true" compressJavaScript="true" yuiJsDisableOptimizations="true">
-        <!DOCTYPE html>
-        <html>
-            <head>
-                <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-                <title>Intore</title>
+<compress:html enabled="true" removeComments="true" compressJavaScript="true" yuiJsDisableOptimizations="true">
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+            <title>Intore</title>
 
-                <link rel="stylesheet" type="text/css" media="all" href="${url_css}jquery.ui.css"/>
+            <link rel="stylesheet" type="text/css" media="all" href="${url_css}jquery.ui.css"/>
             <link rel="stylesheet" type="text/css" media="all" href="${url_css}bootstrap.css"/>
             <link rel="stylesheet" type="text/css" media="all" href="${url_css}font.awesome.css"/>
             <link rel="stylesheet" type="text/css" media="all" href="${url_css}todc-bootstrap.css"/>
@@ -33,17 +33,18 @@
         </head>
         <body class="login">
             <div class="align">
-                <div class="panel panel-default">
-                    <div class="panel-body">
+                <form id="login" method="POST" data-form="true" data-success-url="${url}/dashboard">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
 
-                        <center>
-                            <img src="${url_img}logo.png" style="max-width: 178px;" />
-                        </center>
-                         
-                        <br />
-                        <br />
+                            <center>
+                                <img src="${url_img}logo.png" style="max-width: 178px;" />
+                            </center>
 
-                        <form id="login" method="POST" data-form="true" data-success-url="${url}/dashboard">
+                            <br />
+                            <br />
+
+
                             <div class="form-group">
                                 <input type="text" name="email" class="form-control" placeholder="Enter email"  data-rule-required="true" data-rule-email="true" value="admin@instore.com.br">
                             </div>
@@ -51,13 +52,14 @@
                             <div class="form-group">
                                 <input type="password" name="senha" class="form-control" placeholder="Senha"  data-rule-required="true" value="123">
                             </div>
-
+                        </div>
+                        <div class="panel-footer">
                             <button type="submit" class="btn btn-default">
                                 <i class="fa fa-sign-in"></i> LogIn
                             </button>
-                        </form>
+                        </div>
                     </div>
-                </div>
+                </form>
             </div>
         </body>
     </html>
