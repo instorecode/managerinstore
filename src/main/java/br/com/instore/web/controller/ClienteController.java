@@ -7,6 +7,7 @@ import br.com.caelum.vraptor.Post;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.bean.ClienteBean;
+import br.com.instore.core.orm.bean.ContatoClienteBean;
 import br.com.instore.core.orm.bean.DadosClienteBean;
 import br.com.instore.web.annotation.Restrict;
 import br.com.instore.web.component.request.RequestCliente;
@@ -17,6 +18,7 @@ public class ClienteController implements java.io.Serializable {
 
     @Inject
     private Result result;
+    
     @Inject
     private RequestCliente requestCliente;
 
@@ -42,24 +44,26 @@ public class ClienteController implements java.io.Serializable {
     @Path("/cliente/cadastrar")
     public void cadastrar() {
         result.include("clienteBeanList", requestCliente.clienteBeanList());
+        result.include("estadoBeanList", requestCliente.estadoBeanList());
     }
 
     @Post
     @Restrict
     @Path("/cliente/cadastrar")
     public void cadastrar(ClienteBean cliente , DadosClienteBean dadosCliente) {
+        requestCliente.salvar(cliente, dadosCliente);
     }
 
     @Get
     @Restrict
     @Path("/cliente/atualizar/{id}")
-    public void atualizar(Integer id) {
+    public void cadastrar(Integer id) {
     }
 
     @Post
     @Restrict
-    @Path("/cliente/atualizar")
-    public void atualizar(ClienteBean cliente , DadosClienteBean dadosCliente) {
+    @Path("/cliente/atualizar/{id}")
+    public void cadastrar(Integer id , ClienteBean cliente , DadosClienteBean dadosCliente) {
     }
 
     @Get

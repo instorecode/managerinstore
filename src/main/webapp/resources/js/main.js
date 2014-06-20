@@ -1,23 +1,65 @@
 jQuery(document).ready(function() {
-    jQuery.validator.setDefaults({
-        invalidHandler: function(form, validator) {
-            var errors = validator.numberOfInvalids();
-            if (errors) {
-                var message =' <ul></ul>';
-                $("#messageBox").html(message);
-                $("#messageBox").show();
-                
-            } else {
-                $("#messageBox").hide();
+    jQuery('.cepload').on('blur', function() {
+        var self = jQuery(this);
+        var valueOrig = self.val();
+        var value = self.val();
+        var url = self.data('url');
+
+        value = value.replace(".", "");
+        value = value.replace("-", "");
+
+        jQuery.ajax({
+            type: 'GET',
+            url: url,
+            data: {cep:value},
+            success: function(data) {
+                self.val(valueOrig);
+                jQuery('[data-uf="' + data.uf + '"]').attr('selected', true);
+                jQuery('.cid').val(data.cidade);
+                jQuery('.bai').val(data.bairro);
+                jQuery('.log').val(data.logradouro);
             }
-        },
-        showErrors: function(errorMap, errorList) {
-            $("#messageBox ul").html('');    
-            jQuery.each(errorList , function(){
-                $("#messageBox ul").append('<li><i class="fa fa-exclamation-triangle"></i>&nbsp;&nbsp;'+this.message+'</li>');
-            });
-        }
+        });
     });
+    (function($) {
+        $.extend(true, $.validator, {
+            prototype: {
+                defaultShowErrors: function() {
+                    var self = this;
+                    $.each(this.successList, function(index, value) {
+                        $(value).removeClass(self.settings.errorClass).addClass(self.settings.validClass).tooltip('destroy');
+                    });
+                    $.each(this.errorList, function(index, value) {
+                        $(value.element).addClass('tooltip-error');
+                        $(value.element).removeClass(self.settings.validClass).addClass(self.settings.errorClass).tooltip('destroy').tooltip(self.apply_tooltip_options(value.element, value.message)).tooltip('show');
+                        return false;
+                    });
+                },
+                apply_tooltip_options: function(element, message) {
+                    var options = {
+                        animation: $(element).data('animation') || true,
+                        html: true,
+                        placement: $(element).data('placement') || 'top',
+                        selector: $(element).data('animation') || true,
+                        title: $(element).attr('title') || message,
+                        trigger: $.trim('manual ' + ($(element).data('trigger') || '')),
+                        delay: $(element).data('delay') || 0,
+                        container: $(element).data('container') || false
+                    };
+                    if (this.settings.tooltip_options && this.settings.tooltip_options[element.name]) {
+                        $.extend(options, this.settings.tooltip_options[element.name]);
+                    }
+                    return options;
+                },
+            }
+        });
+    }(jQuery));
+    
+    jQuery('[data-tooltip="true"]').each(function(){
+        var self = jQuery(this);
+        self.tooltip();
+    });
+
     /* Brazilian initialisation for the jQuery UI date picker plugin. */
     /* Written by Leonildo Costa Silva (leocsilva@gmail.com). */
     $.datepicker.regional['pt-BR'] = {
