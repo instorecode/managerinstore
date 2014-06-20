@@ -58,18 +58,25 @@ public class ClienteController implements java.io.Serializable {
     @Restrict
     @Path("/cliente/atualizar/{id}")
     public void cadastrar(Integer id) {
+        result.include("clienteBeanList", requestCliente.clienteBeanList());
+        result.include("estadoBeanList", requestCliente.estadoBeanList());
+        result.include("cliente", requestCliente.clienteBean(id));
+        result.include("dadosCliente", requestCliente.dadosClienteBean(id));
     }
 
     @Post
     @Restrict
     @Path("/cliente/atualizar/{id}")
     public void cadastrar(Integer id , ClienteBean cliente , DadosClienteBean dadosCliente) {
+        requestCliente.salvar(cliente, dadosCliente);
     }
 
     @Get
     @Restrict
     @Path("/cliente/remover/{id}")
     public void remover(Integer id) {
+        result.include("cliente", requestCliente.clienteBean(id));
+        result.include("dadosCliente", requestCliente.dadosClienteBean(id));
     }
 
     @Post

@@ -33,7 +33,7 @@
             
             <div class="row">
                 <div class="col-md-4 prop"> 
-                    Parente
+                    Empresa Matriz
                 </div>
                 <div class="col-md-8 val"> 
                     <div data-parente="true"></div> 
@@ -49,7 +49,7 @@
             </div>
             <div class="row">
                 <div class="col-md-4 prop"> 
-                    Matriz
+                    È matriz
                 </div>
                 <div class="col-md-8 val"> 
                     <div data-matriz="true"></div> 
@@ -57,10 +57,131 @@
             </div>
             <div class="row">
                 <div class="col-md-4 prop"> 
-                    Instore
+                    È instore
                 </div>
                 <div class="col-md-8 val"> 
                     <div data-instore="true"></div> 
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4 prop"> 
+                    Nome fantasia
+                </div>
+                <div class="col-md-8 val"> 
+                    <div data-nomeFantasia="true"></div> 
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 prop"> 
+                    CNPJ
+                </div>
+                <div class="col-md-8 val"> 
+                    <div data-cnpj="true"></div> 
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 prop"> 
+                    Data de inicio do contrato
+                </div>
+                <div class="col-md-8 val"> 
+                    <div data-dataInicioContrato="true"></div> 
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 prop"> 
+                    Data de termino do contrato
+                </div>
+                <div class="col-md-8 val"> 
+                    <div data-dataTerminoContrato="true"></div> 
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 prop"> 
+                    Indice de reajuste do contrato
+                </div>
+                <div class="col-md-8 val"> 
+                    <div data-indiceReajusteContrato="true"></div> 
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 prop"> 
+                    Renovação automatica
+                </div>
+                <div class="col-md-8 val"> 
+                    <div data-renovacaoAutomatica="true"></div> 
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 prop"> 
+                    Razão social
+                </div>
+                <div class="col-md-8 val"> 
+                    <div data-razaoSocial="true"></div> 
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 prop"> 
+                    CEP
+                </div>
+                <div class="col-md-8 val"> 
+                    <div data-cep="true"></div> 
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 prop"> 
+                    Estado
+                </div>
+                <div class="col-md-8 val"> 
+                    <div data-estado="true"></div> 
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 prop"> 
+                    Cidade
+                </div>
+                <div class="col-md-8 val"> 
+                    <div data-cidade="true"></div> 
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 prop"> 
+                    Bairro
+                </div>
+                <div class="col-md-8 val"> 
+                    <div data-bairro="true"></div> 
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 prop"> 
+                    Logradouro
+                </div>
+                <div class="col-md-8 val"> 
+                    <div data-logradouro="true"></div> 
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 prop"> 
+                    Número
+                </div>
+                <div class="col-md-8 val"> 
+                    <div data-numero="true"></div> 
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 prop"> 
+                    Complemento
+                </div>
+                <div class="col-md-8 val"> 
+                    <div data-complemento="true"></div> 
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 prop"> 
+                    Situação
+                </div>
+                <div class="col-md-8 val"> 
+                    <div data-situacao="true"></div> 
                 </div>
             </div>
         </div>

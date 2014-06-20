@@ -1,9 +1,6 @@
 package br.com.instore.web.component.session;
 
 import br.com.instore.core.orm.RepositoryViewer;
-import br.com.instore.web.component.session.SessionUsuario;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
@@ -18,15 +15,6 @@ public class SessionRepository extends RepositoryViewer implements java.io.Seria
  
     public SessionRepository(SessionUsuario sessaoUsuario) {
         this.sessaoUsuario = sessaoUsuario;
-    }
-    
-    @PostConstruct
-    public void postConstruct() {
-        verifySession();
-    }
-    
-    @PreDestroy
-    public void preDestroy() {
-        finalize();
-    }         
+        setUsuario(sessaoUsuario.getUsuarioBean());
+    }       
 }
