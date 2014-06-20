@@ -186,7 +186,10 @@
                                 _url_remover =  _url + '/remover/' + data.attributes[jQuery('[datagrid="true"]').data('id')];
                                 
                                 for (var p in data.attributes) {
-                                    jQuery('[data-' + p + '="true"]').text(data.attributes[p]);
+                                    var txt = ''; 
+                                    var sep = '';
+                                    var txt = jQuery('[data-' + p + '="true"]').text() + ' ';
+                                    jQuery('[data-' + p + '="true"]').text(txt+data.attributes[p]); 
                                 }
 
                                 if (null != onRowDblClick && undefined != onRowDblClick) {
