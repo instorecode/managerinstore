@@ -41,6 +41,7 @@ public class ClienteController implements java.io.Serializable {
     @Restrict
     @Path("/cliente/cadastrar")
     public void cadastrar() {
+        result.include("clienteBeanList", requestCliente.clienteBeanList());
     }
 
     @Post

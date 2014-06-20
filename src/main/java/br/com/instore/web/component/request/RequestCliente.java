@@ -42,4 +42,9 @@ public class RequestCliente implements java.io.Serializable {
         }
         return clienteDTOList;
     }
+    
+    public List<ClienteBean> clienteBeanList() {
+        List<ClienteBean> clienteBeanList =repository.query(ClienteBean.class).findAll();
+        return clienteBeanList;
+    }
 }

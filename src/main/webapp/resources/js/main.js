@@ -44,6 +44,7 @@ jQuery(document).ready(function() {
         changeMonth: true,
         changeYear: true
     });
+    $(".datepicker").mask('99/99/9999')
 
     jQuery('.menuleft').resizable({handles: 'e'});
     formProccess();
