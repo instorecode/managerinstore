@@ -83,5 +83,6 @@ public class ClienteController implements java.io.Serializable {
     @Restrict
     @Path("/cliente/remover/{id}")
     public void remover(Integer id, String param) {
+        requestCliente.desabilitar(id);
     }
 }

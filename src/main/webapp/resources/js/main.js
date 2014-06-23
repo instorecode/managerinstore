@@ -1,4 +1,6 @@
 jQuery(document).ready(function() {
+
+
     jQuery('.cepload').on('blur', function() {
         var self = jQuery(this);
         var valueOrig = self.val();
@@ -11,7 +13,7 @@ jQuery(document).ready(function() {
         jQuery.ajax({
             type: 'GET',
             url: url,
-            data: {cep:value},
+            data: {cep: value},
             success: function(data) {
                 self.val(valueOrig);
                 jQuery('[data-uf="' + data.uf + '"]').attr('selected', true);
@@ -54,8 +56,8 @@ jQuery(document).ready(function() {
             }
         });
     }(jQuery));
-    
-    jQuery('[data-tooltip="true"]').each(function(){
+
+    jQuery('[data-tooltip="true"]').each(function() {
         var self = jQuery(this);
         self.tooltip();
     });

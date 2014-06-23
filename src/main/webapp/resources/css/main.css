@@ -112,3 +112,16 @@ body.login div.align{
     margin-left: 20px;
     margin-right: 20px;
 }
+
+.minmz {
+    display: block;
+    height: 40px;
+    background-color: whitesmoke;
+    line-height: 40px;
+    text-align: center;
+    cursor: pointer;
+    font-family: Arial;
+    font-weight: bold;
+    font-style: italic;
+    color: rgba(0,0,0,0.4);
+}
