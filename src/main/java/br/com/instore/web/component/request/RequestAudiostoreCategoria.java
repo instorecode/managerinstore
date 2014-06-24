@@ -1,27 +1,23 @@
 package br.com.instore.web.component.request;
 
 import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.observer.download.FileDownload;
+import br.com.caelum.vraptor.observer.download.InputStreamDownload;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.bean.AudiostoreCategoriaBean;
-import br.com.instore.core.orm.bean.BairroBean;
-import br.com.instore.core.orm.bean.CepBean;
-import br.com.instore.core.orm.bean.CidadeBean;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.core.orm.bean.ClienteBean;
-import br.com.instore.core.orm.bean.DadosClienteBean;
-import br.com.instore.core.orm.bean.EnderecoBean;
-import br.com.instore.core.orm.bean.EstadoBean;
-import br.com.instore.core.orm.bean.property.DadosCliente;
-import br.com.instore.core.orm.bean.property.Estado;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.dto.AudiostoreCategoriaDTO;
-import br.com.instore.web.dto.ClienteDTO;
 import br.com.instore.web.tools.AjaxResult;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import org.apache.commons.lang.StringUtils;
 
 @RequestScoped
 public class RequestAudiostoreCategoria implements java.io.Serializable {
@@ -110,5 +106,29 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
             result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel remover a audiostore categoria!")).recursive().serialize();
             repository.finalize();
         }
+    }
+    
+    public InputStreamDownload download(Integer id) {
+        InputStreamDownload inputStreamDownload = null;
+        try {
+            AudiostoreCategoriaBean audiostoreCategoriaBean = audiostoreCategoriaBean(id);
+            if (audiostoreCategoriaBean != null) {
+
+                String conteudo = "";
+
+                conteudo += StringUtils.leftPad(audiostoreCategoriaBean.getCodigo().toString(), 5, " ");
+                conteudo += StringUtils.leftPad(audiostoreCategoriaBean.getCategoria(), 30, " ");
+                conteudo += StringUtils.leftPad(new SimpleDateFormat("dd/MM/yy").format(audiostoreCategoriaBean.getDataInicio()), 8, " ");
+                conteudo += StringUtils.leftPad(new SimpleDateFormat("dd/MM/yy").format(audiostoreCategoriaBean.getDataFinal()), 8, " ");
+                conteudo += audiostoreCategoriaBean.getTipo();
+                conteudo += StringUtils.leftPad(new SimpleDateFormat("HH:mm:ss").format(audiostoreCategoriaBean.getTempo()), 8, " ");
+                
+                inputStreamDownload = new InputStreamDownload(new ByteArrayInputStream(conteudo.getBytes()), "application/exp", audiostoreCategoriaBean.getCategoria() +".exp");
+                
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return inputStreamDownload;
     }
 }

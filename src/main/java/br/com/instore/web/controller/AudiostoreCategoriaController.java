@@ -5,15 +5,11 @@ import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Post;
 import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.observer.download.InputStreamDownload;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.bean.AudiostoreCategoriaBean;
-import br.com.instore.core.orm.bean.ClienteBean;
-import br.com.instore.core.orm.bean.ContatoClienteBean;
-import br.com.instore.core.orm.bean.DadosClienteBean;
 import br.com.instore.web.annotation.Restrict;
 import br.com.instore.web.component.request.RequestAudiostoreCategoria;
-import br.com.instore.web.component.request.RequestCliente;
-import br.com.instore.web.component.request.RequestContatoCliente;
 import javax.inject.Inject;
 
 @Controller
@@ -84,5 +80,12 @@ public class AudiostoreCategoriaController implements java.io.Serializable {
     @Path("/audiostore-categoria/remover/{id}")
     public void remover(Integer id, String param) {
         requestAudiostoreCategoria.remover(id);
+    }
+    
+    @Get
+    @Restrict
+    @Path("/audiostore-categoria/download-exp/{id}")
+    public InputStreamDownload download(Integer id) {
+        return requestAudiostoreCategoria.download(id);
     }
 }
