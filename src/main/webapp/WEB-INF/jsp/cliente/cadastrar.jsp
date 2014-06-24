@@ -14,7 +14,6 @@
             <input type="hidden" name="cliente.endereco.cep.bairro.idbairro" value="${cliente.endereco.cep.bairro.idbairro}" />
             <input type="hidden" name="cliente.endereco.cep.bairro.cidade.idcidade" value="${cliente.endereco.cep.bairro.cidade.idcidade}" />
 
-
             <div class="row">
                 <div class="col-md-9">
                     <div class="form-group">
