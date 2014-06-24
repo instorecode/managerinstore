@@ -108,7 +108,7 @@ body.login div.align{
     display: inline-block;
 }
 
-.tooltip-error + .tooltip > .tooltip-inner {background-color: red !important;}
+.tooltip-error + .tooltip > .tooltip-inner {background-color: red !important; }
 .tooltip-error + .tooltip > .tooltip-arrow { border-top-color:red !important; }
 .itemhidden {
     display: none;
