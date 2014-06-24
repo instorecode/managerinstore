@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
 import javax.swing.tree.TreeNode;
 
 @RequestScoped
@@ -24,14 +25,17 @@ public class RequestUsuario implements java.io.Serializable {
     private SessionRepository requestRepository;
     @Inject
     private SessionUsuario sessionUsuario;
+    @Inject
+    private HttpSession httpSession;
 
     public RequestUsuario() {
     }
 
-    public RequestUsuario(Result result, SessionRepository requestRepository, SessionUsuario sessionUsuario) {
+    public RequestUsuario(Result result, SessionRepository requestRepository, SessionUsuario sessionUsuario, HttpSession httpSession) {
         this.result = result;
         this.requestRepository = requestRepository;
         this.sessionUsuario = sessionUsuario;
+        this.httpSession = httpSession;
     }
 
     public void logIn(String email, String senha) {
@@ -54,8 +58,7 @@ public class RequestUsuario implements java.io.Serializable {
     }
     
     public void logOut() {
-        sessionUsuario.setLogado(false);
-        sessionUsuario.setUsuarioBean(null);
-        result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "LogOut efetuado com sucesso.")).recursive().serialize();
+        httpSession.invalidate();
+        result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "LogOut efetuado com sucesso.")).recursive().serialize();        
     }
 }

@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-public class ClienteDTO {
+public class ClienteDTO extends AbstractDTO {
     private Integer idcliente;
     private String parente;
     private String nome;
