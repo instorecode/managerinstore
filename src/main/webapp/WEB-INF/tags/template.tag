@@ -175,6 +175,12 @@
                             rows: 25,
                             rowList: [5, 25, 50, 100, 250, 500],
                             colModel: gridColumn,
+                            onRowClick: function(data) {
+                                if (null != onRowClick && undefined != onRowClick) {
+                                    onRowClick(data.attributes);
+                                }
+                                
+                            },
                             onRowDblClick: function(data) {
                                 var _url = url;
                                

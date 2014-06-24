@@ -3,10 +3,11 @@
 
     <jsp:attribute name="submenu">
         <a href="${url}/audiostore-categoria/cadastrar" class="btn btn-default"> <i class="fa fa-save"></i> Cadastrar </a>
+        <a style="display: none" xhref="${url}/audiostore-categoria/download-exp" class="btn btn-default btnDownloadEXP"> <i class="fa fa-save"></i> Download do arquivo EXP </a>
     </jsp:attribute>
 
     <jsp:attribute name="gridColumn">
-        <script>
+        <script type="text/javascript">
             var gridColumn = [
             {title: 'Código', name: 'codigo', index: true, filter: true, filterType:'input'},
             {title: 'Nome da categoria', name: 'categoria', index: true, filter: true, filterType:'input'},
@@ -15,6 +16,12 @@
 
             function onRowDblClick(data) {
 
+            }
+            
+            function onRowClick(data) {
+                jQuery('.btnDownloadEXP').show();
+                var xhref = jQuery('.btnDownloadEXP').attr('xhref')+'/'+data.codigo;
+                jQuery('.btnDownloadEXP').attr('href', xhref);
             }
         </script>
     </jsp:attribute>
