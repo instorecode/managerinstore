@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="instore" tagdir="/WEB-INF/tags/" %> 
+<%@ taglib prefix="cf" uri="CustomFunctions" %> 
 <instore:template isGrid="false">
     <jsp:attribute name="submenu">
         <a href="${url}/clientes" class="btn btn-default"> <i class="fa fa-hand-o-left"></i> Clientes </a>
@@ -65,7 +66,7 @@
                         <input type="text" name="dadosCliente.dataInicioContrato" class="form-control datepicker" placeholder="Data de inicio do contrato" 
                                data-rule-required="true" 
                                data-rule-minlength="10"
-                               data-rule-maxlength="10" value="${dadosCliente.dataInicioContrato}">
+                               data-rule-maxlength="10" value="${cf:dateFormat(dadosCliente.dataInicioContrato , "dd/MM/yyyy")}">
                     </div>
                 </div>
 
@@ -75,7 +76,7 @@
                         <input type="text" name="dadosCliente.dataTerminoContrato" class="form-control datepicker" placeholder="Data de termino do contrato" 
                                data-rule-required="true" 
                                data-rule-minlength="10"
-                               data-rule-maxlength="10" value="${dadosCliente.dataTerminoContrato}">
+                               data-rule-maxlength="10" value="${cf:dateFormat(dadosCliente.dataTerminoContrato, "dd/MM/yyyy")}">
                     </div>
                 </div>
 
