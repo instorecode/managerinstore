@@ -24,6 +24,7 @@
             <link rel="stylesheet" type="text/css" media="all" href="${url_css}font.awesome.css"/>
             <link rel="stylesheet" type="text/css" media="all" href="${url_css}todc-bootstrap.css"/>
             <link rel="stylesheet" type="text/css" media="all" href="${url_css}bbGrid.css"/>
+            <link rel="stylesheet" type="text/css" media="all" href="${url_css}clockface.css"/>
             <link rel="stylesheet" type="text/css" media="all" href="${url_css}main.css"/>
 
             <script type="text/javascript" charset="utf-8" src="${url_js}jquery.min.js"></script>
@@ -39,6 +40,7 @@
             <script type="text/javascript" charset="utf-8" src="${url_js}jquery.form.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}jquery.mask.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}bootbox.js"></script>
+            <script type="text/javascript" charset="utf-8" src="${url_js}clockface.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}main.js"></script>
 
             <c:if test="${null ne isGrid and isGrid eq true}">

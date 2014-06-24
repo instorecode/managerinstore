@@ -1,5 +1,9 @@
 jQuery(document).ready(function() {
-
+    $('[data-clock="true"]').each(function(){
+        var self = jQuery(this);
+        var format = self.data('clockFormat');
+        self.clockface({format: format});
+    });
 
     jQuery('.cepload').on('blur', function() {
         var self = jQuery(this);
@@ -106,7 +110,8 @@ jQuery(document).ready(function() {
         doch = jQuery(window).height();
 
         jQuery('.menuleft').css({
-            'height': doch + 'px'
+            'height': doch + 'px',
+            'min-width': '220px',
         });
 
         jQuery('.content .over').css({
@@ -203,7 +208,7 @@ function formProccess() {
                             dialogAjax(data.response);
                         }
                     },
-                    error: function(response) {
+                    error: function(data) {
                         if (data_error_url != null && data_error_url != undefined && data_error_url != '') {
                             window.location.href = data_error_url;
                         } else {
