@@ -122,11 +122,28 @@ body.login div.align{
     display: block;
     height: 40px;
     background-color: whitesmoke;
-    line-height: 40px;
+    line-height: 40px; 
     text-align: center;
     cursor: pointer;
     font-family: Arial;
     font-weight: bold;
     font-style: italic;
     color: rgba(0,0,0,0.4);
+}
+
+.bbGrid-grid {
+    table-layout: fixed; 
+    width: 100%;
+}
+
+.menuleft {
+    min-width: 240px !important; 
+}
+ 
+@media only screen and (max-device-width: 799px) {
+    .menuleft {
+        width: 0px !important;
+        max-width: 0px !important;
+        min-width: 0px !important;
+    }
 }

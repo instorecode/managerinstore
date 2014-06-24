@@ -119,8 +119,7 @@ jQuery(document).ready(function() {
         doch = jQuery(window).height();
 
         jQuery('.menuleft').css({
-            'height': doch + 'px',
-            'min-width': '240px',
+            'height': doch + 'px'
         });
 
         jQuery('.content .over').css({
