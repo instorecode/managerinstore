@@ -1,6 +1,20 @@
 <%@tag description="put the tag description here" pageEncoding="UTF-8"%>
+<%
+Cookie cookie = new Cookie("managerinstore_tmp_test", "Test browser");
+response.addCookie(cookie);
 
-<noscript>
+boolean cookieHabilitado = false;
+if(null != request.getCookies()) {
+    for(Cookie ck : request.getCookies()) {
+        if("managerinstore_tmp_test".equals(ck.getName())) {
+            cookieHabilitado = true;
+        }
+    }    
+}
+%>
+
+<% if (!cookieHabilitado) {%>
+
 <style type="text/css">
     .yesscript { display: none; }
     body { 
@@ -33,8 +47,8 @@
         <span> 
             <i class="fa fa-exclamation-triangle"></i>  
             <br />
-            Ops! È necessário que o JAVASCRIPT esteja HABILITADO em seu navegador!
+            Ops! È necessário que o COOKIE esteja HABILITADO em seu navegador!
         </span>
     </center>
 </div>
-</noscript>
+<%}%>

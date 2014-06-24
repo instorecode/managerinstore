@@ -1,11 +1,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
 <%@ taglib prefix="compress" uri="http://htmlcompressor.googlecode.com/taglib/compressor" %>
 <%@ taglib prefix="instore" tagdir="/WEB-INF/tags/" %> 
-<c:set var="url" value="http://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}"></c:set>
-<c:set var="url_resources" value="http://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/resources/"></c:set>
-<c:set var="url_css" value="http://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/resources/css/"></c:set>
-<c:set var="url_js" value="http://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/resources/js/"></c:set>
-<c:set var="url_img" value="http://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/resources/img/"></c:set>
+<c:set scope="session" var="url" value="http://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}"></c:set>
+<c:set scope="session" var="url_resources" value="http://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/resources/"></c:set>
+<c:set scope="session" var="url_css" value="http://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/resources/css/"></c:set>
+<c:set scope="session" var="url_js" value="http://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/resources/js/"></c:set>
+<c:set scope="session" var="url_img" value="http://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/resources/img/"></c:set>
 
 <compress:html enabled="true" removeComments="true" compressJavaScript="true" yuiJsDisableOptimizations="true">
     <!DOCTYPE html>
@@ -33,10 +33,17 @@
 
         </head>
         <body class="login">
+            <style type="text/css">
+                body { 
+                    background: url('${url_img}bg-login.jpg')  no-repeat center center fixed;
+                    background-size: 100% 100%;
+                }
+            </style>
             <instore:noscript></instore:noscript>
-            <div class="yesscript">
-                <div class="align">
-                    <form id="login" method="POST" data-form="true" data-success-url="${url}/dashboard">
+            <instore:nocookie></instore:nocookie>
+                <div class="yesscript">
+                    <div class="align">
+                        <form id="login" method="POST" data-form="true" data-success-url="${url}/dashboard">
                         <div class="panel panel-default">
                             <div class="panel-body">
 

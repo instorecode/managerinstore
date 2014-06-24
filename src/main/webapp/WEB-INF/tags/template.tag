@@ -4,6 +4,7 @@
 <%@attribute fragment="true" name="gridColumn" %>
 <%@attribute fragment="false" name="isGrid" %>
 <%@attribute fragment="true" name="submenu" %>
+<%@ taglib prefix="instore" tagdir="/WEB-INF/tags/" %> 
 
 <c:set scope="session" var="url" value="http://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}"></c:set>
 <c:set scope="session" var="url_resources" value="http://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/resources/"></c:set>
@@ -228,36 +229,41 @@
                     });
                 </script>
             </c:if>
-                
+                 
             </head>
             <body>
-                <div class="menuleft">
-                    <ul class="list-group">
-                        <li class="list-group-header"> <i class="fa fa-bars"></i>&nbsp;&nbsp;&nbsp;Menu</li>
-                        <li class="divider"></li>
-                        ${menu} 
-                    <li class="divider"></li> 
-                    <li class="list-group-item"><a class="btn_sair" href="${url}/sair"><i class="fa fa-sign-out"></i>&nbsp;&nbsp;&nbsp;Sair</a></li>
-                </ul>
-            </div>
+                <instore:noscript></instore:noscript>
+                <instore:nocookie></instore:nocookie>
+                <div class="yesscript">
+                    <div class="menuleft">
+                            <ul class="list-group">
+                                <li class="list-group-header"> <i class="fa fa-bars"></i>&nbsp;&nbsp;&nbsp;Menu</li>
+                                <li class="divider"></li>
+                                ${menu} 
+                            <li class="divider"></li> 
+                            <li class="list-group-item"><a class="btn_sair" href="${url}/sair"><i class="fa fa-sign-out"></i>&nbsp;&nbsp;&nbsp;Sair</a></li>
+                        </ul>
+                    </div>
 
-            <div class="content">
-                <h4><i class="fa ${currentFuncionalidadeBean.icone}"></i> Instore <small> ${currentFuncionalidadeBean.nome}</small></h4>
-                <hr style="margin-top: -1px;" />
-                <div class="row submenu">
-                    <div style="margin-left: 15px;"> 
-                        <jsp:invoke fragment="submenu"></jsp:invoke>
+                    <div class="content">
+                        <h4><i class="fa ${currentFuncionalidadeBean.icone}"></i> Instore <small> ${currentFuncionalidadeBean.nome}</small></h4>
+                        <hr style="margin-top: -1px;" />
+                        <div class="row submenu">
+                            <div style="margin-left: 15px;"> 
+                                <jsp:invoke fragment="submenu"></jsp:invoke>
+                            </div>
+                        </div>
+
+                        <div class="over">
+                            <br />
+                            <div style="margin-right: 10px;">
+                                <jsp:doBody />
+                            </div>
+                            <div style="position: absolute; bottom: 15px; right: 20px;"><i> 2014 © www.instore.com.br </i></div>
+                        </div>
                     </div>
                 </div>
-
-                <div class="over">
-                    <br />
-                    <div style="margin-right: 10px;">
-                        <jsp:doBody />
-                    </div>
-                    <div style="position: absolute; bottom: 15px; right: 20px;"><i> 2014 © www.instore.com.br </i></div>
-                </div>
-            </div>
+                
         </body>
     </html>
 </compress:html>
