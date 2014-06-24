@@ -189,7 +189,7 @@
                                     var txt = ''; 
                                     var sep = '';
                                     var txt = jQuery('[data-' + p + '="true"]').text() + ' ';
-                                    jQuery('[data-' + p + '="true"]').text(txt+data.attributes[p]); 
+                                    jQuery('[data-' + p + '="true"]').text(data.attributes[p]); 
                                 }
 
                                 if (null != onRowDblClick && undefined != onRowDblClick) {

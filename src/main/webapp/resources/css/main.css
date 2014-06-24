@@ -1,4 +1,5 @@
 * {outline: none;}
+
 .menuleft {
     display: inline-block;
     float: left; 
@@ -99,8 +100,12 @@ body.login div.align{
     border-left: 2px solid #FFF;
     
 }
-.bbGrid-row td {
-    cursor: pointer;
+
+.bbGrid-pager-rowlist-label.pull-left {
+    display: inline-block;
+}
+.bbGrid-pager-rowlist.form-control {
+    display: inline-block;
 }
 
 .tooltip-error + .tooltip > .tooltip-inner {background-color: red !important;}
