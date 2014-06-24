@@ -1,8 +1,17 @@
 jQuery(document).ready(function() {
-    $('[data-clock="true"]').each(function(){
+    $('[data-clock="true"]').each(function() {
         var self = jQuery(this);
         var format = self.data('clockFormat');
         self.clockface({format: format});
+    });
+
+    $('[multiple="multiple"]').each(function() {
+        var self = jQuery(this);
+        self.multiselect({
+            numberDisplayed: 0,
+            nonSelectedText: 'Selecione uma opção',
+            nSelectedText: 'iten(s) selecionado(s)' 
+        });
     });
 
     jQuery('.cepload').on('blur', function() {
@@ -111,7 +120,7 @@ jQuery(document).ready(function() {
 
         jQuery('.menuleft').css({
             'height': doch + 'px',
-            'min-width': '220px',
+            'min-width': '240px',
         });
 
         jQuery('.content .over').css({

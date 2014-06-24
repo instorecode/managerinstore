@@ -25,6 +25,8 @@
             <link rel="stylesheet" type="text/css" media="all" href="${url_css}todc-bootstrap.css"/>
             <link rel="stylesheet" type="text/css" media="all" href="${url_css}bbGrid.css"/>
             <link rel="stylesheet" type="text/css" media="all" href="${url_css}clockface.css"/>
+            <link rel="stylesheet" type="text/css" media="all" href="${url_css}bootstrap.multiselect.css"/>
+            <link rel="stylesheet" type="text/css" media="all" href="${url_css}prettify.css"/>
             <link rel="stylesheet" type="text/css" media="all" href="${url_css}main.css"/>
 
             <script type="text/javascript" charset="utf-8" src="${url_js}jquery.min.js"></script>
@@ -32,7 +34,8 @@
             <script type="text/javascript" charset="utf-8" src="${url_js}watch.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}underscore.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}backbone.js"></script>
-            <script type="text/javascript" charset="utf-8" src="${url_js}bootstrap.js"></script>
+            <script type="text/javascript" charset="utf-8" src="${url_js}bootstrap.js"></script> 
+            <script type="text/javascript" charset="utf-8" src="${url_js}bootstrap.multiselect.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}bbGrid.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}holder.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}jquery.validate.js"></script>
@@ -41,6 +44,8 @@
             <script type="text/javascript" charset="utf-8" src="${url_js}jquery.mask.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}bootbox.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}clockface.js"></script>
+            
+            <script type="text/javascript" charset="utf-8" src="${url_js}prettify.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}main.js"></script>
 
             <c:if test="${null ne isGrid and isGrid eq true}">
