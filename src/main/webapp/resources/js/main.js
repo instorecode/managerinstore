@@ -9,16 +9,18 @@ jQuery(document).ready(function() {
         var self = jQuery(this);
         self.multiselect({
             nonSelectedText: 'Selecione uma opção',
-            nSelectedText: 'iten(s) selecionado(s)'  
+            nSelectedText: 'iten(s) selecionado(s)',
+            enableFiltering: true
         });
     });
     
-    $('[multiple="multiple"]').each(function() {
+    $('[data-multiple="multiple"]').each(function() {
         var self = jQuery(this);
         self.multiselect({
             numberDisplayed: 0,
             nonSelectedText: 'Selecione uma opção',
-            nSelectedText: 'iten(s) selecionado(s)' 
+            nSelectedText: 'iten(s) selecionado(s)' ,
+            enableFiltering: true
         });
     });
 

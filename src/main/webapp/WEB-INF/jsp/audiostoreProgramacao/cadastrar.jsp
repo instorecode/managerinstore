@@ -88,7 +88,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>Categorias</label>
-                        <select  multiple="multiple" class="form-control" name="categorias" data-rule-required="true" >
+                        <select  data-multiple="multiple" multiple="multiple" class="form-control" name="categorias" data-rule-required="true" >
                             <c:forEach items="${categoriaBeanList}" var="categoria">
                                 <c:set var="selected" value="${false}"></c:set>
                                 <c:forEach items="${programacaoCategoriaBeanList}" var="pcb">
@@ -105,7 +105,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>Dias da semana</label>
-                        <select  multiple="multiple" class="form-control" name="diasSemana" data-rule-required="true" >
+                        <select  data-multiple="multiple" multiple="multiple" class="form-control" name="diasSemana" data-rule-required="true" >
                             <option value="1" ${audiostoreProgramacaoBean.segundaFeira ? 'selected="selected"': ''}>Segunda-Feira</option>
                             <option value="2" ${audiostoreProgramacaoBean.tercaFeira ? 'selected="selected"': ''}>Terça-Feira</option>
                             <option value="3" ${audiostoreProgramacaoBean.quartaFeira ? 'selected="selected"': ''}>Quarta-Feira</option>

@@ -271,6 +271,9 @@
                             <br />
                             <div style="margin-right: 10px;">
                                 <jsp:doBody />
+                                <br />
+                                <br />
+                                <br />
                             </div>
                             <div style="position: absolute; bottom: 15px; right: 20px;"><i> 2014 © www.instore.com.br </i></div>
                         </div>
