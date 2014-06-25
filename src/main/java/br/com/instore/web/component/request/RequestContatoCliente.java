@@ -9,6 +9,7 @@ import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.dto.ContatoClienteDTO;
 import br.com.instore.web.tools.AjaxResult;
+import br.com.instore.web.tools.Utilities;
 import java.util.ArrayList;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
@@ -50,7 +51,7 @@ public class RequestContatoCliente implements java.io.Serializable {
             dto.setClienteNome(ccb.getDadosCliente().getCliente().getNome());
             dto.setClienteNomeFantasia(ccb.getDadosCliente().getNomeFantasia());
             dto.setEmail(ccb.getEmail());
-            dto.setIdcontatoCliente(ccb.getIdcontatoCliente());
+            dto.setIdcontatoCliente( Utilities.leftPad(ccb.getIdcontatoCliente()) );
             dto.setPrincipal(ccb.isPrincipal() ? "Sim" : "Não");
             dto.setSetor(ccb.getSetor());
             dto.setTel(ccb.getTel());

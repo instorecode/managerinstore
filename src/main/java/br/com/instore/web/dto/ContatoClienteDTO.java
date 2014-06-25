@@ -1,7 +1,7 @@
 package br.com.instore.web.dto;
 
 public class ContatoClienteDTO extends AbstractDTO {
-    private Integer idcontatoCliente;
+    private String idcontatoCliente;
     private String clienteNome;
     private String clienteNomeFantasia;
     private String principal;
@@ -13,7 +13,7 @@ public class ContatoClienteDTO extends AbstractDTO {
     public ContatoClienteDTO() {
     }
 
-    public ContatoClienteDTO(Integer idcontatoCliente, String clienteNome, String clienteNomeFantasia, String principal, String email, String tel, String setor) {
+    public ContatoClienteDTO(String idcontatoCliente, String clienteNome, String clienteNomeFantasia, String principal, String email, String tel, String setor) {
         this.idcontatoCliente = idcontatoCliente;
         this.clienteNome = clienteNome;
         this.clienteNomeFantasia = clienteNomeFantasia;
@@ -23,11 +23,11 @@ public class ContatoClienteDTO extends AbstractDTO {
         this.setor = setor;
     }
 
-    public Integer getIdcontatoCliente() {
+    public String getIdcontatoCliente() {
         return idcontatoCliente;
     }
 
-    public void setIdcontatoCliente(Integer idcontatoCliente) {
+    public void setIdcontatoCliente(String idcontatoCliente) {
         this.idcontatoCliente = idcontatoCliente;
     }
 

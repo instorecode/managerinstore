@@ -12,6 +12,7 @@ import br.com.instore.core.orm.bean.property.AudiostoreProgramacaoCategoria;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.dto.AudiostoreProgramacaoDTO;
 import br.com.instore.web.tools.AjaxResult;
+import br.com.instore.web.tools.Utilities;
 import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -93,7 +94,7 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
             dto.setDiasSemana(diasSemana);
             dto.setHoraFinal(new SimpleDateFormat("HH:mm:ss").format(prog.getHoraFinal()));
             dto.setHoraInicio(new SimpleDateFormat("HH:mm:ss").format(prog.getHoraInicio()));
-            dto.setId(prog.getId());
+            dto.setId( Utilities.leftPad(prog.getId()) );
 
             lista.add(dto);
         }

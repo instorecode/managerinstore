@@ -2,7 +2,7 @@
 <instore:template isGrid="true">
 
     <jsp:attribute name="submenu">
-        <a href="${url}/contato/cadastrar" class="btn btn-default"> <i class="fa fa-save"></i> Cadastrar </a>
+        <a href="${url}/voz/cadastrar" class="btn btn-default"> <i class="fa fa-save"></i> Cadastrar </a>
     </jsp:attribute>
 
     <jsp:attribute name="gridColumn">
@@ -30,7 +30,7 @@
                     ID
                 </div>
                 <div class="col-md-8 val"> 
-                    <div data-idcontatoCliente="true"></div> 
+                    <div data-idvoz="true"></div> 
                 </div>
             </div>
 
@@ -77,15 +77,6 @@
                 </div>
                 <div class="col-md-8 val"> 
                     <div data-genero="true"></div> 
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Tipo
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-tipo="true"></div> 
                 </div>
             </div>
         </div>

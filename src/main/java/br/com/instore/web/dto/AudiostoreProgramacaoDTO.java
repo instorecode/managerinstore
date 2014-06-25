@@ -2,7 +2,7 @@ package br.com.instore.web.dto;
 
 public class AudiostoreProgramacaoDTO extends AbstractDTO {
 
-    private Integer id;
+    private String id;
     private String descricao;
     private String clienteNome;
     private String dataInicio;
@@ -14,7 +14,7 @@ public class AudiostoreProgramacaoDTO extends AbstractDTO {
     public AudiostoreProgramacaoDTO() {
     }
 
-    public AudiostoreProgramacaoDTO(Integer id, String descricao, String clienteNome, String dataInicio, String dataFinal, String horaInicio, String horaFinal, String diasSemana) {
+    public AudiostoreProgramacaoDTO(String id, String descricao, String clienteNome, String dataInicio, String dataFinal, String horaInicio, String horaFinal, String diasSemana) {
         this.id = id;
         this.descricao = descricao;
         this.clienteNome = clienteNome;
@@ -25,11 +25,11 @@ public class AudiostoreProgramacaoDTO extends AbstractDTO {
         this.diasSemana = diasSemana;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 

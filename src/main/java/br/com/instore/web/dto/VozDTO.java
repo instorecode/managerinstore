@@ -1,7 +1,7 @@
 package br.com.instore.web.dto;
 
 public class VozDTO extends AbstractDTO {
-    private Integer idvoz;
+    private String idvoz;
     private String clienteNome;
     private String genero;
     private String tipo;
@@ -12,7 +12,7 @@ public class VozDTO extends AbstractDTO {
     public VozDTO() {
     }
 
-    public VozDTO(Integer idvoz, String clienteNome, String genero, String tipo, String nome, String email, String tel) {
+    public VozDTO(String idvoz, String clienteNome, String genero, String tipo, String nome, String email, String tel) {
         this.idvoz = idvoz;
         this.clienteNome = clienteNome;
         this.genero = genero;
@@ -22,11 +22,11 @@ public class VozDTO extends AbstractDTO {
         this.tel = tel;
     }
 
-    public Integer getIdvoz() {
+    public String getIdvoz() {
         return idvoz;
     }
 
-    public void setIdvoz(Integer idvoz) {
+    public void setIdvoz(String idvoz) {
         this.idvoz = idvoz;
     }
 

@@ -15,6 +15,7 @@ import br.com.instore.core.orm.bean.property.Estado;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.dto.ClienteDTO;
 import br.com.instore.web.tools.AjaxResult;
+import br.com.instore.web.tools.Utilities;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,7 @@ public class RequestCliente implements java.io.Serializable {
             for (ClienteBean clienteBean : clienteBeanList) {
                 DadosClienteBean dados = repository.query(DadosClienteBean.class).eq(DadosCliente.IDCLIENTE, clienteBean.getIdcliente()).findOne();
                 ClienteDTO dto = new ClienteDTO();
-                dto.setIdcliente(clienteBean.getIdcliente());
+                dto.setIdcliente( Utilities.leftPad(clienteBean.getIdcliente()) );
                 dto.setInstore(clienteBean.getInstore() ? "Sim" : "Não");
                 dto.setMatriz(clienteBean.getMatriz() ? "Sim" : "Não");
                 dto.setNome(clienteBean.getNome());

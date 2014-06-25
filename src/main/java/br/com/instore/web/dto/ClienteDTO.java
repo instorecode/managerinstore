@@ -1,7 +1,7 @@
 package br.com.instore.web.dto;
 
 public class ClienteDTO extends AbstractDTO {
-    private Integer idcliente;
+    private String idcliente;
     private String parente;
     private String nome;
     private String matriz;
@@ -21,12 +21,13 @@ public class ClienteDTO extends AbstractDTO {
     private String numero;
     private String complemento;
     private String Situacao;
-
-    public Integer getIdcliente() {
+    
+    
+    public String getIdcliente() {
         return idcliente;
     }
 
-    public void setIdcliente(Integer idcliente) {
+    public void setIdcliente(String idcliente) {
         this.idcliente = idcliente;
     }
 

@@ -9,6 +9,7 @@ import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.dto.VozDTO;
 import br.com.instore.web.tools.AjaxResult;
+import br.com.instore.web.tools.Utilities;
 import java.util.ArrayList;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
@@ -51,17 +52,10 @@ public class RequestVoz implements java.io.Serializable {
             dto.setClienteNome(voz.getCliente().getNome());
             dto.setEmail(voz.getEmail());
             dto.setGenero(voz.isGenero() ? "Masculino" : "Feminino");
-            dto.setIdvoz(voz.getIdvoz());
+            dto.setIdvoz(Utilities.leftPad(voz.getIdvoz()));
             dto.setNome(voz.getNome());
             dto.setTel(voz.getTel());
-            
-            if(voz.getTipo() == 1) {
-                dto.setTipo("A");
-            }
-            
-            if(voz.getTipo() == 1) {
-                dto.setTipo("B");
-            }
+            dto.setTipo("A");
             
             lista2.add(dto);
         }
