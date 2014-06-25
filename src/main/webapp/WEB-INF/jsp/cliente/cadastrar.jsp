@@ -191,9 +191,9 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>Situação &nbsp;&nbsp;</label>
-                        <input type="radio" name="cliente.situacao" id="optionsRadios1" value="${true}" ${cliente.situacao ? 'checked="checked"' : ''} >&nbsp;&nbsp;&nbsp;Sim &nbsp;
+                        <input type="radio" name="cliente.situacao" id="optionsRadios1" value="${true}" ${cliente.situacao ? 'checked="checked"' : ''} >&nbsp;&nbsp;&nbsp;Ativo &nbsp;
                         
-                        <input type="radio" name="cliente.situacao" id="optionsRadios1" value="${false}"  ${not cliente.situacao ? 'checked="checked"' : ''}>&nbsp;&nbsp;&nbsp;Não &nbsp;
+                        <input type="radio" name="cliente.situacao" id="optionsRadios1" value="${false}"  ${not cliente.situacao ? 'checked="checked"' : ''}>&nbsp;&nbsp;&nbsp;Inativo &nbsp;
                     </div>
                 </div>
             </div>

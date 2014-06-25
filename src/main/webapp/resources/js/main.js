@@ -5,6 +5,14 @@ jQuery(document).ready(function() {
         self.clockface({format: format});
     });
 
+    $('[data-selectradio="true"]').each(function() {
+        var self = jQuery(this);
+        self.multiselect({
+            nonSelectedText: 'Selecione uma opção',
+            nSelectedText: 'iten(s) selecionado(s)'  
+        });
+    });
+    
     $('[multiple="multiple"]').each(function() {
         var self = jQuery(this);
         self.multiselect({
