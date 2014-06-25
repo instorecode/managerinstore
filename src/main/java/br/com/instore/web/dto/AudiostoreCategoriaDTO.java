@@ -1,17 +1,5 @@
 package br.com.instore.web.dto;
 
-import br.com.instore.core.orm.bean.ClienteBean;
-import br.com.instore.core.orm.bean.DadosClienteBean;
-import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
 public class AudiostoreCategoriaDTO extends AbstractDTO {
 
     private Integer codigo;
