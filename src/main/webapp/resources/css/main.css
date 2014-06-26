@@ -136,8 +136,8 @@ body.login div.align{
     width: 100%;
 }
 
-.menuleft {
-    min-width: 240px !important; 
+/*.menuleft {
+    width: 300px !important; 
 }
  
 @media only screen and (max-device-width: 799px) {
@@ -146,4 +146,4 @@ body.login div.align{
         max-width: 0px !important;
         min-width: 0px !important;
     }
-}
+}*/

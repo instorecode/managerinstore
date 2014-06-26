@@ -270,7 +270,8 @@
                         <div class="over">
                             <br />
                             <div style="margin-right: 10px;">
-                                <jsp:doBody />
+                            <br />    
+                            <jsp:doBody />
                                 <br />
                                 <br />
                                 <br />

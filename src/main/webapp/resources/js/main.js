@@ -8,6 +8,7 @@ jQuery(document).ready(function() {
     $('[data-selectradio="true"]').each(function() {
         var self = jQuery(this);
         self.multiselect({
+            dropRight : self.data('dropRight') || false,
             nonSelectedText: 'Selecione uma opção',
             nSelectedText: 'iten(s) selecionado(s)',
             enableFiltering: true
@@ -17,6 +18,7 @@ jQuery(document).ready(function() {
     $('[data-multiple="multiple"]').each(function() {
         var self = jQuery(this);
         self.multiselect({
+            dropRight : self.data('dropRight') || false,
             numberDisplayed: 0,
             nonSelectedText: 'Selecione uma opção',
             nSelectedText: 'iten(s) selecionado(s)' ,

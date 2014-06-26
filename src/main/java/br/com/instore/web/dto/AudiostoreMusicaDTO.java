@@ -15,7 +15,7 @@ import javax.persistence.TemporalType;
 
 public class AudiostoreMusicaDTO extends AbstractDTO {
     private String id;
-    private String cliente;
+    private String gravadora;
     private String categoria1;
     private String categoria2;
     private String categoria3;
@@ -26,8 +26,8 @@ public class AudiostoreMusicaDTO extends AbstractDTO {
     private String cut;
     private String crossover;
     private String dataVencimentoCrossover;
-    private String diaExecucao1;
-    private String diaExecucao2;
+    private String diasExecucao1;
+    private String diasExecucao2;
     private String afinidade1;
     private String afinidade2;
     private String afinidade3;
@@ -36,7 +36,7 @@ public class AudiostoreMusicaDTO extends AbstractDTO {
     private String velocidade;
     private String data;
     private String ultimaExecucao;
-    private String ultimaExecucaoDia;
+    private String ultimaExecucaoData;
     private String tempoTotal;
     private String random;
     private String qtdePlayer;
@@ -63,12 +63,12 @@ public class AudiostoreMusicaDTO extends AbstractDTO {
         this.id = id;
     }
 
-    public String getCliente() {
-        return cliente;
+    public String getGravadora() {
+        return gravadora;
     }
 
-    public void setCliente(String cliente) {
-        this.cliente = cliente;
+    public void setGravadora(String gravadora) {
+        this.gravadora = gravadora;
     }
 
     public String getCategoria1() {
@@ -151,20 +151,20 @@ public class AudiostoreMusicaDTO extends AbstractDTO {
         this.dataVencimentoCrossover = dataVencimentoCrossover;
     }
 
-    public String getDiaExecucao1() {
-        return diaExecucao1;
+    public String getDiasExecucao1() {
+        return diasExecucao1;
     }
 
-    public void setDiaExecucao1(String diaExecucao1) {
-        this.diaExecucao1 = diaExecucao1;
+    public void setDiasExecucao1(String diasExecucao1) {
+        this.diasExecucao1 = diasExecucao1;
     }
 
-    public String getDiaExecucao2() {
-        return diaExecucao2;
+    public String getDiasExecucao2() {
+        return diasExecucao2;
     }
 
-    public void setDiaExecucao2(String diaExecucao2) {
-        this.diaExecucao2 = diaExecucao2;
+    public void setDiasExecucao2(String diasExecucao2) {
+        this.diasExecucao2 = diasExecucao2;
     }
 
     public String getAfinidade1() {
@@ -231,12 +231,12 @@ public class AudiostoreMusicaDTO extends AbstractDTO {
         this.ultimaExecucao = ultimaExecucao;
     }
 
-    public String getUltimaExecucaoDia() {
-        return ultimaExecucaoDia;
+    public String getUltimaExecucaoData() {
+        return ultimaExecucaoData;
     }
 
-    public void setUltimaExecucaoDia(String ultimaExecucaoDia) {
-        this.ultimaExecucaoDia = ultimaExecucaoDia;
+    public void setUltimaExecucaoData(String ultimaExecucaoData) {
+        this.ultimaExecucaoData = ultimaExecucaoData;
     }
 
     public String getTempoTotal() {
