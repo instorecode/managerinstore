@@ -1,8 +1,11 @@
 package br.com.instore.web.tools;
 
+import br.com.instore.core.orm.bean.HistoricoUsuarioBean;
+import br.com.instore.web.component.session.SessionRepository;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import org.apache.commons.lang.StringUtils;
 
 public class Utilities {
@@ -33,5 +36,19 @@ public class Utilities {
         }
 
         return hashtext;
+    }
+    
+    public static void historicoUsuarioLogin(SessionRepository repository) throws NoSuchAlgorithmException {
+        HistoricoUsuarioBean historico = new HistoricoUsuarioBean();
+        historico.setLogin(new Date());
+        historico.setUsuario(repository.getUsuario());
+        repository.save(historico);
+    }
+    
+    public static void historicoUsuarioLogOut(SessionRepository repository) throws NoSuchAlgorithmException {
+        HistoricoUsuarioBean historico = new HistoricoUsuarioBean();
+        historico.setLogout(new Date());
+        historico.setUsuario(repository.getUsuario());
+        repository.save(historico);
     }
 }

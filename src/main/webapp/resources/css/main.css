@@ -147,3 +147,7 @@ body.login div.align{
         min-width: 0px !important;
     }
 }*/
+
+.menuleft {
+    width: 160px;
+}

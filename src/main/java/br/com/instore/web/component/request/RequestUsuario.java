@@ -18,10 +18,13 @@ import br.com.instore.web.dto.AudiostoreGravadoraDTO;
 import br.com.instore.web.dto.UsuarioDTO;
 import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
@@ -57,6 +60,9 @@ public class RequestUsuario implements java.io.Serializable {
                 usuario.getPerfilBeanList();
                 sessionUsuario.setUsuarioBean(usuario);
                 sessionUsuario.setLogado(true);
+                
+                repository.setUsuario( sessionUsuario.getUsuarioBean() );
+                Utilities.historicoUsuarioLogin(repository);
 
                 result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Usuário logado com sucesso")).recursive().serialize();
             } else {
@@ -69,8 +75,14 @@ public class RequestUsuario implements java.io.Serializable {
     }
 
     public void logOut() {
-        httpSession.invalidate();
-        result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "LogOut efetuado com sucesso.")).recursive().serialize();
+        try {
+            repository.setUsuario( sessionUsuario.getUsuarioBean() );
+            Utilities.historicoUsuarioLogOut(repository);
+            httpSession.invalidate();
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "LogOut efetuado com sucesso.")).recursive().serialize();
+        } catch (NoSuchAlgorithmException e) {
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Lamento, não foi possivel fazer o logout, tente limpar os dados do navegador.")).recursive().serialize();
+        }
     }
 
     public List<EstadoBean> estadoBeanList() {
