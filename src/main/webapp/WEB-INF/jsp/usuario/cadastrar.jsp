@@ -10,6 +10,7 @@
     <jsp:body>
         <form d="cad_cliente" method="POST" data-form="true" data-success-url="${url}/usuario">
             <input type="hidden" name="usuarioBean.idusuario" value="${usuarioBean.idusuario}" />
+            <input type="hidden" name="usuarioBean.dataCadastro" value="${cf:dateFormat(usuarioBean.dataCadastro, 'dd/MM/yyyy HH:mm:ss')}" />
 
             <div class="row">
                 <div class="col-md-6">
@@ -50,7 +51,7 @@
                         <input type="password" name="usuarioBean.senha" class="form-control" placeholder="Senha"  
                                data-rule-required="true" 
                                data-rule-minlength="3"
-                               data-rule-maxlength="255" value="">
+                               data-rule-maxlength="255" value="${usuarioBean.senha}">
                     </div>
                 </div>
 
@@ -133,8 +134,33 @@
                                data-rule-maxlength="255">
                     </div>
                 </div>
-
+                
+                <div class="col-md-4">
+                    <div class="form-group"> 
+                        <label>Permissões</label>
+                        <br />
+                        <select name="perfilListID" data-multiple="multiple" multiple="multiple" class="form-control">
+                            <c:forEach items="${perfilBeanList}" var="perfil">
+                                <c:set var="selected" value="${false}"></c:set>
+                                <c:forEach items="${usuarioBean.perfilBeanList}" var="perfil2">
+                                    <c:if test="${perfil2.idperfil eq perfil.idperfil}">
+                                        <c:set var="selected" value="${true}"></c:set>
+                                    </c:if>
+                                </c:forEach>
+                                <c:if test="${selected}">
+                                    <option selected="selected" value="${perfil.idperfil}">${perfil.nome}</option>
+                                </c:if>
+                                <c:if test="${not selected}">
+                                    <option value="${perfil.idperfil}">${perfil.nome}</option>
+                                </c:if>
+                                
+                            </c:forEach>
+                        </select>
+                    </div>
+                </div>
             </div>
+                               
+                               
             <button type="submit" class="btn btn-default">
                 <i class="fa fa-save"></i> Salvar
             </button>

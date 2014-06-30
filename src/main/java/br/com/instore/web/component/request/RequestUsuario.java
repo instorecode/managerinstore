@@ -10,8 +10,11 @@ import br.com.instore.core.orm.bean.CidadeBean;
 import br.com.instore.core.orm.bean.EnderecoBean;
 import br.com.instore.core.orm.bean.EstadoBean;
 import br.com.instore.core.orm.bean.FuncionalidadeBean;
+import br.com.instore.core.orm.bean.PerfilBean;
+import br.com.instore.core.orm.bean.PerfilUsuarioBean;
 import br.com.instore.core.orm.bean.UsuarioBean;
 import br.com.instore.core.orm.bean.property.Estado;
+import br.com.instore.core.orm.bean.property.Perfil;
 import br.com.instore.core.orm.bean.property.Usuario;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.dto.AudiostoreGravadoraDTO;
@@ -89,6 +92,11 @@ public class RequestUsuario implements java.io.Serializable {
         List<EstadoBean> estadoBeanList = repository.query(EstadoBean.class).findAll();
         return estadoBeanList;
     }
+    
+    public List<PerfilBean> perfilBeanList() {
+        List<PerfilBean> perfilBeanList = repository.query(PerfilBean.class).findAll();
+        return perfilBeanList;
+    }
 
     public List<UsuarioDTO> beanList() {
         List<UsuarioBean> lista = new ArrayList<UsuarioBean>();
@@ -123,7 +131,7 @@ public class RequestUsuario implements java.io.Serializable {
         return repository.find(UsuarioBean.class, id);
     }
 
-    public void salvar(UsuarioBean bean) {
+    public void salvar(UsuarioBean bean , Integer [] perfilListID) {
         try {
             repository.setUsuario(sessionUsuario.getUsuarioBean());
 
@@ -165,13 +173,22 @@ public class RequestUsuario implements java.io.Serializable {
 
             if (bean != null && bean.getIdusuario() != null && bean.getIdusuario() > 0) {
                 repository.save(repository.marge(bean));
-                repository.save(bean.getEndereco());
+                
+                // remove ligação com perfil
+                String query = "delete from perfil_usuario where idusuario = " + bean.getIdusuario();
+                repository.query(query).executeSQLCommand();
+                
+                for (Integer id : perfilListID) {
+                    PerfilUsuarioBean pub = new PerfilUsuarioBean();
+                    pub.setUsuario(bean);
+                    pub.setPerfil( new PerfilBean(id));
+                    repository.save(pub);
+                }
             } else {
                 bean.setDataCadastro(new Date());
                 bean.setEndereco(end);
                 repository.save(bean);
             }
-
             repository.finalize();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Dados salvos com sucesso!")).recursive().serialize();
         } catch (Exception e) {
@@ -187,7 +204,7 @@ public class RequestUsuario implements java.io.Serializable {
             String query = "";
 
             // remove ligação com empresa
-            query = "delete from usuario_empresa where idusuario = " + id;
+            query = "delete from usuario_cliente where idusuario = " + id;
             repository.query(query).executeSQLCommand();
 
             // remove ligação com perfil

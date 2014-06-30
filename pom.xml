@@ -102,7 +102,6 @@
             <version>2.4.7</version>
         </dependency>
         
-        
         <dependency>
             <groupId>com.google.javascript</groupId>
             <artifactId>closure-compiler</artifactId>

@@ -43,6 +43,7 @@ public class Utilities {
         historico.setLogin(new Date());
         historico.setUsuario(repository.getUsuario());
         repository.save(historico);
+        repository.finalize();
     }
     
     public static void historicoUsuarioLogOut(SessionRepository repository) throws NoSuchAlgorithmException {
@@ -50,5 +51,6 @@ public class Utilities {
         historico.setLogout(new Date());
         historico.setUsuario(repository.getUsuario());
         repository.save(historico);
+        repository.finalize();
     }
 }

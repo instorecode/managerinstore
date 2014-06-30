@@ -44,13 +44,14 @@ public class UsuarioController {
     @Path("/usuario/cadastrar")
     public void cadastrar() {
         result.include("estadoBeanList", requestUsuario.estadoBeanList());
+        result.include("perfilBeanList", requestUsuario.perfilBeanList());
     }
 
     @Post
     @Restrict
     @Path("/usuario/cadastrar")
-    public void cadastrar(UsuarioBean usuarioBean ) {
-        requestUsuario.salvar(usuarioBean);
+    public void cadastrar(UsuarioBean usuarioBean , Integer [] perfilListID ) {
+        requestUsuario.salvar(usuarioBean,perfilListID);
     }
 
     @Get
@@ -59,13 +60,14 @@ public class UsuarioController {
     public void cadastrar(Integer id) {
         result.include("usuarioBean", requestUsuario.bean(id));
         result.include("estadoBeanList", requestUsuario.estadoBeanList());
+        result.include("perfilBeanList", requestUsuario.perfilBeanList());
     }
 
     @Post
     @Restrict
     @Path("/usuario/atualizar/{id}")
-    public void cadastrar(Integer id , UsuarioBean usuarioBean  ) {
-        requestUsuario.salvar(usuarioBean);
+    public void cadastrar(Integer id , UsuarioBean usuarioBean  , Integer [] perfilListID ) {
+        requestUsuario.salvar(usuarioBean,perfilListID);
     }
 
     @Get
