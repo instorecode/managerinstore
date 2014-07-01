@@ -84,7 +84,8 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>Categorias</label>
-                        <select  data-multiple="multiple" multiple="multiple" class="form-control" name="categorias" data-rule-required="true" >
+                        <br />
+                        <select  id="example37" multiple="multiple" class="form-control" name="categorias" data-rule-required="true" >
                             <c:forEach items="${categoriaBeanList}" var="categoria">
                                 <c:set var="selected" value="${false}"></c:set>
                                 <c:forEach items="${programacaoCategoriaBeanList}" var="pcb">
@@ -113,11 +114,73 @@
                     </div>
                 </div>
 
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label>Conteudo</label>
+                        <input type="text" name="audiostoreProgramacaoBean.conteudo" class="form-control" placeholder="Conteudo"  
+                               data-rule-required="true" 
+                               data-rule-minlength="3"
+                               data-rule-maxlength="70" 
+                               value="${audiostoreProgramacaoBean.conteudo}">
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Sensor/monitor</label>
+                        <Br />
+                        <select  data-selectradio="true"  class="form-control" name="audiostoreProgramacaoBean.loopback" data-rule-required="true" >
+                            <option value="${true}" ${audiostoreProgramacaoBean.loopback ? 'selected="selected"': ''}>Sim</option>
+                            <option value="${false}" ${not audiostoreProgramacaoBean.loopback ? 'selected="selected"': ''}>Não</option>
+                        </select>
+                    </div>
+                </div>
+
             </div>
 
             <button type="submit" class="btn btn-default">
                 <i class="fa fa-save"></i> Salvar
             </button>
+
+            <script>
+                jQuery(document).ready(function() {
+
+
+                    $('#example37').multiselect({
+                        numberDisplayed: 0,
+                        nonSelectedText: 'Selecione uma opção',
+                        nSelectedText: 'iten(s) selecionado(s)',
+                        enableFiltering: true,
+                        onChange: function(option, checked) {
+                            // Get selected options.
+                            var selectedOptions = $('#example37 option:selected');
+                            if (selectedOptions.length >= 24) {
+                                // Disable all other checkboxes.
+                                var nonSelectedOptions = $('#example37 option').filter(function() {
+                                    return !$(this).is(':selected');
+                                });
+                                var dropdown = $('#example37').siblings('.multiselect-container');
+                                nonSelectedOptions.each(function() {
+                                    var input = $('input[value="' + $(this).val() + '"]');
+                                    input.prop('disabled', true);
+                                    input.parent('li').addClass('disabled');
+                                });
+                            }
+                            else {
+                                // Enable all checkboxes.
+                                var dropdown = $('#example37').siblings('.multiselect-container');
+                                $('#example37 option').each(function() {
+                                    var input = $('input[value="' + $(this).val() + '"]');
+                                    input.prop('disabled', false);
+                                    input.parent('li').addClass('disabled');
+                                });
+                            }
+                        }
+                    });
+
+
+                });
+            </script>
         </form>
     </jsp:body>
 </instore:template>

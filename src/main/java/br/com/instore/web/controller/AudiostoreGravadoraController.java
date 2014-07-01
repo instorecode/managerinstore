@@ -5,6 +5,7 @@ import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Post;
 import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.observer.download.InputStreamDownload;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.bean.AudiostoreGravadoraBean;
 import br.com.instore.core.orm.bean.ContatoClienteBean;
@@ -82,5 +83,19 @@ public class AudiostoreGravadoraController implements java.io.Serializable {
     @Path("/audiostore-gravadora/remover/{id}")
     public void remover(Integer id, String param) {
         requestAudiostoreGravadora.remover(id);
+    }
+    
+    @Get
+    @Restrict
+    @Path("/audiostore-gravadora/download-exp/{id}")
+    public InputStreamDownload download(Integer id) {
+        return requestAudiostoreGravadora.download(id);
+    }
+    
+    @Get
+    @Restrict
+    @Path("/audiostore-gravadora/upload-exp/{id}")
+    public void upload(Integer id) {
+        requestAudiostoreGravadora.upload(id);
     }
 }
