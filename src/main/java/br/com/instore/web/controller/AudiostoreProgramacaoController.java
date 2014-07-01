@@ -93,4 +93,11 @@ public class AudiostoreProgramacaoController implements java.io.Serializable {
     public InputStreamDownload download(Integer id) {
         return requestAudiostoreProgramacao.download(id);
     }
+    
+    @Get
+    @Restrict
+    @Path("/audiostore-programacao/upload-exp/{id}")
+    public void upload(Integer id) {
+        requestAudiostoreProgramacao.upload(id);
+    }
 }

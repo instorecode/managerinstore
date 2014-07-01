@@ -172,6 +172,11 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
             String origem = cfg.getAudiostoreMusicaDirOrigem()   +"\\"+ bean.getArquivo();
             String destino = cfg.getAudiostoreMusicaDirDestino() +"\\"+ bean.getArquivo();
             
+            File dir = new File(destino);
+            if(!dir.exists()) {
+                dir.mkdirs();
+            }
+            
             File f = new File(destino);
             if(f.exists()) {
                 f.delete();

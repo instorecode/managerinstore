@@ -48,8 +48,8 @@ public class PerfilController {
     @Post
     @Restrict
     @Path("/perfil/cadastrar")
-    public void cadastrar(PerfilBean perfilBean ) {
-        requestPerfil.salvar(perfilBean);
+    public void cadastrar(PerfilBean perfilBean , Integer [] funcionalidadeID) {
+        requestPerfil.salvar(perfilBean , funcionalidadeID);
     }
 
     @Get
@@ -62,8 +62,8 @@ public class PerfilController {
     @Post
     @Restrict
     @Path("/perfil/atualizar/{id}")
-    public void cadastrar(Integer id , PerfilBean perfilBean  ) {
-        requestPerfil.salvar(perfilBean);
+    public void cadastrar(Integer id , PerfilBean perfilBean ,Integer [] funcionalidadeID ) {
+        requestPerfil.salvar(perfilBean , funcionalidadeID);
     }
 
     @Get

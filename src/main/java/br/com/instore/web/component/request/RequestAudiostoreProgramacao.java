@@ -8,18 +8,23 @@ import br.com.instore.core.orm.bean.AudiostoreProgramacaoBean;
 import br.com.instore.core.orm.bean.AudiostoreProgramacaoCategoriaBean;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.core.orm.bean.ClienteBean;
+import br.com.instore.core.orm.bean.ConfigAppBean;
 import br.com.instore.core.orm.bean.property.AudiostoreProgramacaoCategoria;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.dto.AudiostoreProgramacaoDTO;
 import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
 @RequestScoped
@@ -123,8 +128,8 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
     public void salvar(AudiostoreProgramacaoBean audiostoreProgramacaoBean, String horaInicio, String horaFinal, Integer[] categorias, Integer[] diasSemana) {
         try {
             repository.setUsuario(sessionUsuario.getUsuarioBean());
-            audiostoreProgramacaoBean.setHoraInicio(new SimpleDateFormat("HH:mm:ss").parse(horaInicio += ":00"));
-            audiostoreProgramacaoBean.setHoraFinal(new SimpleDateFormat("HH:mm:ss").parse(horaFinal += ":00"));
+            audiostoreProgramacaoBean.setHoraInicio(new SimpleDateFormat("HH:mm:ss").parse(horaInicio));
+            audiostoreProgramacaoBean.setHoraFinal(new SimpleDateFormat("HH:mm:ss").parse(horaFinal));
 
             audiostoreProgramacaoBean.setSegundaFeira(Boolean.FALSE);
             audiostoreProgramacaoBean.setTercaFeira(Boolean.FALSE);
@@ -274,5 +279,77 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
         }
 
         return inputStreamDownload;
+    }
+    
+    public void upload(Integer id) {
+
+
+        try {
+            AudiostoreProgramacaoBean audiostoreProgramacaoBean = audiostoreProgramacaoBean(id);
+            if (audiostoreProgramacaoBean != null) {
+                String alphab = "ABCDEFGHIJKLMNOPQRSTUVXYWZ";
+                List<String> alphabList = Arrays.asList(alphab.split(""));
+                String conteudo = "";
+                String lineBreak = "";
+                List<AudiostoreProgramacaoCategoriaBean> audiostoreProgramacaoCategoriaBeanList = repository.query(AudiostoreProgramacaoCategoriaBean.class).eq(AudiostoreProgramacaoCategoria.ID, id).findAll();
+                if (audiostoreProgramacaoCategoriaBeanList.size() > 24) {
+                    int ia = 1;
+                    for (int i = 0; i < audiostoreProgramacaoCategoriaBeanList.size(); i++) {
+                        AudiostoreProgramacaoCategoriaBean pcBean = audiostoreProgramacaoCategoriaBeanList.get(i);
+                        if ((i % 24) == 0) {
+                            conteudo += lineBreak;
+                            conteudo += StringUtils.leftPad(audiostoreProgramacaoBean.getDescricao() + "-" + alphabList.get(ia), 21, " ");
+                            conteudo += (new SimpleDateFormat("ddMMyy")).format(audiostoreProgramacaoBean.getDataInicio());
+                            conteudo += (new SimpleDateFormat("ddMMyy")).format(audiostoreProgramacaoBean.getDataFinal());
+                            conteudo += (audiostoreProgramacaoBean.getSegundaFeira() ? "x" : " ");
+                            conteudo += (audiostoreProgramacaoBean.getTercaFeira() ? "x" : " ");
+                            conteudo += (audiostoreProgramacaoBean.getQuartaFeira() ? "x" : " ");
+                            conteudo += (audiostoreProgramacaoBean.getQuintaFeira() ? "x" : " ");
+                            conteudo += (audiostoreProgramacaoBean.getSextaFeira() ? "x" : " ");
+                            conteudo += (audiostoreProgramacaoBean.getSabado() ? "x" : " ");
+                            conteudo += (audiostoreProgramacaoBean.getDomingo() ? "x" : " ");
+                            conteudo += (new SimpleDateFormat("HH:mm")).format(audiostoreProgramacaoBean.getHoraInicio());
+                            conteudo += (new SimpleDateFormat("HH:mm")).format(audiostoreProgramacaoBean.getHoraFinal());
+                            conteudo += StringUtils.leftPad(pcBean.getAudiostoreCategoria().getCodigo().toString(), 3, "0");
+                            lineBreak = "\n";
+                            ia++;
+                        } else {
+                            conteudo += StringUtils.leftPad(pcBean.getAudiostoreCategoria().getCodigo().toString(), 3, "0");
+                        }
+                    }
+                } else {
+                    conteudo += StringUtils.leftPad(audiostoreProgramacaoBean.getDescricao(), 21, " ");
+                    conteudo += (new SimpleDateFormat("ddMMyy")).format(audiostoreProgramacaoBean.getDataInicio());
+                    conteudo += (new SimpleDateFormat("ddMMyy")).format(audiostoreProgramacaoBean.getDataFinal());
+                    conteudo += (audiostoreProgramacaoBean.getSegundaFeira() ? "x" : " ");
+                    conteudo += (audiostoreProgramacaoBean.getTercaFeira() ? "x" : " ");
+                    conteudo += (audiostoreProgramacaoBean.getQuartaFeira() ? "x" : " ");
+                    conteudo += (audiostoreProgramacaoBean.getQuintaFeira() ? "x" : " ");
+                    conteudo += (audiostoreProgramacaoBean.getSextaFeira() ? "x" : " ");
+                    conteudo += (audiostoreProgramacaoBean.getSabado() ? "x" : " ");
+                    conteudo += (audiostoreProgramacaoBean.getDomingo() ? "x" : " ");
+                    conteudo += (new SimpleDateFormat("HH:mm")).format(audiostoreProgramacaoBean.getHoraInicio());
+                    conteudo += (new SimpleDateFormat("HH:mm")).format(audiostoreProgramacaoBean.getHoraFinal());
+
+                    for (AudiostoreProgramacaoCategoriaBean pcBean : audiostoreProgramacaoCategoriaBeanList) {
+                        conteudo += StringUtils.leftPad(pcBean.getAudiostoreCategoria().getCodigo().toString(), 3, "0");
+                    }
+                }
+                ConfigAppBean config = repository.find(ConfigAppBean.class, 1);
+                
+                File dir = new File(config.getDataPath()+"\\programacao-exp\\");
+                if(!dir.exists()) {
+                    dir.mkdirs();
+                }
+                
+                InputStream is = new ByteArrayInputStream(conteudo.getBytes());
+                FileOutputStream fos = new FileOutputStream( new File(config.getDataPath()+"\\programacao-exp\\"+ StringUtils.leftPad(audiostoreProgramacaoBean.getId().toString(), 3, "0")+".exp"));
+                
+                IOUtils.copy(is, fos);
+                result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "")).recursive().serialize();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

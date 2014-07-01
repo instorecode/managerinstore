@@ -63,8 +63,8 @@ public class RequestUsuario implements java.io.Serializable {
                 usuario.getPerfilBeanList();
                 sessionUsuario.setUsuarioBean(usuario);
                 sessionUsuario.setLogado(true);
-                
-                repository.setUsuario( sessionUsuario.getUsuarioBean() );
+
+                repository.setUsuario(sessionUsuario.getUsuarioBean());
                 Utilities.historicoUsuarioLogin(repository);
 
                 result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Usuário logado com sucesso")).recursive().serialize();
@@ -79,7 +79,7 @@ public class RequestUsuario implements java.io.Serializable {
 
     public void logOut() {
         try {
-            repository.setUsuario( sessionUsuario.getUsuarioBean() );
+            repository.setUsuario(sessionUsuario.getUsuarioBean());
             Utilities.historicoUsuarioLogOut(repository);
             httpSession.invalidate();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "LogOut efetuado com sucesso.")).recursive().serialize();
@@ -92,7 +92,7 @@ public class RequestUsuario implements java.io.Serializable {
         List<EstadoBean> estadoBeanList = repository.query(EstadoBean.class).findAll();
         return estadoBeanList;
     }
-    
+
     public List<PerfilBean> perfilBeanList() {
         List<PerfilBean> perfilBeanList = repository.query(PerfilBean.class).findAll();
         return perfilBeanList;
@@ -131,10 +131,12 @@ public class RequestUsuario implements java.io.Serializable {
         return repository.find(UsuarioBean.class, id);
     }
 
-    public void salvar(UsuarioBean bean , Integer [] perfilListID) {
+    public void salvar(UsuarioBean bean, Integer[] perfilListID) {
         try {
             repository.setUsuario(sessionUsuario.getUsuarioBean());
-
+            
+            bean.setSenha( Utilities.md5(bean.getSenha()));
+            
             EnderecoBean end = bean.getEndereco();
             CepBean cep = bean.getEndereco().getCep();
             BairroBean bairro = bean.getEndereco().getCep().getBairro();
@@ -173,22 +175,23 @@ public class RequestUsuario implements java.io.Serializable {
 
             if (bean != null && bean.getIdusuario() != null && bean.getIdusuario() > 0) {
                 repository.save(repository.marge(bean));
-                
-                // remove ligação com perfil
-                String query = "delete from perfil_usuario where idusuario = " + bean.getIdusuario();
-                repository.query(query).executeSQLCommand();
-                
-                for (Integer id : perfilListID) {
-                    PerfilUsuarioBean pub = new PerfilUsuarioBean();
-                    pub.setUsuario(bean);
-                    pub.setPerfil( new PerfilBean(id));
-                    repository.save(pub);
-                }
             } else {
                 bean.setDataCadastro(new Date());
                 bean.setEndereco(end);
                 repository.save(bean);
             }
+
+            // remove ligação com perfil
+            String query = "delete from perfil_usuario where idusuario = " + bean.getIdusuario();
+            repository.query(query).executeSQLCommand();
+
+            for (Integer id : perfilListID) {
+                PerfilUsuarioBean pub = new PerfilUsuarioBean();
+                pub.setUsuario(bean);
+                pub.setPerfil(new PerfilBean(id));
+                repository.save(pub);
+            }
+            
             repository.finalize();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Dados salvos com sucesso!")).recursive().serialize();
         } catch (Exception e) {

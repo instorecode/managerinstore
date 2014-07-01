@@ -2,7 +2,7 @@
 <instore:template isGrid="true">
 
     <jsp:attribute name="submenu">
-        <a href="${url}/audiostore-gravadora/cadastrar" class="btn btn-default"> <i class="fa fa-save"></i> Cadastrar </a>
+        <a href="${url}/perfil/cadastrar" class="btn btn-default"> <i class="fa fa-save"></i> Cadastrar </a>
     </jsp:attribute>
 
     <jsp:attribute name="gridColumn">

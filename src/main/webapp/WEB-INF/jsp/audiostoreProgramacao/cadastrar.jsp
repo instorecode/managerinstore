@@ -40,11 +40,9 @@
                         <label>Horário inicial</label>
                         <input type="text" name="horaInicio" class="form-control" placeholder="Tempo de duração"  
                                data-rule-required="true" 
-                               data-rule-minlength="5"
-                               data-rule-maxlength="5" 
-                               data-clock="true"
-                               data-clock-format="HH:mm"
-                               data-mask="99:99"
+                               data-rule-minlength="8"
+                               data-rule-maxlength="8" 
+                               data-mask="99:99:99"
                                value="${audiostoreProgramacaoBean.horaInicio}">
                     </div>
                 </div>
@@ -53,11 +51,9 @@
                         <label>Horário final</label>
                         <input type="text" name="horaFinal" class="form-control" placeholder="Tempo de duração"  
                                data-rule-required="true" 
-                               data-rule-minlength="5"
-                               data-rule-maxlength="5" 
-                               data-clock="true"
-                               data-clock-format="HH:mm"
-                               data-mask="99:99"
+                               data-rule-minlength="8"
+                               data-rule-maxlength="8" 
+                               data-mask="99:99:99"
                                value="${audiostoreProgramacaoBean.horaFinal}">
                     </div>
                 </div>

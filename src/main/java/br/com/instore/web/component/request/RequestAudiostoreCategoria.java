@@ -7,16 +7,20 @@ import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.bean.AudiostoreCategoriaBean;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.core.orm.bean.ClienteBean;
+import br.com.instore.core.orm.bean.ConfigAppBean;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.dto.AudiostoreCategoriaDTO;
 import br.com.instore.web.tools.AjaxResult;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
 @RequestScoped
@@ -75,7 +79,7 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
     public void salvar(AudiostoreCategoriaBean audiostoreCategoriaBean, String tempo) {
         try {
             repository.setUsuario(sessionUsuario.getUsuarioBean());
-            audiostoreCategoriaBean.setTempo( new SimpleDateFormat("HH:mm:ss").parse(tempo += ":00") );
+            audiostoreCategoriaBean.setTempo( new SimpleDateFormat("HH:mm:ss").parse(tempo) );
             
             if(null != audiostoreCategoriaBean && null != audiostoreCategoriaBean.getIdaudiostoreCategoria() && audiostoreCategoriaBean.getIdaudiostoreCategoria() > 0) {
                 repository.save(repository.marge(audiostoreCategoriaBean));
@@ -130,5 +134,37 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
             e.printStackTrace();
         }
         return inputStreamDownload;
+    }
+    
+    public void upload(Integer id) {
+        try {
+            ConfigAppBean config = repository.find(ConfigAppBean.class, 1);
+            AudiostoreCategoriaBean audiostoreCategoriaBean = audiostoreCategoriaBean(id);
+            if (audiostoreCategoriaBean != null) {
+
+                String conteudo = "";
+
+                conteudo += StringUtils.leftPad(audiostoreCategoriaBean.getCodigo().toString(), 5, " ");
+                conteudo += StringUtils.leftPad(audiostoreCategoriaBean.getCategoria(), 30, " ");
+                conteudo += StringUtils.leftPad(new SimpleDateFormat("dd/MM/yy").format(audiostoreCategoriaBean.getDataInicio()), 8, " ");
+                conteudo += StringUtils.leftPad(new SimpleDateFormat("dd/MM/yy").format(audiostoreCategoriaBean.getDataFinal()), 8, " ");
+                conteudo += audiostoreCategoriaBean.getTipo();
+                conteudo += StringUtils.leftPad(new SimpleDateFormat("HH:mm:ss").format(audiostoreCategoriaBean.getTempo()), 8, " ");
+                
+                File dir = new File(config.getDataPath()+"\\categoria-exp\\");
+                if(!dir.exists()) {
+                    dir.mkdirs();
+                }
+                
+                InputStream is = new ByteArrayInputStream(conteudo.getBytes());
+                FileOutputStream fos = new FileOutputStream( new File(config.getDataPath()+"\\categoria-exp\\"+ StringUtils.leftPad(audiostoreCategoriaBean.getCodigo().toString(), 3, "0")+".exp"));
+                
+                IOUtils.copy(is, fos);
+                result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "")).recursive().serialize();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "")).recursive().serialize();
+        }
     }
 }

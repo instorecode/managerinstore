@@ -88,4 +88,11 @@ public class AudiostoreCategoriaController implements java.io.Serializable {
     public InputStreamDownload download(Integer id) {
         return requestAudiostoreCategoria.download(id);
     }
+    
+    @Get
+    @Restrict
+    @Path("/audiostore-categoria/upload-exp/{id}")
+    public void upload(Integer id) {
+        requestAudiostoreCategoria.upload(id);
+    }
 }

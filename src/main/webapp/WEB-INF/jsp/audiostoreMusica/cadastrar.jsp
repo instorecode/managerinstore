@@ -39,7 +39,7 @@
                         <input type="text" name="audiostoreMusicaBean.arquivo" class="form-control" placeholder="Nome"  
                                data-rule-required="true" 
                                data-rule-minlength="3"
-                               data-rule-maxlength="30" value="${audiostoreMusicaBean.titulo}">
+                               data-rule-maxlength="30" value="${audiostoreMusicaBean.arquivo}">
                     </div>
                 </div>
                 <div class="col-md-4">

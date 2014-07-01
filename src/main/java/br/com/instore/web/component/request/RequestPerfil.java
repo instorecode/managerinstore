@@ -4,6 +4,7 @@ import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.bean.FuncionalidadeBean;
 import br.com.instore.core.orm.bean.PerfilBean;
+import br.com.instore.core.orm.bean.PerfilFuncionalidadeBean;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.dto.PerfilDTO;
@@ -60,7 +61,7 @@ public class RequestPerfil implements java.io.Serializable {
         return repository.find(PerfilBean.class, id);
     }
 
-    public void salvar(PerfilBean bean) {
+    public void salvar(PerfilBean bean , Integer [] funcionalidadeID ) {
         try {
             repository.setUsuario(sessionUsuario.getUsuarioBean());
             
@@ -68,6 +69,17 @@ public class RequestPerfil implements java.io.Serializable {
                 repository.save(repository.marge(bean));
             } else {
                 repository.save(bean);
+            }
+            
+            // remove ligação com perfil
+            String query = "delete from perfil_funcionalidade where idperfil = " + bean.getIdperfil();
+            repository.query(query).executeSQLCommand();
+            
+            for (Integer integer : funcionalidadeID) {
+                PerfilFuncionalidadeBean pfb = new PerfilFuncionalidadeBean();
+                pfb.setFuncionalidade( new FuncionalidadeBean(integer));
+                pfb.setPerfilBean(bean);
+                repository.save(pfb);
             }
             
             repository.finalize();
@@ -82,11 +94,20 @@ public class RequestPerfil implements java.io.Serializable {
         try {
             repository.setUsuario(sessionUsuario.getUsuarioBean());
             
-            PerfilBean bean = repository.marge((PerfilBean) repository.find(PerfilBean.class, id));
-            repository.delete(bean);
+            String query = "";
+
+            // remove ligação com perfil
+            query = "delete from perfil_usuario where idperfil = " + id;
+            repository.query(query).executeSQLCommand();
             
-            repository.finalize();
-            result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Perfil removida com sucesso!")).recursive().serialize();
+            query = "delete from perfil_funcionalidade where idperfil = " + id;
+            repository.query(query).executeSQLCommand();
+
+            // remove ligação com perfil
+            query = "delete from perfil where idperfil = " + id;
+            repository.query(query).executeSQLCommand();
+
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Perfil removido com sucesso!")).recursive().serialize();
         } catch (Exception e) {
             e.printStackTrace();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel remover o perfil!")).recursive().serialize();
