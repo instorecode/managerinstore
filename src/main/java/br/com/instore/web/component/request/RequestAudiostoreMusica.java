@@ -18,6 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -215,14 +216,108 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         try {
             AudiostoreMusicaBean bean = bean(id);
             if (bean != null) {
-
+                String arquivo = bean.getArquivo();
+                if (arquivo.length() < 30) {
+                    arquivo = StringUtils.leftPad(arquivo, 30, " ");
+                } else {
+                    if (arquivo.length() > 30) {
+                        arquivo = arquivo.substring(0, 30);
+                    }
+                }
+                
+                String interprete = bean.getInterprete();
+                if (interprete.length() < 30) {
+                    interprete = StringUtils.leftPad(interprete, 30, " ");
+                } else {
+                    if (interprete.length() > 30) {
+                        interprete = interprete.substring(0, 30);
+                    }
+                }
+                
+                String titulo = bean.getTitulo();
+                if (titulo.length() < 30) {
+                    titulo = StringUtils.leftPad(titulo, 30, " ");
+                } else {
+                    if (titulo.length() > 30) {
+                        titulo = titulo.substring(0, 30);
+                    }
+                }
+                
+                String afinidade1 = bean.getAfinidade1();
+                if (afinidade1.length() < 30) {
+                    afinidade1 = StringUtils.leftPad(afinidade1, 30, " ");
+                } else {
+                    if (afinidade1.length() > 30) {
+                        afinidade1 = afinidade1.substring(0, 30);
+                    }
+                }
+                
+                String afinidade2 = bean.getAfinidade2();
+                if (afinidade2.length() < 30) {
+                    afinidade2 = StringUtils.leftPad(afinidade2, 30, " ");
+                } else {
+                    if (afinidade2.length() > 30) {
+                        afinidade2 = afinidade2.substring(0, 30);
+                    }
+                }
+                
+                String afinidade3 = bean.getAfinidade3();
+                if (afinidade3.length() < 30) {
+                    afinidade3 = StringUtils.leftPad(afinidade3, 30, " ");
+                } else {
+                    if (afinidade3.length() > 30) {
+                        afinidade3 = afinidade3.substring(0, 30);
+                    }
+                }
+                
+                String afinidade4 = bean.getAfinidade4();
+                if (afinidade4.length() < 30) {
+                    afinidade4 = StringUtils.leftPad(afinidade4, 30, " ");
+                } else {
+                    if (afinidade4.length() > 30) {
+                        afinidade4 = afinidade4.substring(0, 30);
+                    }
+                }
+                
+                String msg = bean.getMsg();
+                if (msg.length() < 40) {
+                    msg = StringUtils.leftPad(msg, 40, " ");
+                } else {
+                    if (msg.length() > 40) {
+                        msg = msg.substring(0, 40);
+                    }
+                }
+                
                 String conteudo = "";
                 conteudo += "";
-                conteudo += StringUtils.leftPad(bean.getArquivo(), 30, " ");
-                conteudo += StringUtils.leftPad(bean.getInterprete(), 30, " ");
-                conteudo += StringUtils.leftPad(bean.getTitulo(), 30, " ");
-                conteudo += StringUtils.leftPad(bean.getTitulo(), 30, " ");
-                
+                conteudo += arquivo;
+                conteudo += interprete;
+                conteudo += bean.getTipoInterprete();
+                conteudo += titulo;
+                conteudo += bean.getCut() ? "nao" : "sim";
+                conteudo += (null != bean.getCategoria1() ? StringUtils.leftPad(bean.getCategoria1().getCodigo().toString(), 3, " ") : "   ");
+                conteudo += (null != bean.getCategoria2() ? StringUtils.leftPad(bean.getCategoria2().getCodigo().toString(), 3, " ") : "   ");
+                conteudo += (null != bean.getCategoria3() ? StringUtils.leftPad(bean.getCategoria3().getCodigo().toString(), 3, " ") : "   ");
+                conteudo += bean.getCrossover()? "nao" : "sim";
+                conteudo += StringUtils.leftPad(bean.getDiasExecucao1().toString(), 4, " ");
+                conteudo += StringUtils.leftPad(bean.getDiasExecucao2().toString(), 4, " ");
+                conteudo += afinidade1;
+                conteudo += afinidade2;
+                conteudo += afinidade3;
+                conteudo += afinidade4;
+                conteudo += StringUtils.leftPad(bean.getGravadora().getId().toString(), 3, " ");
+                conteudo += bean.getAnoGravacao();
+                conteudo += bean.getVelocidade();
+                conteudo += new SimpleDateFormat("dd/MM/yy").format(bean.getData());
+                conteudo += new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(bean.getUltimaExecucao());
+                conteudo += new SimpleDateFormat("HH:mm:ss").format(bean.getTempoTotal());
+                conteudo += StringUtils.leftPad(bean.getQtdePlayer().toString(), 3, " ");
+                conteudo += new SimpleDateFormat("dd/MM/yy").format(bean.getDataVencimento());
+                conteudo += new SimpleDateFormat("dd/MM/yy").format(bean.getDataVencimentoCrossover());
+                conteudo += StringUtils.leftPad(bean.getFrameInicio().toString(), 8, " ");
+                conteudo += StringUtils.leftPad(bean.getFrameFinal().toString(), 8, " ");
+                conteudo += msg;
+                conteudo += bean.getSemSom()? 1 : 0;
                 
                 inputStreamDownload = new InputStreamDownload(new ByteArrayInputStream(conteudo.getBytes()), "application/exp", bean.getTitulo()+ "+.exp");
                 
@@ -231,6 +326,131 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
             e.printStackTrace();
         }
         return inputStreamDownload;
+    }
+    
+    public void upload(Integer id) {
+        try {
+            ConfigAppBean config = repository.find(ConfigAppBean.class, 1);
+            AudiostoreMusicaBean bean = bean(id);
+            if (bean != null) {
+                
+                String arquivo = bean.getArquivo();
+                if (arquivo.length() < 30) {
+                    arquivo = StringUtils.leftPad(arquivo, 30, " ");
+                } else {
+                    if (arquivo.length() > 30) {
+                        arquivo = arquivo.substring(0, 30);
+                    }
+                }
+                
+                String interprete = bean.getInterprete();
+                if (interprete.length() < 30) {
+                    interprete = StringUtils.leftPad(interprete, 30, " ");
+                } else {
+                    if (interprete.length() > 30) {
+                        interprete = interprete.substring(0, 30);
+                    }
+                }
+                
+                String titulo = bean.getTitulo();
+                if (titulo.length() < 30) {
+                    titulo = StringUtils.leftPad(titulo, 30, " ");
+                } else {
+                    if (titulo.length() > 30) {
+                        titulo = titulo.substring(0, 30);
+                    }
+                }
+                
+                String afinidade1 = bean.getAfinidade1();
+                if (afinidade1.length() < 30) {
+                    afinidade1 = StringUtils.leftPad(afinidade1, 30, " ");
+                } else {
+                    if (afinidade1.length() > 30) {
+                        afinidade1 = afinidade1.substring(0, 30);
+                    }
+                }
+                
+                String afinidade2 = bean.getAfinidade2();
+                if (afinidade2.length() < 30) {
+                    afinidade2 = StringUtils.leftPad(afinidade2, 30, " ");
+                } else {
+                    if (afinidade2.length() > 30) {
+                        afinidade2 = afinidade2.substring(0, 30);
+                    }
+                }
+                
+                String afinidade3 = bean.getAfinidade3();
+                if (afinidade3.length() < 30) {
+                    afinidade3 = StringUtils.leftPad(afinidade3, 30, " ");
+                } else {
+                    if (afinidade3.length() > 30) {
+                        afinidade3 = afinidade3.substring(0, 30);
+                    }
+                }
+                
+                String afinidade4 = bean.getAfinidade4();
+                if (afinidade4.length() < 30) {
+                    afinidade4 = StringUtils.leftPad(afinidade4, 30, " ");
+                } else {
+                    if (afinidade4.length() > 30) {
+                        afinidade4 = afinidade4.substring(0, 30);
+                    }
+                }
+                
+                String msg = bean.getMsg();
+                if (msg.length() < 40) {
+                    msg = StringUtils.leftPad(msg, 40, " ");
+                } else {
+                    if (msg.length() > 40) {
+                        msg = msg.substring(0, 40);
+                    }
+                }
+                
+                String conteudo = "";
+                conteudo += "";
+                conteudo += arquivo;
+                conteudo += interprete;
+                conteudo += bean.getTipoInterprete();
+                conteudo += titulo;
+                conteudo += bean.getCut() ? "nao" : "sim";
+                conteudo += (null != bean.getCategoria1() ? StringUtils.leftPad(bean.getCategoria1().getCodigo().toString(), 3, " ") : "   ");
+                conteudo += (null != bean.getCategoria2() ? StringUtils.leftPad(bean.getCategoria2().getCodigo().toString(), 3, " ") : "   ");
+                conteudo += (null != bean.getCategoria3() ? StringUtils.leftPad(bean.getCategoria3().getCodigo().toString(), 3, " ") : "   ");
+                conteudo += bean.getCrossover()? "nao" : "sim";
+                conteudo += StringUtils.leftPad(bean.getDiasExecucao1().toString(), 4, " ");
+                conteudo += StringUtils.leftPad(bean.getDiasExecucao2().toString(), 4, " ");
+                conteudo += afinidade1;
+                conteudo += afinidade2;
+                conteudo += afinidade3;
+                conteudo += afinidade4;
+                conteudo += StringUtils.leftPad(bean.getGravadora().getId().toString(), 3, " ");
+                conteudo += bean.getAnoGravacao();
+                conteudo += bean.getVelocidade();
+                conteudo += new SimpleDateFormat("dd/MM/yy").format(bean.getData());
+                conteudo += new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(bean.getUltimaExecucao());
+                conteudo += new SimpleDateFormat("HH:mm:ss").format(bean.getTempoTotal());
+                conteudo += StringUtils.leftPad(bean.getQtdePlayer().toString(), 3, " ");
+                conteudo += new SimpleDateFormat("dd/MM/yy").format(bean.getDataVencimento());
+                conteudo += new SimpleDateFormat("dd/MM/yy").format(bean.getDataVencimentoCrossover());
+                conteudo += StringUtils.leftPad(bean.getFrameInicio().toString(), 8, " ");
+                conteudo += StringUtils.leftPad(bean.getFrameFinal().toString(), 8, " ");
+                conteudo += msg;
+                conteudo += bean.getSemSom()? 1 : 0;
+                
+                File dir = new File(config.getDataPath()+"\\musica-exp\\");
+                if(!dir.exists()) {
+                    dir.mkdirs();
+                }
+                
+                InputStream is = new ByteArrayInputStream(conteudo.getBytes());
+                FileOutputStream fos = new FileOutputStream(new File(config.getDataPath() + "\\musica-exp\\" + StringUtils.leftPad(bean.getId().toString(), 11, "0") + ".exp"));
+
+                org.apache.commons.io.IOUtils.copy(is, fos);
+                result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "")).recursive().serialize();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     
     public List<ArquivoMusicaDTO> arquivoMusicaList() {

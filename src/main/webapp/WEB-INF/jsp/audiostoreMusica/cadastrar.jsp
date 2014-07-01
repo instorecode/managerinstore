@@ -274,7 +274,7 @@
                         <label>Data de vencimento</label>
                         <input type="text" name="audiostoreMusicaBean.dataVencimento" class="form-control datepicker" placeholder="Nome"  
                                data-rule-required="true" 
-                               data-mask="99/99/9999" value="${audiostoreMusicaBean.dataVencimento}">
+                               data-mask="99/99/9999" value="${cf:dateFormat(audiostoreMusicaBean.dataVencimento, "dd/MM/yyyy")}">
                     </div>
                 </div>
                 <div class="col-md-2">
@@ -282,7 +282,7 @@
                         <label>Data de inclusao</label>
                         <input type="text" name="audiostoreMusicaBean.data" class="form-control datepicker" placeholder="Nome"  
                                data-rule-required="true" 
-                               data-mask="99/99/9999"value="${audiostoreMusicaBean.data}">
+                               data-mask="99/99/9999"value="${cf:dateFormat(audiostoreMusicaBean.data, "dd/MM/yyyy")}">
                     </div>
                 </div>
 

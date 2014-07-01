@@ -425,7 +425,7 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
                 }
 
                 InputStream is = new ByteArrayInputStream(conteudo.getBytes());
-                FileOutputStream fos = new FileOutputStream(new File(config.getDataPath() + "\\programacao-exp\\" + StringUtils.leftPad(audiostoreProgramacaoBean.getId().toString(), 3, "0") + ".exp"));
+                FileOutputStream fos = new FileOutputStream(new File(config.getDataPath() + "\\programacao-exp\\" + StringUtils.leftPad(audiostoreProgramacaoBean.getId().toString(), 11, "0") + ".exp"));
 
                 IOUtils.copy(is, fos);
                 result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "")).recursive().serialize();

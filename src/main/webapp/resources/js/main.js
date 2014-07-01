@@ -1,4 +1,27 @@
 jQuery(document).ready(function() {
+
+    $.browserName = null;
+
+    if (/*@cc_on!@*/false) {
+        $.browserName = 'ie';
+    }
+    
+    if (window.chrome) {
+        $.browserName = 'chrome';
+    }
+
+    if (window.opera) {
+        $.browserName = 'opera';
+    }
+
+    if ('MozBoxSizing' in document.body.style) {
+        $.browserName = 'mozilla';
+    }
+    
+    if($.browserName == 'ie') {
+        jQuery('.browserRec').show();
+    }
+
     $('[data-clock="true"]').each(function() {
         var self = jQuery(this);
         var format = self.data('clockFormat');
@@ -8,20 +31,20 @@ jQuery(document).ready(function() {
     $('[data-selectradio="true"]').each(function() {
         var self = jQuery(this);
         self.multiselect({
-            dropRight : self.data('dropRight') || false,
+            dropRight: self.data('dropRight') || false,
             nonSelectedText: 'Selecione uma opção',
             nSelectedText: 'iten(s) selecionado(s)',
             enableFiltering: true
         });
     });
-    
+
     $('[data-multiple="multiple"]').each(function() {
         var self = jQuery(this);
         self.multiselect({
-            dropRight : self.data('dropRight') || false,
+            dropRight: self.data('dropRight') || false,
             numberDisplayed: 0,
             nonSelectedText: 'Selecione uma opção',
-            nSelectedText: 'iten(s) selecionado(s)' ,
+            nSelectedText: 'iten(s) selecionado(s)',
             enableFiltering: true
         });
     });

@@ -97,4 +97,11 @@ public class AudiostoreMusicaController implements java.io.Serializable {
     public InputStreamDownload download(Integer id) {
         return requestAudiostoreMusica.download(id);
     }
+    
+    @Get
+    @Restrict
+    @Path("/audiostore-musica/upload-exp/{id}")
+    public void upload(Integer id) {
+        requestAudiostoreMusica.upload(id);
+    }
 }

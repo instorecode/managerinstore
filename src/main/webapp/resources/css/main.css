@@ -151,3 +151,12 @@ body.login div.align{
 .menuleft {
     width: 170px;
 }
+
+.browserRec {
+    display: none;
+    padding: 10px;
+    background-color: #dd4b39;
+    color: #FFF;
+    font-weight: bold;
+    text-align: center;
+}

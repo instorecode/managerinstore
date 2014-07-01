@@ -248,6 +248,7 @@
                 <instore:noscript></instore:noscript>
                 <instore:nocookie></instore:nocookie>
                 <div class="yesscript">
+                    <div class="browserRec" style="display: none;"> Opa!! Você está usando o Internet Explorer, recomendamos que use o CHROME para uma melhor performance do sistema!!!</div>
                     <div class="menuleft">
                             <ul class="list-group">
                                 <li class="list-group-header"> <i class="fa fa-bars"></i>&nbsp;&nbsp;&nbsp;Menu</li>
