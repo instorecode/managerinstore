@@ -130,7 +130,7 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
                 inputStreamDownload = new InputStreamDownload(new ByteArrayInputStream(conteudo.getBytes()), "application/exp", audiostoreCategoriaBean.getCategoria() +".exp");
                 
             }
-        } catch (Exception e) {
+        } catch (Exception e) { 
             e.printStackTrace();
         }
         return inputStreamDownload;
@@ -149,7 +149,6 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
                 conteudo += StringUtils.leftPad(new SimpleDateFormat("dd/MM/yy").format(audiostoreCategoriaBean.getDataInicio()), 8, " ");
                 conteudo += StringUtils.leftPad(new SimpleDateFormat("dd/MM/yy").format(audiostoreCategoriaBean.getDataFinal()), 8, " ");
                 conteudo += audiostoreCategoriaBean.getTipo();
-                conteudo += StringUtils.leftPad(new SimpleDateFormat("HH:mm:ss").format(audiostoreCategoriaBean.getTempo()), 8, " ");
                 
                 File dir = new File(config.getDataPath()+"\\categoria-exp\\");
                 if(!dir.exists()) {

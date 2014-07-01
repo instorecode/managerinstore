@@ -19,7 +19,7 @@
                         <input type="text" name="audiostoreCategoriaBean.categoria" class="form-control" placeholder="Nome"  
                                data-rule-required="true" 
                                data-rule-minlength="3"
-                               data-rule-maxlength="255" value="${audiostoreCategoriaBean.categoria}">
+                               data-rule-maxlength="30" value="${audiostoreCategoriaBean.categoria}">
                     </div>
                 </div>
 
