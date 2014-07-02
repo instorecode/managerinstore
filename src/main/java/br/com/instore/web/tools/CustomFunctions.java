@@ -7,7 +7,12 @@ public class CustomFunctions {
     public static String dateFormat(Date date , String format) {
         if( null != date ) {
             return new SimpleDateFormat(format).format(date);
+        } else if( null == date ) {
+            return new SimpleDateFormat(format).format( new Date());
         }
         return "";
+    }
+    public static String dateCurrent(String format) {
+        return new SimpleDateFormat(format).format( new Date());
     }
 }

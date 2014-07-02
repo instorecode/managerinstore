@@ -16,4 +16,10 @@
         <function-class>br.com.instore.web.tools.CustomFunctions</function-class>
         <function-signature>String dateFormat(java.util.Date , java.lang.String)</function-signature>
     </function>
+    
+    <function>
+        <name>dateCurrent</name>
+        <function-class>br.com.instore.web.tools.CustomFunctions</function-class>
+        <function-signature>String dateCurrent(java.lang.String)</function-signature>
+    </function>
 </taglib>

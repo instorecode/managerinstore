@@ -58,9 +58,9 @@
                     <div class="form-group">
                         <label>Categoria</label> 
                         <br />
-                        <select data-selectradio="true"  class="form-control" name="audiostoreComercialBean.categoria1.codigo" data-rule-required="true" >
+                        <select data-selectradio="true"  class="form-control" name="audiostoreComercialBean.audiostoreCategoria.codigo" data-rule-required="true" >
                             <c:forEach items="${categoriaBeanList}" var="cat">
-                                <option value="${cat.codigo}" ${audiostoreComercialBean.categoria1.codigo eq cat.codigo ? 'selected="selected"':''}>${cat.categoria}</option> 
+                                <option value="${cat.codigo}" ${audiostoreComercialBean.audiostoreCategoria.codigo eq cat.codigo ? 'selected="selected"':''}>${cat.categoria}</option> 
                             </c:forEach>
                         </select>
                     </div>
@@ -228,12 +228,21 @@
                                 <table class="tbl table table-striped table-bordered table-hover table-condensed">
                                     <thead>
                                         <tr>
-                                            <td>Horário</td>
-                                            <td>Semana</td>
+                                            <td style="background-color: #606060; color: #FFF; font-weight: bold;">Horário</td>
+                                            <td style="background-color: #606060; color: #FFF; font-weight: bold;">Semana</td>
                                         </tr>
                                     </thead>
                                     <tbody>
-
+                                        <c:forEach items="${shs}" var="sh" varStatus="vs">
+                                            <tr> 
+                                                <td>10:00:00</td> 
+                                                <td>
+                                                    ${sh.semana}
+                                                    <input type="hidden" name="sh[${vs.index}].semana" value="${sh.semana}" />
+                                                    <input type="hidden" name="sh[${vs.index}].horario" value="${sh.horario}" />
+                                                </td> 
+                                            </tr>
+                                        </c:forEach>
                                     </tbody>
                                 </table>
                             </div>
@@ -258,9 +267,6 @@
                             </div>
                             <div class="col-xs-3">
                                 <input type="text" name="hora" class="form-control span5" placeholder="Nome"  
-                                       data-rule-required="true" 
-                                       data-rule-minlength="8"
-                                       data-rule-maxlength="8"
                                        data-mask="99:99:99"
                                        value="${audiostoreComercialBean.arquivo}">
                             </div>
@@ -363,10 +369,10 @@
                     }
                 });
 
-                jQuery(document).on('click', '.tbl tr td', function(event) {
+                jQuery(document).on('click', '.tbl tbody tr td', function(event) {
                     if (!event.ctrlKey) {
-                        jQuery('.tbl tr td').removeAttr('style');
-                        jQuery('.tbl tr').removeAttr('data-selected');
+                        jQuery('.tbl tbody tr td').removeAttr('style');
+                        jQuery('.tbl tbody tr').removeAttr('data-selected');
                     }
 
                     jQuery(this).parent('tr').attr('data-selected', true);
@@ -394,102 +400,170 @@
                     if (hora.val() != "") {
                         temHora = true;
                     }
-
+                    
+                    var tbl = jQuery('.tbl tbody');
                     var diasLabel = '';
                     var connector = '';
                     var inputsHiddens = '';
+                    var i = tbl.children('tr').length+1;
 
 
                     if (segunda.is(':checked')) {
                         temDiasSelecionados = true;
-                        diasLabel += connector + 'Segunda';
+                        diasLabel = 'Segunda';
                         connector = ', ';
-                        inputsHiddens += '<input type="hidden" name="sh.semana" value="Segunda" />';
-                        inputsHiddens += '<input type="hidden" name="sh.hora" value="' + hora.val() + '" />';
+                        inputsHiddens += '<tr> ';
+                        inputsHiddens += ' <td>' + hora.val() + '</td>';
+                        inputsHiddens += ' <td>';
+                        inputsHiddens += diasLabel;
+                        inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="' + diasLabel + '" />';
+                        inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + '" />';
+                        inputsHiddens += '</td>';
+                        inputsHiddens += '</tr>';
+                        i++;
                     }
 
                     if (terca.is(':checked')) {
                         temDiasSelecionados = true;
-                        diasLabel += connector + 'Terça';
+                        diasLabel = 'Terça';
                         connector = ', ';
-                        inputsHiddens += '<input type="hidden" name="sh.semana" value="Terça" />';
-                        inputsHiddens += '<input type="hidden" name="sh.hora" value="' + hora.val() + '" />';
+                        inputsHiddens += '<tr> ';
+                        inputsHiddens += ' <td>' + hora.val() + '</td>';
+                        inputsHiddens += ' <td>';
+                        inputsHiddens += diasLabel;
+                        inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="' + diasLabel + '" />';
+                        inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + '" />';
+                        inputsHiddens += '</td>';
+                        inputsHiddens += '</tr>';
+                        i++;
                     }
 
                     if (quarta.is(':checked')) {
                         temDiasSelecionados = true;
-                        diasLabel += connector + 'Quarta';
+                        diasLabel = 'Quarta';
                         connector = ', ';
-                        inputsHiddens += '<input type="hidden" name="sh.semana" value="Quarta" />';
-                        inputsHiddens += '<input type="hidden" name="sh.hora" value="' + hora.val() + '" />';
+                        inputsHiddens += '<tr> ';
+                        inputsHiddens += ' <td>' + hora.val() + '</td>';
+                        inputsHiddens += ' <td>';
+                        inputsHiddens += diasLabel;
+                        inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="' + diasLabel + '" />';
+                        inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + '" />';
+                        inputsHiddens += '</td>';
+                        inputsHiddens += '</tr>';
+                        i++;
                     }
 
                     if (quinta.is(':checked')) {
                         temDiasSelecionados = true;
-                        diasLabel += connector + 'Quinta';
+                        diasLabel = 'Quinta';
                         connector = ', ';
-                        inputsHiddens += '<input type="hidden" name="sh.semana" value="Quinta" />';
-                        inputsHiddens += '<input type="hidden" name="sh.hora" value="' + hora.val() + '" />';
+                        inputsHiddens += '<tr> ';
+                        inputsHiddens += ' <td>' + hora.val() + '</td>';
+                        inputsHiddens += ' <td>';
+                        inputsHiddens += diasLabel;
+                        inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="' + diasLabel + '" />';
+                        inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + '" />';
+                        inputsHiddens += '</td>';
+                        inputsHiddens += '</tr>';
+                        i++;
                     }
 
                     if (sexta.is(':checked')) {
                         temDiasSelecionados = true;
-                        diasLabel += connector + 'Sexta';
+                        diasLabel = 'Sexta';
                         connector = ', ';
-                        inputsHiddens += '<input type="hidden" name="sh.semana" value="Sexta" />';
-                        inputsHiddens += '<input type="hidden" name="sh.hora" value="' + hora.val() + '" />';
+                        inputsHiddens += '<tr> ';
+                        inputsHiddens += ' <td>' + hora.val() + '</td>';
+                        inputsHiddens += ' <td>';
+                        inputsHiddens += diasLabel;
+                        inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="' + diasLabel + '" />';
+                        inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + '" />';
+                        inputsHiddens += '</td>';
+                        inputsHiddens += '</tr>';
+                        i++;
                     }
 
                     if (sabado.is(':checked')) {
                         temDiasSelecionados = true;
-                        diasLabel += connector + 'Sábado';
+                        diasLabel = 'Sábado';
                         connector = ', ';
-                        inputsHiddens += '<input type="hidden" name="sh.semana" value="Sabado" />';
-                        inputsHiddens += '<input type="hidden" name="sh.hora" value="' + hora.val() + '" />';
+                        inputsHiddens += '<tr> ';
+                        inputsHiddens += ' <td>' + hora.val() + '</td>';
+                        inputsHiddens += ' <td>';
+                        inputsHiddens += diasLabel;
+                        inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="' + diasLabel + '" />';
+                        inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + '" />';
+                        inputsHiddens += '</td>';
+                        inputsHiddens += '</tr>';
+                        i++;
                     }
 
                     if (domingo.is(':checked')) {
                         temDiasSelecionados = true;
-                        diasLabel += connector + 'Domingo';
+                        diasLabel = 'Domingo';
                         connector = ', ';
-                        inputsHiddens += '<input type="hidden" name="sh.semana" value="Domingo" />';
-                        inputsHiddens += '<input type="hidden" name="sh.hora" value="' + hora.val() + '" />';
+                        inputsHiddens += '<tr> ';
+                        inputsHiddens += ' <td>' + hora.val() + '</td>';
+                        inputsHiddens += ' <td>';
+                        inputsHiddens += diasLabel;
+                        inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="' + diasLabel + '" />';
+                        inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + '" />';
+                        inputsHiddens += '</td>';
+                        inputsHiddens += '</tr>';
+                        i++;
                     }
 
                     if (temDiasSelecionados && temHora) {
-                        var tbl = jQuery('.tbl tbody');
-                        tbl.append('<tr> <td>' + hora.val() + '</td> <td>' + diasLabel + '</td> </tr>' + inputsHiddens);
+                        
 
-                        if (segunda.is(':checked')) {
-                            segunda.trigger('click');
+                        if (tbl.children('tr').length < 24) {
+                            tbl.append(inputsHiddens);
+
+                            if (segunda.is(':checked')) {
+                                segunda.trigger('click');
+                            }
+
+                            if (terca.is(':checked')) {
+                                terca.trigger('click');
+                            }
+
+                            if (quarta.is(':checked')) {
+                                quarta.trigger('click');
+                            }
+
+                            if (quinta.is(':checked')) {
+                                quinta.trigger('click');
+                            }
+
+                            if (sexta.is(':checked')) {
+                                sexta.trigger('click');
+                            }
+
+                            if (sabado.is(':checked')) {
+                                sabado.trigger('click');
+                            }
+
+                            if (domingo.is(':checked')) {
+                                domingo.trigger('click');
+                            }
+
+                            if (todos.is(':checked')) {
+                                todos.trigger('click');
+                            }
+                        } else {
+                            bootbox.alert('Ops! Já está no limite de dias e horas!');
                         }
-
-                        if (terca.is(':checked')) {
-                            terca.trigger('click');
-                        }
-
-                        if (quarta.is(':checked')) {
-                            quarta.trigger('click');
-                        }
-
-                        if (quinta.is(':checked')) {
-                            quinta.trigger('click');
-                        }
-
-                        if (sexta.is(':checked')) {
-                            sexta.trigger('click');
-                        }
-
-                        if (sabado.is(':checked')) {
-                            sabado.trigger('click');
-                        }
-
-                        if (domingo.is(':checked')) {
-                            domingo.trigger('click');
-                        }
-
-                        if (todos.is(':checked')) {
-                            todos.trigger('click');
+                        
+                        if (tbl.children('tr').length >= 24) {
+                            var i = 1;
+                            tbl.children('tr').each(function(){
+                                if(i > 24) {
+                                    jQuery(this).remove();
+                                }
+                                i++;
+                            });
+                            
+                            
                         }
                     }
                     return false;
