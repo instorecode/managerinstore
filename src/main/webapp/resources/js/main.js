@@ -34,7 +34,9 @@ jQuery(document).ready(function() {
             dropRight: self.data('dropRight') || false,
             nonSelectedText: 'Selecione uma opção',
             nSelectedText: 'iten(s) selecionado(s)',
-            enableFiltering: true
+            enableFiltering: true,
+            maxHeight: 400,
+             buttonWidth: '100%',
         });
     });
 
@@ -45,7 +47,9 @@ jQuery(document).ready(function() {
             numberDisplayed: 0,
             nonSelectedText: 'Selecione uma opção',
             nSelectedText: 'iten(s) selecionado(s)',
-            enableFiltering: true
+            enableFiltering: true,
+            maxHeight: 400,
+            buttonWidth: '100%',
         });
     });
 

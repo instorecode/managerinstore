@@ -204,10 +204,10 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
             repository.delete(bean);
             
             repository.finalize();
-            result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Voz removida com sucesso!")).recursive().serialize();
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Música removida com sucesso!")).recursive().serialize();
         } catch (Exception e) {
             e.printStackTrace();
-            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel remover a voz!")).recursive().serialize();
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel remover a música!")).recursive().serialize();
         }
     }
     

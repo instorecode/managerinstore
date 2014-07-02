@@ -42,6 +42,7 @@
             <instore:noscript></instore:noscript>
             <instore:nocookie></instore:nocookie>
                 <div class="yesscript">
+                    <div class="browserRec" style="display: none;"> Opa!! Você está usando o Internet Explorer, recomendamos que use o CHROME para uma melhor performance do sistema!!!</div>
                     <div class="align">
                         <form id="login" method="POST" data-form="true" data-success-url="${url}/dashboard">
                         <div class="panel panel-default">
