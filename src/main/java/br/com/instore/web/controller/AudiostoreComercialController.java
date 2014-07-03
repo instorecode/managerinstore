@@ -130,6 +130,6 @@ public class AudiostoreComercialController implements java.io.Serializable {
     @Restrict
     @Path("/audiostore-comercial/upload-exp/{id}")
     public void upload(Integer id) {
-//        requestAudiostoreComercial.upload(id);
+        requestAudiostoreComercial.upload(id);
     }
 }

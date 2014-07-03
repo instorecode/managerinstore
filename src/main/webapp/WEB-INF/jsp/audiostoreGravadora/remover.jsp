@@ -13,7 +13,7 @@
             <button type="submit" class="btn btn-default">
                 <i class="fa fa-thumbs-o-down"></i> Remover
             </button>
-            <a href="${url}/audiostore-categorias" class="btn btn-danger"> <i class="fa fa-times"></i> Não </a>
+            <a href="${url}/audiostore-gravadora" class="btn btn-danger"> <i class="fa fa-times"></i> Não </a>
         </form>
         
     </jsp:body>

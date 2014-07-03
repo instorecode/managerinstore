@@ -4,7 +4,7 @@
 <%@ taglib prefix="cf" uri="CustomFunctions" %> 
 <instore:template isGrid="false">
     <jsp:attribute name="submenu">
-        <a href="${url}/audiostore-musica" class="btn btn-default"> <i class="fa fa-hand-o-left"></i> Musicas </a>
+        <a href="${url}/audiostore-comercial" class="btn btn-default"> <i class="fa fa-hand-o-left"></i> Comerciais </a>
     </jsp:attribute>
 
     <jsp:body>
@@ -19,7 +19,7 @@
                 });
             });
         </script>
-        <form d="cad_cliente" method="POST" data-form="true" data-success-url="${url}/audiostore-musica">
+        <form d="cad_cliente" method="POST" data-form="true" data-success-url="${url}/audiostore-comercial">
             <input type="hidden" name="audiostoreComercialBean.id" value="${audiostoreComercialBean.id}" />
 
             <div class="row">
@@ -95,7 +95,7 @@
                         <label>Primária</label>
                         <br />
                         <select name="audiostoreComercialBean.dependencia1" data-selectradio="true" data-drop-right="false" class="form-control"  data-rule-required="true" style="margin-left: -30px;">
-                            <option>Nenhuma</option>
+                            <option value=" ">Nenhuma</option>
                             <c:forEach items="${arquivoMusicaList}" var="musica">
                                 <option value="${musica.caminho}" ${musica.caminho eq audiostoreComercialBean.dependencia1 ? 'selected="selected"' : ''}>${musica.nome}</option>
                             </c:forEach>
@@ -107,7 +107,7 @@
                         <label>Secundária</label>
                         <br />
                         <select name="audiostoreComercialBean.dependencia2" data-selectradio="true" data-drop-right="true" class="form-control"  data-rule-required="true" style="margin-left: -30px;">
-                            <option>Nenhuma</option>
+                            <option value=" ">Nenhuma</option>
                             <c:forEach items="${arquivoMusicaList}" var="musica">
                                 <option value="${musica.caminho}" ${musica.caminho eq audiostoreComercialBean.dependencia2 ? 'selected="selected"' : ''}>${musica.nome}</option>
                             </c:forEach>
@@ -116,7 +116,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label>Terciária</label>
+                        <label value=" ">Terciária</label>
                         <br />
                         <select name="audiostoreComercialBean.dependencia3" data-selectradio="true" data-drop-right="true" class="form-control"  data-rule-required="true" style="margin-left: -30px;">
                             <option>Nenhuma</option>
@@ -235,7 +235,7 @@
                                     <tbody>
                                         <c:forEach items="${shs}" var="sh" varStatus="vs">
                                             <tr> 
-                                                <td>10:00:00</td> 
+                                                <td>${sh.horario}</td> 
                                                 <td>
                                                     ${sh.semana}
                                                     <input type="hidden" name="sh[${vs.index}].semana" value="${sh.semana}" />

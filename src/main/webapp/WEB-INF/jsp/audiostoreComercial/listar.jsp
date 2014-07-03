@@ -112,52 +112,25 @@
             
             <div class="row">
                 <div class="col-md-4 prop"> 
-                    Gravadora
+                    Categoria
                 </div>
                 <div class="col-md-8 val"> 
-                    <div data-gravadora="true"></div> 
+                    <div data-categoriaNome="true"></div> 
                 </div>
             </div>
             
             <div class="row">
                 <div class="col-md-4 prop"> 
-                    Categoria Primária
+                    Semana(s) e Horário(s)
                 </div>
                 <div class="col-md-8 val"> 
-                    <div data-categoria1="true"></div> 
+                    <div data-semanaHora="true"></div> 
                 </div>
             </div>
             
             <div class="row">
                 <div class="col-md-4 prop"> 
-                    Categoria Secundária
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-categoria2="true"></div> 
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Categoria Terciária
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-categoria3="true"></div> 
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Interprete
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-interprete="true"></div> 
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Tipo Interprete
+                    Tipo de interprete
                 </div>
                 <div class="col-md-8 val"> 
                     <div data-tipoInterprete="true"></div> 
@@ -166,100 +139,28 @@
             
             <div class="row">
                 <div class="col-md-4 prop"> 
-                    Data de vencimento do crossover
+                    Periodo inicial
                 </div>
                 <div class="col-md-8 val"> 
-                    <div data-dataVencimentoCrossover="true"></div> 
+                    <div data-periodoInicial="true"></div> 
                 </div>
             </div>
             
             <div class="row">
                 <div class="col-md-4 prop"> 
-                    dias execucao ( referente a categoria primária )
+                    Periodo final
                 </div>
                 <div class="col-md-8 val"> 
-                    <div data-diasExecucao1="true"></div> 
+                    <div data-periodoFinal="true"></div> 
                 </div>
             </div>
-            
+
             <div class="row">
                 <div class="col-md-4 prop"> 
-                    dias execucao ( referente a categoria secundária )
+                    Dias alternados
                 </div>
                 <div class="col-md-8 val"> 
-                    <div data-diasExecucao2="true"></div> 
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Afinidade primário
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-afinidade1="true"></div> 
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Afinidade secundário
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-afinidade2="true"></div> 
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Afinidade terciário
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-afinidade3="true"></div> 
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Afinidade quaternário
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-afinidade4="true"></div> 
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Ano de gravação
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-anoGravacao="true"></div> 
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Velocidade
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-velocidade="true"></div> 
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Data de cadastro da musica no sistema
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-data="true"></div> 
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Ùltima execução
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-ultimaExecucao="true"></div> 
+                    <div data-diasAlternados="true"></div> 
                 </div>
             </div>
             
@@ -274,29 +175,28 @@
             
             <div class="row">
                 <div class="col-md-4 prop"> 
-                    Random
+                    Dependencia primária
                 </div>
                 <div class="col-md-8 val"> 
-                    <div data-random="true"></div> 
+                    <div data-dependencia1="true"></div> 
                 </div>
             </div>
             
             <div class="row">
                 <div class="col-md-4 prop"> 
-                    Quantidade
+                    Dependencia secundária
                 </div>
                 <div class="col-md-8 val"> 
-                    <div data-qtdePlayer="true"></div> 
+                    <div data-dependencia2="true"></div> 
                 </div>
             </div>
-
             
             <div class="row">
                 <div class="col-md-4 prop"> 
-                    Data de vencimento
+                    Dependencia terciária
                 </div>
                 <div class="col-md-8 val"> 
-                    <div data-dataVencimento="true"></div> 
+                    <div data-dependencia2="true"></div> 
                 </div>
             </div>
             
@@ -305,7 +205,7 @@
                     Frame inicial
                 </div>
                 <div class="col-md-8 val"> 
-                    <div data-frameInicio="true"></div> 
+                    <div data-frameInicial="true"></div> 
                 </div>
             </div>
             
@@ -315,33 +215,6 @@
                 </div>
                 <div class="col-md-8 val"> 
                     <div data-frameFinal="true"></div> 
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Mensagem
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-msg="true"></div> 
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Sem som?
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-semSom="true"></div> 
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Super crossover
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-superCrossover="true"></div> 
                 </div>
             </div>
         </div>
