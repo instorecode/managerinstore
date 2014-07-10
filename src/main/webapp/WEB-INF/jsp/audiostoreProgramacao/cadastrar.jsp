@@ -11,7 +11,6 @@
         <form d="cad_cliente" method="POST" data-form="true" data-success-url="${url}/audiostore-programacao">
             <input type="hidden" name="audiostoreProgramacaoBean.id" value="${audiostoreProgramacaoBean.id}" />
 
-
             <div class="row">
                 <div class="col-md-9">
                     <div class="form-group">
@@ -144,8 +143,6 @@
 
             <script>
                 jQuery(document).ready(function() {
-
-
                     $('#example37').multiselect({
                         numberDisplayed: 0,
                         nonSelectedText: 'Selecione uma opção',

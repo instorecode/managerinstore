@@ -10,5 +10,6 @@
         <priority value="DEBUG" />
         <appender-ref ref="stdout" />
     </category>
-    <!-- incluir outras definições aqui -->
 </log4j:configuration>
+
+
