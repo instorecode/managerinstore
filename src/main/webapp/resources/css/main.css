@@ -160,3 +160,14 @@ body.login div.align{
     font-weight: bold;
     text-align: center;
 }
+
+.twitter-typeahead {
+    width: 100% !important;
+}
+.tt-dropdown-menu {
+    background-color: white;
+    padding: 10px;
+    width: 100%;
+}
+
+.panel-heading { background-color: whitesmoke !important}

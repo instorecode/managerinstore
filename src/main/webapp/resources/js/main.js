@@ -196,6 +196,15 @@ jQuery(document).ready(function() {
     jQuery('[data-mask]').each(function() {
         jQuery(this).mask(jQuery(this).data('mask'));
     });
+    jQuery('[data-maskmoney]').each(function() {
+        $(this).maskMoney({
+            prefix:'R$ ', 
+            allowNegative: true, 
+            thousands:'.', 
+            decimal:',', 
+            affixesStay: false
+        });
+    });
 });
 
 function formProccess() {

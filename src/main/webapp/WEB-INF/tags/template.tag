@@ -42,8 +42,10 @@
             <script type="text/javascript" charset="utf-8" src="${url_js}additional.methods.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}jquery.form.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}jquery.mask.js"></script>
+            <script type="text/javascript" charset="utf-8" src="${url_js}maskmoney.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}bootbox.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}clockface.js"></script>
+            <script type="text/javascript" charset="utf-8" src="${url_js}typeahead.bundle.js"></script>
             
             <script type="text/javascript" charset="utf-8" src="${url_js}prettify.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}main.js"></script>
