@@ -1,18 +1,20 @@
 
+import br.com.instore.core.orm.Each;
+import br.com.instore.core.orm.RepositoryViewer;
 import java.io.UnsupportedEncodingException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.math.BigDecimal;
+import java.util.Date;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 
 public class Main {
 
     public static void main(String[] args) throws UnsupportedEncodingException {
-        String string = "01/02/2014";
-        try {
-            System.out.println( new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(string));
-        } catch (ParseException e) {
-            e.printStackTrace();
+        for (int riv = 0; riv < 10; riv++) {
+            String dialog1 =  ""+riv;
+            String dialog2 =  ""+riv;
+            System.out.println("to chamando meu dialog"+dialog1);
+            System.out.println("to chamando meu dialog"+dialog2);
         }
     }
 }
