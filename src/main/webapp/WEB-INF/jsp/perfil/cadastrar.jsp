@@ -69,7 +69,7 @@
                 });
                 
                 var idperfil = '${perfilBean.idperfil}';
-                jQuery.getJSON('http://localhost:8080/managerinstore/utilidades/funcionalidadetree?idperfil='+idperfil, function(data) {
+                jQuery.getJSON('${url}/utilidades/funcionalidadetree?idperfil='+idperfil, function(data) {
                     recursiveNode(data, null);
                 });
 

@@ -43,8 +43,20 @@
                         <br />
 
                         <select name="lancamentoBean.debito" data-selectradio="true" class="form-control arquivosDeMusica"  data-rule-required="true" style="margin-left: -30px;">
-                            <option value="${true}" ${lancamentoBean.debito ? 'selected="selected"' : ''}>Débito</option>
+                            <option value="${true}" ${lancamentoBean.debito ? 'selected="selected"' : ''} ${cadastrar eq true ? 'selected="selected"' : ''}>Débito</option>
                             <option value="${false}" ${lancamentoBean.credito ? 'selected="selected"' : ''}>Crédito</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Saldo positivo ? </label>
+                        <br />
+
+                        <select name="lancamentoBean.positivo" data-selectradio="true" class="form-control arquivosDeMusica"  data-rule-required="true" style="margin-left: -30px;">
+                            <option value="${true}" ${lancamentoBean.positivo ? 'selected="selected"' : ''} ${cadastrar eq true ? 'selected="selected"' : ''}>Sim</option>
+                            <option value="${false}" ${not lancamentoBean.positivo ? 'selected="selected"' : ''}>Não</option>
                         </select>
                     </div>
                 </div>
@@ -64,14 +76,14 @@
 
             </div>
 
-            <div class="row">
+            <div class="row" style="${cadastrar eq false ? 'display:none;' : ''}">
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Vai se repetir ?</label>
                         <br />
                         <select name="lancamentoBean.loop" data-selectradio="true" class="form-control arquivosDeMusica"  data-rule-required="true" style="margin-left: -30px;">
                             <option value="${true}" >Sim</option>
-                            <option value="${false}" >Não</option>
+                            <option value="${false}" selected="selected">Não</option>
                         </select>
                     </div>
                 </div>
@@ -79,8 +91,8 @@
 
             <br /> 
 
-            <div class="row intervalo1" style="${cadastrar eq true ? 'display:none;' : ''}"> 
-                <div class="col-md-4">
+            <div class="row intervalo1"> 
+                <div class="col-md-2">
                     <div class="form-group">
                         <label>Data do lançamento</label>
                         <input type="text" name="lancamentoBean.mes" class="form-control datepicker" placeholder="Data do lançamento"  
@@ -88,18 +100,23 @@
                                value="${cf:dateFormat(lancamentoBean.mes, "dd/MM/yyyy")}">
                     </div>
                 </div>
-                
-                <div class="col-md-4">
+
+                <div class="col-md-4" style="${cadastrar eq false ? '' : 'display:none;'}">
+                    <br />
                     <div class="form-group">
-                        <label>Data de fechamento do lançamento</label>
-                        <input type="text" name="lancamentoBean.datFechamento" class="form-control datepicker" placeholder="Data do lançamento"  
-                               data-mask="99/99/9999"
-                               value="${cf:dateFormat(lancamentoBean.datFechamento, "dd/MM/yyyy")}">
+                        <c:if test="${lancamentoBean.datFechamento ne null}">
+                            <input type="checkbox" name="lancamentoBean.datFechamento" value="${cf:dateFormat(lancamentoBean.datFechamento, "dd/MM/yyyy")}" checked="checked" />
+                        </c:if>
+                        <c:if test="${lancamentoBean.datFechamento eq null}">
+                            <input type="checkbox" name="lancamentoBean.datFechamento" value="${cf:dateCurrent("dd/MM/yyyy")}" />
+                        </c:if>
+
+                        <label>Marcar lançamento como finalizado</label>
                     </div>
                 </div>
             </div>
 
-            <div class="row intervalo2" style="${cadastrar eq true ? '' : 'display:none;'}">
+            <div class="row intervalo2" style="display:none;">
                 <div class="col-md-4">
                     <b>Vai se repetir em qual intervalo de data?</b>
                 </div>
@@ -115,8 +132,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Data de termino</label>
-                        <input type="text" name="d2" class="form-control datepicker" placeholder=""  
-                               data-mask="99/99/9999"
+                        <input type="text" name="d2" class="form-control monthPicker" placeholder=""  
                                value="">
                     </div>
                 </div>
@@ -128,6 +144,28 @@
             </button>
             <script>
                 jQuery(document).ready(function() {
+
+                    $(".monthPicker").datepicker({
+                        dateFormat: 'MM yy',
+                        changeMonth: true,
+                        changeYear: true,
+                        showButtonPanel: true,
+                        onClose: function(dateText, inst) {
+                            var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                            var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                            $(this).val($.datepicker.formatDate('MM yy', new Date(year, month, 1)));
+                        }
+                    });
+
+                    $(".monthPicker").focus(function() {
+                        $(".ui-datepicker-calendar").hide();
+                        $("#ui-datepicker-div").position({
+                            my: "center top",
+                            at: "center bottom",
+                            of: $(this)
+                        });
+                    });
+
                     jQuery('[name="lancamentoBean.loop"]').on('change', function() {
                         console.log(jQuery(this));
                         if (jQuery(this).val() != 'true') {
@@ -138,11 +176,11 @@
                             jQuery('.intervalo1').hide();
                         }
                     });
-                    
+
                     var states = [];
-                    
-                    jQuery.getJSON('${url}/lancamento?datajson=true' , function(data){
-                        for(i in data) {
+
+                    jQuery.getJSON('${url}/lancamento?datajson=true', function(data) {
+                        for (i in data) {
                             var item = data[i];
                             states[states.length] = item.descricao;
                         }
@@ -172,9 +210,9 @@
                         };
                     };
 
-                    
-                    
-                    
+
+
+
                     $('#the-basics .typeahead').typeahead({
                         hint: true,
                         highlight: true,

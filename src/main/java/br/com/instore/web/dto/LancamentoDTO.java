@@ -19,6 +19,7 @@ public class LancamentoDTO extends AbstractDTO {
     private String usuarioNome;
     private String finalizado;
     private String dataFechamento;
+    private String positivo;
 
     public String getId() {
         return id;
@@ -91,4 +92,14 @@ public class LancamentoDTO extends AbstractDTO {
     public void setDataFechamento(String dataFechamento) {
         this.dataFechamento = dataFechamento;
     }
+
+    public String getPositivo() {
+        return positivo;
+    }
+
+    public void setPositivo(String positivo) {
+        this.positivo = positivo;
+    }
+    
+    
 }

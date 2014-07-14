@@ -3,6 +3,7 @@ package br.com.instore.web.dto;
 public class LancamentoCnpjDTO extends AbstractDTO {
     private String id;
     private String nome;
+    private String saldoDisponivel;
 
     public LancamentoCnpjDTO() {
     }
@@ -26,5 +27,13 @@ public class LancamentoCnpjDTO extends AbstractDTO {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getSaldoDisponivel() {
+        return saldoDisponivel;
+    }
+
+    public void setSaldoDisponivel(String saldoDisponivel) {
+        this.saldoDisponivel = saldoDisponivel;
     }
 }

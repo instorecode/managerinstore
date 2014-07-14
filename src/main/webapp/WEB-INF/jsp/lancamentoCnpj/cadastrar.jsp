@@ -1,3 +1,4 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="instore" tagdir="/WEB-INF/tags/" %> 
@@ -30,6 +31,14 @@
                                data-rule-maxlength="18"
                                data-rule-cnpj="true"
                                data-mask="99.999.999/9999-99" value="${lancamentoCnpjBean.cnpj}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Saldo disponivel</label>
+                        <input type="text" name="lancamentoCnpjBean.saldoDisponivel" class="form-control" placeholder="Nome"  
+                               data-rule-required="true" 
+                               data-maskmoney="true" value='<fmt:formatNumber value="${lancamentoCnpjBean.saldoDisponivel}" minFractionDigits="2" />'>
                     </div>
                 </div>
             </div>

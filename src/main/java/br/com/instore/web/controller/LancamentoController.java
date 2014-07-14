@@ -9,6 +9,7 @@ import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.bean.LancamentoBean;
 import br.com.instore.web.annotation.Restrict;
 import br.com.instore.web.component.request.RequestLancamento;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.inject.Inject;
 
@@ -52,7 +53,7 @@ public class LancamentoController implements java.io.Serializable {
     @Post
     @Restrict
     @Path("/lancamento/cadastrar")
-    public void cadastrar(LancamentoBean lancamentoBean , Date d1 , Date d2) {
+    public void cadastrar(LancamentoBean lancamentoBean , Date d1 , String d2) {
         requestLancamento.salvar(lancamentoBean , d1 , d2);
     }
 
@@ -68,7 +69,7 @@ public class LancamentoController implements java.io.Serializable {
     @Post
     @Restrict
     @Path("/lancamento/atualizar/{id}")
-    public void cadastrar(Integer id , LancamentoBean lancamentoBean  , Date d1 , Date d2 ) {
+    public void cadastrar(Integer id , LancamentoBean lancamentoBean  , Date d1 , String d2 ) {
         requestLancamento.salvar(lancamentoBean , d1 , d2);
     }
 

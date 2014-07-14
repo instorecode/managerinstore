@@ -8,17 +8,23 @@ import br.com.instore.core.orm.bean.property.Lancamento;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.dto.LancamentoCnpjDTO;
+import br.com.instore.web.dto.LancamentoRelatorioDTO;
 import br.com.instore.web.dto.Relatorio1DTO;
 import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 @RequestScoped
 public class RequestLancamentoCnpj implements java.io.Serializable {
- @Inject
+
+    @Inject
     private SessionRepository repository;
     @Inject
     private Result result;
@@ -40,6 +46,10 @@ public class RequestLancamentoCnpj implements java.io.Serializable {
         lista = repository.query(LancamentoCnpjBean.class).findAll();
         for (LancamentoCnpjBean bean : lista) {
             LancamentoCnpjDTO dto = new LancamentoCnpjDTO(Utilities.leftPad(bean.getId()), bean.getNome());
+
+            NumberFormat formatter = NumberFormat.getCurrencyInstance();
+            String moneyString = formatter.format(bean.getSaldoDisponivel());
+            dto.setSaldoDisponivel(moneyString);
             lista2.add(dto);
         }
         return lista2;
@@ -72,12 +82,12 @@ public class RequestLancamentoCnpj implements java.io.Serializable {
             repository.setUsuario(sessionUsuario.getUsuarioBean());
 
             List<LancamentoBean> lista = repository.query(LancamentoBean.class).eq(Lancamento.LANCAMENTO_CNPJ, id).findAll();
-            if(null != lista && !lista.isEmpty()) {
+            if (null != lista && !lista.isEmpty()) {
                 for (LancamentoBean item : lista) {
                     repository.delete(item);
                 }
             }
-            
+
             LancamentoCnpjBean bean = repository.marge((LancamentoCnpjBean) repository.find(LancamentoCnpjBean.class, id));
             repository.delete(bean);
 
@@ -88,13 +98,119 @@ public class RequestLancamentoCnpj implements java.io.Serializable {
             result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel remover a entidade!")).recursive().serialize();
         }
     }
-    
+
     public List<Relatorio1DTO> relatorio1() {
-        String  q = "select \n" +
-                    "    valor , descricao\n" +
-                    "from\n" +
-                    "    lancamento";
-        List<Relatorio1DTO> lista  = repository.query(q).executeSQL(Relatorio1DTO.class);
+        String q = "select \n"
+                + "    valor , descricao\n"
+                + "from\n"
+                + "    lancamento";
+        List<Relatorio1DTO> lista = repository.query(q).executeSQL(Relatorio1DTO.class);
         return lista;
+    }
+
+    private List<LancamentoRelatorioDTO> relatorio(Integer id, Date d1, Date d2, int tipo) {
+
+        String sqlRule = " \n";
+        String sqlTipo = "\n\n";
+
+        if (null != id) {
+            sqlRule += " \n and lancamento_cnpj.id = " + id;
+        }
+
+        if (null != d1) {
+            sqlRule += " \n and lancamento.mes >= date('"+new SimpleDateFormat("yyyy-MM-dd").format(d1)+"')";
+        }
+
+        if (null != d2) {
+            sqlRule += " \n and lancamento.mes <= date('"+new SimpleDateFormat("yyyy-MM-dd").format(d2)+"')";
+        }
+
+        String queries = "";
+        queries = "select \n"
+                + "    mes as data,\n"
+                + "	descricao as historico,\n"
+                + "	valor as credito,\n"
+                + "	0     as debito,\n"
+                + "	saldo_disponivel as saldo ,\n"
+                + "	positivo, data_fechamento as fechamento\n"
+                + "from\n"
+                + "    lancamento\n"
+                + "inner join lancamento_cnpj on lancamento_cnpj.id = lancamento.lancamento_cnpj\n"
+                + "where \n"
+                + "	credito = 1\n"
+                + sqlTipo
+                + sqlRule
+                + "\nunion\n"
+                + "\n"
+                + "select \n"
+                + "    mes as data,\n"
+                + "	descricao as historico,\n"
+                + "    0     as credito,\n"
+                + "	valor as debito,\n"
+                + "	saldo_disponivel as saldo ,\n"
+                + "	positivo, data_fechamento as fechamento\n"
+                + "from\n"
+                + "    lancamento\n"
+                + "inner join lancamento_cnpj on lancamento_cnpj.id = lancamento.lancamento_cnpj\n"
+                + "where \n"
+                + "	debito = 1\n"
+                + sqlTipo
+                + sqlRule
+                + " order by data \n";
+
+        List<LancamentoRelatorioDTO> lista1 = repository.query(queries).executeSQL(LancamentoRelatorioDTO.class);
+        return lista1;
+    }
+
+    public void relatorios(Integer id, Date d1, Date d2) {
+        List<LancamentoRelatorioDTO> lista1 = relatorio(id, d1, d2, 0);
+        List<LancamentoRelatorioDTO> lista2 = new ArrayList<LancamentoRelatorioDTO>();
+        
+        List<LancamentoRelatorioDTO> listaAux = new ArrayList<LancamentoRelatorioDTO>();
+        List<LancamentoRelatorioDTO> listaAux2 = new ArrayList<LancamentoRelatorioDTO>();
+
+        for (LancamentoRelatorioDTO item : lista1) {
+            listaAux.add(item);
+        }
+
+        for (LancamentoRelatorioDTO item : lista2) {
+            listaAux.add(item);
+        }
+
+        BigDecimal valurAnt = new BigDecimal("0");
+        int indice = 0;
+        for (LancamentoRelatorioDTO item : listaAux) {
+            if (indice == 0) {
+                valurAnt = item.getSaldo();
+            }
+
+            item.setSaldo(valurAnt);
+            
+            if (item.getPositivo() > 0) {
+                
+                item.setSaldoCalculado((valurAnt.add(item.getDebito())).add(item.getCredito()));
+            } else {
+                item.setSaldoCalculado((valurAnt.subtract(item.getDebito())).subtract(item.getCredito()));
+            }
+            valurAnt = item.getSaldoCalculado();
+            lista2.add(item);
+
+            indice++;
+        }
+        
+        
+       
+        BigDecimal bd1 = new BigDecimal("0");
+        BigDecimal bd2 = new BigDecimal("0");
+
+
+        for (LancamentoRelatorioDTO item : lista1) {
+            bd1 = bd1.add(item.getDebito());
+            bd2 = bd2.add(item.getCredito());
+        }
+
+        result.include("lancamentoRelatorioList", lista2);
+        result.include("totalDebito", bd1);
+        result.include("totalCredito", bd2);
     }
 }

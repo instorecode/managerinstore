@@ -2,12 +2,13 @@ package br.com.instore.web.component.request;
 
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.view.Results;
+import br.com.instore.core.orm.RepositoryViewer;
 import br.com.instore.core.orm.bean.LancamentoBean;
 import br.com.instore.core.orm.bean.LancamentoCnpjBean;
-import br.com.instore.core.orm.bean.property.LancamentoFinalizado;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.dto.LancamentoDTO;
+import br.com.instore.web.dto.LancamentoRelatorioDTO;
 import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
 import java.text.NumberFormat;
@@ -57,8 +58,13 @@ public class RequestLancamento implements java.io.Serializable {
             dto.setMes(new SimpleDateFormat("dd/MM/yyyy").format(bean.getMes()));
             dto.setValor(moneyString);
             dto.setUsuarioNome(bean.getUsuario().getNome());
-            dto.setDataFechamento(new SimpleDateFormat("dd/MM/yyyy").format(bean.getDatFechamento()));
+            if (null != bean.getDatFechamento()) {
+                dto.setDataFechamento("Finalizado na data " + new SimpleDateFormat("dd/MM/yyyy").format(bean.getDatFechamento()) + ".");
+            } else {
+                dto.setDataFechamento("Não foi finalizado");
+            }
 
+            dto.setPositivo(bean.getPositivo() ? "Sim" : "Não");
 
             lista2.add(dto);
         }
@@ -73,7 +79,17 @@ public class RequestLancamento implements java.io.Serializable {
         return (List<LancamentoCnpjBean>) repository.query(LancamentoCnpjBean.class).findAll();
     }
 
-    public void salvar(LancamentoBean bean, Date d1, Date d2) {
+    public void salvar(LancamentoBean bean, Date d1, String d2s) {
+
+        if (null != d1 && !(null != d2s && !d2s.isEmpty())) {
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Informe a data de inicio e a data de termino!")).recursive().serialize();
+            return;
+        }
+        if ((null != d2s && !d2s.isEmpty()) && null == d1) {
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Informe a data de inicio e a data de termino!")).recursive().serialize();
+            return;
+        }
+
         try {
             repository.setUsuario(sessionUsuario.getUsuarioBean());
 
@@ -95,31 +111,52 @@ public class RequestLancamento implements java.io.Serializable {
 
             bean.setUsuario(sessionUsuario.getUsuarioBean());
 
-            if (null != d1 && null != d2) {
+            if (null != d1 && null != d2s && !d2s.isEmpty()) {
+
+                Date d2 = null;
+                try {
+                    d2 = new SimpleDateFormat("MMMMM yyyy").parse(d2s);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Intervalo de datas de repetiçoes invalido!")).recursive().serialize();
+                    return;
+                }
+
                 DateTime dt1 = new DateTime(d1);
                 DateTime dt2 = new DateTime(d2);
 
+                if (dt2.getYear() <= dt1.getYear() && (!d2.after(d1) || dt2.getMonthOfYear() <= dt1.getMonthOfYear())) {
+                    result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "O invervalo de meses é muito pequeno!")).recursive().serialize();
+                    return;
+                }
+
                 int meses = Months.monthsBetween(dt1, dt2).getMonths();
+
                 for (int i = 0; i <= meses; i++) {
-                        
+
                     Calendar c = Calendar.getInstance();
-                    c.setTimeInMillis(bean.getMes().getTime());
+                    c.setTimeInMillis(d1.getTime());
                     c.add(Calendar.MONTH, i);
-                    
+                    Date d = c.getTime();
+
                     LancamentoBean lb = new LancamentoBean();
                     lb.setCredito(bean.getCredito());
                     lb.setDatFechamento(null);
                     lb.setDebito(bean.getCredito());
-                    lb.setDescricao(bean.getDescricao() +i+"ª parcela.");
+                    lb.setDescricao(bean.getDescricao() + " " + (i + 1) + "ª parcela em " + new SimpleDateFormat("MMMMM").format(d) + " de " + new SimpleDateFormat("yyyy").format(d) + ".");
                     lb.setLancamentoCnpj(bean.getLancamentoCnpj());
-                    lb.setMes(c.getTime());
+                    lb.setMes(d);
                     lb.setUsuario(bean.getUsuario());
-                    lb.setValor(bean.getValor());
-                    
+                    lb.setValor(bean.getValor() / (meses + 1));
+                    lb.setPositivo(bean.getPositivo());
+
                     repository.save(lb);
                 }
             } else {
                 if (bean != null && bean.getId() != null && bean.getId() > 0) {
+                    if (null != bean.getDatFechamento()) {
+                        removeSaldo(bean.getLancamentoCnpj().getId(), bean.getValor());
+                    }
                     repository.save(repository.marge(bean));
                 } else {
                     repository.save(bean);
@@ -140,8 +177,12 @@ public class RequestLancamento implements java.io.Serializable {
             repository.setUsuario(sessionUsuario.getUsuarioBean());
 
             LancamentoBean bean = repository.marge((LancamentoBean) repository.find(LancamentoBean.class, id));
-            repository.delete(bean);
 
+            if (null == bean.getDatFechamento()) {
+                addSaldo(bean.getLancamentoCnpj().getId(), bean.getValor());
+            }
+
+            repository.delete(bean);
             repository.finalize();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Entidade removida com sucesso!")).recursive().serialize();
         } catch (Exception e) {
@@ -156,5 +197,17 @@ public class RequestLancamento implements java.io.Serializable {
             return true;
         }
         return false;
+    }
+
+    public void removeSaldo(Integer id, Double val) {
+//        LancamentoCnpjBean bean = repository.find(LancamentoCnpjBean.class, id);
+//        bean.setSaldoDisponivel(bean.getSaldoDisponivel() - val);
+//        repository.save(repository.marge(bean));
+    }
+
+    public void addSaldo(Integer id, Double val) {
+//        LancamentoCnpjBean bean = repository.find(LancamentoCnpjBean.class, id);
+//        bean.setSaldoDisponivel(bean.getSaldoDisponivel() + val);
+//        repository.save(repository.marge(bean));
     }
 }

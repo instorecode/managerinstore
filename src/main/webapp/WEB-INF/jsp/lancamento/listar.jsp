@@ -3,8 +3,6 @@
 
     <jsp:attribute name="submenu">
         <a href="${url}/lancamento/cadastrar" class="btn btn-default"> <i class="fa fa-save"></i> Cadastrar </a>
-        <a href="${url}/lancamento" class="btn btn-default btnEfetuarLB" style="display: none;"> <i class="fa fa-money"></i> Efetuar lançamento </a>
-        <span class="jaFoiEfetuado" style="display: none;">&nbsp;&nbsp;Lançamento já foi efetuado </span>
     </jsp:attribute>
 
     <jsp:attribute name="gridColumn">
@@ -14,6 +12,7 @@
                 {title: 'Descrição', name: 'descricao', index: true, filter: true, filterType: 'input'},
                 {title: 'Usuário', name: 'usuarioNome', index: true, filter: true, filterType: 'input'},
                 {title: 'Valor', name: 'valor', index: true, filter: true, filterType: 'input'},
+                {title: 'Saldo positivo', name: 'positivo', index: true, filter: true, filterType: 'input'},
             ];
 
             function onRowDblClick(data) {
@@ -21,73 +20,9 @@
             }
 
             function onRowClick(data) {
-                jQuery.ajax({
-                    type: 'GET',
-                    data: {
-                        efetuar: true,
-                        id: data.id
-                    },
-                    success: function(response) {
-                        if (response) {
-                            jQuery('.btnEfetuarLB').show();
-                            jQuery('.btnEfetuarLB').attr('xid', data.id);
-                            jQuery('.jaFoiEfetuado').hide();
-
-                        } else {
-                            jQuery('.btnEfetuarLB').hide();
-                            jQuery('.jaFoiEfetuado').show();
-                        }
-                    },
-                    error: function(response) {
-                        jQuery('.jaFoiEfetuado').hide();
-                        jQuery('.btnEfetuarLB').hide();
-                        bootbox.hideAll();
-                        bootbox.dialog({
-                            message: "Lamento, ouve um erro interno. Não foi possiveç efetuar o lançamento",
-                            title: "Sistema processando informações",
-                            buttons: {}
-                        });
-
-                        setTimeout(function() {
-                            bootbox.hideAll();
-                        }, 2000);
-                    }
-                });
+                
             }
 
-            jQuery(document).ready(function() {
-                jQuery('.btnEfetuarLB').on('click', function() {
-                    var xid = jQuery(this).attr('xid');
-                    jQuery.ajax({
-                        async: true,
-                        type: 'GET',
-                        data: {
-                            id:xid,
-                            efetuarJa: true
-                        },
-                        dataType: 'json',
-                        beforeSend: function() {
-                            bootbox.hideAll();
-                            bootbox.dialog({
-                                message: "Aguarde...",
-                                title: "Sistema processando informações",
-                                buttons: {}
-                            });
-                        },
-                        success: function(data) {
-                            dialogAjax(data.response);
-                            window.location.reload();
-                        },
-                        error: function(data) {
-                            dialogAjax(data.response);
-                            window.location.reload();
-                        }
-                    });
-                    return false;
-                });
-
-
-            });
         </script>
     </jsp:attribute>
     <jsp:body> 
@@ -152,6 +87,24 @@
                 </div>
                 <div class="col-md-8 val"> 
                     <div data-usuarioNome="true"></div> 
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 prop"> 
+                    Data de fechamento do lançamento
+                </div>
+                <div class="col-md-8 val"> 
+                    <div data-dataFechamento="true"></div> 
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4 prop"> 
+                    Saldo positivo
+                </div>
+                <div class="col-md-8 val"> 
+                    <div data-positivo="true"></div> 
                 </div>
             </div>
 
