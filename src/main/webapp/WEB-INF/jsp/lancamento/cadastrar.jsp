@@ -11,6 +11,7 @@
     <jsp:body>
         <form d="cad_cliente" method="POST" data-form="true" data-success-url="${url}/lancamento">
             <input type="hidden" name="lancamentoBean.id" value="${lancamentoBean.id}" />
+            <input type="hidden" name="lancamentoBean.positivo" value="${true}" />
 
             <div class="row">
                 <div class="col-md-12">
@@ -25,7 +26,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-12">
                     <div class="form-group">
                         <label>Entidade / CNPJ</label>
                         <br />
@@ -37,26 +38,14 @@
                     </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-12">
                     <div class="form-group">
-                        <label>Debito ou Credito</label>
+                        <label>Pagar ou Receber</label>
                         <br />
 
                         <select name="lancamentoBean.debito" data-selectradio="true" class="form-control arquivosDeMusica"  data-rule-required="true" style="margin-left: -30px;">
-                            <option value="${true}" ${lancamentoBean.debito ? 'selected="selected"' : ''} ${cadastrar eq true ? 'selected="selected"' : ''}>Débito</option>
-                            <option value="${false}" ${lancamentoBean.credito ? 'selected="selected"' : ''}>Crédito</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>Saldo positivo ? </label>
-                        <br />
-
-                        <select name="lancamentoBean.positivo" data-selectradio="true" class="form-control arquivosDeMusica"  data-rule-required="true" style="margin-left: -30px;">
-                            <option value="${true}" ${lancamentoBean.positivo ? 'selected="selected"' : ''} ${cadastrar eq true ? 'selected="selected"' : ''}>Sim</option>
-                            <option value="${false}" ${not lancamentoBean.positivo ? 'selected="selected"' : ''}>Não</option>
+                            <option value="${true}" ${lancamentoBean.debito ? 'selected="selected"' : ''} ${cadastrar eq true ? 'selected="selected"' : ''}>Pagar</option>
+                            <option value="${false}" ${lancamentoBean.credito ? 'selected="selected"' : ''}>Receber</option>
                         </select>
                     </div>
                 </div>
@@ -79,7 +68,7 @@
             <div class="row" style="${cadastrar eq false ? 'display:none;' : ''}">
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label>Vai se repetir ?</label>
+                        <label>Parcelado</label>
                         <br />
                         <select name="lancamentoBean.loop" data-selectradio="true" class="form-control arquivosDeMusica"  data-rule-required="true" style="margin-left: -30px;">
                             <option value="${true}" >Sim</option>
@@ -111,14 +100,14 @@
                             <input type="checkbox" name="lancamentoBean.datFechamento" value="${cf:dateCurrent("dd/MM/yyyy")}" />
                         </c:if>
 
-                        <label>Marcar lançamento como finalizado</label>
+                        <label>Marcar lançamento como finalizado ${cf:dateCurrent("dd/MM/yyyy")}</label>
                     </div>
                 </div>
             </div>
 
             <div class="row intervalo2" style="display:none;">
                 <div class="col-md-4">
-                    <b>Vai se repetir em qual intervalo de data?</b>
+                    <b>Em quantos meses</b>
                 </div>
                 <hr />
                 <div class="col-md-4">
@@ -132,8 +121,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Data de termino</label>
-                        <input type="text" name="d2" class="form-control monthPicker" placeholder=""  
-                               value="">
+                        <input type="text" name="d2" class="form-control" placeholder="" value="" data-mask="99/9999">
                     </div>
                 </div>
             </div>

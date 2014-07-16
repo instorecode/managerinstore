@@ -23,7 +23,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-12">
                     <div class="form-group">
                         <label>Cliente</label>
                         <br />

@@ -12,9 +12,8 @@
                 {title: 'Descrição', name: 'descricao', index: true, filter: true, filterType: 'input'},
                 {title: 'Usuário', name: 'usuarioNome', index: true, filter: true, filterType: 'input'},
                 {title: 'Valor', name: 'valor', index: true, filter: true, filterType: 'input'},
-                {title: 'Saldo positivo', name: 'positivo', index: true, filter: true},
                 {title: 'Date de lançamento', name: 'mes', index: true, filter: true, filterType: 'input'},
-                {title: 'Date de lançamento', name: 'tipo', index: true, filter: true},
+                {title: 'Pagar / Receber', name: 'tipo', index: true, filter: true},
             ];
 
             function onRowDblClick(data) {
@@ -85,19 +84,10 @@
 
             <div class="row">
                 <div class="col-md-4 prop"> 
-                    Data de fechamento do lançamento
+                    Data de finalização do lançamento
                 </div>
                 <div class="col-md-8 val"> 
                     <div data-dataFechamento="true"></div> 
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Saldo positivo
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-positivo="true"></div> 
                 </div>
             </div>
         </div>

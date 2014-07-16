@@ -44,9 +44,9 @@ public class RequestLancamento implements java.io.Serializable {
     public List<LancamentoDTO> beanList() {
         List<LancamentoBean> lista = new ArrayList<LancamentoBean>();
         List<LancamentoDTO> lista2 = new ArrayList<LancamentoDTO>();
-        
+
         lista = repository.query(LancamentoBean.class).orderAsc("mes").findAll();
-        
+
         for (LancamentoBean bean : lista) {
             LancamentoDTO dto = new LancamentoDTO();
             String moneyString = bean.getValor().toString();
@@ -59,7 +59,7 @@ public class RequestLancamento implements java.io.Serializable {
             dto.setId(Utilities.leftPad(bean.getId()));
             dto.setCredito(bean.getCredito() ? "Sim" : "Não");
             dto.setDebito(bean.getDebito() ? "Sim" : "Não");
-            dto.setTipo(bean.getCredito() ? "CRÉDITO" : "DÉBITO");
+            dto.setTipo(bean.getCredito() ? "Receber" : "Pagar");
             dto.setDescricao(bean.getDescricao());
             dto.setMes(new SimpleDateFormat("dd/MM/yyyy").format(bean.getMes()));
             dto.setValor(moneyString);
@@ -85,6 +85,37 @@ public class RequestLancamento implements java.io.Serializable {
         return (List<LancamentoCnpjBean>) repository.query(LancamentoCnpjBean.class).findAll();
     }
 
+    public String mes(int i) {
+        switch (i) {
+            case 1:
+                return "Janeiro";
+            case 2:
+                return "Fevereito";
+            case 3:
+                return "Março";
+            case 4:
+                return "Abril";
+            case 5:
+                return "Maio";
+            case 6:
+                return "Junho";
+            case 7:
+                return "Julho";
+            case 8:
+                return "Agosto";
+            case 9:
+                return "Setembro";
+            case 10:
+                return "Outubro";
+            case 11:
+                return "Novembro";
+            case 12:
+                return "Dezembro";
+        }
+
+        return " Janeiro";
+    }
+
     public void salvar(LancamentoBean bean, Date d1, String d2s) {
 
         if (null != d1 && !(null != d2s && !d2s.isEmpty())) {
@@ -95,7 +126,7 @@ public class RequestLancamento implements java.io.Serializable {
             result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Informe a data de inicio e a data de termino!")).recursive().serialize();
             return;
         }
-        
+
         try {
             repository.setUsuario(sessionUsuario.getUsuarioBean());
 
@@ -121,7 +152,7 @@ public class RequestLancamento implements java.io.Serializable {
 
                 Date d2 = null;
                 try {
-                    d2 = new SimpleDateFormat("MMMMM yyyy").parse(d2s);
+                    d2 = new SimpleDateFormat("MM/yyyy").parse(d2s);
                 } catch (Exception e) {
                     e.printStackTrace();
                     result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Intervalo de datas de repetiçoes invalido!")).recursive().serialize();
@@ -144,35 +175,44 @@ public class RequestLancamento implements java.io.Serializable {
                     c.setTimeInMillis(d1.getTime());
                     c.add(Calendar.MONTH, i);
                     Date d = c.getTime();
+
                     LancamentoBean lb = new LancamentoBean();
                     lb.setCredito(bean.getCredito());
                     lb.setDatFechamento(null);
                     lb.setDebito(bean.getCredito());
-                    lb.setDescricao(bean.getDescricao() + " " + (i + 1) + "ª parcela em " + new SimpleDateFormat("MMMMM").format(d) + " de " + new SimpleDateFormat("yyyy").format(d) + ".");
+                    lb.setDescricao(bean.getDescricao() + " " + (i + 1) + "ª parcela em " + mes(c.get(Calendar.MONTH) + 1) + " de " + new SimpleDateFormat("yyyy").format(d) + ".");
                     lb.setLancamentoCnpj(bean.getLancamentoCnpj());
                     lb.setMes(d);
                     lb.setUsuario(bean.getUsuario());
                     lb.setValor(bean.getValor() / (meses + 1));
-                    lb.setPositivo(bean.getPositivo());
+                    lb.setPositivo(bean.getCredito() ? true : false);
 
                     if (!validate(lb)) {
                         return;
                     }
 
+                    if ((null == lb.getDebito() && null == lb.getCredito()) || (!lb.getDebito() && !lb.getCredito())) {
+                        lb.setDebito(true);
+                    }
 
                     repository.save(lb);
                 }
             } else {
+                if ((null == bean.getDebito() && null == bean.getCredito()) || (!bean.getDebito() && !bean.getCredito())) {
+                    bean.setDebito(true);
+                }
 
                 if (!validate(bean)) {
                     return;
                 }
+                bean.setPositivo(bean.getCredito() ? true : false);
 
                 if (bean != null && bean.getId() != null && bean.getId() > 0) {
                     if (null != bean.getDatFechamento()) {
                         removeSaldo(bean.getLancamentoCnpj().getId(), bean.getValor());
                     }
                     repository.save(repository.marge(bean));
+
                 } else {
                     repository.save(bean);
                 }

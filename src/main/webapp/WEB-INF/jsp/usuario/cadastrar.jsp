@@ -51,7 +51,7 @@
                         <input type="password" name="usuarioBean.senha" class="form-control" placeholder="Senha"  
                                data-rule-required="true" 
                                data-rule-minlength="3"
-                               data-rule-maxlength="255" value="${usuarioBean.senha}">
+                               data-rule-maxlength="255" value="">
                     </div>
                 </div>
 

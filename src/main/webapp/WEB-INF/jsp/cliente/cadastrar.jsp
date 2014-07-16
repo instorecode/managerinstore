@@ -26,11 +26,11 @@
                     </div>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-12">
                     <div class="form-group">
                         <label>Matriz</label>
-                        <select class="form-control" name="cliente.parente">
-                            <option value>Não possui Matriz</option>
+                        <br />
+                        <select class="form-control" name="cliente.parente" data-selectradio="true" data-right="true">
                             <c:forEach items="${clienteBeanList}" var="clienteBean">
                                 <option value="${clienteBean.idcliente}" ${cliente.parente eq clienteBean.idcliente ? 'selected="selected"' : ''}>Cliente: ${clienteBean.nome}</option>
                             </c:forEach>
@@ -84,7 +84,7 @@
                     <div class="form-group">
                         <label>Indice de reajuste do contrato</label>
                         <input type="text" name="dadosCliente.indiceReajusteContrato" class="form-control" placeholder="Indice de reajuste do contrato" 
-                               data-rule-required="true" data-mask="99?.99" value="${dadosCliente.indiceReajusteContrato}">
+                               data-rule-required="true" data-mask="00.00" value="${dadosCliente.indiceReajusteContrato}">
                     </div>
                 </div>
 
