@@ -25,20 +25,26 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>CNPJ</label>
-                        <input type="text" name="lancamentoCnpjBean.cnpj" class="form-control" placeholder="Nome"  
+                        <input type="text" name="lancamentoCnpjBean.cnpj" class="form-control" placeholder="CNPJ"  
                                data-rule-required="true" 
-                               data-rule-minlength="18"
-                               data-rule-maxlength="18"
                                data-rule-cnpj="true"
-                               data-mask="99.999.999/9999-99" value="${lancamentoCnpjBean.cnpj}">
+                               data-mask="00.000.000/0000-00" value="${lancamentoCnpjBean.cnpj}">
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>Saldo disponivel</label>
-                        <input type="text" name="lancamentoCnpjBean.saldoDisponivel" class="form-control" placeholder="Nome"  
+                        <c:if test="${lancamentoCnpjBean.saldoDisponivel ne null}">
+                            <input type="text" name="lancamentoCnpjBean.saldoDisponivel" class="form-control" placeholder="Saldo Disponivel"  
                                data-rule-required="true" 
                                data-maskmoney="true" value='<fmt:formatNumber value="${lancamentoCnpjBean.saldoDisponivel}" minFractionDigits="2" />'>
+                        </c:if>
+                        <c:if test="${lancamentoCnpjBean.saldoDisponivel eq null}">
+                            <input type="text" name="lancamentoCnpjBean.saldoDisponivel" class="form-control" placeholder="Saldo Disponivel"  
+                               data-rule-required="true" 
+                               data-maskmoney="true" value='0,00'>
+                        </c:if>
+                        
                     </div>
                 </div>
             </div>

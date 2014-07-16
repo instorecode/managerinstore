@@ -1,9 +1,394 @@
-/*
- *  jquery-maskmoney - v3.0.2
- *  jQuery plugin to mask data entry in the input text in the form of money (currency)
- *  https://github.com/plentz/jquery-maskmoney
+/**
+ * jquery.mask.js
+ * @version: v1.6.5
+ * @author: Igor Escobar
  *
- *  Made by Diego Plentz
- *  Under MIT License (https://raw.github.com/plentz/jquery-maskmoney/master/LICENSE)
+ * Created by Igor Escobar on 2012-03-10. Please report any bug at http://blog.igorescobar.com
+ *
+ * Copyright (c) 2012 Igor Escobar http://blog.igorescobar.com
+ *
+ * The MIT License (http://www.opensource.org/licenses/mit-license.php)
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
  */
-!function($){"use strict";$.browser||($.browser={},$.browser.mozilla=/mozilla/.test(navigator.userAgent.toLowerCase())&&!/webkit/.test(navigator.userAgent.toLowerCase()),$.browser.webkit=/webkit/.test(navigator.userAgent.toLowerCase()),$.browser.opera=/opera/.test(navigator.userAgent.toLowerCase()),$.browser.msie=/msie/.test(navigator.userAgent.toLowerCase()));var a={destroy:function(){return $(this).unbind(".maskMoney"),$.browser.msie&&(this.onpaste=null),this},mask:function(a){return this.each(function(){var b,c=$(this);return"number"==typeof a&&(c.trigger("mask"),b=$(c.val().split(/\D/)).last()[0].length,a=a.toFixed(b),c.val(a)),c.trigger("mask")})},unmasked:function(){return this.map(function(){var a,b=$(this).val()||"0",c=-1!==b.indexOf("-");return $(b.split(/\D/).reverse()).each(function(b,c){return c?(a=c,!1):void 0}),b=b.replace(/\D/g,""),b=b.replace(new RegExp(a+"$"),"."+a),c&&(b="-"+b),parseFloat(b)})},init:function(a){return a=$.extend({prefix:"",suffix:"",affixesStay:!0,thousands:",",decimal:".",precision:2,allowZero:!1,allowNegative:!1},a),this.each(function(){function b(){var a,b,c,d,e,f=s.get(0),g=0,h=0;return"number"==typeof f.selectionStart&&"number"==typeof f.selectionEnd?(g=f.selectionStart,h=f.selectionEnd):(b=document.selection.createRange(),b&&b.parentElement()===f&&(d=f.value.length,a=f.value.replace(/\r\n/g,"\n"),c=f.createTextRange(),c.moveToBookmark(b.getBookmark()),e=f.createTextRange(),e.collapse(!1),c.compareEndPoints("StartToEnd",e)>-1?g=h=d:(g=-c.moveStart("character",-d),g+=a.slice(0,g).split("\n").length-1,c.compareEndPoints("EndToEnd",e)>-1?h=d:(h=-c.moveEnd("character",-d),h+=a.slice(0,h).split("\n").length-1)))),{start:g,end:h}}function c(){var a=!(s.val().length>=s.attr("maxlength")&&s.attr("maxlength")>=0),c=b(),d=c.start,e=c.end,f=c.start!==c.end&&s.val().substring(d,e).match(/\d/)?!0:!1,g="0"===s.val().substring(0,1);return a||f||g}function d(a){s.each(function(b,c){if(c.setSelectionRange)c.focus(),c.setSelectionRange(a,a);else if(c.createTextRange){var d=c.createTextRange();d.collapse(!0),d.moveEnd("character",a),d.moveStart("character",a),d.select()}})}function e(b){var c="";return b.indexOf("-")>-1&&(b=b.replace("-",""),c="-"),c+a.prefix+b+a.suffix}function f(b){var c,d,f,g=b.indexOf("-")>-1&&a.allowNegative?"-":"",h=b.replace(/[^0-9]/g,""),i=h.slice(0,h.length-a.precision);return i=i.replace(/^0*/g,""),i=i.replace(/\B(?=(\d{3})+(?!\d))/g,a.thousands),""===i&&(i="0"),c=g+i,a.precision>0&&(d=h.slice(h.length-a.precision),f=new Array(a.precision+1-d.length).join(0),c+=a.decimal+f+d),e(c)}function g(a){var b,c=s.val().length;s.val(f(s.val())),b=s.val().length,a-=c-b,d(a)}function h(){var a=s.val();s.val(f(a))}function i(){var b=s.val();return a.allowNegative?""!==b&&"-"===b.charAt(0)?b.replace("-",""):"-"+b:b}function j(a){a.preventDefault?a.preventDefault():a.returnValue=!1}function k(a){a=a||window.event;var d,e,f,h,k,l=a.which||a.charCode||a.keyCode;return void 0===l?!1:48>l||l>57?45===l?(s.val(i()),!1):43===l?(s.val(s.val().replace("-","")),!1):13===l||9===l?!0:!$.browser.mozilla||37!==l&&39!==l||0!==a.charCode?(j(a),!0):!0:c()?(j(a),d=String.fromCharCode(l),e=b(),f=e.start,h=e.end,k=s.val(),s.val(k.substring(0,f)+d+k.substring(h,k.length)),g(f+1),!1):!1}function l(c){c=c||window.event;var d,e,f,h,i,k=c.which||c.charCode||c.keyCode;return void 0===k?!1:(d=b(),e=d.start,f=d.end,8===k||46===k||63272===k?(j(c),h=s.val(),e===f&&(8===k?""===a.suffix?e-=1:(i=h.split("").reverse().join("").search(/\d/),e=h.length-i-1,f=e+1):f+=1),s.val(h.substring(0,e)+h.substring(f,h.length)),g(e),!1):9===k?!0:!0)}function m(){r=s.val(),h();var a,b=s.get(0);b.createTextRange&&(a=b.createTextRange(),a.collapse(!1),a.select())}function n(){setTimeout(function(){h()},0)}function o(){var b=parseFloat("0")/Math.pow(10,a.precision);return b.toFixed(a.precision).replace(new RegExp("\\.","g"),a.decimal)}function p(b){if($.browser.msie&&k(b),""===s.val()||s.val()===e(o()))a.allowZero?a.affixesStay?s.val(e(o())):s.val(o()):s.val("");else if(!a.affixesStay){var c=s.val().replace(a.prefix,"").replace(a.suffix,"");s.val(c)}s.val()!==r&&s.change()}function q(){var a,b=s.get(0);b.setSelectionRange?(a=s.val().length,b.setSelectionRange(a,a)):s.val(s.val())}var r,s=$(this);a=$.extend(a,s.data()),s.unbind(".maskMoney"),s.bind("keypress.maskMoney",k),s.bind("keydown.maskMoney",l),s.bind("blur.maskMoney",p),s.bind("focus.maskMoney",m),s.bind("click.maskMoney",q),s.bind("cut.maskMoney",n),s.bind("paste.maskMoney",n),s.bind("mask.maskMoney",h)})}};$.fn.maskMoney=function(b){return a[b]?a[b].apply(this,Array.prototype.slice.call(arguments,1)):"object"!=typeof b&&b?($.error("Method "+b+" does not exist on jQuery.maskMoney"),void 0):a.init.apply(this,arguments)}}(window.jQuery||window.Zepto);
+/*jshint laxbreak: true */
+/* global define */
+
+// UMD (Universal Module Definition) patterns for JavaScript modules that work everywhere.
+// https://github.com/umdjs/umd/blob/master/jqueryPlugin.js
+(function (factory) {
+    if (typeof define === "function" && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(["jquery"], factory);
+    } else {
+        // Browser globals
+        factory(window.jQuery || window.Zepto);
+    }
+}(function ($) {
+    "use strict";
+    var Mask = function (el, mask, options) {
+        var jMask = this, old_value, regexMask;
+        el = $(el);
+
+        mask = typeof mask === "function" ? mask(el.val(), undefined, el,  options) : mask;
+
+        jMask.init = function() {
+            options = options || {};
+
+            jMask.byPassKeys = [9, 16, 17, 18, 36, 37, 38, 39, 40, 91];
+            jMask.translation = {
+                '0': {pattern: /\d/},
+                '9': {pattern: /\d/, optional: true},
+                '#': {pattern: /\d/, recursive: true},
+                'A': {pattern: /[a-zA-Z0-9]/},
+                'S': {pattern: /[a-zA-Z]/}
+            };
+
+            jMask.translation = $.extend({}, jMask.translation, options.translation);
+            jMask = $.extend(true, {}, jMask, options);
+
+            regexMask = p.getRegexMask();
+
+            el.each(function() {
+                if (options.maxlength !== false) {
+                    el.attr('maxlength', mask.length);
+                }
+
+                if (options.placeholder) {
+                    el.attr('placeholder' , options.placeholder);
+                }
+                
+                el.attr('autocomplete', 'off');
+                p.destroyEvents();
+                p.events();
+                
+                var caret = p.getCaret();
+
+                p.val(p.getMasked());
+                p.setCaret(caret + p.getMaskCharactersBeforeCount(caret, true));
+            });
+
+
+        };
+
+        var p = {
+            getCaret: function () {
+                var sel,
+                    pos = 0,
+                    ctrl = el.get(0),
+                    dSel = document.selection,
+                    cSelStart = ctrl.selectionStart;
+
+                // IE Support
+                if (dSel && !~navigator.appVersion.indexOf("MSIE 10")) {
+                    sel = dSel.createRange();
+                    sel.moveStart('character', el.is("input") ? -el.val().length : -el.text().length);
+                    pos = sel.text.length;
+                }
+                // Firefox support
+                else if (cSelStart || cSelStart === '0') {
+                    pos = cSelStart;
+                }
+                
+                return pos;
+            },
+            setCaret: function(pos) {
+                if (el.is(":focus")) {
+                    var range, ctrl = el.get(0);
+
+                    if (ctrl.setSelectionRange) {
+                        ctrl.setSelectionRange(pos,pos);
+                    } else if (ctrl.createTextRange) {
+                        range = ctrl.createTextRange();
+                        range.collapse(true);
+                        range.moveEnd('character', pos);
+                        range.moveStart('character', pos);
+                        range.select();
+                    }
+                }
+            },
+            events: function() {
+                el.on('keydown.mask', function() {
+                    old_value = p.val();
+                });
+                el.on('keyup.mask', p.behaviour);
+                el.on("paste.mask drop.mask", function() {
+                    setTimeout(function() {
+                        el.keydown().keyup();
+                    }, 100);
+                });
+                el.on("change.mask", function() {
+                    el.data("changeCalled", true);
+                });
+                el.on("blur.mask", function(e){
+                    var el = $(e.target);
+                    if (el.prop("defaultValue") !== el.val()) {
+                        el.prop("defaultValue", el.val());
+                        if (!el.data("changeCalled")) {
+                            el.trigger("change");
+                        }
+                    }
+                    el.data("changeCalled", false);
+                });
+
+                // clear the value if it not complete the mask
+                el.on("focusout.mask", function() {
+                    if (options.clearIfNotMatch && !regexMask.test(p.val())) {
+                       p.val('');
+                   }
+                });
+            },
+            getRegexMask: function() {
+                var maskChunks = [], translation, pattern, optional, recursive, oRecursive, r;
+
+                for (var i = 0; i < mask.length; i++) {
+                    translation = jMask.translation[mask[i]];
+
+                    if (translation) {
+                        
+                        pattern = translation.pattern.toString().replace(/.{1}$|^.{1}/g, "");
+                        optional = translation.optional;
+                        recursive = translation.recursive;
+                        
+                        if (recursive) {
+                            maskChunks.push(mask[i]);
+                            oRecursive = {digit: mask[i], pattern: pattern};
+                        } else {
+                            maskChunks.push((!optional && !recursive) ? pattern : (pattern + "?"));
+                        }
+
+                    } else {
+                        maskChunks.push("\\" + mask[i]);
+                    }
+                }
+                
+                r = maskChunks.join("");
+                
+                if (oRecursive) {
+                    r = r.replace(new RegExp("(" + oRecursive.digit + "(.*" + oRecursive.digit + ")?)"), "($1)?")
+                         .replace(new RegExp(oRecursive.digit, "g"), oRecursive.pattern);
+                }
+
+                return new RegExp(r);
+            },
+            destroyEvents: function() {
+                el.off('keydown.mask keyup.mask paste.mask drop.mask change.mask blur.mask focusout.mask').removeData("changeCalled");
+            },
+            val: function(v) {
+                var isInput = el.is('input');
+                return arguments.length > 0 
+                    ? (isInput ? el.val(v) : el.text(v)) 
+                    : (isInput ? el.val() : el.text());
+            },
+            getMaskCharactersBeforeCount: function(index, onCleanVal) {
+                for (var count = 0, i = 0, maskL = mask.length; i < maskL && i < index; i++) {
+                    if (!jMask.translation[mask.charAt(i)]) {
+                        index = onCleanVal ? index + 1 : index;
+                        count++;
+                    }
+                }
+                return count;
+            },
+            determineCaretPos: function (originalCaretPos, oldLength, newLength, maskDif) {
+                var translation = jMask.translation[mask.charAt(Math.min(originalCaretPos - 1, mask.length - 1))];
+
+                return !translation ? p.determineCaretPos(originalCaretPos + 1, oldLength, newLength, maskDif)
+                                    : Math.min(originalCaretPos + newLength - oldLength - maskDif, newLength);
+            },
+            behaviour: function(e) {
+                e = e || window.event;
+                var keyCode = e.keyCode || e.which;
+
+                if ($.inArray(keyCode, jMask.byPassKeys) === -1) {
+
+                    var caretPos = p.getCaret(),
+                        currVal = p.val(),
+                        currValL = currVal.length,
+                        changeCaret = caretPos < currValL,
+                        newVal = p.getMasked(),
+                        newValL = newVal.length,
+                        maskDif = p.getMaskCharactersBeforeCount(newValL - 1) - p.getMaskCharactersBeforeCount(currValL - 1);
+                   
+                    if (newVal !== currVal) {
+                        p.val(newVal);
+                    }
+
+                    // change caret but avoid CTRL+A
+                    if (changeCaret && !(keyCode === 65 && e.ctrlKey)) {
+                        // Avoid adjusting caret on backspace or delete
+                        if (!(keyCode === 8 || keyCode === 46)) {
+                            caretPos = p.determineCaretPos(caretPos, currValL, newValL, maskDif);
+                        }
+                        p.setCaret(caretPos);
+                    }
+
+                    return p.callbacks(e);
+                }
+            },
+            getMasked: function (skipMaskChars) {
+                var buf = [],
+                    value = p.val(),
+                    m = 0, maskLen = mask.length,
+                    v = 0, valLen = value.length,
+                    offset = 1, addMethod = "push",
+                    resetPos = -1,
+                    lastMaskChar,
+                    check;
+
+                if (options.reverse) {
+                    addMethod = "unshift";
+                    offset = -1;
+                    lastMaskChar = 0;
+                    m = maskLen - 1;
+                    v = valLen - 1;
+                    check = function () {
+                        return m > -1 && v > -1;
+                    };
+                } else {
+                    lastMaskChar = maskLen - 1;
+                    check = function () {
+                        return m < maskLen && v < valLen;
+                    };
+                }
+
+                while (check()) {
+                    var maskDigit = mask.charAt(m),
+                        valDigit = value.charAt(v),
+                        translation = jMask.translation[maskDigit];
+
+                    if (translation) {
+                        if (valDigit.match(translation.pattern)) {
+                            buf[addMethod](valDigit);
+                             if (translation.recursive) {
+                                if (resetPos === -1) {
+                                    resetPos = m;
+                                } else if (m === lastMaskChar) {
+                                    m = resetPos - offset;
+                                }
+
+                                if (lastMaskChar === resetPos) {
+                                    m -= offset;
+                                }
+                            }
+                            m += offset;
+                        } else if (translation.optional) {
+                            m += offset;
+                            v -= offset;
+                        }
+                        v += offset;
+                    } else {
+                        if (!skipMaskChars) {
+                            buf[addMethod](maskDigit);
+                        }
+                        
+                        if (valDigit === maskDigit) {
+                            v += offset;
+                        }
+
+                        m += offset;
+                    }
+                }
+                
+                var lastMaskCharDigit = mask.charAt(lastMaskChar);
+                if (maskLen === valLen + 1 && !jMask.translation[lastMaskCharDigit]) {
+                    buf.push(lastMaskCharDigit);
+                }
+                
+                return buf.join("");
+            },
+            callbacks: function (e) {
+                var val = p.val(),
+                    changed = p.val() !== old_value;
+                if (changed === true) {
+                    if (typeof options.onChange === "function") {
+                        options.onChange(val, e, el, options);
+                    }
+                }
+
+                if (changed === true && typeof options.onKeyPress === "function") {
+                    options.onKeyPress(val, e, el, options);
+                }
+
+                if (typeof options.onComplete === "function" && val.length === mask.length) {
+                    options.onComplete(val, e, el, options);
+                }
+            }
+        };
+
+        // public methods
+        jMask.remove = function() {
+            var caret = p.getCaret(),
+                maskedCharacterCountBefore = p.getMaskCharactersBeforeCount(caret);
+
+            p.destroyEvents();
+            p.val(jMask.getCleanVal()).removeAttr('maxlength');
+            p.setCaret(caret - maskedCharacterCountBefore);
+        };
+
+        // get value without mask
+        jMask.getCleanVal = function() {
+           return p.getMasked(true);
+        };
+
+        jMask.init();
+    };
+
+    $.fn.mask = function(mask, options) {
+        this.unmask();
+        return this.each(function() {
+            $(this).data('imask', new Mask(this, mask, options));
+        });
+    };
+
+    $.fn.unmask = function() {
+        return this.each(function() {
+            try {
+                $(this).data('imask').remove();
+            } catch (e) {}
+        });
+    };
+
+    $.fn.cleanVal = function() {
+        return $(this).data('imask').getCleanVal();
+    };
+
+    // looking for inputs with data-mask attribute
+    $('*[data-imask]').each(function() {
+        var input = $(this),
+            options = {},
+            prefix = "data-imask-";
+
+        if (input.attr(prefix + 'reverse') === 'true') {
+            options.reverse = true;
+        }
+
+        if (input.attr(prefix + 'maxlength') === 'false') {
+            options.maxlength = false;
+        }
+
+        if (input.attr(prefix + 'clearifnotmatch') === 'true') {
+            options.clearIfNotMatch = true;
+        }
+
+        input.mask(input.attr('data-imask'), options);
+    });
+}));

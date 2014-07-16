@@ -12,7 +12,9 @@
                 {title: 'Descrição', name: 'descricao', index: true, filter: true, filterType: 'input'},
                 {title: 'Usuário', name: 'usuarioNome', index: true, filter: true, filterType: 'input'},
                 {title: 'Valor', name: 'valor', index: true, filter: true, filterType: 'input'},
-                {title: 'Saldo positivo', name: 'positivo', index: true, filter: true, filterType: 'input'},
+                {title: 'Saldo positivo', name: 'positivo', index: true, filter: true},
+                {title: 'Date de lançamento', name: 'mes', index: true, filter: true, filterType: 'input'},
+                {title: 'Date de lançamento', name: 'tipo', index: true, filter: true},
             ];
 
             function onRowDblClick(data) {
@@ -65,19 +67,10 @@
 
             <div class="row">
                 <div class="col-md-4 prop"> 
-                    È débito?
+                    Tipo
                 </div>
                 <div class="col-md-8 val"> 
-                    <div data-debito="true"></div> 
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    È crédito?
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-credito="true"></div> 
+                    <div data-tipo="true"></div> 
                 </div>
             </div>
 
@@ -107,7 +100,6 @@
                     <div data-positivo="true"></div> 
                 </div>
             </div>
-
         </div>
 
         <div datagrid="true" data-id="id"></div>

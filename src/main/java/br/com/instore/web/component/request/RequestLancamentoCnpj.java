@@ -47,9 +47,14 @@ public class RequestLancamentoCnpj implements java.io.Serializable {
         for (LancamentoCnpjBean bean : lista) {
             LancamentoCnpjDTO dto = new LancamentoCnpjDTO(Utilities.leftPad(bean.getId()), bean.getNome());
 
-            NumberFormat formatter = NumberFormat.getCurrencyInstance();
-            String moneyString = formatter.format(bean.getSaldoDisponivel());
+            String moneyString = bean.getSaldoDisponivel().toString();
+            if (null != bean.getSaldoDisponivel()) {
+                NumberFormat formatter = NumberFormat.getCurrencyInstance();
+                moneyString = formatter.format(bean.getSaldoDisponivel());
+            }
+
             dto.setSaldoDisponivel(moneyString);
+            dto.setCnpj(bean.getCnpj());
             lista2.add(dto);
         }
         return lista2;
@@ -60,6 +65,34 @@ public class RequestLancamentoCnpj implements java.io.Serializable {
     }
 
     public void salvar(LancamentoCnpjBean bean) {
+
+        if (null == bean) {
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Preencha todos os campos")).recursive().serialize();
+            return;
+        }
+        if (null == bean.getNome() || bean.getNome().isEmpty()) {
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Informe o nome!")).recursive().serialize();
+            return;
+        }
+        if (null == bean.getCnpj() || bean.getCnpj().isEmpty()) {
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Informe o CNPJ!")).recursive().serialize();
+            return;
+        }
+        if (null == bean.getSaldoDisponivel()) {
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Informe o saldo disponivel!")).recursive().serialize();
+            return;
+        }
+        
+        if(repository.query(LancamentoCnpjBean.class).eq("nome", bean.getNome()).count() > 0) {
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não é possivel finalizar a ação , já existe uma Entidade financeiro com esse nome!")).recursive().serialize();
+            return;
+        }
+        
+        if(repository.query(LancamentoCnpjBean.class).eq("cnpj", bean.getCnpj()).count() > 0) {
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não é possivel finalizar a ação , já existe uma Entidade financeiro com esse cnpj!")).recursive().serialize();
+            return;
+        }
+
         try {
             repository.setUsuario(sessionUsuario.getUsuarioBean());
 
@@ -81,18 +114,15 @@ public class RequestLancamentoCnpj implements java.io.Serializable {
         try {
             repository.setUsuario(sessionUsuario.getUsuarioBean());
 
-            List<LancamentoBean> lista = repository.query(LancamentoBean.class).eq(Lancamento.LANCAMENTO_CNPJ, id).findAll();
-            if (null != lista && !lista.isEmpty()) {
-                for (LancamentoBean item : lista) {
-                    repository.delete(item);
-                }
+            if (repository.query(LancamentoBean.class).eq(Lancamento.LANCAMENTO_CNPJ, id).count() > 0) {
+                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Ops! Existem lançamentos ligados á empresa, por favor remova os lançamentos primeiro.")).recursive().serialize();
+            } else {
+                LancamentoCnpjBean bean = repository.marge((LancamentoCnpjBean) repository.find(LancamentoCnpjBean.class, id));
+                repository.delete(bean);
+
+                repository.finalize();
+                result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Entidade removida com sucesso!")).recursive().serialize();
             }
-
-            LancamentoCnpjBean bean = repository.marge((LancamentoCnpjBean) repository.find(LancamentoCnpjBean.class, id));
-            repository.delete(bean);
-
-            repository.finalize();
-            result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Entidade removida com sucesso!")).recursive().serialize();
         } catch (Exception e) {
             e.printStackTrace();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel remover a entidade!")).recursive().serialize();
@@ -118,11 +148,11 @@ public class RequestLancamentoCnpj implements java.io.Serializable {
         }
 
         if (null != d1) {
-            sqlRule += " \n and lancamento.mes >= date('"+new SimpleDateFormat("yyyy-MM-dd").format(d1)+"')";
+            sqlRule += " \n and lancamento.mes >= date('" + new SimpleDateFormat("yyyy-MM-dd").format(d1) + "')";
         }
 
         if (null != d2) {
-            sqlRule += " \n and lancamento.mes <= date('"+new SimpleDateFormat("yyyy-MM-dd").format(d2)+"')";
+            sqlRule += " \n and lancamento.mes <= date('" + new SimpleDateFormat("yyyy-MM-dd").format(d2) + "')";
         }
 
         String queries = "";
@@ -165,7 +195,7 @@ public class RequestLancamentoCnpj implements java.io.Serializable {
     public void relatorios(Integer id, Date d1, Date d2) {
         List<LancamentoRelatorioDTO> lista1 = relatorio(id, d1, d2, 0);
         List<LancamentoRelatorioDTO> lista2 = new ArrayList<LancamentoRelatorioDTO>();
-        
+
         List<LancamentoRelatorioDTO> listaAux = new ArrayList<LancamentoRelatorioDTO>();
         List<LancamentoRelatorioDTO> listaAux2 = new ArrayList<LancamentoRelatorioDTO>();
 
@@ -185,9 +215,9 @@ public class RequestLancamentoCnpj implements java.io.Serializable {
             }
 
             item.setSaldo(valurAnt);
-            
+
             if (item.getPositivo() > 0) {
-                
+
                 item.setSaldoCalculado((valurAnt.add(item.getDebito())).add(item.getCredito()));
             } else {
                 item.setSaldoCalculado((valurAnt.subtract(item.getDebito())).subtract(item.getCredito()));
@@ -197,9 +227,9 @@ public class RequestLancamentoCnpj implements java.io.Serializable {
 
             indice++;
         }
-        
-        
-       
+
+
+
         BigDecimal bd1 = new BigDecimal("0");
         BigDecimal bd2 = new BigDecimal("0");
 

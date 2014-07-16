@@ -20,6 +20,7 @@ public class LancamentoDTO extends AbstractDTO {
     private String finalizado;
     private String dataFechamento;
     private String positivo;
+    private String tipo;
 
     public String getId() {
         return id;
@@ -100,6 +101,12 @@ public class LancamentoDTO extends AbstractDTO {
     public void setPositivo(String positivo) {
         this.positivo = positivo;
     }
-    
-    
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
 }

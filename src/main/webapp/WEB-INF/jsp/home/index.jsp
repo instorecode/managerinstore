@@ -57,11 +57,11 @@
 
 
                                 <div class="form-group">
-                                    <input type="text" name="email" class="form-control" placeholder="Enter email"  data-rule-required="true" data-rule-email="true" value="admin@instore.com.br">
+                                    <input type="text" name="email" class="form-control" placeholder="Enter email"  data-rule-required="true" data-rule-email="true" value="">
                                 </div>
 
                                 <div class="form-group">
-                                    <input type="password" name="senha" class="form-control" placeholder="Senha"  data-rule-required="true" value="123">
+                                    <input type="password" name="senha" class="form-control" placeholder="Senha"  data-rule-required="true" value="">
                                 </div>
                             </div>
                             <div class="panel-footer">

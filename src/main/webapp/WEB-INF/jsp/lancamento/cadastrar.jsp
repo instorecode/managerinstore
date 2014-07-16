@@ -17,7 +17,7 @@
                     <div class="form-group">
                         <label>Descrição</label>
                         <div id="the-basics">
-                            <input type="text" name="lancamentoBean.descricao" class="form-control typeahead" placeholder="Nome"  
+                            <input type="text" name="lancamentoBean.descricao" class="form-control typeahead" placeholder="Descrição"  
                                    data-rule-required="true" 
                                    data-rule-minlength="3"
                                    data-rule-maxlength="255" value="${lancamentoBean.descricao}">
@@ -66,7 +66,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>Valor</label>
-                        <input type="text" name="lancamentoBean.valor" class="form-control" placeholder="Nome"  
+                        <input type="text" name="lancamentoBean.valor" class="form-control" placeholder="Valor"  
                                data-rule-required="true" 
                                data-maskmoney="true"
                                value='<fmt:formatNumber value="${lancamentoBean.valor}" minFractionDigits="2" />'>

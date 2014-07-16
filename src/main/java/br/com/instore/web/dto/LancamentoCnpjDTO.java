@@ -4,6 +4,7 @@ public class LancamentoCnpjDTO extends AbstractDTO {
     private String id;
     private String nome;
     private String saldoDisponivel;
+    private String cnpj;
 
     public LancamentoCnpjDTO() {
     }
@@ -35,5 +36,13 @@ public class LancamentoCnpjDTO extends AbstractDTO {
 
     public void setSaldoDisponivel(String saldoDisponivel) {
         this.saldoDisponivel = saldoDisponivel;
+    }
+
+    public String getCnpj() {
+        return cnpj;
+    }
+
+    public void setCnpj(String cnpj) {
+        this.cnpj = cnpj;
     }
 }

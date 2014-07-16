@@ -44,16 +44,22 @@ public class RequestLancamento implements java.io.Serializable {
     public List<LancamentoDTO> beanList() {
         List<LancamentoBean> lista = new ArrayList<LancamentoBean>();
         List<LancamentoDTO> lista2 = new ArrayList<LancamentoDTO>();
-        lista = repository.query(LancamentoBean.class).findAll();
+        
+        lista = repository.query(LancamentoBean.class).orderAsc("mes").findAll();
+        
         for (LancamentoBean bean : lista) {
             LancamentoDTO dto = new LancamentoDTO();
+            String moneyString = bean.getValor().toString();
+            if (null != bean.getValor()) {
+                NumberFormat formatter = NumberFormat.getCurrencyInstance();
+                moneyString = formatter.format(bean.getValor());
+            }
 
-            NumberFormat formatter = NumberFormat.getCurrencyInstance();
-            String moneyString = formatter.format(bean.getValor());
 
             dto.setId(Utilities.leftPad(bean.getId()));
             dto.setCredito(bean.getCredito() ? "Sim" : "Não");
             dto.setDebito(bean.getDebito() ? "Sim" : "Não");
+            dto.setTipo(bean.getCredito() ? "CRÉDITO" : "DÉBITO");
             dto.setDescricao(bean.getDescricao());
             dto.setMes(new SimpleDateFormat("dd/MM/yyyy").format(bean.getMes()));
             dto.setValor(moneyString);
@@ -89,7 +95,7 @@ public class RequestLancamento implements java.io.Serializable {
             result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Informe a data de inicio e a data de termino!")).recursive().serialize();
             return;
         }
-
+        
         try {
             repository.setUsuario(sessionUsuario.getUsuarioBean());
 
@@ -138,7 +144,6 @@ public class RequestLancamento implements java.io.Serializable {
                     c.setTimeInMillis(d1.getTime());
                     c.add(Calendar.MONTH, i);
                     Date d = c.getTime();
-
                     LancamentoBean lb = new LancamentoBean();
                     lb.setCredito(bean.getCredito());
                     lb.setDatFechamento(null);
@@ -150,9 +155,19 @@ public class RequestLancamento implements java.io.Serializable {
                     lb.setValor(bean.getValor() / (meses + 1));
                     lb.setPositivo(bean.getPositivo());
 
+                    if (!validate(lb)) {
+                        return;
+                    }
+
+
                     repository.save(lb);
                 }
             } else {
+
+                if (!validate(bean)) {
+                    return;
+                }
+
                 if (bean != null && bean.getId() != null && bean.getId() > 0) {
                     if (null != bean.getDatFechamento()) {
                         removeSaldo(bean.getLancamentoCnpj().getId(), bean.getValor());
@@ -170,6 +185,48 @@ public class RequestLancamento implements java.io.Serializable {
             e.printStackTrace();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel salvar os dados!")).recursive().serialize();
         }
+    }
+
+    public boolean validate(LancamentoBean lb) {
+        if (null == lb.getCredito()) {
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Defina se é crédito ou débito!")).recursive().serialize();
+            return false;
+        }
+
+        if (null == lb.getDebito()) {
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Defina se é crédito ou débito!")).recursive().serialize();
+            return false;
+        }
+
+        if (null == lb.getDescricao() || lb.getDescricao().isEmpty()) {
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Informe a descrição do lançamento!")).recursive().serialize();
+            return false;
+        }
+
+        if (null == lb.getLancamentoCnpj() || null == lb.getLancamentoCnpj().getId() || lb.getLancamentoCnpj().getId() <= 0) {
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Selecione uma entidade!")).recursive().serialize();
+            return false;
+        }
+
+        if (null == lb.getMes()) {
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Informe a data!")).recursive().serialize();
+            return false;
+        }
+
+        if (null == lb.getUsuario()) {
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Informe o usuários!")).recursive().serialize();
+            return false;
+        }
+
+        if (null == lb.getValor()) {
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Informe o valor!")).recursive().serialize();
+            return false;
+        }
+        if (null == lb.getPositivo()) {
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Informe se o lançamento é positivo ou negativo!")).recursive().serialize();
+            return false;
+        }
+        return true;
     }
 
     public void remover(Integer id) {

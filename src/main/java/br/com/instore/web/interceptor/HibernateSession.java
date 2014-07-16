@@ -23,8 +23,15 @@ public class HibernateSession {
             stack.next();
         } catch (Exception e) {
             e.printStackTrace();
-            if (null != session.getTransaction()) {
-                session.getTransaction().rollback();
+            if (null != session) {
+                
+                if(session.isOpen()) {
+                    if(session.getTransaction().isActive()) {
+                        if(!session.getTransaction().wasCommitted() && !session.getTransaction().wasRolledBack()) {
+                            session.getTransaction().rollback();
+                        }
+                    }
+                }
             }
         } finally {
             if (null != session) {

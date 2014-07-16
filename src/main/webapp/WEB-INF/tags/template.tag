@@ -17,7 +17,7 @@
     <html>
         <head>
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-            <title>Intore</title>
+            <title>Instore</title>
 
             <link rel="stylesheet" type="text/css" media="all" href="${url_css}jquery.ui.css"/>
             <link rel="stylesheet" type="text/css" media="all" href="${url_css}bootstrap.css"/>

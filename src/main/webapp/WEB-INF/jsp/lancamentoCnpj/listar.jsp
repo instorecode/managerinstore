@@ -13,8 +13,9 @@
             var gridColumn = [
                 {title: 'ID', name: 'id', index: true, filter: true, filterType: 'input'},
                 {title: 'Nome', name: 'nome', index: true, filter: true, filterType: 'input'},
+                {title: 'CNPJ', name: 'cnpj', index: true, filter: true, filterType: 'input'},
                 {title: 'Saldo disponivel', name: 'saldoDisponivel', index: true, filter: true, filterType: 'input'},
-            ];
+            ]; 
 
             function onRowDblClick(data) {
 
@@ -53,6 +54,14 @@
                 </div>
                 <div class="col-md-8 val"> 
                     <div data-saldoDisponivel="true"></div> 
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 prop"> 
+                    CNPJ
+                </div>
+                <div class="col-md-8 val"> 
+                    <div data-cnpj="true"></div> 
                 </div>
             </div>
         </div>
