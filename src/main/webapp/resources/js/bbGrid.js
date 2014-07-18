@@ -165,7 +165,7 @@
                 this.$el.css('width', this.width);
             }
             if (!this.$grid) {
-                this.$grid = $('<table class="bbGrid-grid table table-bordered table-condensed" />');
+                this.$grid = $('<table class="bbGrid-grid table table-bordered table-condensed table table-bordered" />');
                 if (this.caption) {
                     this.$grid.append('<caption>' + this.caption + '</caption>');
                 }

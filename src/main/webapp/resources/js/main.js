@@ -1,11 +1,33 @@
 jQuery(document).ready(function() {
+    formProccess();
+    jQuery('[data-mask]').each(function() {
+        jQuery(this).mask(jQuery(this).data('mask'));
+    });
+    jQuery('[data-maskmoney]').each(function() {
+        jQuery(this).mask("#.##0,00", {reverse: true, maxlength: false});
+    });
+    jQuery('[data-percent]').each(function() {
+         $(this).mask('#0.00', {reverse: true});
+    });
+    
+    jQuery.storageAdd = function(name, value) {
+        if (typeof(Storage) !== "undefined") {
+            localStorage.setItem(name, value);
+        }
+    };
+    
+    jQuery.storage = function(name) {
+        if (typeof(Storage) !== "undefined") {
+            return localStorage.getItem(name);
+        }
+    };
 
     $.browserName = null;
 
     if (/*@cc_on!@*/false) {
         $.browserName = 'ie';
     }
-    
+
     if (window.chrome) {
         $.browserName = 'chrome';
     }
@@ -17,41 +39,41 @@ jQuery(document).ready(function() {
     if ('MozBoxSizing' in document.body.style) {
         $.browserName = 'mozilla';
     }
-    
-    if($.browserName == 'ie') {
+
+    if ($.browserName == 'ie') {
         jQuery('.browserRec').show();
     }
 
-    $('[data-clock="true"]').each(function() {
-        var self = jQuery(this);
-        var format = self.data('clockFormat');
-        self.clockface({format: format});
-    });
+//    $('[data-clock="true"]').each(function() {
+//        var self = jQuery(this);
+//        var format = self.data('clockFormat');
+//        self.clockface({format: format});
+//    });
 
-    $('[data-selectradio="true"]').each(function() {
-        var self = jQuery(this);
-        self.multiselect({
-            dropRight: self.data('dropRight') || false,
-            nonSelectedText: 'Selecione uma opção',
-            nSelectedText: 'iten(s) selecionado(s)',
-            enableFiltering: true,
-            maxHeight: 400,
-             buttonWidth: '100%',
-        });
-    });
+//    $('[data-selectradio="true"]').each(function() {
+//        var self = jQuery(this);
+//        self.multiselect({
+//            dropRight: self.data('dropRight') || false,
+//            nonSelectedText: 'Selecione uma opção',
+//            nSelectedText: 'iten(s) selecionado(s)',
+//            enableFiltering: true,
+//            maxHeight: 400,
+//            buttonWidth: '100%',
+//        });
+//    });
 
-    $('[data-multiple="multiple"]').each(function() {
-        var self = jQuery(this);
-        self.multiselect({
-            dropRight: self.data('dropRight') || false,
-            numberDisplayed: 0,
-            nonSelectedText: 'Selecione uma opção',
-            nSelectedText: 'iten(s) selecionado(s)',
-            enableFiltering: true,
-            maxHeight: 400,
-            buttonWidth: '100%',
-        });
-    });
+//    $('[data-multiple="multiple"]').each(function() {
+//        var self = jQuery(this);
+//        self.multiselect({
+//            dropRight: self.data('dropRight') || false,
+//            numberDisplayed: 0,
+//            nonSelectedText: 'Selecione uma opção',
+//            nSelectedText: 'iten(s) selecionado(s)',
+//            enableFiltering: true,
+//            maxHeight: 400,
+//            buttonWidth: '100%',
+//        });
+//    });
 
     jQuery('.cepload').on('blur', function() {
         var self = jQuery(this);
@@ -109,67 +131,67 @@ jQuery(document).ready(function() {
         });
     }(jQuery));
 
-    jQuery('[data-tooltip="true"]').each(function() {
-        var self = jQuery(this);
-        self.tooltip();
-    });
+//    jQuery('[data-tooltip="true"]').each(function() {
+//        var self = jQuery(this);
+//        self.tooltip();
+//    });
 
     /* Brazilian initialisation for the jQuery UI date picker plugin. */
     /* Written by Leonildo Costa Silva (leocsilva@gmail.com). */
-    $.datepicker.regional['pt-BR'] = {
-        closeText: 'Fechar',
-        prevText: '&#x3c;Anterior',
-        nextText: 'Pr&oacute;ximo&#x3e;',
-        currentText: 'Hoje',
-        monthNames: ['Janeiro', 'Fevereiro', 'Mar&ccedil;o', 'Abril', 'Maio', 'Junho',
-            'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
-        monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
-            'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
-        dayNames: ['Domingo', 'Segunda-feira', 'Ter&ccedil;a-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sabado'],
-        dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'],
-        dayNamesMin: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'],
-        weekHeader: 'Sm',
-        dateFormat: 'dd/mm/yy',
-        firstDay: 0,
-        isRTL: false,
-        showMonthAfterYear: false,
-        yearSuffix: ''};
-    $.datepicker.setDefaults($.datepicker.regional['pt-BR']);
+//    $.datepicker.regional['pt-BR'] = {
+//        closeText: 'Fechar',
+//        prevText: '&#x3c;Anterior',
+//        nextText: 'Pr&oacute;ximo&#x3e;',
+//        currentText: 'Hoje',
+//        monthNames: ['Janeiro', 'Fevereiro', 'Mar&ccedil;o', 'Abril', 'Maio', 'Junho',
+//            'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+//        monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
+//            'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+//        dayNames: ['Domingo', 'Segunda-feira', 'Ter&ccedil;a-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sabado'],
+//        dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'],
+//        dayNamesMin: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'],
+//        weekHeader: 'Sm',
+//        dateFormat: 'dd/mm/yy',
+//        firstDay: 0,
+//        isRTL: false,
+//        showMonthAfterYear: false,
+//        yearSuffix: ''};
+//    $.datepicker.setDefaults($.datepicker.regional['pt-BR']);
+//
+//    $(".datepicker").datepicker({
+//        changeMonth: true,
+//        changeYear: true
+//    });
+//    $(".datepicker").mask('99/99/9999');
 
-    $(".datepicker").datepicker({
-        changeMonth: true,
-        changeYear: true
-    });
-    $(".datepicker").mask('99/99/9999')
-
-    jQuery('.menuleft').resizable({handles: 'e'});
-    formProccess();
-
-    var docw = jQuery(window).width();
-    var doch = jQuery(window).height();
-
-    resize();
-    jQuery(window).resize(function() {
-        resize();
-    });
+//    jQuery('.menuleft').resizable({handles: 'e'});
+    
+//
+//    var docw = jQuery(window).width();
+//    var doch = jQuery(window).height();
+//
+//    resize();
+//    jQuery(window).resize(function() {
+//        resize();
+//    });
 
     function resize() {
-        docw = jQuery(window).width();
-        doch = jQuery(window).height();
-
-        jQuery('.menuleft').css({
-            'height': doch + 'px'
-        });
-
-        jQuery('.content .over').css({
-            'height': (doch - 140) + 'px',
-        });
-
-        jQuery('.content').css({
-            'width': (docw - (5 + jQuery('.menuleft').width())) + 'px',
-            'height': (doch) + 'px',
-            'margin-left': ((5 + jQuery('.menuleft').width())) + 'px'
-        });
+//        docw = jQuery(window).width();
+//        doch = jQuery(window).height();
+//
+//        jQuery('.menuleft').css({
+//            'height': doch + 'px'
+//        });
+//
+//        jQuery('.content .over').css({
+//            'height': (doch - 140) + 'px',
+//        });
+//
+//        jQuery('.content').css({
+//            'width': (docw - (5 + jQuery('.menuleft').width())) + 'px',
+//            'height': (doch) + 'px',
+//            'margin-left': ((5 + jQuery('.menuleft').width())) + 'px'
+//        });
     }
 
     jQuery('.btn_sair').on('click', function() {
@@ -192,13 +214,13 @@ jQuery(document).ready(function() {
         return false;
     });
 
-    jQuery('[dropdown-toggle="true"]').dropdown();
-    jQuery('[data-mask]').each(function() {
-        jQuery(this).mask(jQuery(this).data('mask'));
-    });
-    jQuery('[data-maskmoney]').each(function() { 
-        jQuery(this).mask("#.##0,00", {reverse: true, maxlength: false});
-    });
+//    jQuery('[dropdown-toggle="true"]').dropdown();
+//    jQuery('[data-mask]').each(function() {
+//        jQuery(this).mask(jQuery(this).data('mask'));
+//    });
+//    jQuery('[data-maskmoney]').each(function() {
+//        jQuery(this).mask("#.##0,00", {reverse: true, maxlength: false});
+//    });
 });
 
 function formProccess() {
@@ -284,4 +306,6 @@ function dialogAjax(msg) {
     setTimeout(function() {
         bootbox.hideAll();
     }, 2000);
-}
+} 
+
+

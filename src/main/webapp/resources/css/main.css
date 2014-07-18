@@ -1,173 +1,35 @@
-* {outline: none;}
-
-.menuleft {
-    display: inline-block;
-    float: left; 
-    border-right-width: 4px;
-    border-right-style: solid;
-    border-right-color: rgba(0,0,0,0.04);
-
-    width: 200px;
-    overflow-x: hidden;
-    overflow-y: hidden;
-}
-.content {
-    position: absolute; 
-    padding-left: 20px;
-    padding-right: 20px;
-}
-
-.submenu {
-    height: 40px;
-}
-
-body {
-    overflow-y: hidden;
-}
-
-body.login {
-    background-color: whitesmoke;
-}
-body.login div.align{
-    display: block;
-    position: absolute;
-
-    width: 300px;
-    height: 300px;
-
-    top: 50%;
-    left: 50%;
-    margin-top: -150px;
-    margin-left: -150px;   
-}
-
-.content .over {
-    overflow-y: auto;
-    overflow-x: hidden;
-}
-
-.content .over::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.1);
-    background-color: transparent;
-}
-
-.content .over::-webkit-scrollbar {
-    width: 3px;
-    background-color: transparent;
-}
-
-.content .over::-webkit-scrollbar-thumb {
-    background-color: transparent;
-    border: 3px solid #dd4b39; 
-}
-
-.bbGrid-grid-nav.row {
-    padding-top: 10px;
-    height: 50px;
-    border-radius: 0px;
-    margin-top: -1px;
-}
-
-.bbGrid-container .bbGrid-pager-container-norowslist {
-    width: auto;
-}
-
-.bbGrid-container .bbGrid-pager-container {
-    width: auto !important;
-}
-
-.bbGrid-container .bbGrid-pager-container {
-    height: 26px;
-    width: 380px;
-    left: inherit;
-    margin-left: 10px;
-    position: absolute;
-}
 .prop {
     background-color: whitesmoke;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    margin-top: 2px; 
-    font-style: italic;
+    padding: 5px;
     font-weight: bold;
-    text-align: right;
+    font-style: italic;
 }
 .val {
-    background-color: whitesmoke;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    margin-top: 2px; 
-    border-left: 2px solid #FFF;
-    
+    margin-top: 10px;
+    margin-bottom: 10px;
+    word-break: break-word;
 }
 
-.bbGrid-pager-rowlist-label.pull-left {
-    display: inline-block;
-}
-.bbGrid-pager-rowlist.form-control {
-    display: inline-block;
-}
 
-.tooltip-error + .tooltip > .tooltip-inner {background-color: red !important; }
-.tooltip-error + .tooltip > .tooltip-arrow { border-top-color:red !important; }
-.itemhidden {
-    display: none;
-}
-.itemshow {
-    margin-left: 20px;
-    margin-right: 20px;
-}
-
-.minmz {
-    display: block;
-    height: 40px;
-    background-color: whitesmoke;
-    line-height: 40px; 
-    text-align: center;
-    cursor: pointer;
-    font-family: Arial;
-    font-weight: bold;
-    font-style: italic;
-    color: rgba(0,0,0,0.4);
-}
-
-.bbGrid-grid {
-    table-layout: fixed; 
-    width: 100%;
-}
-
-/*.menuleft {
-    width: 300px !important; 
+.fixed_aside1::-webkit-scrollbar {
+    width: 2px;
 }
  
-@media only screen and (max-device-width: 799px) {
-    .menuleft {
-        width: 0px !important;
-        max-width: 0px !important;
-        min-width: 0px !important;
-    }
-}*/
-
-.menuleft {
-    width: 210px;
+.fixed_aside1::-webkit-scrollbar-track {
+}
+ 
+.fixed_aside1::-webkit-scrollbar-thumb {
+    background-color: #36a3ff;
 }
 
-.browserRec {
-    display: none;
-    padding: 10px;
-    background-color: #dd4b39;
-    color: #FFF;
-    font-weight: bold;
-    text-align: center;
+body::-webkit-scrollbar {
+    width: 5px;
 }
-
-.twitter-typeahead {
-    width: 100% !important;
+ 
+body::-webkit-scrollbar-track {
+    background-color: transparent;
 }
-.tt-dropdown-menu {
-    background-color: white;
-    padding: 10px;
-    width: 100%;
+ 
+body::-webkit-scrollbar-thumb {
+    background-color: #272930;
 }
-
-.panel-heading { background-color: whitesmoke !important}

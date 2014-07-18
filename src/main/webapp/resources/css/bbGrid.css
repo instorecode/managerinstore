@@ -1,10 +1,3 @@
-/*!  bbGrid.css 0.6.4
-*
-*     (c) 2012-2013 Minin Alexey, direct-fuel-injection.
-*     bbGrid may be freely distributed under the MIT license.
-*     For all details and documentation:
-*     http://direct-fuel-injection.github.com/bbGrid/
- */
 .bbGrid-grid { table-layout: fixed; font-size: 11px}
 .bbGrid-grid td{ cursor: default; overflow: hidden; white-space:nowrap; line-height: 1; vertical-align: middle}
 .bbGrid-grid tr{height:2.4em;}
@@ -54,3 +47,99 @@
 .bbGrid-rshandle {position: absolute;width: 7px;cursor: ew-resize;margin-left: -3px;z-index: 2;}
 .bbGrid-table-resizing {cursor: ew-resize;}
 .bbGrid-table-resizing thead, .bbGrid-table-resizing thead > th, .bbGrid-table-resizing thead > th > a {cursor: ew-resize;}
+
+.bbGrid-grid .bbGrid-grid-head .bbGrid-filter-bar input,
+.bbGrid-grid .bbGrid-grid-head .bbGrid-filter-bar select, [name="search"]
+{
+    display: block;
+    width: 100%;
+    height: 30px;
+    padding: 6px 12px;
+    font-size: 11px;
+    line-height: 1.428571429;
+    color: #555555;
+    vertical-align: middle;
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    border-radius: 0px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+}
+
+.bbGrid-grid .bbGrid-grid-head .bbGrid-filter-bar input:focus,
+.bbGrid-grid .bbGrid-grid-head .bbGrid-filter-bar select:focus , [name="search"]:focus
+{
+    border-color: #66afe9;
+    outline: 0;
+}
+.bbGrid-grid .bbGrid-grid-head .bbGrid-filter-bar select
+{
+    display: block;
+    width: 100%;
+    height: 30px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.428571429;
+    color: #555555;
+    vertical-align: middle;
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    border-radius: 0px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+}
+
+.bbGrid-grid-head-holder {
+    height: 40px;
+    background-color: whitesmoke;
+}
+
+.bbGrid-grid-head-holder th{
+    line-height: 27px !important;
+    border-bottom: 0px !important;
+}
+
+/** */
+
+.bbGrid-container .bbGrid-pager-container {
+    height: 26px;
+    left: 50%;
+    margin-left: -190px;
+    position: absolute;
+    width: 380px;
+}
+a.first {
+    color: red !important;
+}
+.bbGrid-container .bbGrid-pager-container-norowslist
+{
+    margin-left: -100px;
+    width: 205px;
+}
+
+.dropup {
+    float: left;
+    margin-top: -24px;
+    margin-left: 98px !important;
+}
+
+.bbGrid-pager-rowlist {
+    margin-left: 368px !important;
+    margin-top: -30px !important;
+    float: left !important;
+}
+.bbGrid-container .bbGrid-pager-rowlist-label {
+    margin-top: 12px !important;
+}
+
+.bbGrid-pager {
+    margin-top: 8px !important;
+}
+
+.bbGrid-container .bbGrid-grid-nav .bbGrid-page-input {
+    height: 29px !important;
+}
