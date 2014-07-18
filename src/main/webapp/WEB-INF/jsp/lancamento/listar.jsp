@@ -21,77 +21,83 @@
             }
 
             function onRowClick(data) {
-                
+
             }
 
         </script>
     </jsp:attribute>
     <jsp:body> 
-        <div datagrid-view="true" style="display: none">
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    ID
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-id="true"></div> 
-                </div>
-            </div>
 
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Descrição
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-descricao="true"></div> 
-                </div>
-            </div>
+        <div class="block-flat">
+            <div class="content">
+                <div datagrid-view="true" style="display: none">
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            ID
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-id="true"></div> 
+                        </div>
+                    </div>
 
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Data de lançamento
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-mes="true"></div> 
-                </div>
-            </div>
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Descrição
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-descricao="true"></div> 
+                        </div>
+                    </div>
 
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Valor
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-valor="true"></div> 
-                </div>
-            </div>
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Data de lançamento
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-mes="true"></div> 
+                        </div>
+                    </div>
 
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Tipo
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-tipo="true"></div> 
-                </div>
-            </div>
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Valor
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-valor="true"></div> 
+                        </div>
+                    </div>
 
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Quem criou o lançamento?
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-usuarioNome="true"></div> 
-                </div>
-            </div>
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Tipo
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-tipo="true"></div> 
+                        </div>
+                    </div>
 
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Data de finalização do lançamento
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Quem criou o lançamento?
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-usuarioNome="true"></div> 
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Data de finalização do lançamento
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-dataFechamento="true"></div> 
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-8 val"> 
-                    <div data-dataFechamento="true"></div> 
-                </div>
+
+                <div datagrid="true" data-id="id"></div>
             </div>
         </div>
 
-        <div datagrid="true" data-id="id"></div>
     </jsp:body>
 </instore:template>

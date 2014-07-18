@@ -6,7 +6,7 @@
     </jsp:attribute>
      
     <jsp:body>
-        Deseja remover o contato ${contatoClienteBean.nome} ?
+        Deseja remover a gravadora ${audiostoreGravadoraBean.nome} ?
         <hr />
         <form id="rm_cliente" method="POST" data-form="true" data-success-url="${url}/audiostore-gravadora">
             <input type="hidden" name="audiostoreGravadoraBean.id" value="${audiostoreGravadoraBean.id}" />

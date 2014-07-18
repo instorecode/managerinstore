@@ -134,12 +134,12 @@
                                data-rule-maxlength="255">
                     </div>
                 </div>
-                
+
                 <div class="col-md-4">
                     <div class="form-group"> 
                         <label>Permissões</label>
                         <br />
-                        <select name="perfilListID" data-multiple="multiple" multiple="multiple" class="form-control">
+                        <select class="select2"  name="perfilListID"  multiple>
                             <c:forEach items="${perfilBeanList}" var="perfil">
                                 <c:set var="selected" value="${false}"></c:set>
                                 <c:forEach items="${usuarioBean.perfilBeanList}" var="perfil2">
@@ -153,14 +153,14 @@
                                 <c:if test="${not selected}">
                                     <option value="${perfil.idperfil}">${perfil.nome}</option>
                                 </c:if>
-                                
+
                             </c:forEach>
                         </select>
                     </div>
                 </div>
             </div>
-                               
-                               
+
+
             <button type="submit" class="btn btn-default">
                 <i class="fa fa-save"></i> Salvar
             </button>

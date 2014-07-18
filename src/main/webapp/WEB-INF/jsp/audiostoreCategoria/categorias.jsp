@@ -82,71 +82,77 @@
         </script>
     </jsp:attribute>
     <jsp:body> 
-        <div datagrid-view="true" style="display: none">
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Código
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-codigo="true"></div> 
-                </div>
-            </div>
 
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Nome da categoria
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-categoria="true"></div> 
-                </div>
-            </div>
+        <div class="block-flat">
+            <div class="content">
+                <div datagrid-view="true" style="display: none">
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Código
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-codigo="true"></div> 
+                        </div>
+                    </div>
 
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Nome do cliente
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-clienteNome="true"></div> 
-                </div>
-            </div>
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Nome da categoria
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-categoria="true"></div> 
+                        </div>
+                    </div>
 
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Data de inicio
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-dataInicio="true"></div> 
-                </div>
-            </div>
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Nome do cliente
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-clienteNome="true"></div> 
+                        </div>
+                    </div>
 
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Data de termino
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-dataFinal="true"></div> 
-                </div>
-            </div>
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Data de inicio
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-dataInicio="true"></div> 
+                        </div>
+                    </div>
 
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Tipo da categoria
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-tipo="true"></div> 
-                </div>
-            </div>
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Data de termino
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-dataFinal="true"></div> 
+                        </div>
+                    </div>
 
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Tempo Duração
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Tipo da categoria
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-tipo="true"></div> 
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Tempo Duração
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-tempo="true"></div> 
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-8 val"> 
-                    <div data-tempo="true"></div> 
-                </div>
+
+                <div datagrid="true" data-id="codigo"></div>
+
             </div>
         </div>
-
-        <div datagrid="true" data-id="codigo"></div>
     </jsp:body>
 </instore:template>

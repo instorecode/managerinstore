@@ -2,9 +2,11 @@
 <instore:template isGrid="true">
 
     <jsp:attribute name="submenu">
+        <div class="btn-group">
         <a href="${url}/audiostore-gravadora/cadastrar" class="btn btn-default"> <i class="fa fa-save"></i> Cadastrar </a>
         <a style="display: none" xhref="${url}/audiostore-gravadora/download-exp" class="btn btn-default btnDownloadEXP"> <i class="fa fa-save"></i> Download do arquivo EXP </a>
         <a style="display: none" xhref="${url}/audiostore-gravadora/upload-exp" class="btn btn-default btnUploadEXP"> <i class="fa fa-upload"></i> Enviar EXP para o repositório  </a>
+        </div>
     </jsp:attribute>
 
     <jsp:attribute name="gridColumn">
@@ -81,27 +83,32 @@
         </script>
     </jsp:attribute>
     <jsp:body> 
-        <div datagrid-view="true" style="display: none">
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    ID
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-id="true"></div> 
-                </div>
-            </div>
+        <div class="block-flat">
+            <div class="content">
+                <div datagrid-view="true" style="display: none">
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            ID
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-id="true"></div> 
+                        </div>
+                    </div>
 
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Nome
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-nome="true"></div> 
-                </div>
-            </div>
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Nome
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-nome="true"></div> 
+                        </div>
+                    </div>
 
+                </div>
+
+                <div datagrid="true" data-id="id"></div>
+            </div>
         </div>
 
-        <div datagrid="true" data-id="id"></div>
     </jsp:body>
 </instore:template>

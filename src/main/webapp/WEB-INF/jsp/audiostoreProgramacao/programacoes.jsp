@@ -82,79 +82,85 @@
         </script>
     </jsp:attribute>
     <jsp:body> 
-        <div datagrid-view="true" style="display: none">
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    ID
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-id="true"></div> 
-                </div>
-            </div>
+        <div class="block-flat">
 
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Descrição
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-descricao="true"></div> 
-                </div>
-            </div>
+            <div class="content">
+                <div datagrid-view="true" style="display: none">
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            ID
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-id="true"></div> 
+                        </div>
+                    </div>
 
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Nome do cliente
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-clienteNome="true"></div> 
-                </div>
-            </div>
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Descrição
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-descricao="true"></div> 
+                        </div>
+                    </div>
 
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Data de inicio
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-dataInicio="true"></div> 
-                </div>
-            </div>
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Nome do cliente
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-clienteNome="true"></div> 
+                        </div>
+                    </div>
 
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Data de termino
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-dataFinal="true"></div> 
-                </div>
-            </div>
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Data de inicio
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-dataInicio="true"></div> 
+                        </div>
+                    </div>
 
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Horário de inicio
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-horaInicio="true"></div> 
-                </div>
-            </div>
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Data de termino
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-dataFinal="true"></div> 
+                        </div>
+                    </div>
 
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Horário de termino
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-horaFinal="true"></div> 
-                </div>
-            </div>
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Horário de inicio
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-horaInicio="true"></div> 
+                        </div>
+                    </div>
 
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Dias da semana
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Horário de termino
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-horaFinal="true"></div> 
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Dias da semana
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-diasSemana="true"></div> 
+                        </div>
+                    </div>           
                 </div>
-                <div class="col-md-8 val"> 
-                    <div data-diasSemana="true"></div> 
-                </div>
-            </div>           
+                <div datagrid="true" data-id="id"></div>
+            </div>
         </div>
-        <div datagrid="true" data-id="id"></div>
+
     </jsp:body>
 </instore:template>

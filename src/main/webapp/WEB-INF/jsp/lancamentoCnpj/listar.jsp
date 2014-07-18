@@ -15,7 +15,7 @@
                 {title: 'Nome', name: 'nome', index: true, filter: true, filterType: 'input'},
                 {title: 'CNPJ', name: 'cnpj', index: true, filter: true, filterType: 'input'},
                 {title: 'Saldo disponivel', name: 'saldoDisponivel', index: true, filter: true, filterType: 'input'},
-            ]; 
+            ];
 
             function onRowDblClick(data) {
 
@@ -28,44 +28,48 @@
         </script>
     </jsp:attribute>
     <jsp:body> 
+        <div class="block-flat">
+            <div class="content">
+                <div datagrid-view="true" style="display: none">
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            ID
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-id="true"></div> 
+                        </div>
+                    </div>
 
-        <div datagrid-view="true" style="display: none">
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    ID
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-id="true"></div> 
-                </div>
-            </div>
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Nome
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-nome="true"></div> 
+                        </div>
+                    </div>
 
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Nome
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Saldo dosponivel
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-saldoDisponivel="true"></div> 
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            CNPJ
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-cnpj="true"></div> 
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-8 val"> 
-                    <div data-nome="true"></div> 
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Saldo dosponivel
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-saldoDisponivel="true"></div> 
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    CNPJ
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-cnpj="true"></div> 
-                </div>
+
+                <div datagrid="true" data-id="id"></div>
             </div>
         </div>
 
-        <div datagrid="true" data-id="id"></div>
     </jsp:body>
 </instore:template>

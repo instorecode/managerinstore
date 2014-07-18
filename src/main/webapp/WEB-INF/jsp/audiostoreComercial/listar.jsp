@@ -27,7 +27,7 @@
                 jQuery('.btnDownloadEXP').attr('href', xhref);
                 jQuery('.btnUploadEXP').attr('href', xhref2);
             }
-            
+
             jQuery(document).ready(function() {
                 jQuery('.btnUploadEXP').on('click', function() {
                     var self = jQuery(this);
@@ -82,143 +82,149 @@
         </script>
     </jsp:attribute>
     <jsp:body> 
-        <div datagrid-view="true" style="display: none">
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    ID
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-id="true"></div> 
-                </div>
-            </div>
 
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Título
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-titulo="true"></div> 
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Arquivo
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-arquivo="true"></div> 
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Categoria
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-categoriaNome="true"></div> 
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Semana(s) e Horário(s)
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-semanaHora="true"></div> 
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Tipo de interprete
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-tipoInterprete="true"></div> 
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Periodo inicial
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-periodoInicial="true"></div> 
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Periodo final
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-periodoFinal="true"></div> 
-                </div>
-            </div>
+        <div class="block-flat">
+            <div class="content">
+                <div datagrid-view="true" style="display: none">
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            ID
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-id="true"></div> 
+                        </div>
+                    </div>
 
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Dias alternados
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Título
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-titulo="true"></div> 
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Arquivo
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-arquivo="true"></div> 
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Categoria
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-categoriaNome="true"></div> 
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Semana(s) e Horário(s)
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-semanaHora="true"></div> 
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Tipo de interprete
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-tipoInterprete="true"></div> 
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Periodo inicial
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-periodoInicial="true"></div> 
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Periodo final
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-periodoFinal="true"></div> 
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Dias alternados
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-diasAlternados="true"></div> 
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Tempo total
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-tempoTotal="true"></div> 
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Dependencia primária
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-dependencia1="true"></div> 
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Dependencia secundária
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-dependencia2="true"></div> 
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Dependencia terciária
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-dependencia2="true"></div> 
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Frame inicial
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-frameInicial="true"></div> 
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Frame final
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-frameFinal="true"></div> 
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-8 val"> 
-                    <div data-diasAlternados="true"></div> 
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Tempo total
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-tempoTotal="true"></div> 
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Dependencia primária
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-dependencia1="true"></div> 
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Dependencia secundária
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-dependencia2="true"></div> 
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Dependencia terciária
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-dependencia2="true"></div> 
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Frame inicial
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-frameInicial="true"></div> 
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Frame final
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-frameFinal="true"></div> 
-                </div>
+
+                <div datagrid="true" data-id="id"></div>
             </div>
         </div>
 
-        <div datagrid="true" data-id="id"></div>
     </jsp:body>
 </instore:template>

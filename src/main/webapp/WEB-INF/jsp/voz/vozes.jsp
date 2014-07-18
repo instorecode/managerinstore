@@ -24,63 +24,68 @@
         </script>
     </jsp:attribute>
     <jsp:body> 
-        <div datagrid-view="true" style="display: none">
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    ID
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-idvoz="true"></div> 
-                </div>
-            </div>
+        <div class="block-flat">
+            <div class="content">
+                <div datagrid-view="true" style="display: none">
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            ID
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-idvoz="true"></div> 
+                        </div>
+                    </div>
 
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Nome
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-nome="true"></div> 
-                </div>
-            </div>
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Nome
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-nome="true"></div> 
+                        </div>
+                    </div>
 
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Nome do cliente
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-clienteNome="true"></div> 
-                </div>
-            </div>
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Nome do cliente
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-clienteNome="true"></div> 
+                        </div>
+                    </div>
 
 
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    E-mail
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-email="true"></div> 
-                </div>
-            </div>
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            E-mail
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-email="true"></div> 
+                        </div>
+                    </div>
 
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Tel.
-                </div>
-                <div class="col-md-8 val"> 
-                    <div data-tel="true"></div> 
-                </div>
-            </div>
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Tel.
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-tel="true"></div> 
+                        </div>
+                    </div>
 
-            <div class="row">
-                <div class="col-md-4 prop"> 
-                    Genero
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Genero
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-genero="true"></div> 
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-8 val"> 
-                    <div data-genero="true"></div> 
-                </div>
+
+                <div datagrid="true" data-id="idvoz"></div>
             </div>
         </div>
 
-        <div datagrid="true" data-id="idvoz"></div>
     </jsp:body>
 </instore:template>

@@ -20,35 +20,43 @@
                 <div class="col-md-2">
                     <div class="form-group">
                         <label>Filtro Data inicial</label>
-                        <c:if test="${d1 ne null}">
-                            <input type="text" name="d1s" class="form-control datepicker" placeholder="Nome"  
-                                   data-rule-required="true" 
-                                   data-rule-minlength="3"
-                                   data-rule-maxlength="255" value="${cf:dateFormat(d2, "dd/MM/yyyy")}">
-                        </c:if>
-                        <c:if test="${d1 eq null}">
-                            <input type="text" name="d1s" class="form-control datepicker" placeholder="Nome"  
-                                   data-rule-required="true" 
-                                   data-rule-minlength="3"
-                                   data-rule-maxlength="255" >
-                        </c:if>
+                        <div class="input-group date datetime" data-min-view="2" data-date-format="dd/mm/yyyy">
+                            <c:if test="${d1 ne null}">
+
+                                <input type="text" name="d1s" class="form-control datepicker" placeholder="Nome"  
+                                       data-rule-required="true" 
+                                       data-rule-minlength="3"
+                                       data-rule-maxlength="255" value="${cf:dateFormat(d1, "dd/MM/yyyy")}">
+
+                            </c:if>
+                            <c:if test="${d1 eq null}">
+                                <input type="text" name="d1s" class="form-control datepicker" placeholder="Nome"  
+                                       data-rule-required="true" 
+                                       data-rule-minlength="3"
+                                       data-rule-maxlength="255" >
+                            </c:if>
+                            <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
                         <label>Filtro Data final</label>
-                        <c:if test="${d2 ne null}">
-                            <input type="text" name="d2s" class="form-control datepicker" placeholder="Nome"  
-                                   data-rule-required="true" 
-                                   data-rule-minlength="3"
-                                   data-rule-maxlength="255" value="${cf:dateFormat(d2, "dd/MM/yyyy")}">
-                        </c:if>
-                        <c:if test="${d2 eq null}">
-                            <input type="text" name="d2s" class="form-control datepicker" placeholder="Nome"  
-                                   data-rule-required="true" 
-                                   data-rule-minlength="3"
-                                   data-rule-maxlength="255" >
-                        </c:if>
+                        <div class="input-group date datetime" data-min-view="2" data-date-format="dd/mm/yyyy">
+                            <c:if test="${d2 ne null}">
+                                <input type="text" name="d2s" class="form-control datepicker" placeholder="Nome"  
+                                       data-rule-required="true" 
+                                       data-rule-minlength="3"
+                                       data-rule-maxlength="255" value="${cf:dateFormat(d2, "dd/MM/yyyy")}">
+                            </c:if>
+                            <c:if test="${d2 eq null}">
+                                <input type="text" name="d2s" class="form-control datepicker" placeholder="Nome"  
+                                       data-rule-required="true" 
+                                       data-rule-minlength="3"
+                                       data-rule-maxlength="255" >
+                            </c:if>
+                            <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
 
                     </div>
                 </div>
@@ -95,8 +103,8 @@
                             </td>
 
                             <td>${item.historico}</td>
-                            <td class="alignRight">${item.positivo > 0 ? '<b style="color:green ; font-size: 16px; font-size: 16px">+</b>' : '<b style="color:red ; font-size: 16px">-</b>'}&nbsp;<fmt:formatNumber value="${item.debito}" type="currency" /></td>
-                            <td class="alignRight">${item.positivo > 0 ? '<b style="color:green ; font-size: 16px">+</b>' : '<b style="color:red ; font-size: 16px">-</b>'}&nbsp;<fmt:formatNumber value="${item.credito}" type="currency" /></td>
+                            <td class="alignRight"><fmt:formatNumber value="${item.debito}" type="currency" /></td>
+                            <td class="alignRight"><fmt:formatNumber value="${item.credito}" type="currency" /></td>
                             <td class="alignRight"><fmt:formatNumber value="${item.saldo}" type="currency" /></td>
                             <td class="alignRight"><fmt:formatNumber value="${item.saldoCalculado}" type="currency" /></td>
 

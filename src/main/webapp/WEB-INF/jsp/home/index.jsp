@@ -6,72 +6,87 @@
 <c:set scope="session" var="url_css" value="http://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/resources/css/"></c:set>
 <c:set scope="session" var="url_js" value="http://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/resources/js/"></c:set>
 <c:set scope="session" var="url_img" value="http://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/resources/img/"></c:set>
+<c:set scope="session" var="url_cz" value="http://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/resources/cz/"></c:set>
 
 <compress:html enabled="true" removeComments="true" compressJavaScript="true" yuiJsDisableOptimizations="true">
     <!DOCTYPE html>
-    <html>
+    <html lang="en">
         <head>
-            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-            <title>Intore</title>
-
-            <link rel="stylesheet" type="text/css" media="all" href="${url_css}jquery.ui.css"/>
-            <link rel="stylesheet" type="text/css" media="all" href="${url_css}bootstrap.css"/>
-            <link rel="stylesheet" type="text/css" media="all" href="${url_css}font.awesome.css"/>
-            <link rel="stylesheet" type="text/css" media="all" href="${url_css}todc-bootstrap.css"/>
-            <link rel="stylesheet" type="text/css" media="all" href="${url_css}main.css"/>
-
-            <script type="text/javascript" charset="utf-8" src="${url_js}jquery.min.js"></script>
-            <script type="text/javascript" charset="utf-8" src="${url_js}jquery.ui.min.js"></script>
-            <script type="text/javascript" charset="utf-8" src="${url_js}bootstrap.js"></script>
+            <title>ManagerInstore</title>
+            
+            <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,400italic,700,800' rel='stylesheet' type='text/css'>
+            <link href='http://fonts.googleapis.com/css?family=Raleway:300,200,100' rel='stylesheet' type='text/css'>
+            <link href="${url_cz}js/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+            <link rel="stylesheet" href="${url_cz}fonts/font-awesome-4/css/font-awesome.min.css">
+            <link href="${url_cz}css/style.css" rel="stylesheet" />	
+            
+            <script src="${url_js}jquery.min.js"></script>
+            <script src="${url_js}jquery.ui.min.js"></script>
+            <script type="text/javascript" src="${url_cz}js/behaviour/general.js"></script>
+            <script src="${url_cz}js/behaviour/voice-commands.js"></script>
+            <script src="${url_cz}js/bootstrap/dist/js/bootstrap.min.js"></script>
+            <script type="text/javascript" src="${url_cz}js/jquery.flot/jquery.flot.js"></script>
+            <script type="text/javascript" src="${url_cz}js/jquery.flot/jquery.flot.pie.js"></script>
+            <script type="text/javascript" src="${url_cz}js/jquery.flot/jquery.flot.resize.js"></script>
+            <script type="text/javascript" src="${url_cz}js/jquery.flot/jquery.flot.labels.js"></script>
+            <script type="text/javascript" charset="utf-8" src="${url_js}watch.js"></script>
+            <script type="text/javascript" charset="utf-8" src="${url_js}underscore.js"></script>
+            <script type="text/javascript" charset="utf-8" src="${url_js}backbone.js"></script>
+            <script type="text/javascript" charset="utf-8" src="${url_js}bootstrap.js"></script> 
+            <script type="text/javascript" charset="utf-8" src="${url_js}bootstrap.multiselect.js"></script>
+            <script type="text/javascript" charset="utf-8" src="${url_js}bbGrid.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}holder.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}jquery.validate.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}additional.methods.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}jquery.form.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}jquery.mask.js"></script>
+            <script type="text/javascript" charset="utf-8" src="${url_js}maskmoney.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}bootbox.js"></script>
+            <script type="text/javascript" charset="utf-8" src="${url_js}clockface.js"></script>
+            <script type="text/javascript" charset="utf-8" src="${url_js}typeahead.bundle.js"></script>
+            <script type="text/javascript" charset="utf-8" src="${url_js}prettify.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}main.js"></script>
-
         </head>
-        <body class="login">
-            <style type="text/css">
-                body { 
-                    background: url('${url_img}bg-login.jpg')  no-repeat center center fixed;
-                    background-size: 100% 100%;
-                }
-            </style>
-            <instore:noscript></instore:noscript>
-            <instore:nocookie></instore:nocookie>
-                <div class="yesscript">
-                    <div class="browserRec" style="display: none;"> Opa!! Você está usando o Internet Explorer, recomendamos que use o CHROME para uma melhor performance do sistema!!!</div>
-                    <div class="align">
-                        <form id="login" method="POST" data-form="true" data-success-url="${url}/dashboard">
-                        <div class="panel panel-default">
-                            <div class="panel-body">
+        <body class="texture">
 
-                                <center>
-                                    <img src="${url_img}logo.png" style="max-width: 178px;" />
-                                </center>
+            <div id="cl-wrapper" class="login-container">
 
-                                <br />
-                                <br />
-
-
-                                <div class="form-group">
-                                    <input type="text" name="email" class="form-control" placeholder="Enter email"  data-rule-required="true" data-rule-email="true" value="">
-                                </div>
-
-                                <div class="form-group">
-                                    <input type="password" name="senha" class="form-control" placeholder="Senha"  data-rule-required="true" value="">
-                                </div>
-                            </div>
-                            <div class="panel-footer">
-                                <button type="submit" class="btn btn-default">
-                                    <i class="fa fa-sign-in"></i> LogIn
-                                </button>
-                            </div>
+                <div class="middle-login">
+                    <div class="block-flat">
+                        <div class="header">							
+                            <h3 class="text-center"><img class="logo-img" src="${url_cz}images/logo.png" alt="logo" style="max-width: 48px;"/>ManagerInstore</h3> 
                         </div>
-                    </form>
-                </div>
+                        <div>
+                            <form id="login" method="POST" data-form="true" data-success-url="${url}/dashboard">
+                                <div class="content">
+                                    <h4 class="title">Login Access</h4>
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                                <input type="text" name="email" class="form-control" placeholder="Enter email"  data-rule-required="true" data-rule-email="true" value="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                                                <input type="password" name="senha" class="form-control" placeholder="Senha"  data-rule-required="true" value="">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="foot">
+                                    <button class="btn btn-primary" data-dismiss="modal" type="submit">Entrar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="text-center out-links"><a href="http://www.instore.com.br">&copy; 2013 Instore - www.instore.com.br </a></div>
+                </div> 
+
             </div>
         </body>
     </html>

@@ -14,7 +14,7 @@
             <input type="hidden" name="lancamentoBean.positivo" value="${true}" />
 
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-4">
                     <div class="form-group">
                         <label>Descrição</label>
                         <div id="the-basics">
@@ -26,11 +26,10 @@
                     </div>
                 </div>
 
-                <div class="col-md-12">
+                <div class="col-md-4">
                     <div class="form-group">
-                        <label>Entidade / CNPJ</label>
-                        <br />
-                        <select name="lancamentoBean.lancamentoCnpj.id" data-selectradio="true" class="form-control arquivosDeMusica"  data-rule-required="true" style="margin-left: -30px;">
+                        <label>Entidade Financeiro - CNPJ</label>
+                        <select name="lancamentoBean.lancamentoCnpj.id" class="form-control"  data-rule-required="true">
                             <c:forEach items="${lancamentoCnpjList}" var="ent">
                                 <option value="${ent.id}" ${ent.id eq lancamentoBean.lancamentoCnpj.id ? 'selected="selected"' : ''}>${ent.nome} - ${ent.cnpj}</option>
                             </c:forEach>
@@ -38,12 +37,12 @@
                     </div>
                 </div>
 
-                <div class="col-md-12">
+                <div class="col-md-4">
                     <div class="form-group">
                         <label>Pagar ou Receber</label>
                         <br />
 
-                        <select name="lancamentoBean.debito" data-selectradio="true" class="form-control arquivosDeMusica"  data-rule-required="true" style="margin-left: -30px;">
+                        <select name="lancamentoBean.debito" data-selectradio="true" class="form-control arquivosDeMusica"  data-rule-required="true">
                             <option value="${true}" ${lancamentoBean.debito ? 'selected="selected"' : ''} ${cadastrar eq true ? 'selected="selected"' : ''}>Pagar</option>
                             <option value="${false}" ${lancamentoBean.credito ? 'selected="selected"' : ''}>Receber</option>
                         </select>
@@ -52,7 +51,7 @@
             </div>
 
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="form-group">
                         <label>Valor</label>
                         <input type="text" name="lancamentoBean.valor" class="form-control" placeholder="Valor"  
@@ -62,63 +61,69 @@
                     </div>
                 </div>
 
-
-            </div>
-
-            <div class="row" style="${cadastrar eq false ? 'display:none;' : ''}">
-                <div class="col-md-4">
+                <div class="col-md-4" style="${cadastrar eq false ? 'display:none;' : ''}">
                     <div class="form-group">
                         <label>Parcelado</label>
-                        <br />
-                        <select name="lancamentoBean.loop" data-selectradio="true" class="form-control arquivosDeMusica"  data-rule-required="true" style="margin-left: -30px;">
+                        <select name="lancamentoBean.loop" data-selectradio="true" class="form-control"  data-rule-required="true">
                             <option value="${true}" >Sim</option>
                             <option value="${false}" selected="selected">Não</option>
                         </select>
                     </div>
                 </div>
-            </div>
 
-            <br /> 
+                <div class="intervalo1"> 
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Data do lançamento</label>
+                            <div class="input-group date datetime" data-min-view="2" data-date-format="dd/mm/yyyy">
+                                <input  type="text" name="lancamentoBean.mes" class="form-control" placeholder="Data do lançamento"  
+                                        data-mask="99/99/9999"
+                                        value="${cf:dateFormat(lancamentoBean.mes, "dd/MM/yyyy")}" readonly />
+                                <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                            </div>	
 
-            <div class="row intervalo1"> 
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <label>Data do lançamento</label>
-                        <input type="text" name="lancamentoBean.mes" class="form-control datepicker" placeholder="Data do lançamento"  
-                               data-mask="99/99/9999"
-                               value="${cf:dateFormat(lancamentoBean.mes, "dd/MM/yyyy")}">
+                        </div>
+                    </div>
+
+                    <div class="col-md-12" style="${cadastrar eq false ? '' : 'display:none;'}">
+                        <div class="form-group" style="margin-left: -20px">
+                            <c:if test="${lancamentoBean.datFechamento ne null}">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" class="icheck" name="lancamentoBean.datFechamento" value="${cf:dateFormat(lancamentoBean.datFechamento, "dd/MM/yyyy")}" checked="checked" /></label>
+                                    &nbsp;&nbsp;Marcar lançamento como não finalizado ${cf:dateCurrent("dd/MM/yyyy")}
+                                </div>
+                            </c:if>
+                            <c:if test="${lancamentoBean.datFechamento eq null}">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" class="icheck" name="lancamentoBean.datFechamento" value="${cf:dateCurrent("dd/MM/yyyy")}" /></label>
+                                    &nbsp;&nbsp;Marcar lançamento como finalizado ${cf:dateCurrent("dd/MM/yyyy")}
+                                </div>
+                            </c:if>
+
+                            
+                        </div>
                     </div>
                 </div>
 
-                <div class="col-md-4" style="${cadastrar eq false ? '' : 'display:none;'}">
-                    <br />
-                    <div class="form-group">
-                        <c:if test="${lancamentoBean.datFechamento ne null}">
-                            <input type="checkbox" name="lancamentoBean.datFechamento" value="${cf:dateFormat(lancamentoBean.datFechamento, "dd/MM/yyyy")}" checked="checked" />
-                        </c:if>
-                        <c:if test="${lancamentoBean.datFechamento eq null}">
-                            <input type="checkbox" name="lancamentoBean.datFechamento" value="${cf:dateCurrent("dd/MM/yyyy")}" />
-                        </c:if>
-
-                        <label>Marcar lançamento como finalizado ${cf:dateCurrent("dd/MM/yyyy")}</label>
-                    </div>
-                </div>
             </div>
+
+
 
             <div class="row intervalo2" style="display:none;">
-                <div class="col-md-4">
-                    <b>Em quantos meses</b>
-                </div>
-                <hr />
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <div class="form-group">
                         <label>Data de inicio</label>
-                        <input type="text" name="d1" class="form-control datepicker" placeholder=""  
-                               data-mask="99/99/9999"
-                               value="">
+
+                        <div class="input-group date datetime" data-min-view="2" data-date-format="dd/mm/yyyy">
+                            <input type="text" name="d1" class="form-control datepicker" placeholder=""  
+                                   data-mask="99/99/9999"
+                                   value="" readonly/>
+                            <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
+
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <div class="form-group">
                         <label>Data de termino</label>
                         <input type="text" name="d2" class="form-control" placeholder="" value="" data-mask="99/9999">
@@ -174,43 +179,43 @@
                         }
                     });
 
-                    var substringMatcher = function(strs) {
-                        return function findMatches(q, cb) {
-                            var matches, substrRegex;
-
-                            // an array that will be populated with substring matches
-                            matches = [];
-
-                            // regex used to determine if a string contains the substring `q`
-                            substrRegex = new RegExp(q, 'i');
-
-                            // iterate through the pool of strings and for any string that
-                            // contains the substring `q`, add it to the `matches` array
-                            $.each(strs, function(i, str) {
-                                if (substrRegex.test(str)) {
-                                    // the typeahead jQuery plugin expects suggestions to a
-                                    // JavaScript object, refer to typeahead docs for more info
-                                    matches.push({value: str});
-                                }
-                            });
-
-                            cb(matches);
-                        };
-                    };
-
-
+                    //                    var substringMatcher = function(strs) {
+                    //                        return function findMatches(q, cb) {
+                    //                            var matches, substrRegex;
+                    //
+                    //                            // an array that will be populated with substring matches
+                    //                            matches = [];
+                    //
+                    //                            // regex used to determine if a string contains the substring `q`
+                    //                            substrRegex = new RegExp(q, 'i');
+                    //
+                    //                            // iterate through the pool of strings and for any string that
+                    //                            // contains the substring `q`, add it to the `matches` array
+                    //                            $.each(strs, function(i, str) {
+                    //                                if (substrRegex.test(str)) {
+                    //                                    // the typeahead jQuery plugin expects suggestions to a
+                    //                                    // JavaScript object, refer to typeahead docs for more info
+                    //                                    matches.push({value: str});
+                    //                                }
+                    //                            });
+                    //
+                    //                            cb(matches);
+                    //                        };
+                    //                    };
 
 
-                    $('#the-basics .typeahead').typeahead({
-                        hint: true,
-                        highlight: true,
-                        minLength: 1
-                    },
-                    {
-                        name: 'states',
-                        displayKey: 'value',
-                        source: substringMatcher(states)
-                    });
+
+
+                    //                    $('#the-basics .typeahead').typeahead({
+                    //                        hint: true,
+                    //                        highlight: true,
+                    //                        minLength: 1
+                    //                    },
+                    //                    {
+                    //                        name: 'states',
+                    //                        displayKey: 'value',
+                    //                        source: substringMatcher(states)
+                    //                    });
                 });
             </script>
         </form>
