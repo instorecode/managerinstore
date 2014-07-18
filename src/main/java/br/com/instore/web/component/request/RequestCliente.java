@@ -86,6 +86,53 @@ public class RequestCliente implements java.io.Serializable {
         }
         return clienteDTOList;
     }
+    
+    public List<ClienteDTO> clienteDTOList(Integer id) {
+        List<ClienteDTO> clienteDTOList = new ArrayList<ClienteDTO>();
+        List<ClienteBean> clienteBeanList = repository.query(ClienteBean.class).eq("parente", id).findAll();
+        
+        if (null != clienteBeanList && !clienteBeanList.isEmpty()) {
+            for (ClienteBean clienteBean : clienteBeanList) {
+                DadosClienteBean dados = repository.query(DadosClienteBean.class).eq(DadosCliente.IDCLIENTE, clienteBean.getIdcliente()).findOne();
+                ClienteDTO dto = new ClienteDTO();
+                dto.setIdcliente( Utilities.leftPad(clienteBean.getIdcliente()) );
+                dto.setInstore(clienteBean.getInstore() ? "Sim" : "Não");
+                dto.setMatriz(clienteBean.getMatriz() ? "Sim" : "Não");
+                dto.setNome(clienteBean.getNome());
+                for (ClienteBean c : clienteBeanList) {
+                    if (c.getIdcliente() == clienteBean.getParente()) {
+                        dto.setParente(c.getNome());
+                        break;
+                    }
+                }
+                
+                dto.setSituacao( clienteBean.getSituacao() ? "Cliente ativo " : "Cliente inativo");
+                
+                if (clienteBean.getEndereco() != null) {
+                    dto.setCep(clienteBean.getEndereco().getCep().getNumero());
+                    dto.setEstado(clienteBean.getEndereco().getCep().getBairro().getCidade().getEstado().getNome());
+                    dto.setCidade(clienteBean.getEndereco().getCep().getBairro().getCidade().getNome());
+                    dto.setBairro(clienteBean.getEndereco().getCep().getBairro().getNome());
+                    dto.setLogradouro(clienteBean.getEndereco().getCep().getBairro().getRua());
+                    dto.setNumero(clienteBean.getEndereco().getNumero());
+                    dto.setComplemento(clienteBean.getEndereco().getComplemento());
+                }
+
+
+                if (dados != null) {
+                    dto.setNomeFantasia(dados.getNomeFantasia());
+                    dto.setCnpj(dados.getCnpj());
+                    dto.setDataInicioContrato(new SimpleDateFormat("dd/MM/yyyy").format(dados.getDataInicioContrato()));
+                    dto.setDataTerminoContrato(new SimpleDateFormat("dd/MM/yyyy").format(dados.getDataTerminoContrato()));
+                    dto.setIndiceReajusteContrato(dados.getIndiceReajusteContrato().toString());
+                    dto.setRenovacaoAutomatica(dados.getRenovacaoAutomatica() ? "Sim" : "Não");
+                    dto.setRazaoSocial(dados.getRazaoSocial());
+                }
+                clienteDTOList.add(dto);
+            }
+        }
+        return clienteDTOList;
+    }
 
     public List<ClienteBean> clienteBeanList() {
         List<ClienteBean> clienteBeanList = repository.query(ClienteBean.class).findAll();

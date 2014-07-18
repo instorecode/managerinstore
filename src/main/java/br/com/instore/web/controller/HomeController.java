@@ -10,6 +10,7 @@ import br.com.instore.core.orm.bean.ConfigAppBean;
 import br.com.instore.web.annotation.NotRestrict;
 import br.com.instore.web.annotation.Restrict;
 import br.com.instore.web.component.request.RequestUsuario;
+import br.com.instore.web.component.session.ApplicationResources;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.tools.AjaxResult;
@@ -90,4 +91,6 @@ public class HomeController implements java.io.Serializable {
             result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel salvar as configurações!")).recursive().serialize();
         }
     }
+    
+ 
 }

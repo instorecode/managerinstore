@@ -133,12 +133,13 @@ public class RestrictAccessValidator {
             for (FuncionalidadeBean f : funcionalidadeBeanList) {
                 if (null != f.getMappingId() && !f.getMappingId().isEmpty()) {
                     if (currentMappinId.equals(f.getMappingId())) {
-                        html += "<li class=\"list-group-item active\"><a href=\"" + url + f.getMappingId() + "\"> <i class=\"fa " + f.getIcone() + "\"></i>&nbsp;&nbsp;&nbsp;" + f.getNome() + "</a></li>";
+                        html += "<li class=\"active\"><a href=\"" + url + f.getMappingId() + "\"><i class=\"fa  " + f.getIcone() + "\"></i><span>" + f.getNome() + "</span></a></li>";
                     } else {
-                        html += "<li class=\"list-group-item\"><a href=\"" + url + f.getMappingId() + "\"> <i class=\"fa " + f.getIcone() + "\"></i>&nbsp;&nbsp;&nbsp;" + f.getNome() + "</a></li>";
+                        html += "<li><a href=\"" + url + f.getMappingId() + "\"><i class=\"fa  " + f.getIcone() + "\"></i><span>" + f.getNome() + "</span></a></li>";
                     }
                 } else {
-                    html += "<li class=\"list-group-header\"> <i class=\"fa " + f.getIcone() + "\"></i>&nbsp;&nbsp;&nbsp;" + f.getNome() + "</li>";
+                    
+                    html += "<li><a href=\"" + url + f.getMappingId() + "\"><i class=\"fa  " + f.getIcone() + "\"></i><span>" + f.getNome() + "</span></a></li>";
                 }
             }
         }

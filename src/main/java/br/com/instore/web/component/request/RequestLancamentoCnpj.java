@@ -82,16 +82,6 @@ public class RequestLancamentoCnpj implements java.io.Serializable {
             result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Informe o saldo disponivel!")).recursive().serialize();
             return;
         }
-        
-        if(repository.query(LancamentoCnpjBean.class).eq("nome", bean.getNome()).count() > 0) {
-            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não é possivel finalizar a ação , já existe uma Entidade financeiro com esse nome!")).recursive().serialize();
-            return;
-        }
-        
-        if(repository.query(LancamentoCnpjBean.class).eq("cnpj", bean.getCnpj()).count() > 0) {
-            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não é possivel finalizar a ação , já existe uma Entidade financeiro com esse cnpj!")).recursive().serialize();
-            return;
-        }
 
         try {
             repository.setUsuario(sessionUsuario.getUsuarioBean());
@@ -99,6 +89,15 @@ public class RequestLancamentoCnpj implements java.io.Serializable {
             if (bean != null && bean.getId() != null && bean.getId() > 0) {
                 repository.save(repository.marge(bean));
             } else {
+                if (repository.query(LancamentoCnpjBean.class).eq("nome", bean.getNome()).count() > 0) {
+                    result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não é possivel finalizar a ação , já existe uma Entidade financeiro com esse nome!")).recursive().serialize();
+                    return;
+                }
+
+                if (repository.query(LancamentoCnpjBean.class).eq("cnpj", bean.getCnpj()).count() > 0) {
+                    result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não é possivel finalizar a ação , já existe uma Entidade financeiro com esse cnpj!")).recursive().serialize();
+                    return;
+                }
                 repository.save(bean);
             }
 
