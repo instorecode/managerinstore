@@ -14,6 +14,8 @@
             <input type="hidden" name="cliente.endereco.cep.idcep" value="${cliente.endereco.cep.idcep}" />
             <input type="hidden" name="cliente.endereco.cep.bairro.idbairro" value="${cliente.endereco.cep.bairro.idbairro}" />
             <input type="hidden" name="cliente.endereco.cep.bairro.cidade.idcidade" value="${cliente.endereco.cep.bairro.cidade.idcidade}" />
+            <input type="hidden" name="cliente.parente" value="0" />
+            <input type="hidden" name="cliente.matriz" value="${true}" />
 
             <div class="row">
                 <div class="col-md-4">
@@ -37,17 +39,6 @@
                     </div>
                 </div>
 
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>Matriz</label>
-                        <select class="select2" name="cliente.parente" data-right="true">
-                            <c:forEach items="${clienteBeanList}" var="clienteBean">
-                                <option value="${clienteBean.idcliente}" ${cliente.parente eq clienteBean.idcliente ? 'selected="selected"' : ''}>Cliente: ${clienteBean.nome}</option>
-                            </c:forEach>
-                        </select>
-                    </div>
-                </div>
-
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>CNPJ</label>
@@ -62,20 +53,26 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>Data de inicio de contrato</label>
-                        <input type="text" name="dadosCliente.dataInicioContrato" class="form-control datepicker" placeholder="Data de inicio do contrato" 
-                               data-rule-required="true" 
-                               data-rule-minlength="10"
-                               data-rule-maxlength="10" value="${cf:dateFormat(dadosCliente.dataInicioContrato , "dd/MM/yyyy")}">
+                        <div class="input-group date datetime" data-min-view="2" data-date-format="dd/mm/yyyy">
+                            <input type="text" name="dadosCliente.dataInicioContrato" class="form-control datepicker" placeholder="Data de inicio do contrato" 
+                                   data-rule-required="true" 
+                                   data-rule-minlength="10"
+                                   data-rule-maxlength="10" value="${cf:dateFormat(dadosCliente.dataInicioContrato , "dd/MM/yyyy")}">
+                            <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
                     </div>
                 </div>
 
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>Data de termino de contrato</label>
-                        <input type="text" name="dadosCliente.dataTerminoContrato" class="form-control datepicker" placeholder="Data de termino do contrato" 
-                               data-rule-required="true" 
-                               data-rule-minlength="10"
-                               data-rule-maxlength="10" value="${cf:dateFormat(dadosCliente.dataTerminoContrato, "dd/MM/yyyy")}">
+                        <div class="input-group date datetime" data-min-view="2" data-date-format="dd/mm/yyyy">
+                            <input type="text" name="dadosCliente.dataTerminoContrato" class="form-control datepicker" placeholder="Data de termino do contrato" 
+                                   data-rule-required="true" 
+                                   data-rule-minlength="10"
+                                   data-rule-maxlength="10" value="${cf:dateFormat(dadosCliente.dataTerminoContrato, "dd/MM/yyyy")}">
+                            <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
                     </div>
                 </div>
 
@@ -103,10 +100,11 @@
                                 Razão social
                             </div>
                             <div class="content">
-                                <textarea id="summernote" name="dadosCliente.razaoSocial" class="form-control" rows="3"  placeholder="Razão social" 
+                                <textarea id="summernote1" name="dadosCliente.razaoSocial" class="form-control" rows="3"  placeholder="Razão social" 
                                           data-rule-required="true" 
                                           data-rule-minlength="3"
                                           data-rule-maxlength="1000" >${dadosCliente.razaoSocial}</textarea>
+
                             </div>
                         </div>	
 

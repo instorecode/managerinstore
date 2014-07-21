@@ -200,7 +200,7 @@
   // A difficult-to-believe, but optimized internal dispatch function for
   // triggering events. Tries to keep the usual cases speedy (most internal
   // Backbone events have 3 arguments).
-  var triggerEvents = function(events, args) {
+  var triggerEvents = function(events, args) {      
     var ev, i = -1, l = events.length, a1 = args[0], a2 = args[1], a3 = args[2];
     switch (args.length) {
       case 0: while (++i < l) (ev = events[i]).callback.call(ev.ctx); return;
@@ -431,7 +431,7 @@
       if (options.parse === void 0) options.parse = true;
       var model = this;
       var success = options.success;
-      options.success = function(resp) {
+      options.success = function(resp) { 
         if (!model.set(model.parse(resp, options), options)) return false;
         if (success) success(model, resp, options);
         model.trigger('sync', model, resp, options);
@@ -491,6 +491,7 @@
       method = this.isNew() ? 'create' : (options.patch ? 'patch' : 'update');
       if (method === 'patch') options.attrs = attrs;
       xhr = this.sync(method, this, options);
+      
 
       // Restore attributes.
       if (attrs && options.wait) this.attributes = attributes;
@@ -635,6 +636,7 @@
 
     // Add a model, or list of models to the set.
     add: function(models, options) {
+
       return this.set(models, _.extend({merge: false}, options, addOptions));
     },
 
@@ -860,12 +862,25 @@
       if (options.parse === void 0) options.parse = true;
       var success = options.success;
       var collection = this;
-      options.success = function(resp) {
-        var method = options.reset ? 'reset' : 'set';
-        collection[method](resp, options);
-        if (success) success(collection, resp, options);
-        collection.trigger('sync', collection, resp, options);
-      };
+//      jQuery.storageClear();
+       var __LIST__ = jQuery.storage(window.location.href);
+       if(!(__LIST__ != null && __LIST__ != undefined && __LIST__ != "")) {
+           options.success = function(resp) {        
+                jQuery.storageAdd(window.location.href,JSON.stringify(resp)); 
+                var method = options.reset ? 'reset' : 'set';
+                collection[method](resp, options);
+                if (success) success(collection, resp, options);
+                collection.trigger('sync', collection, resp, options);
+            };
+       } else {
+           var resp = JSON.parse(jQuery.storage(window.location.href));
+           var method = options.reset ? 'reset' : 'set';
+            collection[method](resp, options);
+            if (success) success(collection, resp, options);
+            collection.trigger('sync', collection, resp, options);
+       }
+      
+      
       wrapError(this, options);
       return this.sync('read', this, options);
     },
@@ -1130,6 +1145,10 @@
   // Useful when interfacing with server-side languages like **PHP** that make
   // it difficult to read the body of `PUT` requests.
   Backbone.sync = function(method, model, options) {
+    var __LIST__ = jQuery.storage(window.location.href);
+    if(__LIST__ != null && __LIST__ != undefined && __LIST__ != "") {
+        return;
+    }
     var type = methodMap[method];
 
     // Default options, unless specified.
@@ -1206,7 +1225,7 @@
   // Set the default implementation of `Backbone.ajax` to proxy through to `$`.
   // Override this if you'd like to use a different library.
   Backbone.ajax = function() {
-    return Backbone.$.ajax.apply(Backbone.$, arguments);
+     return Backbone.$.ajax.apply(Backbone.$, arguments);;
   };
 
   // Backbone.Router

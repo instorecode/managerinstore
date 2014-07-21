@@ -21,6 +21,12 @@ jQuery(document).ready(function() {
             return localStorage.getItem(name);
         }
     };
+    
+    jQuery.storageClear = function(name) {
+        if (typeof(Storage) !== "undefined") {
+            window.localStorage.clear(); 
+        }
+    };
 
     $.browserName = null;
 
@@ -270,6 +276,7 @@ function formProccess() {
                         });
                     },
                     success: function(data) {
+                        avisar();
                         if (data.success) {
                             if (data_success_url != null && data_success_url != undefined && data_success_url != '') {
                                 window.location.href = data_success_url;

@@ -2,17 +2,14 @@
 <instore:template isGrid="true">
 
     <jsp:attribute name="submenu">
-        <a href="${url}/cliente/cadastrar" class="btn btn-default"> <i class="fa fa-save"></i> Cadastrar </a>
+        <a href="${url}/filial/cadastrar/${id}" class="btn btn-default"> <i class="fa fa-save"></i> Cadastrar </a>
     </jsp:attribute>
 
     <jsp:attribute name="gridColumn">
         <script>
             var gridColumn = [
                 {title: 'ID', name: 'idcliente', index: true, filter: true, filterType: 'input'},
-                {title: 'Matriz', name: 'parente', index: true, filter: true, filterType: 'input'},
                 {title: 'Nome', name: 'nome', index: true, filter: true, filterType: 'input'},
-                {title: 'È matriz', name: 'matriz', index: true, filter: true},
-                {title: 'È instore', name: 'instore', index: true, filter: true}
             ];
 
             function onRowDblClick(data) {
@@ -20,12 +17,16 @@
             }
             
             function onRowClick(data) {
+                jQuery('.btnCont').on('click', function(){
+                    var self = jQuery(this);
+                    self.attr('href',self.attr('xhref')+'/'+data.idcliente);
+                });
             }
         </script>
     </jsp:attribute>
         
     <jsp:attribute name="detailsButton">
-        <a href="${url}/filial" data-toggle="tooltip" data-placement="bottom" data-original-title="Filiais" type="button" class="btn btn-default"><i class="fa fa-cubes"></i></a>
+        <a xhref="${url}/contatos" data-toggle="tooltip" data-placement="bottom" data-original-title="Contatos" type="button" class="btn btn-default btnCont"><i class="fa fa-users"></i></a>
     </jsp:attribute>
         
         
@@ -44,93 +45,15 @@
 
                     <div class="row">
                         <div class="col-md-12 prop"> 
-                            Empresa Matriz
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-parente="true"></div> 
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 prop"> 
                             Nome
                         </div>
                         <div class="col-md-12 val"> 
                             <div data-nome="true"></div> 
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-12 prop"> 
-                            È matriz
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-matriz="true"></div> 
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 prop"> 
-                            È instore
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-instore="true"></div> 
-                        </div>
-                    </div>
+               
 
-                    <div class="row">
-                        <div class="col-md-12 prop"> 
-                            Nome fantasia
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-nomeFantasia="true"></div> 
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 prop"> 
-                            CNPJ
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-cnpj="true"></div> 
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 prop"> 
-                            Data de inicio do contrato
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-dataInicioContrato="true"></div> 
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 prop"> 
-                            Data de termino do contrato
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-dataTerminoContrato="true"></div> 
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 prop"> 
-                            Indice de reajuste do contrato
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-indiceReajusteContrato="true"></div> 
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 prop"> 
-                            Renovação automatica
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-renovacaoAutomatica="true"></div> 
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 prop"> 
-                            Razão social
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-razaoSocial="true"></div> 
-                        </div>
-                    </div>
+                    
                     <div class="row">
                         <div class="col-md-12 prop"> 
                             CEP
@@ -197,7 +120,7 @@
                     </div>
                 </div>
 
-                <div datagrid="true" data-id="idcliente"></div>
+                <div datagrid="true" data-id="idcliente" data-remove-param="1"></div>
             </div>
         </div>
 

@@ -9,10 +9,9 @@
         <script>
             var gridColumn = [
                 {title: 'ID', name: 'idcliente', index: true, filter: true, filterType: 'input'},
-                {title: 'Matriz', name: 'parente', index: true, filter: true, filterType: 'input'},
                 {title: 'Nome', name: 'nome', index: true, filter: true, filterType: 'input'},
-                {title: 'È matriz', name: 'matriz', index: true, filter: true},
-                {title: 'È instore', name: 'instore', index: true, filter: true}
+                {title: 'Nome Fantasia', name: 'nomeFantasia', index: true, filter: true, filterType: 'input'},
+                {title: 'CNPJ', name: 'cnpj', index: true, filter: true, filterType: 'input'},
             ];
 
             function onRowDblClick(data) {
@@ -20,12 +19,22 @@
             }
             
             function onRowClick(data) {
+                jQuery('.btnFil').on('click', function(){
+                    var self = jQuery(this);
+                    self.attr('href',self.attr('xhref')+'/'+data.idcliente);
+                });
+                
+                jQuery('.btnCont').on('click', function(){
+                    var self = jQuery(this);
+                    self.attr('href',self.attr('xhref')+'/'+data.idcliente);
+                });
             }
         </script>
     </jsp:attribute>
         
     <jsp:attribute name="detailsButton">
-        <a href="${url}/filial" data-toggle="tooltip" data-placement="bottom" data-original-title="Filiais" type="button" class="btn btn-default"><i class="fa fa-cubes"></i></a>
+        <a xhref="${url}/filial"  data-toggle="tooltip" data-placement="bottom" data-original-title="Filiais" type="button" class="btn btn-default btnFil"><i class="fa fa-cubes"></i></a>
+        <a xhref="${url}/contatos" data-toggle="tooltip" data-placement="bottom" data-original-title="Contatos" type="button" class="btn btn-default btnCont"><i class="fa fa-users"></i></a>
     </jsp:attribute>
         
         

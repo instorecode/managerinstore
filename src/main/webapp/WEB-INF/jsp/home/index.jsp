@@ -19,6 +19,7 @@
             <link href="${url_cz}js/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
             <link rel="stylesheet" href="${url_cz}fonts/font-awesome-4/css/font-awesome.min.css">
             <link href="${url_cz}css/style.css" rel="stylesheet" />	
+            <link rel="stylesheet" type="text/css" href="${url_cz}js/jquery.gritter/css/jquery.gritter.css" />
             
             <script src="${url_js}jquery.min.js"></script>
             <script src="${url_js}jquery.ui.min.js"></script>
@@ -29,6 +30,8 @@
             <script type="text/javascript" src="${url_cz}js/jquery.flot/jquery.flot.pie.js"></script>
             <script type="text/javascript" src="${url_cz}js/jquery.flot/jquery.flot.resize.js"></script>
             <script type="text/javascript" src="${url_cz}js/jquery.flot/jquery.flot.labels.js"></script>
+            
+            <script type="text/javascript" src="${url_cz}js/jquery.gritter/js/jquery.gritter.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}watch.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}underscore.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}backbone.js"></script>
@@ -40,12 +43,13 @@
             <script type="text/javascript" charset="utf-8" src="${url_js}additional.methods.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}jquery.form.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}jquery.mask.js"></script>
-            <script type="text/javascript" charset="utf-8" src="${url_js}maskmoney.js"></script>
+            <script type="text/javascript" charset="utf-8" src="${url_js}imask.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}bootbox.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}clockface.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}typeahead.bundle.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}prettify.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}main.js"></script>
+            <script type="text/javascript" charset="utf-8" src="${url_js}ws_cache.js"></script>
         </head>
         <body class="texture">
 
