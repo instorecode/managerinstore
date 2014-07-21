@@ -34,6 +34,7 @@ public class FilialController implements java.io.Serializable {
     @Restrict
     @Path("/filial/{id}")
     public void lista(Integer id , Boolean datajson) {
+        result.include("id", id);
         if (null != datajson && datajson) {
             result.use(Results.json()).withoutRoot().from(requestCliente.clienteDTOList(id)).recursive().serialize();
         }
@@ -42,7 +43,8 @@ public class FilialController implements java.io.Serializable {
     @Get
     @Restrict
     @Path("/filial/cadastrar/{id}")
-    public void cadastrar() {
+    public void cadastrar(Integer id) {
+        result.include("id", id);
         result.include("clienteBeanList", requestCliente.clienteBeanList());
         result.include("estadoBeanList", requestCliente.estadoBeanList());
     }
@@ -50,14 +52,16 @@ public class FilialController implements java.io.Serializable {
     @Post
     @Restrict
     @Path("/filial/cadastrar/{id}")
-    public void cadastrar(ClienteBean cliente , DadosClienteBean dadosCliente) {
-        requestCliente.salvar(cliente, dadosCliente);
+    public void cadastrar(Integer id , ClienteBean cliente , DadosClienteBean dadosCliente) {
+        result.include("id", id);
+        requestCliente.salvar2(cliente, dadosCliente);
     }
 
     @Get
     @Restrict
     @Path("/filial/atualizar/{id}")
-    public void cadastrar(Integer id) {
+    public void cadastrar(Integer id , String param) {
+        result.include("id", id);
         result.include("clienteBeanList", requestCliente.clienteBeanList());
         result.include("estadoBeanList", requestCliente.estadoBeanList());
         result.include("cliente", requestCliente.clienteBean(id));
@@ -67,8 +71,9 @@ public class FilialController implements java.io.Serializable {
     @Post
     @Restrict
     @Path("/filial/atualizar/{id}")
-    public void cadastrar(Integer id , ClienteBean cliente , DadosClienteBean dadosCliente) {
-        requestCliente.salvar(cliente, dadosCliente);
+    public void cadastrar(Integer id , ClienteBean cliente , DadosClienteBean dadosCliente, String param) {
+        result.include("id", id);
+        requestCliente.salvar2(cliente, dadosCliente);
     }
 
     @Get

@@ -33,23 +33,25 @@ public class ContatoClienteController implements java.io.Serializable {
 
     @Get
     @Restrict
-    @Path("/contatos")
-    public void contatos(Boolean datajson) {
+    @Path("/contatos/{id}")
+    public void contatos(Integer id, Boolean datajson) {
+        result.include("id",id);
         if (null != datajson && datajson) {
-            result.use(Results.json()).withoutRoot().from(requestContatoCliente.contatoClienteDTOList()).recursive().serialize();
+            result.use(Results.json()).withoutRoot().from(requestContatoCliente.contatoClienteDTOList(id)).recursive().serialize();
         }
     }
 
     @Get
     @Restrict
-    @Path("/contato/cadastrar")
-    public void cadastrar() {
+    @Path("/contato/cadastrar/{id}")
+    public void cadastrar(Integer id) {
+        result.include("id",id);
         result.include("dadosClienteBeanList", requestContatoCliente.dadosClienteBeanList());
     }
 
     @Post
     @Restrict
-    @Path("/contato/cadastrar")
+    @Path("/contato/cadastrar/{id}")
     public void cadastrar(ContatoClienteBean contatoClienteBean ) {
         requestContatoCliente.salvar(contatoClienteBean);
     }
@@ -57,7 +59,8 @@ public class ContatoClienteController implements java.io.Serializable {
     @Get
     @Restrict
     @Path("/contato/atualizar/{id}")
-    public void cadastrar(Integer id) {
+    public void cadastrar(Integer id, String param1) {
+        result.include("id",id);
         result.include("contatoClienteBean", requestContatoCliente.contatoClienteBean(id));
         result.include("dadosClienteBeanList", requestContatoCliente.dadosClienteBeanList());
     }
@@ -66,6 +69,7 @@ public class ContatoClienteController implements java.io.Serializable {
     @Restrict
     @Path("/contato/atualizar/{id}")
     public void cadastrar(Integer id , ContatoClienteBean contatoClienteBean ) {
+        result.include("id",id);
         requestContatoCliente.salvar(contatoClienteBean);
     }
 
@@ -73,6 +77,7 @@ public class ContatoClienteController implements java.io.Serializable {
     @Restrict
     @Path("/contato/remover/{id}")
     public void remover(Integer id) {
+        result.include("id",id);
         result.include("contatoClienteBean", requestContatoCliente.contatoClienteBean(id));
     }
 

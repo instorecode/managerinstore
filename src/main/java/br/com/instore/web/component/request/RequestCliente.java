@@ -43,7 +43,7 @@ public class RequestCliente implements java.io.Serializable {
 
     public List<ClienteDTO> clienteDTOList() {
         List<ClienteDTO> clienteDTOList = new ArrayList<ClienteDTO>();
-        List<ClienteBean> clienteBeanList = repository.query(ClienteBean.class).findAll();
+        List<ClienteBean> clienteBeanList = repository.query(ClienteBean.class).eq("parente", 0).findAll();
         if (null != clienteBeanList && !clienteBeanList.isEmpty()) {
             for (ClienteBean clienteBean : clienteBeanList) {
                 DadosClienteBean dados = repository.query(DadosClienteBean.class).eq(DadosCliente.IDCLIENTE, clienteBean.getIdcliente()).findOne();
@@ -161,12 +161,8 @@ public class RequestCliente implements java.io.Serializable {
                 cliente.setSituacao(Boolean.TRUE);
             }
             
-            if (!(cliente.getParente() != null && cliente.getParente() > 0)) {
-                cliente.setParente(1);
-                cliente.setMatriz(Boolean.TRUE);
-            } else {
-                cliente.setMatriz(Boolean.FALSE);
-            }
+            cliente.setParente(0);
+            cliente.setMatriz(Boolean.TRUE);
 
             EnderecoBean end = cliente.getEndereco();
             CepBean cep = cliente.getEndereco().getCep();
@@ -217,6 +213,94 @@ public class RequestCliente implements java.io.Serializable {
             }
             dadosCliente.setCliente(cliente);
             repository.save(dadosCliente);
+
+            repository.finalize();
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Dados salvos com sucesso!")).recursive().serialize();
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel salvar os dados!")).recursive().serialize();
+        }
+    }
+    public void salvar2(ClienteBean cliente, DadosClienteBean dadosCliente) {
+        try {
+            repository.setUsuario(sessionUsuario.getUsuarioBean());
+            cliente.setInstore(Boolean.FALSE);
+            
+            if(null == cliente.getSituacao()) {
+                cliente.setSituacao(Boolean.TRUE);
+            }
+            
+            if(null == cliente.getParente() || cliente.getParente() < 1) {
+                cliente.setParente(1);
+            }
+            cliente.setMatriz(Boolean.FALSE);
+
+            EnderecoBean end = cliente.getEndereco();
+            CepBean cep = cliente.getEndereco().getCep();
+            BairroBean bairro = cliente.getEndereco().getCep().getBairro();
+            CidadeBean cidade = cliente.getEndereco().getCep().getBairro().getCidade();
+
+            if (repository.query(EstadoBean.class).eq(Estado.IDESTADO, cidade.getEstado().getIdestado()).count() > 0) {
+                EstadoBean est = repository.query(EstadoBean.class).eq(Estado.IDESTADO, cidade.getEstado().getIdestado()).findOne();
+                cidade.setEstado(est);
+            }
+
+            if (cidade.getIdcidade() != null && cidade.getIdcidade() > 0) {
+                cidade = repository.marge(cidade);
+            }
+            repository.save(cidade);
+
+
+            if (bairro.getIdbairro() != null && bairro.getIdbairro() > 0) {
+                bairro = repository.marge(bairro);
+            }
+            bairro.setCidade(cidade);
+            repository.save(bairro);
+
+
+            if (cep.getIdcep() != null && cep.getIdcep() > 0) {
+                cep = repository.marge(cep);
+            }
+            cep.setBairro(bairro);
+            repository.save(cep);
+
+
+            if (end.getIdendereco() != null && end.getIdendereco() > 0) {
+                end = repository.marge(end);
+            }
+            end.setCep(cep);
+            repository.save(end);
+
+            boolean incluirDados = false;
+            if (cliente.getIdcliente() != null && cliente.getIdcliente() > 0) {
+                cliente = repository.marge(cliente);
+            } else {
+                incluirDados = true;
+            }
+            cliente.setEndereco(end);
+            repository.save(cliente);
+            
+            if ( incluirDados ) {
+                DadosClienteBean dcb1 = repository.query(DadosClienteBean.class).eq("cliente.idcliente", cliente.getParente()).findOne();                
+                dadosCliente = new DadosClienteBean();
+                dadosCliente.setIddadosCliente(null);
+                dadosCliente.setCliente(cliente);
+                dadosCliente.setCnpj(dcb1.getCnpj());
+                dadosCliente.setDataInicioContrato(dcb1.getDataInicioContrato());
+                dadosCliente.setDataTerminoContrato(dcb1.getDataTerminoContrato()); 
+                dadosCliente.setIndiceReajusteContrato(dcb1.getIndiceReajusteContrato());
+                dadosCliente.setNomeFantasia(dcb1.getNomeFantasia());
+                dadosCliente.setRazaoSocial(dcb1.getRazaoSocial());
+                dadosCliente.setRenovacaoAutomatica(dcb1.getRenovacaoAutomatica());
+                repository.save(dadosCliente);
+            }
+
+
+//            if (dadosCliente.getIddadosCliente() != null && dadosCliente.getIddadosCliente() > 0) {
+//                dadosCliente = repository.marge(dadosCliente);
+//            }
+//            dadosCliente.setCliente(cliente);
+//            repository.save(dadosCliente);
 
             repository.finalize();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Dados salvos com sucesso!")).recursive().serialize();
