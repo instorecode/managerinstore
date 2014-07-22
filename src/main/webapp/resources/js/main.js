@@ -22,7 +22,7 @@ jQuery(document).ready(function() {
         }
     };
     
-    jQuery.storageClear = function(name) {
+    jQuery.storageClear = function() {
         if (typeof(Storage) !== "undefined") {
             window.localStorage.clear(); 
         }
@@ -276,7 +276,7 @@ function formProccess() {
                         });
                     },
                     success: function(data) {
-                        avisar();
+//                        avisar();
                         if (data.success) {
                             if (data_success_url != null && data_success_url != undefined && data_success_url != '') {
                                 window.location.href = data_success_url;
