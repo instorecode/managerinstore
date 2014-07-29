@@ -151,10 +151,7 @@
                         <div class="form-group"> 
                             <label>Complemento</label>
                             <input type="text" name="cliente.endereco.complemento" class="form-control comp" placeholder="Complemento" 
-                                   value="${cliente.endereco.complemento}"
-                                   data-rule-required="true" 
-                                   data-rule-minlength="3"
-                                   data-rule-maxlength="255">
+                                   value="${cliente.endereco.complemento}">
                         </div>
                     </div>
 
