@@ -3,8 +3,13 @@
 
     <jsp:attribute name="submenu">
         <a href="${url}/audiostore-categoria/cadastrar" class="btn btn-default"> <i class="fa fa-save"></i> Cadastrar </a>
-        <a style="display: none" xhref="${url}/audiostore-categoria/download-exp" class="btn btn-default btnDownloadEXP"> <i class="fa fa-save"></i> Download do arquivo EXP </a>
-        <a style="display: none" xhref="${url}/audiostore-categoria/upload-exp" class="btn btn-default btnUploadEXP"> <i class="fa fa-upload"></i> Enviar EXP para o repositório  </a>
+        
+    </jsp:attribute>
+        
+            
+    <jsp:attribute name="detailsButton">
+        <a xhref="${url}/audiostore-categoria/download-exp" data-toggle="tooltip" data-placement="bottom" data-original-title="Download do arquivo de exportação" class="btn btn-default btnDownloadEXP"> <i class="fa fa-download"></i></a>
+        <a xhref="${url}/audiostore-categoria/upload-exp"   data-toggle="tooltip" data-placement="right" data-original-title="Enviar arquivo de exportação para o repositorio" class="btn btn-default btnUploadEXP"> <i class="fa fa-upload"></i></a>
     </jsp:attribute>
 
     <jsp:attribute name="gridColumn">
@@ -20,8 +25,6 @@
             }
 
             function onRowClick(data) {
-                jQuery('.btnDownloadEXP').show();
-                jQuery('.btnUploadEXP').show();
                 var xhref = jQuery('.btnDownloadEXP').attr('xhref') + '/' + data.codigo;
                 var xhref2 = jQuery('.btnUploadEXP').attr('xhref') + '/' + data.codigo;
                 jQuery('.btnDownloadEXP').attr('href', xhref);
