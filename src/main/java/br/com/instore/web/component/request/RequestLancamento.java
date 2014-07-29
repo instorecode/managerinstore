@@ -57,6 +57,7 @@ public class RequestLancamento implements java.io.Serializable {
 
 
             dto.setId(Utilities.leftPad(bean.getId()));
+            dto.setInstituicao(bean.getLancamentoCnpj().getNome());
             dto.setCredito(bean.getCredito() ? "Sim" : "Não");
             dto.setDebito(bean.getDebito() ? "Sim" : "Não");
             dto.setTipo(bean.getCredito() ? "Receber" : "Pagar");
@@ -64,10 +65,13 @@ public class RequestLancamento implements java.io.Serializable {
             dto.setMes(new SimpleDateFormat("dd/MM/yyyy").format(bean.getMes()));
             dto.setValor(moneyString);
             dto.setUsuarioNome(bean.getUsuario().getNome());
+            
             if (null != bean.getDatFechamento()) {
+                dto.setFinalizado("Sim");
                 dto.setDataFechamento("Finalizado na data " + new SimpleDateFormat("dd/MM/yyyy").format(bean.getDatFechamento()) + ".");
             } else {
                 dto.setDataFechamento("Não foi finalizado");
+                dto.setFinalizado("Não");
             }
 
             dto.setPositivo(bean.getPositivo() ? "Sim" : "Não");

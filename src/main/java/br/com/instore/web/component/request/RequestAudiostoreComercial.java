@@ -9,10 +9,11 @@ import br.com.instore.core.orm.bean.AudiostoreComercialBean;
 import br.com.instore.core.orm.bean.AudiostoreComercialShBean;
 import br.com.instore.core.orm.bean.AudiostoreGravadoraBean;
 import br.com.instore.core.orm.bean.ConfigAppBean;
+import br.com.instore.core.orm.bean.DadosClienteBean;
 import br.com.instore.core.orm.bean.property.AudiostoreComercialSh;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.component.session.SessionUsuario;
-import br.com.instore.web.dto.ArquivoMusicaDTO;
+import br.com.instore.web.dto.CadastroMusicaDTO;
 import br.com.instore.web.dto.AudiostoreComercialDTO;
 import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
@@ -164,10 +165,10 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
             }
 
             try {
-                ConfigAppBean cfg = repository.find(ConfigAppBean.class, 1);
+                DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", bean.getAudiostoreCategoria().getCliente().getIdcliente()).findOne();
 
-                String origem = cfg.getAudiostoreMusicaDirOrigem() + "\\" + bean.getArquivo();
-                String destino = cfg.getAudiostoreMusicaDirDestino() + "\\" + bean.getArquivo();
+                String origem = dados.getLocalOrigemSpot()+ "\\" + bean.getArquivo();
+                String destino = dados.getLocalDestinoSpot()+ "\\" + bean.getArquivo();
 
                 File dir = new File(destino);
                 if (!dir.exists()) {
@@ -213,16 +214,16 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
         }
     }
 
-    public List<ArquivoMusicaDTO> arquivoMusicaList() {
-        ConfigAppBean cfg = repository.find(ConfigAppBean.class, 1);
+    public List<CadastroMusicaDTO> arquivoMusicaList(Integer id) {
+        DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", id).findOne();
 
-        File dir = new File(cfg.getAudiostoreMusicaDirOrigem());
-        List<ArquivoMusicaDTO> lista = new ArrayList<ArquivoMusicaDTO>();
+        File dir = new File(dados.getLocalOrigemSpot());
+        List<CadastroMusicaDTO> lista = new ArrayList<CadastroMusicaDTO>();
         if (dir.exists()) {
             for (File file : dir.listFiles()) {
                 if (file.getName().endsWith(".mp3")) {
-                    ArquivoMusicaDTO dto = new ArquivoMusicaDTO(file.getName().replaceAll("([.]{1})([.,a-z,A-Z,0-9,_,-]+)", ""), file.getName());
-                    lista.add(dto);
+//                    CadastroMusicaDTO dto = new CadastroMusicaDTO(file.getName().replaceAll("([.]{1})([.,a-z,A-Z,0-9,_,-]+)", ""), file.getName());
+//                    lista.add(dto);
                 }
             }
         }
@@ -338,7 +339,7 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
                 int index = 1;
                 for (AudiostoreComercialShBean item : shs(bean.getId())) {
                     String semana = item.getSemana();
-                    String hora =  new SimpleDateFormat("HH:mm").format(item.getHorario());
+                    String hora = new SimpleDateFormat("HH:mm").format(item.getHorario());
                     if (semana.length() < 7) {
                         semana = StringUtils.leftPad(semana, 7, " ");
                     } else {
@@ -346,14 +347,14 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
                             semana = semana.substring(0, 7);
                         }
                     }
-                    
+
                     conteudo += semana;
                     conteudo += hora;
                     index++;
                 }
-                
-                if(index<24) {
-                    for(int i = index; i<= 24; i++) {
+
+                if (index < 24) {
+                    for (int i = index; i <= 24; i++) {
                         conteudo += "       ";
                         conteudo += "     ";
                     }

@@ -8,6 +8,7 @@ import br.com.instore.core.orm.bean.AudiostoreCategoriaBean;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.core.orm.bean.ClienteBean;
 import br.com.instore.core.orm.bean.ConfigAppBean;
+import br.com.instore.core.orm.bean.DadosClienteBean;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.dto.AudiostoreCategoriaDTO;
 import br.com.instore.web.tools.AjaxResult;
@@ -67,7 +68,7 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
     }
 
     public List<ClienteBean> clienteBeanList() {
-        List<ClienteBean> clienteBeanList = repository.query(ClienteBean.class).findAll();
+        List<ClienteBean> clienteBeanList = repository.query(ClienteBean.class).eq("matriz", true).eq("parente", 0).findAll();
         return clienteBeanList;
     }
     
@@ -138,7 +139,6 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
     
     public void upload(Integer id) {
         try {
-            ConfigAppBean config = repository.find(ConfigAppBean.class, 1);
             AudiostoreCategoriaBean audiostoreCategoriaBean = audiostoreCategoriaBean(id);
             if (audiostoreCategoriaBean != null) {
 
@@ -150,13 +150,15 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
                 conteudo += StringUtils.leftPad(new SimpleDateFormat("dd/MM/yy").format(audiostoreCategoriaBean.getDataFinal()), 8, " ");
                 conteudo += audiostoreCategoriaBean.getTipo();
                 
-                File dir = new File(config.getDataPath()+"\\categoria-exp\\");
+                DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", audiostoreCategoriaBean.getCliente().getIdcliente()).findOne();
+                
+                File dir = new File(dados.getLocalDestinoExp());
                 if(!dir.exists()) {
                     dir.mkdirs();
                 }
                 
                 InputStream is = new ByteArrayInputStream(conteudo.getBytes());
-                FileOutputStream fos = new FileOutputStream( new File(config.getDataPath()+"\\categoria-exp\\"+ StringUtils.leftPad(audiostoreCategoriaBean.getCodigo().toString(), 3, "0")+".exp"));
+                FileOutputStream fos = new FileOutputStream( new File(dados.getLocalDestinoExp()+"\\"+ StringUtils.leftPad(audiostoreCategoriaBean.getCodigo().toString(), 3, "0")+".exp"));
                 
                 IOUtils.copy(is, fos);
                 result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "")).recursive().serialize();
