@@ -8,6 +8,9 @@
     </jsp:attribute>
 
     <jsp:body>
+
+
+
         <script type="text/javascript">
             jQuery(document).ready(function() {
                 jQuery('.arquivosDeMusica').on('change', function() {
@@ -23,7 +26,20 @@
             <input type="hidden" name="audiostoreMusicaBean.id" value="${audiostoreMusicaBean.id}" />
 
             <div class="row">
-                <div class="col-md-4">
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Importar</label>
+                        <br />
+                        <select  class="select2"  data-rule-required="true">
+                            <c:forEach items="${arquivoMusicaList}" var="musica">
+                                <option value="${musica.nome}[|||SEPARADOR|||]${musica.caminho}" >${musica.nome}</option>
+                            </c:forEach>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
                     <div class="form-group">
                         <label>Titulo</label>
                         <input type="text" name="audiostoreMusicaBean.titulo" class="form-control" placeholder="Nome"  
@@ -33,7 +49,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-group">
                         <label>Arquivo</label>
                         <input type="text" name="audiostoreMusicaBean.arquivo" class="form-control" placeholder="Nome"  
@@ -42,43 +58,28 @@
                                data-rule-maxlength="30" value="${audiostoreMusicaBean.arquivo}">
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>Importar</label>
-                        <br />
-                        <select data-selectradio="true" data-drop-right="true" class="form-control arquivosDeMusica"  data-rule-required="true" style="margin-left: -30px;">
-                            <c:forEach items="${arquivoMusicaList}" var="musica">
-                                <option value="${musica.nome}[|||SEPARADOR|||]${musica.caminho}" >${musica.nome}</option>
-                            </c:forEach>
-                        </select>
-                    </div>
-                </div>
+
+            </div>
 
 
+            <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Gravadora</label>
                         <br />
-                        <select data-selectradio="true" class="form-control" name="audiostoreMusicaBean.gravadora.id" data-rule-required="true" >
+                        <select class="select2" name="audiostoreMusicaBean.gravadora.id" data-rule-required="true" >
                             <c:forEach items="${gravadoraBeanList}" var="gravadora">
                                 <option value="${gravadora.id}" ${gravadora.id eq audiostoreMusicaBean.gravadora.id ? 'selected="selected"' : ''}>${gravadora.nome}</option>
                             </c:forEach>
                         </select>
                     </div>
                 </div>
-            </div>
 
-            <br />
-
-            <b>Categorias</b>
-            <hr />
-
-            <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label>Primária</label> 
+                        <label>Categoria Primária</label> 
                         <br />
-                        <select data-selectradio="true"  class="form-control" name="audiostoreMusicaBean.categoria1.codigo" data-rule-required="true" >
+                        <select  class="select2" name="audiostoreMusicaBean.categoria1.codigo" data-rule-required="true" >
                             <c:forEach items="${categoriaBeanList}" var="cat">
                                 <option value="${cat.codigo}" ${audiostoreMusicaBean.categoria1.codigo eq cat.codigo ? 'selected="selected"':''}>${cat.categoria}</option> 
                             </c:forEach>
@@ -88,9 +89,9 @@
 
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label>Secundário</label> 
+                        <label>Categoria Secundário</label> 
                         <br />
-                        <select data-selectradio="true"  class="form-control" name="audiostoreMusicaBean.categoria2.codigo" data-rule-required="true" >
+                        <select class="select2" name="audiostoreMusicaBean.categoria2.codigo" data-rule-required="true" >
                             <c:forEach items="${categoriaBeanList}" var="cat">
                                 <option value="${cat.codigo}" ${audiostoreMusicaBean.categoria2.codigo eq cat.codigo ? 'selected="selected"':''}>${cat.categoria}</option> 
                             </c:forEach>
@@ -124,23 +125,24 @@
             <hr />
 
             <div class="row">
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <label>CrossOver</label> 
+                <div class="col-md-3">
+                    <div class="form-group">                        
+                        <label>Renovação automatica do contrato</label>
                         <br />
-                        <select data-selectradio="true"  class="form-control" name="audiostoreMusicaBean.crossover" data-rule-required="true" >
-                            <option value="${true}">Sim</option> 
-                            <option value="${false}">Não</option> 
-                        </select>
+                        <label class="radio-inline"> <input type="radio" class="icheck"  name="audiostoreMusicaBean.crossover" id="optionsRadios1" value="${true}" ${audiostoreMusicaBean.crossover ? 'checked="checked"' : ''} >&nbsp;Sim </label>
+                        <label class="radio-inline"> <input type="radio" class="icheck"  name="audiostoreMusicaBean.crossover" id="optionsRadios1" value="${false}"  ${not audiostoreMusicaBean.crossover ? 'checked="checked"' : ''}>&nbsp;Não </label>
                     </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-group">
                         <label>Data vencimendo crossover</label>
-                        <input type="text" name="audiostoreMusicaBean.dataVencimentoCrossover" class="form-control datepicker" placeholder="Nome"  
-                               data-rule-required="true" 
-                               data-mask="99/99/9999" value="${audiostoreMusicaBean.dataVencimentoCrossover}">
+                        <div class="input-group date datetime" data-min-view="2" data-date-format="dd/mm/yyyy">
+                            <input type="text" name="audiostoreMusicaBean.dataVencimentoCrossover" class="form-control datepicker" placeholder="Nome"  
+                                   data-rule-required="true" 
+                                   data-mask="99/99/9999" value="${audiostoreMusicaBean.dataVencimentoCrossover}">
+                            <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -166,7 +168,7 @@
                     <div class="form-group">
                         <label>Tipo</label> 
                         <br />
-                        <select data-selectradio="true"  class="form-control" name="audiostoreMusicaBean.tipoInterprete" data-rule-required="true" >
+                        <select class="select2" name="audiostoreMusicaBean.tipoInterprete" data-rule-required="true" >
                             <option value="1" ${audiostoreMusicaBean.tipoInterprete eq 1 ? 'selected="selected"' : ''} >Masculino</option> 
                             <option value="2" ${audiostoreMusicaBean.tipoInterprete eq 2 ? 'selected="selected"' : ''} >Feminino</option> 
                             <option value="3" ${audiostoreMusicaBean.tipoInterprete eq 3 ? 'selected="selected"' : ''} >Grupo</option> 
@@ -183,28 +185,28 @@
                     <hr />
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-12">
                     <div class="form-group">
                         <label></label>
                         <input type="text" name="audiostoreMusicaBean.afinidade1" class="form-control" placeholder="primário"  
                                value="${audiostoreMusicaBean.afinidade1}">
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-12">
                     <div class="form-group">
                         <label></label>
                         <input type="text" name="audiostoreMusicaBean.afinidade2" class="form-control" placeholder="secundário"  
                                value="${audiostoreMusicaBean.afinidade2}">
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-12">
                     <div class="form-group">
                         <label></label>
                         <input type="text" name="audiostoreMusicaBean.afinidade3" class="form-control" placeholder="terciário"  
                                value="${audiostoreMusicaBean.afinidade3}">
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-12">
                     <div class="form-group">
                         <label></label>
                         <input type="text" name="audiostoreMusicaBean.afinidade4" class="form-control" placeholder="quaternário"  
@@ -240,9 +242,12 @@
                 <div class="col-md-2">
                     <div class="form-group">
                         <label>Ultima  execução</label>
-                        <input type="text" name="audiostoreMusicaBean.ultimaExecucao" class="form-control datepicker" placeholder="Nome"  
-                               data-mask="99/99/9999"
-                               data-rule-maxlength="30" value="${audiostoreMusicaBean.ultimaExecucao}">
+                        <div class="input-group date datetime" data-min-view="2" data-date-format="dd/mm/yyyy">
+                            <input type="text" name="audiostoreMusicaBean.ultimaExecucao" class="form-control datepicker" placeholder="Nome"  
+                                   data-mask="99/99/9999"
+                                   data-rule-maxlength="30" value="${audiostoreMusicaBean.ultimaExecucao}">
+                            <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
                     </div>
                 </div>
 
@@ -272,36 +277,34 @@
                 <div class="col-md-2">
                     <div class="form-group">
                         <label>Data de vencimento</label>
-                        <input type="text" name="audiostoreMusicaBean.dataVencimento" class="form-control datepicker" placeholder="Nome"  
-                               data-rule-required="true" 
-                               data-mask="99/99/9999" value="${cf:dateFormat(audiostoreMusicaBean.dataVencimento, "dd/MM/yyyy")}">
+                        <div class="input-group date datetime" data-min-view="2" data-date-format="dd/mm/yyyy">
+                            <input type="text" name="audiostoreMusicaBean.dataVencimento" class="form-control datepicker" placeholder="Nome"  
+                                   data-rule-required="true" 
+                                   data-mask="99/99/9999" value="${cf:dateFormat(audiostoreMusicaBean.dataVencimento, "dd/MM/yyyy")}">
+                            <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
                         <label>Data de inclusao</label>
-                        <input type="text" name="audiostoreMusicaBean.data" class="form-control datepicker" placeholder="Nome"  
-                               data-rule-required="true" 
-                               data-mask="99/99/9999"value="${cf:dateFormat(audiostoreMusicaBean.data, "dd/MM/yyyy")}">
+
+                        <div class="input-group date datetime" data-min-view="2" data-date-format="dd/mm/yyyy">
+                            <input type="text" name="audiostoreMusicaBean.data" class="form-control datepicker" placeholder="Nome"  
+                                   data-rule-required="true" 
+                                   data-mask="99/99/9999"value="${cf:dateFormat(audiostoreMusicaBean.data, "dd/MM/yyyy")}">
+                            <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <label>Tipo</label> 
-                        <br />
-                        <select data-selectradio="true"  class="form-control" name="audiostoreMusicaBean.cut" data-rule-required="true" >
-                            <option value="${true}" ${audiostoreMusicaBean.cut ? 'selected="selected"':''}>Cut</option> 
-                            <option value="${false}" ${not audiostoreMusicaBean.cut ? 'selected="selected"':''}>FadeOut</option> 
-                        </select>
-                    </div>
-                </div>
+
 
                 <div class="col-md-2">
                     <div class="form-group">
                         <label>Velocidade</label> 
                         <br />
-                        <select data-selectradio="true"  class="form-control" name="audiostoreMusicaBean.velocidade" data-rule-required="true" >
+                        <select class="select2" name="audiostoreMusicaBean.velocidade" data-rule-required="true" >
                             <option value="1" ${audiostoreMusicaBean.velocidade eq 1 ? 'selected="selected"':''} >Lento</option> 
                             <option value="2" ${audiostoreMusicaBean.velocidade eq 2 ? 'selected="selected"':''}>Normal</option> 
                             <option value="3" ${audiostoreMusicaBean.velocidade eq 3 ? 'selected="selected"':''}>Rápido</option> 
@@ -313,11 +316,19 @@
                     <div class="form-group">
                         <label>Ano de gravação</label> 
                         <br />
-                        <select data-selectradio="true"  class="form-control" name="audiostoreMusicaBean.anoGravacao" data-rule-required="true" >
+                        <select class="select2" name="audiostoreMusicaBean.anoGravacao" data-rule-required="true" >
                             <c:forEach begin="1980" end="2014" varStatus="vs">
                                 <option value="${vs.index}" ${audiostoreMusicaBean.anoGravacao eq vs.index ? 'selected="selected"':''}>${vs.index}</option>
                             </c:forEach>
                         </select>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Tipo</label> 
+                        <label class="radio-inline"> <input type="radio" class="icheck"  name="audiostoreMusicaBean.cut" id="optionsRadios1" value="${true}" ${audiostoreMusicaBean.cut ? 'checked="checked"' : ''} >&nbsp;Cut </label>
+                        <label class="radio-inline"> <input type="radio" class="icheck"  name="audiostoreMusicaBean.cut" id="optionsRadios1" value="${false}"  ${not audiostoreMusicaBean.cut ? 'checked="checked"' : ''}>&nbsp;FadeOut </label>
                     </div>
                 </div>
             </div>
