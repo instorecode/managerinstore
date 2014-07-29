@@ -3,7 +3,7 @@
 
     <jsp:attribute name="submenu">
         <a href="${url}/lancamento-entidade/cadastrar" class="btn btn-default"> <i class="fa fa-save"></i> Cadastrar </a>
-        <a href="${url}/lancamento-entidade/relatorio" class="btn btn-default"> <i class="fa fa-bar-chart-o"></i> Relatório </a>
+        <a href="${url}/lancamento-entidade/relatorio" class="btn btn-default"> <i class="fa fa-bar-chart-o"></i></a>
     </jsp:attribute>
 
     <jsp:attribute name="gridColumn">
@@ -26,6 +26,10 @@
             }
 
         </script>
+    </jsp:attribute>
+        
+    <jsp:attribute name="detailsButton">
+        
     </jsp:attribute>
     <jsp:body> 
         <div class="block-flat">
