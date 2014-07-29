@@ -3,7 +3,7 @@
 
     <jsp:attribute name="submenu">
         <div class="btn-group">
-        <a href="${url}/ocorrencia-status/cadastrar" class="btn btn-default"> <i class="fa fa-save"></i> Cadastrar </a>
+        <a href="${url}/ocorrencia-problema/cadastrar" class="btn btn-default"> <i class="fa fa-save"></i> Cadastrar </a>
         </div>
     </jsp:attribute>
 
@@ -42,15 +42,6 @@
                         </div>
                         <div class="col-md-12 val"> 
                             <div data-descricao="true"></div> 
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-12 prop"> 
-                            Cor
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-cor="true"></div> 
                         </div>
                     </div>
 
