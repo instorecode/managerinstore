@@ -21,7 +21,7 @@
                             <input type="text" name="lancamentoBean.descricao" class="form-control typeahead" placeholder="Descrição"  
                                    data-rule-required="true" 
                                    data-rule-minlength="3"
-                                   data-rule-maxlength="255" value="${lancamentoBean.descricao}">
+                                   data-rule-maxlength="255"  value="${lancamentoBean.descricao}">
                         </div>
                     </div>
                 </div>
@@ -100,7 +100,7 @@
                                 </div>
                             </c:if>
 
-                            
+
                         </div>
                     </div>
                 </div>
@@ -138,26 +138,26 @@
             <script>
                 jQuery(document).ready(function() {
 
-                    $(".monthPicker").datepicker({
-                        dateFormat: 'MM yy',
-                        changeMonth: true,
-                        changeYear: true,
-                        showButtonPanel: true,
-                        onClose: function(dateText, inst) {
-                            var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
-                            var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
-                            $(this).val($.datepicker.formatDate('MM yy', new Date(year, month, 1)));
-                        }
-                    });
-
-                    $(".monthPicker").focus(function() {
-                        $(".ui-datepicker-calendar").hide();
-                        $("#ui-datepicker-div").position({
-                            my: "center top",
-                            at: "center bottom",
-                            of: $(this)
-                        });
-                    });
+//                    $(".monthPicker").datepicker({
+//                        dateFormat: 'MM yy',
+//                        changeMonth: true,
+//                        changeYear: true,
+//                        showButtonPanel: true,
+//                        onClose: function(dateText, inst) {
+//                            var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+//                            var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+//                            $(this).val($.datepicker.formatDate('MM yy', new Date(year, month, 1)));
+//                        }
+//                    });
+//
+//                    $(".monthPicker").focus(function() {
+//                        $(".ui-datepicker-calendar").hide();
+//                        $("#ui-datepicker-div").position({
+//                            my: "center top",
+//                            at: "center bottom",
+//                            of: $(this)
+//                        });
+//                    });
 
                     jQuery('[name="lancamentoBean.loop"]').on('change', function() {
                         console.log(jQuery(this));
@@ -179,45 +179,52 @@
                         }
                     });
 
-                    //                    var substringMatcher = function(strs) {
-                    //                        return function findMatches(q, cb) {
-                    //                            var matches, substrRegex;
-                    //
-                    //                            // an array that will be populated with substring matches
-                    //                            matches = [];
-                    //
-                    //                            // regex used to determine if a string contains the substring `q`
-                    //                            substrRegex = new RegExp(q, 'i');
-                    //
-                    //                            // iterate through the pool of strings and for any string that
-                    //                            // contains the substring `q`, add it to the `matches` array
-                    //                            $.each(strs, function(i, str) {
-                    //                                if (substrRegex.test(str)) {
-                    //                                    // the typeahead jQuery plugin expects suggestions to a
-                    //                                    // JavaScript object, refer to typeahead docs for more info
-                    //                                    matches.push({value: str});
-                    //                                }
-                    //                            });
-                    //
-                    //                            cb(matches);
-                    //                        };
-                    //                    };
+                    var substringMatcher = function(strs) {
+                        return function findMatches(q, cb) {
+                            var matches, substrRegex;
+
+                            // an array that will be populated with substring matches
+                            matches = [];
+
+                            // regex used to determine if a string contains the substring `q`
+                            substrRegex = new RegExp(q, 'i');
+
+                            // iterate through the pool of strings and for any string that
+                            // contains the substring `q`, add it to the `matches` array
+                            $.each(strs, function(i, str) {
+                                if (substrRegex.test(str)) {
+                                    // the typeahead jQuery plugin expects suggestions to a
+                                    // JavaScript object, refer to typeahead docs for more info
+                                    matches.push({value: str});
+                                }
+                            });
+
+                            cb(matches);
+                        };
+                    };
 
 
 
 
-                    //                    $('#the-basics .typeahead').typeahead({
-                    //                        hint: true,
-                    //                        highlight: true,
-                    //                        minLength: 1
-                    //                    },
-                    //                    {
-                    //                        name: 'states',
-                    //                        displayKey: 'value',
-                    //                        source: substringMatcher(states)
-                    //                    });
+                    $('#the-basics .typeahead').typeahead({
+                        hint: true,
+                        highlight: true,
+                        minLength: 1
+                    },
+                    {
+                        name: 'states',
+                        displayKey: 'value',
+                        source: substringMatcher(states)
+                    });
                 });
             </script>
+            
+            <style type="text/css">
+                .tt-dropdown-menu {
+                    background-color: white;
+                    padding: 10px;
+                }
+            </style>
         </form>
     </jsp:body>
 </instore:template>
