@@ -1,3 +1,4 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="instore" tagdir="/WEB-INF/tags/" %> 
@@ -7,6 +8,7 @@
         <a href="${url}/clientes" class="btn btn-default"> <i class="fa fa-hand-o-left"></i> Clientes </a>
     </jsp:attribute>
     <jsp:body>
+
         <form d="cad_cliente" method="POST" data-form="true" data-success-url="${url}/clientes">
             <input type="hidden" name="cliente.idcliente" value="${cliente.idcliente}" />
             <input type="hidden" name="dadosCliente.iddadosCliente" value="${dadosCliente.iddadosCliente}" />
@@ -46,6 +48,7 @@
                                data-rule-required="true" 
                                data-rule-minlength="18"
                                data-rule-maxlength="18"
+                               data-rule-cnpj="true"
                                value="${dadosCliente.cnpj}">
                     </div>
                 </div>
@@ -78,9 +81,15 @@
 
                 <div class="col-md-3">
                     <div class="form-group">
+                        <label>Valor do contrato</label> 
+                        <input type="text" name="dadosCliente.valorContrato" class="form-control" placeholder="Indice de reajuste do contrato" value='<fmt:formatNumber value="${dadosCliente.valorContrato}" minFractionDigits="2" />' data-maskmoney="true">
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
                         <label>Indice de reajuste do contrato</label>
-                        <input type="text" name="dadosCliente.indiceReajusteContrato" class="form-control" placeholder="Indice de reajuste do contrato" 
-                               data-rule-required="true" data-mask="00.00" value="${dadosCliente.indiceReajusteContrato}">
+                        <input type="text" name="dadosCliente.indiceReajusteContrato" class="form-control" placeholder="Indice de reajuste do contrato" data-mask="00.00" value="${dadosCliente.indiceReajusteContrato}">
                     </div>
                 </div>
 
@@ -91,6 +100,15 @@
                         <label class="radio-inline"> <input type="radio" class="icheck"  name="dadosCliente.renovacaoAutomatica" id="optionsRadios1" value="${false}"  ${not dadosCliente.renovacaoAutomatica ? 'checked="checked"' : ''}>&nbsp;Não </label>
                     </div>
                 </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Faturamento por matriz</label>
+                        <label class="radio-inline"> <input type="radio" class="icheck"  name="cliente.faturamenoMatriz" id="optionsRadios1" value="${true}" ${cliente.faturamenoMatriz ? 'checked="checked"' : ''} >&nbsp;Sim </label>
+                        <label class="radio-inline"> <input type="radio" class="icheck"  name="cliente.faturamenoMatriz" id="optionsRadios1" value="${false}"  ${not cliente.faturamenoMatriz ? 'checked="checked"' : ''}>&nbsp;Não </label>
+                    </div>
+                </div>
+
                 <div class="col-md-12">
                     <div class="form-group">
                         <label></label> 
@@ -104,10 +122,48 @@
                                           data-rule-required="true" 
                                           data-rule-minlength="3"
                                           data-rule-maxlength="1000" >${dadosCliente.razaoSocial}</textarea>
-
                             </div>
                         </div>	
 
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="form-group"> 
+                        <label>Local dos arquivos de musica</label>
+                        <input type="text" name="dadosCliente.localOrigemMusica" class="form-control cid" placeholder="Local dos arquivos de musica" 
+                               value="${dadosCliente.localOrigemMusica}">
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="form-group"> 
+                        <label>Destino dos arquivos de musica</label>
+                        <input type="text" name="dadosCliente.localDestinoMusica" class="form-control cid" placeholder="Destino dos arquivos de musica" 
+                               value="${dadosCliente.localDestinoMusica}">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group"> 
+                        <label>Local dos arquivos de spot</label>
+                        <input type="text" name="dadosCliente.localOrigemSpot" class="form-control cid" placeholder="Local dos arquivos de spot" 
+                               value="${dadosCliente.localOrigemSpot}">
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="form-group"> 
+                        <label>Destino dos arquivos de spot</label>
+                        <input type="text" name="dadosCliente.localDestinoSpot" class="form-control cid" placeholder="Destino dos arquivos de spot" 
+                               value="${dadosCliente.localDestinoSpot}">
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="form-group"> 
+                        <label>Destino dos arquivos Exp</label>
+                        <input type="text" name="dadosCliente.localDestinoExp" class="form-control cid" placeholder="Destino dos arquivos Exp" 
+                               value="${dadosCliente.localDestinoExp}">
                     </div>
                 </div>
 
@@ -185,15 +241,11 @@
                 <div class="col-md-5">
                     <div class="form-group"> 
                         <label>Complemento</label>
-                        <input type="text" name="cliente.endereco.complemento" class="form-control comp" placeholder="Complemento" 
-                               value="${cliente.endereco.complemento}"
-                               data-rule-required="true" 
-                               data-rule-minlength="3"
-                               data-rule-maxlength="255">
+                        <input type="text" name="cliente.endereco.complemento" class="form-control comp" placeholder="Complemento" value="${cliente.endereco.complemento}">
                     </div>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <div class="form-group">
                         <label>Situação &nbsp;&nbsp;</label>
                         <label class="radio-inline"> <input class="icheck" type="radio" name="cliente.situacao" id="optionsRadios1" value="${true}" ${cliente.situacao ? 'checked="checked"' : ''} >&nbsp;Ativo </label>
@@ -203,10 +255,428 @@
 
                     </div>
                 </div>
+
+                <div class="col-md-12">
+                    <style>
+                        .lista_filial {
+                            height: 300px;
+                            overflow: auto;
+                        }
+
+                        .lista_filial::-webkit-scrollbar {
+                            width: 5px;
+                        }
+
+                        .lista_filial::-webkit-scrollbar-track {
+                            background-color: transparent;
+                        }
+
+                        .lista_filial::-webkit-scrollbar-thumb {
+                            background-color: #909090;
+                        }
+
+                        .lista_filial li { cursor: pointer; }
+                    </style>
+
+                    <script type="text/javascript">
+                        jQuery(document).ready(function() {
+                            var prim_index = null;
+                            jQuery(document).on('click', '.lista_filial1 li', function(event) {
+                                if (event.ctrlKey) {
+                                    if (null != prim_index) {
+                                        var clones = new Array();
+                                        var i2 = 0;
+                                        var fim_index = jQuery(this).data("index");
+
+                                        if (prim_index > fim_index) {
+                                            var aux = prim_index;
+                                            prim_index = fim_index;
+                                            fim_index = aux;
+                                        }
+
+                                        for (i = prim_index; i <= fim_index; i++) {
+                                            var self = jQuery('.lista_filial1 li[data-index="' + i + '"]');
+                                            self.css({
+                                                'background-color': '#f4f4f4'
+                                            });
+
+                                            clones[i2] = self;
+                                            i2++;
+                                        }
+
+                                        jQuery('.contador_l1').text("Total " + (jQuery('.lista_filial1 li').size() - clones.length));
+                                        jQuery('.contador_l2').text("Total " + (jQuery('.lista_filial2 li').size() + clones.length));
+
+                                        for (i = 0; i <= clones.length; i++) {
+                                            var self = clones[i];
+                                            addLista1(self);
+                                        }
+
+                                        prim_index = null;
+                                    } else {
+                                        prim_index = jQuery(this).data("index");
+                                        jQuery(this).css({
+                                            'background-color': '#f4f4f4'
+                                        });
+                                    }
+                                } else {
+                                    addLista1(jQuery(this));
+                                    jQuery('.contador_l1').text("Total " + (jQuery('.lista_filial1 li').size() - 1));
+                                    jQuery('.contador_l2').text("Total " + (jQuery('.lista_filial2 li').size() + 1));
+
+                                }
+                            });
+
+                            jQuery(document).on('click', '.lista_filial2 li', function(event) {
+                                if (event.ctrlKey) {
+                                    if (null != prim_index) {
+                                        var clones = new Array();
+                                        var i2 = 0;
+
+                                        var fim_index = jQuery(this).data("index");
+
+                                        if (prim_index > fim_index) {
+                                            var aux = prim_index;
+                                            prim_index = fim_index;
+                                            fim_index = aux;
+                                        }
+
+                                        for (i = prim_index; i <= fim_index; i++) {
+                                            var self = jQuery('.lista_filial2 li[data-index="' + i + '"]');
+                                            self.css({
+                                                'background-color': '#f4f4f4'
+                                            });
+
+                                            clones[i2] = self;
+                                            i2++;
+                                        }
+
+                                        jQuery('.contador_l1').text("Total " + (jQuery('.lista_filial1 li').size() + clones.length));
+                                        jQuery('.contador_l2').text("Total " + (jQuery('.lista_filial2 li').size() - clones.length));
+
+                                        for (i = 0; i <= clones.length; i++) {
+                                            var self = clones[i];
+                                            addLista2(self);
+                                        }
+
+                                        prim_index = null;
+                                    } else {
+                                        prim_index = jQuery(this).data("index");
+                                        jQuery(this).css({
+                                            'background-color': '#f4f4f4'
+                                        });
+                                    }
+                                } else {
+                                    jQuery('.contador_l1').text("Total " + (jQuery('.lista_filial1 li').size() + 1));
+                                    jQuery('.contador_l2').text("Total " + (jQuery('.lista_filial2 li').size() - 1));
+                                    addLista2(jQuery(this));
+                                }
+                            });
+
+                            function addLista1(self) {
+                                if (null != self && undefined != self) {
+                                    self.fadeOut('500', function() {
+                                        var id = jQuery(this).attr("id");
+                                        var clone = jQuery(this).clone();
+                                        jQuery(this).remove();
+                                        clone.children('input[type="hidden"]').attr("disabled", false);
+                                        clone.css({
+                                            'background-color': '#FFF'
+                                        });
+
+                                        if (jQuery('.lista_filial2 li').size() > 0) {
+                                            var data_index = clone.data("index");
+                                            var data_index_less = 0;
+                                            var data_index_more = 999999999999;
+
+                                            jQuery('.lista_filial2 li').each(function() {
+                                                var _this = jQuery(this);
+                                                if (_this.data("index") < data_index && _this.data("index") > data_index_less) {
+                                                    data_index_less = _this.data("index");
+                                                }
+                                                if (_this.data("index") > data_index && _this.data("index") < data_index_more) {
+                                                    data_index_more = _this.data("index");
+                                                }
+                                            });
+
+                                            var current = parseInt(data_index);
+                                            var less = parseInt(data_index_less);
+                                            var more = parseInt(data_index_more);
+
+
+                                            // depois de x
+                                            if ((current - less) < (more - current)) {
+                                                jQuery('.lista_filial2 li[data-index="' + less + '"]').after(clone);
+                                                clone.fadeIn('500');
+                                                clone.on('mouseover', function() {
+                                                    jQuery(this).css({
+                                                        'background-color': '#f4f4f4'
+                                                    });
+                                                }).on('mouseout', function() {
+                                                    jQuery(this).css({
+                                                        'background-color': '#fff'
+                                                    });
+                                                });
+                                            }
+
+                                            // antes de x
+                                            if ((current - less) > (more - current)) {
+                                                jQuery('.lista_filial2 li[data-index="' + more + '"]').before(clone);
+                                                clone.fadeIn('500');
+                                                clone.on('mouseover', function() {
+                                                    jQuery(this).css({
+                                                        'background-color': '#f4f4f4'
+                                                    });
+                                                }).on('mouseout', function() {
+                                                    jQuery(this).css({
+                                                        'background-color': '#fff'
+                                                    });
+                                                });
+                                            }
+
+                                            // entre x e x
+                                            if ((current - less) == (more - current)) {
+                                                jQuery('.lista_filial2 li[data-index="' + more + '"]').before(clone);
+                                                clone.fadeIn('500');
+                                                clone.on('mouseover', function() {
+                                                    jQuery(this).css({
+                                                        'background-color': '#f4f4f4'
+                                                    });
+                                                }).on('mouseout', function() {
+                                                    jQuery(this).css({
+                                                        'background-color': '#fff'
+                                                    });
+                                                });
+                                            }
+                                        } else {
+                                            jQuery('.lista_filial2').append(clone);
+                                            clone.fadeIn('500');
+                                            clone.on('mouseover', function() {
+                                                jQuery(this).css({
+                                                    'background-color': '#f4f4f4'
+                                                });
+                                            }).on('mouseout', function() {
+                                                jQuery(this).css({
+                                                    'background-color': '#fff'
+                                                });
+                                            });
+                                        }
+                                    });
+                                }
+
+                                jQuery('.lista_filial2 li').each(function() {
+                                    jQuery(this).show();
+                                });
+
+
+                            }
+
+                            function addLista2(self) {
+                                if (null != self && undefined != self) {
+                                    self.fadeOut('500', function() {
+                                        var id = jQuery(this).attr("id");
+                                        var clone = jQuery(this).clone();
+                                        jQuery(this).remove();
+                                        clone.children('input[type="hidden"]').attr("disabled", true);
+                                        clone.css({
+                                            'background-color': '#FFF'
+                                        });
+
+                                        if (jQuery('.lista_filial1 li').size() > 0) {
+                                            var data_index = clone.data("index");
+                                            var data_index_less = 0;
+                                            var data_index_more = 999999999999;
+
+                                            jQuery('.lista_filial1 li').each(function() {
+                                                var _this = jQuery(this);
+                                                if (_this.data("index") < data_index && _this.data("index") > data_index_less) {
+                                                    data_index_less = _this.data("index");
+                                                }
+                                                if (_this.data("index") > data_index && _this.data("index") < data_index_more) {
+                                                    data_index_more = _this.data("index");
+                                                }
+                                            });
+
+                                            var current = parseInt(data_index);
+                                            var less = parseInt(data_index_less);
+                                            var more = parseInt(data_index_more);
+
+
+                                            // depois de x
+                                            if ((current - less) < (more - current)) {
+                                                jQuery('.lista_filial1 li[data-index="' + less + '"]').after(clone);
+                                                clone.fadeIn('500');
+                                                clone.on('mouseover', function() {
+                                                    jQuery(this).css({
+                                                        'background-color': '#f4f4f4'
+                                                    });
+                                                }).on('mouseout', function() {
+                                                    jQuery(this).css({
+                                                        'background-color': '#fff'
+                                                    });
+                                                });
+                                            }
+
+                                            // antes de x
+                                            if ((current - less) > (more - current)) {
+                                                jQuery('.lista_filial1 li[data-index="' + more + '"]').before(clone);
+                                                clone.fadeIn('500');
+                                                clone.on('mouseover', function() {
+                                                    jQuery(this).css({
+                                                        'background-color': '#f4f4f4'
+                                                    });
+                                                }).on('mouseout', function() {
+                                                    jQuery(this).css({
+                                                        'background-color': '#fff'
+                                                    });
+                                                });
+                                            }
+
+                                            // entre x e x
+                                            if ((current - less) == (more - current)) {
+                                                jQuery('.lista_filial1 li[data-index="' + more + '"]').before(clone);
+                                                clone.fadeIn('500');
+                                                clone.on('mouseover', function() {
+                                                    jQuery(this).css({
+                                                        'background-color': '#f4f4f4'
+                                                    });
+                                                }).on('mouseout', function() {
+                                                    jQuery(this).css({
+                                                        'background-color': '#fff'
+                                                    });
+                                                });
+                                            }
+                                        } else {
+                                            jQuery('.lista_filial2').append(clone);
+                                            clone.fadeIn('500');
+                                            clone.on('mouseover', function() {
+                                                jQuery(this).css({
+                                                    'background-color': '#f4f4f4'
+                                                });
+                                            }).on('mouseout', function() {
+                                                jQuery(this).css({
+                                                    'background-color': '#fff'
+                                                });
+                                            });
+                                        }
+                                    });
+                                }
+                                jQuery('.lista_filial1 li').each(function() {
+                                    jQuery(this).show();
+                                });
+                            }
+
+                            jQuery('.lista1_pesq').on('keyup', function() {
+                                var value = jQuery(this).val();
+                                jQuery(".lista_filial1 li").hide();
+                                jQuery(".lista_filial1 li:contains('" + value + "')").show();
+                                jQuery('.contador_l1').text("Total " + jQuery('.lista_filial1 li:visible').size());
+                            });
+
+                            jQuery('.lista2_pesq').on('keyup', function() {
+                                var value = jQuery(this).val();
+                                jQuery(".lista_filial2 li").hide();
+                                jQuery(".lista_filial2 li:contains('" + value + "')").show();
+                                jQuery('.contador_l2').text("Total " + jQuery('.lista_filial2 li:visible').size());
+                            });
+
+                            jQuery('.contador_l1').text("Total " + jQuery('.lista_filial1 li').size());
+                            jQuery('.contador_l2').text("Total " + jQuery('.lista_filial2 li').size());
+
+                            jQuery('.btn_all_l1').on('click', function() {
+                                jQuery('.lista_filial1 li:visible').each(function() {
+                                    addLista1(jQuery(this));
+                                });
+                            });
+
+                            jQuery('.btn_all_l2').on('click', function() {
+                                jQuery('.lista_filial2 li:visible').each(function() {
+                                    addLista2(jQuery(this));
+                                });
+                            });
+                        });
+                    </script>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="block">
+                                <div class="header">
+                                    <h2> 
+                                        <b>Filiais</b> 
+                                        <span class="pull-right contador_l1">Total </span>
+                                    </h2>
+                                    <input type="text" class="form-control lista1_pesq" placeholder="Filtro de Pesquisar">
+
+                                </div>
+                                <div class="content no-padding ">
+                                    <ul class="items lista_filial lista_filial1">
+                                        <c:forEach items="${filialBeanList2}" var="filial" varStatus="vs">
+                                            <li id="${vs.index}" data-index="${vs.index}">
+                                                <i class="fa fa-cubes"></i>
+                                                <div class="text">${filial.nome}</div>
+                                                <small>
+                                                    <c:if test="${filial.parente eq 0}">
+                                                        <b style="color: green">Não possui matriz</b>
+                                                    </c:if>
+                                                    <c:if test="${filial.parente ne 0}">
+                                                        <b style="color: red">Possui matriz</b>
+                                                    </c:if>
+                                                </small>
+
+                                                <input type="hidden" name="filialList" value="${filial.idcliente}" disabled="disabled"/>
+                                            </li>
+                                        </c:forEach>
+                                    </ul>
+                                    <div style="clear: both"></div>
+                                    <button type="button" class="btn btn-default pull-right btn_all_l1" style="margin-top: 10px; margin-right: 10px;">
+                                        Selecionar todos
+                                    </button>
+                                    <div style="clear: both"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="block">
+                                <div class="header">
+                                    <h2> 
+                                        <b>Filiais inclusas</b> 
+                                        <span class="pull-right contador_l2">Total </span>
+                                    </h2>
+                                    <input type="text" class="form-control lista2_pesq" placeholder="Filtro de Pesquisar">
+                                </div>
+                                <div class="content no-padding ">
+                                    <ul class="items lista_filial lista_filial2">
+                                        <c:forEach items="${filialBeanList1}" var="filial" varStatus="vs">
+                                            <li id="${vs.index}" data-index="${vs.index}">
+                                                <i class="fa fa-cubes"></i>
+                                                <div class="text">${filial.nome}</div>
+                                                <small>
+                                                    <c:if test="${filial.parente eq 0}">
+                                                        <b style="color: green">Não possui matriz</b>
+                                                    </c:if>
+                                                    <c:if test="${filial.parente ne 0}">
+                                                        <b style="color: red">Possui matriz</b>
+                                                    </c:if>
+                                                </small>
+
+                                                <input type="hidden" name="filialList" value="${filial.idcliente}" />
+                                            </li>
+                                        </c:forEach>
+                                    </ul>
+                                    <div style="clear: both"></div>
+                                    <button type="button" class="btn btn-default pull-right btn_all_l2" style="margin-top: 10px; margin-right: 10px;">
+                                        Selecionar todos
+                                    </button>
+                                    <div style="clear: both"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <button type="submit" class="btn btn-default">
                 <i class="fa fa-save"></i> Salvar
             </button>
         </form>
+
     </jsp:body>
 </instore:template>

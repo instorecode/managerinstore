@@ -35,6 +35,7 @@
     <jsp:attribute name="detailsButton">
         <a xhref="${url}/filial"  data-toggle="tooltip" data-placement="bottom" data-original-title="Filiais" type="button" class="btn btn-default btnFil"><i class="fa fa-cubes"></i></a>
         <a xhref="${url}/contatos" data-toggle="tooltip" data-placement="bottom" data-original-title="Contatos" type="button" class="btn btn-default btnCont"><i class="fa fa-users"></i></a>
+        <a xhref="${url}/cliente-configuracao" data-toggle="tooltip" data-placement="bottom" data-original-title="Configurações" type="button" class="btn btn-default btnCont"><i class="fa fa-gear"></i></a>
     </jsp:attribute>
         
         
@@ -202,6 +203,46 @@
                         </div>
                         <div class="col-md-12 val"> 
                             <div data-situacao="true"></div> 
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Local dos arquivos de musica
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-local1="true"></div> 
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Destino dos arquivos de musica
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-local2="true"></div> 
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Local dos arquivos de spot
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-local3="true"></div> 
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Destino dos arquivos de spot
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-local4="true"></div> 
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Destino dos arquivos Exp
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-local5="true"></div> 
                         </div>
                     </div>
                 </div>
