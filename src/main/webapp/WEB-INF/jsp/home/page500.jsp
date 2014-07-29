@@ -13,14 +13,14 @@
     <html lang="en">
         <head>
             <title>ManagerInstore</title>
-            
+
             <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,400italic,700,800' rel='stylesheet' type='text/css'>
             <link href='http://fonts.googleapis.com/css?family=Raleway:300,200,100' rel='stylesheet' type='text/css'>
             <link href="${url_cz}js/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
             <link rel="stylesheet" href="${url_cz}fonts/font-awesome-4/css/font-awesome.min.css">
             <link href="${url_cz}css/style.css" rel="stylesheet" />	
             <link rel="stylesheet" type="text/css" href="${url_cz}js/jquery.gritter/css/jquery.gritter.css" />
-            
+
             <script src="${url_js}jquery.min.js"></script>
             <script src="${url_js}jquery.ui.min.js"></script>
             <script type="text/javascript" src="${url_cz}js/behaviour/general.js"></script>
@@ -30,7 +30,7 @@
             <script type="text/javascript" src="${url_cz}js/jquery.flot/jquery.flot.pie.js"></script>
             <script type="text/javascript" src="${url_cz}js/jquery.flot/jquery.flot.resize.js"></script>
             <script type="text/javascript" src="${url_cz}js/jquery.flot/jquery.flot.labels.js"></script>
-            
+
             <script type="text/javascript" src="${url_cz}js/jquery.gritter/js/jquery.gritter.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}watch.js"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}underscore.js"></script>
@@ -53,44 +53,13 @@
         </head>
         <body class="texture">
 
-            <div id="cl-wrapper" class="login-container">
-
-                <div class="middle-login">
-                    <div class="block-flat">
-                        <div class="header">							
-                            <h3 class="text-center"><img class="logo-img" src="${url_cz}images/logo.png" alt="logo" style="max-width: 48px;"/>ManagerInstore</h3> 
-                        </div>
-                        <div>
-                            <form id="login" method="POST" data-form="true" data-success-url="${url}/dashboard" data-notify="0">
-                                <div class="content">
-                                    <h4 class="title">Login Access</h4>
-                                    <div class="form-group">
-                                        <div class="col-sm-12">
-                                            <div class="input-group">
-                                                <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                                                <input type="text" name="email" class="form-control" placeholder="Enter email"  data-rule-required="true" data-rule-email="true" value="">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="col-sm-12">
-                                            <div class="input-group">
-                                                <span class="input-group-addon"><i class="fa fa-lock"></i></span>
-                                                <input type="password" name="senha" class="form-control" placeholder="Senha"  data-rule-required="true" value="">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="foot">
-                                    <button class="btn btn-primary" data-dismiss="modal" type="submit">Entrar</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="text-center out-links"><a href="http://www.instore.com.br">&copy; 2013 Instore - www.instore.com.br </a></div>
-                </div> 
-
+            <div id="cl-wrapper" class="error-container">
+                <div class="page-error">
+                <h1 class="number text-center">500</h1>
+                <h2 class="description text-center">Não se preocupe, há um pouco de turbulência!</h2>
+                <h3 class="text-center"> Estamos tentando corrigi-lo, por favor, tente novamente mais tarde.</h3>
+            </div>
+                <div class="text-center copy">&copy; 2014 <a href="http://www.instore.com.br">www.instore.com.br</a></div>
             </div>
         </body>
     </html>

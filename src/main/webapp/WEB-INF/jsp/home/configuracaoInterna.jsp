@@ -3,10 +3,6 @@
 <%@ taglib prefix="instore" tagdir="/WEB-INF/tags/" %> 
 <%@ taglib prefix="cf" uri="CustomFunctions" %> 
 <instore:template isGrid="false">
-    <jsp:attribute name="submenu">
-        <b>Configurações Internas do Sistema</b>
-        <hr />
-    </jsp:attribute>
     <jsp:body>
         <form d="cad_cliente" method="POST" data-form="true" data-success-url="${url}/configuracao-interna">
             <input type="hidden" name="configAppBean.id" value="1" />
