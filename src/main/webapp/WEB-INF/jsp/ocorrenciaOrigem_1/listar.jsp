@@ -3,7 +3,7 @@
 
     <jsp:attribute name="submenu">
         <div class="btn-group">
-        <a href="${url}/ocorrencia-problema/cadastrar" class="btn btn-default"> <i class="fa fa-save"></i> Cadastrar </a>
+        <a href="${url}/ocorrencia-prioridade/cadastrar" class="btn btn-default"> <i class="fa fa-save"></i> Cadastrar </a>
         </div>
     </jsp:attribute>
 
@@ -12,6 +12,7 @@
             var gridColumn = [
                 {title: 'ID', name: 'id', index: true, filter: true, filterType: 'input'},
                 {title: 'Descrição', name: 'descricao', index: true, filter: true, filterType: 'input'},
+                {title: 'Nivel', name: 'nivel', index: true, filter: true, filterType: 'input'},
             ];
 
             function onRowDblClick(data) {
@@ -42,6 +43,15 @@
                         </div>
                         <div class="col-md-12 val"> 
                             <div data-descricao="true"></div> 
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-12 prop"> 
+                            Nivel
+                        </div>
+                        <div class="col-md-12 val"> 
+                            <div data-nivel="true"></div> 
                         </div>
                     </div>
 
