@@ -21,7 +21,11 @@ public class ClienteDTO extends AbstractDTO {
     private String numero;
     private String complemento;
     private String Situacao;
-    
+    private String local1;
+    private String local2;
+    private String local3;
+    private String local4;
+    private String local5;
     
     public String getIdcliente() {
         return idcliente;
@@ -181,5 +185,45 @@ public class ClienteDTO extends AbstractDTO {
 
     public void setSituacao(String Situacao) {
         this.Situacao = Situacao;
+    }
+
+    public String getLocal1() {
+        return local1;
+    }
+
+    public void setLocal1(String local1) {
+        this.local1 = local1;
+    }
+
+    public String getLocal2() {
+        return local2;
+    }
+
+    public void setLocal2(String local2) {
+        this.local2 = local2;
+    }
+
+    public String getLocal3() {
+        return local3;
+    }
+
+    public void setLocal3(String local3) {
+        this.local3 = local3;
+    }
+
+    public String getLocal4() {
+        return local4;
+    }
+
+    public void setLocal4(String local4) {
+        this.local4 = local4;
+    }
+
+    public String getLocal5() {
+        return local5;
+    }
+
+    public void setLocal5(String local5) {
+        this.local5 = local5;
     }
 }

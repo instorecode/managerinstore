@@ -39,6 +39,21 @@ public class HomeController implements java.io.Serializable {
     }
     
     @Get
+    @Path("/test")
+    public void test() {
+    }
+    
+    @Get
+    @Path("/404")
+    public void page404() {
+    }
+    
+    @Get
+    @Path("/500")
+    public void page500() {
+    }
+    
+    @Get
     @Path("/")
     @NotRestrict
     public void index() {

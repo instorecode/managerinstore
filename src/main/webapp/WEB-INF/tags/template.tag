@@ -86,12 +86,12 @@
             <script type="text/javascript" src="${url_cz}js/jquery.niftymodals/js/jquery.modalEffects.js"></script>
             <script src="${url_cz}js/bootstrap.slider/js/bootstrap-slider.js" type="text/javascript"></script>
             <script src="${url_cz}js/fuelux/loader.js" type="text/javascript"></script>
-            
+
             <script type="text/javascript">
                 $(document).ready(function() {
                     App.init();
                     App.wizard();
-                    
+
                     $('.md-trigger').modalEffects();
                     jQuery.storageAdd = function(name, value) {
                         if (typeof(Storage) !== "undefined") {
@@ -122,6 +122,18 @@
                     if (machine_id == null || machine_id == undefined) {
                         jQuery.storageAdd('machine_id', "MACHINEID${machine_id}");
                     }
+
+                    jQuery('.btn_up_cache').on('click', function() {
+                        bootbox.confirm("A página será atualizada, tem certeza de que deseja atualizar o cache? ", function(result) {
+                            if (result) {
+                                jQuery.storageClear();
+                                setTimeout(function() {
+                                    window.location.reload();
+                                }, 1000);
+                                return false;
+                            }
+                        });
+                    });
                 });
             </script>
             <script type="text/javascript" charset="utf-8" src="${url_js}ws_cache.js?v=${machine_id}"></script>
@@ -210,7 +222,7 @@
                                             }
                                         }
                                     } else {
-                                        if(null != url.match(/s$/)) {
+                                        if (null != url.match(/s$/)) {
                                             var _url = url.substring(0, url.match(/s$/).index);
                                         }
                                     }
@@ -353,6 +365,7 @@
                                 <li class="active"><a href="${url}">Dashboard</a></li>
                                 <li><a href="#ajuda">Ajuda</a></li>
                                 <li><a href="#contato">Contato</a></li>
+                                <li><a class="btn_up_cache" href="#"> <i class="fa fa-refresh"></i>&nbsp;&nbsp;Atualizar Cache da aplicação</a></li>
                                 <li><a class="btn_sair" href="${url}/sair">Sair</a></li>
                             </ul>
                         </div>
