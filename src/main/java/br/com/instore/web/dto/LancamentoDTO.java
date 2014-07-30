@@ -1,13 +1,5 @@
 package br.com.instore.web.dto;
 
-import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
 public class LancamentoDTO extends AbstractDTO {
 
     private String id;
@@ -21,6 +13,8 @@ public class LancamentoDTO extends AbstractDTO {
     private String dataFechamento;
     private String positivo;
     private String tipo;
+    private String instituicao;
+    
 
     public String getId() {
         return id;
@@ -108,5 +102,13 @@ public class LancamentoDTO extends AbstractDTO {
 
     public void setTipo(String tipo) {
         this.tipo = tipo;
+    }
+
+    public String getInstituicao() {
+        return instituicao;
+    }
+
+    public void setInstituicao(String instituicao) {
+        this.instituicao = instituicao;
     }
 }

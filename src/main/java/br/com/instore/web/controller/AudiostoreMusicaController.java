@@ -8,13 +8,8 @@ import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.observer.download.InputStreamDownload;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.bean.AudiostoreMusicaBean;
-import br.com.instore.core.orm.bean.ContatoClienteBean;
-import br.com.instore.core.orm.bean.VozBean;
 import br.com.instore.web.annotation.Restrict;
-import br.com.instore.web.component.request.RequestAudiostoreGravadora;
 import br.com.instore.web.component.request.RequestAudiostoreMusica;
-import br.com.instore.web.component.request.RequestContatoCliente;
-import br.com.instore.web.component.request.RequestVoz;
 import javax.inject.Inject;
 
 @Controller
@@ -22,7 +17,6 @@ public class AudiostoreMusicaController implements java.io.Serializable {
 
     @Inject
     private Result result;
-    
     @Inject
     private RequestAudiostoreMusica requestAudiostoreMusica;
 
@@ -47,8 +41,7 @@ public class AudiostoreMusicaController implements java.io.Serializable {
     @Restrict
     @Path("/audiostore-musica/cadastrar")
     public void cadastrar() {
-        result.include("arquivoMusicaList", requestAudiostoreMusica.arquivoMusicaList());
-        result.include("categoriaBeanList", requestAudiostoreMusica.categoriaBeanList());
+        result.include("cadastrar", true);
         result.include("clienteBeanList", requestAudiostoreMusica.clienteBeanList());
         result.include("gravadoraBeanList", requestAudiostoreMusica.gravadoraBeanList());
     }
@@ -56,25 +49,25 @@ public class AudiostoreMusicaController implements java.io.Serializable {
     @Post
     @Restrict
     @Path("/audiostore-musica/cadastrar")
-    public void cadastrar(AudiostoreMusicaBean audiostoreMusicaBean , String tempoTotal) {
-        requestAudiostoreMusica.salvar(audiostoreMusicaBean  , tempoTotal);
+    public void cadastrar(AudiostoreMusicaBean audiostoreMusicaBean, String tempoTotal) {
+        requestAudiostoreMusica.salvar(audiostoreMusicaBean, tempoTotal);
     }
 
     @Get
     @Restrict
     @Path("/audiostore-musica/atualizar/{id}")
     public void cadastrar(Integer id) {
-        result.include("arquivoMusicaList", requestAudiostoreMusica.arquivoMusicaList());
-        result.include("categoriaBeanList", requestAudiostoreMusica.categoriaBeanList());
+        result.include("cadastrar", false);
         result.include("gravadoraBeanList", requestAudiostoreMusica.gravadoraBeanList());
+        result.include("clienteBeanList", requestAudiostoreMusica.clienteBeanList());
         result.include("audiostoreMusicaBean", requestAudiostoreMusica.bean(id));
     }
 
     @Post
     @Restrict
     @Path("/audiostore-musica/atualizar/{id}")
-    public void cadastrar(Integer id , AudiostoreMusicaBean audiostoreMusicaBean , String tempoTotal ) {
-        requestAudiostoreMusica.salvar(audiostoreMusicaBean,tempoTotal);
+    public void cadastrar(Integer id, AudiostoreMusicaBean audiostoreMusicaBean, String tempoTotal) {
+        requestAudiostoreMusica.salvar(audiostoreMusicaBean, tempoTotal);
     }
 
     @Get
@@ -90,18 +83,24 @@ public class AudiostoreMusicaController implements java.io.Serializable {
     public void remover(Integer id, String param) {
         requestAudiostoreMusica.remover(id);
     }
-    
+
     @Get
     @Restrict
     @Path("/audiostore-musica/download-exp/{id}")
     public InputStreamDownload download(Integer id) {
         return requestAudiostoreMusica.download(id);
     }
-    
+
     @Get
     @Restrict
     @Path("/audiostore-musica/upload-exp/{id}")
     public void upload(Integer id) {
         requestAudiostoreMusica.upload(id);
+    }
+
+    @Get
+    @Path("/audiostore-musica/informacao")
+    public void informacao(Integer idcliente) {
+        requestAudiostoreMusica.carregarInforWizard(idcliente);
     }
 }

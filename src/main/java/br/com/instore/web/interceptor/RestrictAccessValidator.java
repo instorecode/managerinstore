@@ -14,9 +14,15 @@ import br.com.instore.web.annotation.Restrict;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.controller.HomeController;
+import br.com.instore.web.tools.Utilities;
 import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +47,7 @@ public class RestrictAccessValidator {
     public void intercept(SimpleInterceptorStack stack) {
         Path path = controllerMethod.getMethod().getAnnotation(Path.class);
         if (null != path && sessionUsuario.isLogado()) {
+            result.include("machine_id", request.getRemoteAddr().replace(".", "").replace(":", "")+new SimpleDateFormat("ddMMyyyy").format(new Date()));
             FuncionalidadeBean f = current(path.value()[0]);
 
             if ("/dashboard".equals(path.value()[0])) {

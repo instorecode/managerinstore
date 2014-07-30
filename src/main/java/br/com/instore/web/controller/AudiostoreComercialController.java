@@ -72,7 +72,6 @@ public class AudiostoreComercialController implements java.io.Serializable {
         
 //        result.include("audiostoreComercialBean", a);
         
-        result.include("arquivoMusicaList", requestAudiostoreComercial.arquivoMusicaList());
         result.include("categoriaBeanList", requestAudiostoreComercial.categoriaBeanList());
         result.include("clienteBeanList", requestAudiostoreComercial.clienteBeanList());
         result.include("audiostoreComercialShBeanList", requestAudiostoreComercial.audiostoreComercialShBeanList());
@@ -90,7 +89,6 @@ public class AudiostoreComercialController implements java.io.Serializable {
     @Path("/audiostore-comercial/atualizar/{id}")
     public void cadastrar(Integer id) {
         result.include("shs", requestAudiostoreComercial.shs(id));
-        result.include("arquivoMusicaList", requestAudiostoreComercial.arquivoMusicaList());
         result.include("categoriaBeanList", requestAudiostoreComercial.categoriaBeanList());
         result.include("clienteBeanList", requestAudiostoreComercial.clienteBeanList());
         result.include("audiostoreComercialShBeanList", requestAudiostoreComercial.audiostoreComercialShBeanList());

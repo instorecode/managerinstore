@@ -144,6 +144,13 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
 
     public void salvar(AudiostoreMusicaBean bean, String tempoTotalString) {
         try {
+            if (bean.getCrossover()) {
+                if (null == bean.getDataVencimentoCrossover()) {
+                    result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Se estiver usando crossover, é obrigatório informar a data de vencimento!")).recursive().serialize();
+                }
+            } else {
+                bean.setDataVencimentoCrossover(new Date());
+            }
 
             Date tempoTotal = new SimpleDateFormat("HH:mm:ss").parse(tempoTotalString);
             bean.setTempoTotal(tempoTotal);
@@ -178,7 +185,7 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
             } else {
                 repository.save(bean);
             }
-            DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", bean.getCategoria1().getCliente().getIdcliente()).findOne();
+            DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", bean.getCliente().getIdcliente()).findOne();
 
             String origem = dados.getLocalOrigemMusica() + "\\" + bean.getArquivo();
             String destino = dados.getLocalDestinoMusica() + "\\" + bean.getArquivo();
@@ -189,13 +196,11 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
             }
 
             File f = new File(destino);
-            if (f.exists()) {
-                f.delete();
+            if (!f.exists()) {
+                FileInputStream fis = new FileInputStream(new File(origem));
+                FileOutputStream fos = new FileOutputStream(new File(destino));
+                IOUtils.copy(fis, fos);
             }
-
-            FileInputStream fis = new FileInputStream(new File(origem));
-            FileOutputStream fos = new FileOutputStream(new File(destino));
-            IOUtils.copy(fis, fos);
 
             repository.finalize();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Dados salvos com sucesso!")).recursive().serialize();
@@ -477,48 +482,47 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
             if (null == dados) {
                 CadastroMusicaDTO dto = new CadastroMusicaDTO();
                 dto.setPossuiCategoria(true);
-                dto.setPossuiMusica(false);
+                dto.setExisteDiretorio(false);
                 result.use(Results.json()).withoutRoot().from(dto).recursive().serialize();
             } else {
                 if (null == dados.getLocalOrigemMusica() || dados.getLocalOrigemMusica().isEmpty()) {
                     CadastroMusicaDTO dto = new CadastroMusicaDTO();
                     dto.setPossuiCategoria(true);
-                    dto.setPossuiMusica(false);
+                    dto.setExisteDiretorio(false);
                     result.use(Results.json()).withoutRoot().from(dto).recursive().serialize();
                 } else {
-                    CadastroMusicaDTO dto = new CadastroMusicaDTO();
-                    dto.setPossuiCategoria(true);
-                    dto.setPossuiMusica(true); 
-                    
-                    for (AudiostoreCategoriaBean item : categoriaLista) {
-                        AudiostoreCategoriaDTO dtoItem = new AudiostoreCategoriaDTO();
-                        dtoItem.setCategoria(item.getCategoria());
-                        dtoItem.setCodigo(item.getCodigo());
-                        dto.getCategoriaList().add(dtoItem);
-                    }
-                    
+                    File dir = new File(dados.getLocalOrigemMusica());
+                    if (!dir.exists()) {
+                        CadastroMusicaDTO dto = new CadastroMusicaDTO();
+                        dto.setPossuiCategoria(true);
+                        dto.setExisteDiretorio(false);
+                        result.use(Results.json()).withoutRoot().from(dto).recursive().serialize();
+                    } else {
 
-                    if (null != dados && null != dados.getLocalOrigemMusica() && !dados.getLocalOrigemMusica().isEmpty()) {
-                        File dir = new File(dados.getLocalOrigemMusica());
+                        if (null == dir.listFiles() || dir.listFiles().length == 0) {
+                            CadastroMusicaDTO dto = new CadastroMusicaDTO();
+                            dto.setPossuiCategoria(true);
+                            dto.setExisteDiretorio(true);
+                            dto.setExisteArquivo(false);
+                            result.use(Results.json()).withoutRoot().from(dto).recursive().serialize();
+                        } else {
+                            CadastroMusicaDTO dto = new CadastroMusicaDTO();
+                            dto.setPossuiCategoria(true);
+                            dto.setExisteDiretorio(true);
+                            dto.setExisteArquivo(true);
 
-                        if (dir.exists()) {
-                            for (File file : dir.listFiles()) {
-                                if (file.getName().endsWith(".mp3")) {
-                                    MusicaDTO mdto = new MusicaDTO();
-                                    mdto.setNomeArquivo(file.getName());
-                                    mdto.setCaminhoCaminho(file.getName());
-                                    dto.getMusicaList().add(mdto);
-                                }
+                            for (AudiostoreCategoriaBean item : categoriaLista) {
+                                AudiostoreCategoriaDTO dtoItem = new AudiostoreCategoriaDTO();
+                                dtoItem.setCategoria(item.getCategoria());
+                                dtoItem.setCodigo(item.getCodigo());
+                                dto.getCategoriaList().add(dtoItem);
                             }
+                            dto.setMusicaList(Utilities.getMetadata(dados.getLocalOrigemMusica()));
+                            result.use(Results.json()).withoutRoot().from(dto).recursive().serialize();
                         }
                     }
-                    
-                    result.use(Results.json()).withoutRoot().from(dto).recursive().serialize();
                 }
             }
         }
-
-
-
     }
 }

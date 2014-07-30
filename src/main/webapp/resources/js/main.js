@@ -7,26 +7,8 @@ jQuery(document).ready(function() {
         jQuery(this).mask("#.##0,00", {reverse: true, maxlength: false});
     });
     jQuery('[data-percent]').each(function() {
-         $(this).mask('#0.00', {reverse: true});
+        $(this).mask('#0.00', {reverse: true});
     });
-    
-    jQuery.storageAdd = function(name, value) {
-        if (typeof(Storage) !== "undefined") {
-            localStorage.setItem(name, value);
-        }
-    };
-    
-    jQuery.storage = function(name) {
-        if (typeof(Storage) !== "undefined") {
-            return localStorage.getItem(name);
-        }
-    };
-    
-    jQuery.storageClear = function() {
-        if (typeof(Storage) !== "undefined") {
-            window.localStorage.clear(); 
-        }
-    };
 
     $.browserName = null;
 
@@ -97,6 +79,7 @@ jQuery(document).ready(function() {
             success: function(data) {
                 self.val(valueOrig);
                 jQuery('[data-uf="' + data.uf + '"]').attr('selected', true);
+                $('.select2').change();
                 jQuery('.cid').val(data.cidade);
                 jQuery('.bai').val(data.bairro);
                 jQuery('.log').val(data.logradouro);
@@ -171,7 +154,7 @@ jQuery(document).ready(function() {
 //    $(".datepicker").mask('99/99/9999');
 
 //    jQuery('.menuleft').resizable({handles: 'e'});
-    
+
 //
 //    var docw = jQuery(window).width();
 //    var doch = jQuery(window).height();
@@ -260,6 +243,7 @@ function formProccess() {
             if (form.valid()) {
                 var data_success_url = form.data('successUrl');
                 var data_error_url = form.data('errorUrl');
+                var notify = form.data('notify');
 
                 jQuery.ajax({
                     async: true,
@@ -276,8 +260,13 @@ function formProccess() {
                         });
                     },
                     success: function(data) {
-//                        avisar();
                         if (data.success) {
+                            if (notify == 0) {
+
+                            } else {
+                                jQuery.avisar();
+                            }
+                            
                             if (data_success_url != null && data_success_url != undefined && data_success_url != '') {
                                 window.location.href = data_success_url;
                             } else {
@@ -313,6 +302,6 @@ function dialogAjax(msg) {
     setTimeout(function() {
         bootbox.hideAll();
     }, 2000);
-} 
+}
 
 

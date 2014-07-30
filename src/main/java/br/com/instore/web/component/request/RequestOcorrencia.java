@@ -80,7 +80,7 @@ public class RequestOcorrencia implements java.io.Serializable {
     }
     
     public List<ClienteBean> clienteList() {
-        return repository.query(ClienteBean.class).findAll();
+        return repository.query(ClienteBean.class).eq("matriz", true).eq("parente", 0).findAll();
     }
     
     public List<OcorrenciaOrigemBean> ocorrenciaOrigemList() {

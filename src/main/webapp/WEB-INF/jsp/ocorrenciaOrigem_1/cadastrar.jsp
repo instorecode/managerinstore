@@ -7,17 +7,17 @@
         <a href="${url}/ocorrencia" class="btn btn-default"> <i class="fa fa-hand-o-left"></i> Lista </a>
     </jsp:attribute>
 
-    <jsp:body>
+    <jsp:body> 
         <form d="cad_cliente" method="POST" data-form="true" data-success-url="${url}/ocorrencia">
             <input type="hidden" name="ocorrenciaBean.id" value="${ocorrenciaBean.id}" />
+            <input type="hidden" name="ocorrenciaBean.dataCadastro" value="${cf:dateFormat(ocorrenciaBean.dataCadastro, "dd/MM/yyyy")}" />
+            <input type="hidden" name="ocorrenciaBean.usuarioCriacao.idusuario" value="${sessionUsuario.usuarioBean.idusuario}" />
 
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-group">
                         <label>Descrição</label>
-                        <textarea class="form-control" name="ocorrenciaBean.descricao" rows="10">
-                            ${ocorrenciaBean.descricao}
-                        </textarea>
+                        <textarea class="form-control" name="ocorrenciaBean.descricao" rows="10">${ocorrenciaBean.descricao}</textarea>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -89,12 +89,9 @@
                     <div class="form-group"> 
                         <label>Emcaminha para: </label>
                         <br />
-                        <c:forEach items="${usuarioList}" var="usuario">
-                            ${usuario}
-                        </c:forEach>
+
                         <select class="select2"  name="usuarioList"  multiple>
                             <c:forEach items="${usuarioList}" var="usuario">
-                                ${usuario}
                                 <c:set var="selected" value="${false}"></c:set>
                                 <c:forEach items="${ocorrenciaUsuarioList}" var="ocorr">
                                     <c:if test="${usuario.idusuario eq ocorr.usuario.idusuario and ocorr.ocorrencia eq ocorrenciaBean.id}">
