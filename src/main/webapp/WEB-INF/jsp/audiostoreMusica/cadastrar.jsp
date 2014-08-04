@@ -134,7 +134,7 @@
                                             var html = '';
                                             for (i in json.musicaList) {
                                                 var item = json.musicaList[i];
-                                                html += '<option value="' + item.nomeArquivo + '" data-titulo="' + item.Titulo + '" data-nome-arquivo="' + item.nomeArquivo + '" data-caminho-arquivo="' + item.caminhoCaminho + '">' + item.Titulo + '</option>';
+                                                html += '<option value="' + item.nomeArquivo + '" data-titulo="' + item.Titulo + '" data-nome-arquivo="' + item.nomeArquivo + '" data-caminho-arquivo="' + item.caminhoCaminho + '" data-caminho-full="' + item.caminhoFull + '">' + item.Titulo + '</option>';
                                             }
                                             jQuery('.sel_importe option').remove();
                                             jQuery('.sel_importe').append(html);
@@ -182,6 +182,7 @@
                     var titulo = op.data('titulo');
                     var nome_arquivo = op.data('nomeArquivo');
                     var caminho_arquivo = op.data('caminhoArquivo');
+                    var caminho_arquivo = op.data('caminhoFull');
 
                     jQuery('[name="audiostoreMusicaBean.titulo"]').val(titulo);
                     jQuery('[name="audiostoreMusicaBean.arquivo"]').val(nome_arquivo);
@@ -271,7 +272,7 @@
                         <input type="text" name="audiostoreMusicaBean.titulo" class="form-control" placeholder="Nome"  
                                data-rule-required="true" 
                                data-rule-minlength="3"
-                               data-rule-maxlength="30" value="${audiostoreMusicaBean.titulo}" readonly>
+                               data-rule-maxlength="30" value="${audiostoreMusicaBean.titulo}" >
                     </div>
                 </div>
 

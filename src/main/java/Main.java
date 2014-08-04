@@ -1,27 +1,47 @@
 
-import br.com.instore.web.dto.MusicaDTO;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.net.MalformedURLException;
+import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import jcifs.smb.NtlmPasswordAuthentication;
+import jcifs.smb.SmbException;
+import jcifs.smb.SmbFile;
+import jcifs.smb.SmbFileOutputStream;
 
-import org.apache.tika.exception.TikaException;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.parser.ParseContext;
-import org.apache.tika.parser.Parser;
-import org.apache.tika.parser.mp3.Mp3Parser;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
+
+
 
 public class Main {
 
     public static void main(String[] args) {
+        try {
+            String user = "administrativo";
+            String pass = "";
 
+            String sharedFolder = "shared";
+            String path = "smb://ftp/" + sharedFolder + "/test.txt";
+            NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication("", user, pass);
+            SmbFile smbFile = new SmbFile(path, auth);
+            if(!smbFile.exists()) {
+            
+            } else {
+            
+                for(SmbFile item : smbFile.listFiles()) {
+                
+                }
+            }
+            SmbFileOutputStream smbfos = new SmbFileOutputStream(smbFile);
+            smbfos.write("testing....and writing to a file".getBytes());
+            System.out.println("completed ...nice !");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (SmbException e) {
+            e.printStackTrace();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-
-    
 }

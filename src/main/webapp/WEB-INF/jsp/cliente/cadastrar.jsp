@@ -82,7 +82,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>Valor do contrato</label> 
-                        <input type="text" name="dadosCliente.valorContrato" class="form-control" placeholder="Indice de reajuste do contrato" value='<fmt:formatNumber value="${dadosCliente.valorContrato}" minFractionDigits="2" />' data-maskmoney="true">
+                        <input type="text" name="dadosCliente.valorContrato" class="form-control" placeholder="Indice de reajuste do contrato" value='<fmt:formatNumber value="${dadosCliente.valorContrato}" minFractionDigits="2" />' data-maskmoney="true" data-rule-required="true">
                     </div>
                 </div>
 

@@ -8,6 +8,7 @@ public class MusicaDTO extends AbstractDTO {
     private String Compositor;
     private String Genero;
     private String Album;
+    private String caminhoFull;
 
     public MusicaDTO() {
     }
@@ -77,4 +78,14 @@ public class MusicaDTO extends AbstractDTO {
     public void setAlbum(String Album) {
         this.Album = Album;
     }
+
+    public String getCaminhoFull() {
+        return caminhoFull;
+    }
+
+    public void setCaminhoFull(String caminhoFull) {
+        this.caminhoFull = caminhoFull;
+    }
+    
+    
 }

@@ -14,6 +14,7 @@ import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.dto.AudiostoreCategoriaDTO;
 import br.com.instore.web.dto.CadastroMusicaDTO;
 import br.com.instore.web.dto.AudiostoreMusicaDTO;
+import br.com.instore.web.dto.Mdto;
 import br.com.instore.web.dto.MusicaDTO;
 import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
@@ -21,14 +22,20 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import jcifs.smb.NtlmPasswordAuthentication;
+import jcifs.smb.SmbException;
+import jcifs.smb.SmbFile;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -468,7 +475,64 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         }
     }
 
-    public void carregarInforWizard(Integer id) {
+//    public void carregarInforWizard(Integer id) {
+//        List<AudiostoreCategoriaBean> categoriaLista = repository.query(AudiostoreCategoriaBean.class).eq("cliente.idcliente", id).findAll();
+//
+//        if (null == categoriaLista || categoriaLista.isEmpty()) {
+//            CadastroMusicaDTO dto = new CadastroMusicaDTO();
+//            dto.setPossuiCategoria(false);
+//
+//            result.use(Results.json()).withoutRoot().from(dto).recursive().serialize();
+//        } else {
+//            DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", id).findOne();
+//
+//            if (null == dados) {
+//                CadastroMusicaDTO dto = new CadastroMusicaDTO();
+//                dto.setPossuiCategoria(true);
+//                dto.setExisteDiretorio(false);
+//                result.use(Results.json()).withoutRoot().from(dto).recursive().serialize();
+//            } else {
+//                if (null == dados.getLocalOrigemMusica() || dados.getLocalOrigemMusica().isEmpty()) {
+//                    CadastroMusicaDTO dto = new CadastroMusicaDTO();
+//                    dto.setPossuiCategoria(true);
+//                    dto.setExisteDiretorio(false);
+//                    result.use(Results.json()).withoutRoot().from(dto).recursive().serialize();
+//                } else {
+//                    File dir = new File(dados.getLocalOrigemMusica());
+//                    if (!dir.exists()) {
+//                        CadastroMusicaDTO dto = new CadastroMusicaDTO();
+//                        dto.setPossuiCategoria(true);
+//                        dto.setExisteDiretorio(false);
+//                        result.use(Results.json()).withoutRoot().from(dto).recursive().serialize();
+//                    } else {
+//
+//                        if (null == dir.listFiles() || dir.listFiles().length == 0) {
+//                            CadastroMusicaDTO dto = new CadastroMusicaDTO();
+//                            dto.setPossuiCategoria(true);
+//                            dto.setExisteDiretorio(true);
+//                            dto.setExisteArquivo(false);
+//                            result.use(Results.json()).withoutRoot().from(dto).recursive().serialize();
+//                        } else {
+//                            CadastroMusicaDTO dto = new CadastroMusicaDTO();
+//                            dto.setPossuiCategoria(true);
+//                            dto.setExisteDiretorio(true);
+//                            dto.setExisteArquivo(true);
+//
+//                            for (AudiostoreCategoriaBean item : categoriaLista) {
+//                                AudiostoreCategoriaDTO dtoItem = new AudiostoreCategoriaDTO();
+//                                dtoItem.setCategoria(item.getCategoria());
+//                                dtoItem.setCodigo(item.getCodigo());
+//                                dto.getCategoriaList().add(dtoItem);
+//                            }
+//                            dto.setMusicaList(Utilities.getMetadata(dados.getLocalOrigemMusica()));
+//                            result.use(Results.json()).withoutRoot().from(dto).recursive().serialize();
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+    public void carregarInforWizard(Integer id) throws MalformedURLException, SmbException, IOException {
         List<AudiostoreCategoriaBean> categoriaLista = repository.query(AudiostoreCategoriaBean.class).eq("cliente.idcliente", id).findAll();
 
         if (null == categoriaLista || categoriaLista.isEmpty()) {
@@ -491,15 +555,25 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                     dto.setExisteDiretorio(false);
                     result.use(Results.json()).withoutRoot().from(dto).recursive().serialize();
                 } else {
-                    File dir = new File(dados.getLocalOrigemMusica());
-                    if (!dir.exists()) {
+
+                    String user = "admin";
+                    String pass = "q1a2s3";
+
+                    String sharedFolder = "shared";
+                    String path = "smb:" + dados.getLocalOrigemMusica();
+
+                    if (!path.endsWith("/")) {
+                        path += "/";
+                    }
+                    NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication("", user, pass);
+                    SmbFile smbDir = new SmbFile(path, auth);
+                    if (!smbDir.exists()) {
                         CadastroMusicaDTO dto = new CadastroMusicaDTO();
                         dto.setPossuiCategoria(true);
                         dto.setExisteDiretorio(false);
                         result.use(Results.json()).withoutRoot().from(dto).recursive().serialize();
                     } else {
-
-                        if (null == dir.listFiles() || dir.listFiles().length == 0) {
+                        if (null == smbDir.listFiles() || smbDir.listFiles().length == 0) {
                             CadastroMusicaDTO dto = new CadastroMusicaDTO();
                             dto.setPossuiCategoria(true);
                             dto.setExisteDiretorio(true);
@@ -517,12 +591,44 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                                 dtoItem.setCodigo(item.getCodigo());
                                 dto.getCategoriaList().add(dtoItem);
                             }
-                            dto.setMusicaList(Utilities.getMetadata(dados.getLocalOrigemMusica()));
+                            HashMap<String, HashMap<String, InputStream>> hashMap = new HashMap<String, HashMap<String, InputStream>>();
+
+                            List<Mdto> mdtoList = new ArrayList<Mdto>();
+
+                            for (SmbFile item : smbDir.listFiles()) {
+                                // mdtoList.add( new Mdto(item.getName(), item.getPath(), item.getInputStream()));
+                                MusicaDTO mdt = new MusicaDTO();
+                                mdt.setCaminhoCaminho(item.getPath());
+                                mdt.setTitulo(item.getName());
+                                mdt.setNomeArquivo(item.getName());
+                                mdt.setCaminhoFull(path+"/"+item.getName());
+                                dto.getMusicaList().add(mdt);
+                            }
+
+//                            for (Mdto mdto : mdtoList) {
+//                                dto.getMusicaList().add(Utilities.getMetadataByIS(mdto.getIs(), mdto.getNome(), mdto.getPath()));
+//                            }
+
                             result.use(Results.json()).withoutRoot().from(dto).recursive().serialize();
                         }
+
+
                     }
                 }
             }
         }
+    }
+
+    public InputStreamDownload loadMusica(String url) throws MalformedURLException, SmbException, IOException {
+        String user = "admin";
+        String pass = "q1a2s3";
+
+        String sharedFolder = "shared";
+        String path = "smb:"+url;
+
+        NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication("", user, pass);
+        SmbFile smbFile = new SmbFile(path, auth);
+        
+        return new InputStreamDownload(smbFile.getInputStream(), "audio/mpeg", smbFile.getName());
     }
 }

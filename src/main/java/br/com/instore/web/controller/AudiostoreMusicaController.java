@@ -10,7 +10,12 @@ import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.bean.AudiostoreMusicaBean;
 import br.com.instore.web.annotation.Restrict;
 import br.com.instore.web.component.request.RequestAudiostoreMusica;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.inject.Inject;
+import jcifs.smb.SmbException;
 
 @Controller
 public class AudiostoreMusicaController implements java.io.Serializable {
@@ -101,6 +106,29 @@ public class AudiostoreMusicaController implements java.io.Serializable {
     @Get
     @Path("/audiostore-musica/informacao")
     public void informacao(Integer idcliente) {
-        requestAudiostoreMusica.carregarInforWizard(idcliente);
+        try {
+            requestAudiostoreMusica.carregarInforWizard(idcliente);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (SmbException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    @Get
+    @Path("/audiostore-musica/loadmusica")
+    public InputStreamDownload loadmusica(String url) {       
+        try {
+            return requestAudiostoreMusica.loadMusica(url);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (SmbException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

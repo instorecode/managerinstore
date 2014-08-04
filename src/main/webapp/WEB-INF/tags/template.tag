@@ -200,7 +200,7 @@
                             };
 
                             bbGrid.setDict('ptbr');
-
+                            var valor = 0;
                             var gridview = new bbGrid.View({
                                 container: jQuery('[datagrid="true"]'),
                                 collection: App.clearGridCollection,
@@ -208,6 +208,14 @@
                                 rows: 25,
                                 rowList: [5, 25, 50, 100, 250, 500],
                                 colModel: gridColumn,
+                                onBeforeRender: function() {
+                                    valor = 0;
+                                },
+                                onReady: function() {
+                                    if (typeof(onReady) != "undefined") {
+                                        onReady();
+                                    }
+                                },
                                 onRowClick: function(data) {
                                     var _url = url;
 

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import org.joda.time.DateTime;
@@ -45,13 +46,14 @@ public class RequestLancamento implements java.io.Serializable {
         List<LancamentoBean> lista = new ArrayList<LancamentoBean>();
         List<LancamentoDTO> lista2 = new ArrayList<LancamentoDTO>();
 
-        lista = repository.query(LancamentoBean.class).orderAsc("mes").findAll();
+        lista = repository.query(LancamentoBean.class).orderAsc("mes").and().orderAsc("datFechamento").findAll();
 
         for (LancamentoBean bean : lista) {
             LancamentoDTO dto = new LancamentoDTO();
             String moneyString = bean.getValor().toString();
             if (null != bean.getValor()) {
-                NumberFormat formatter = NumberFormat.getCurrencyInstance();
+                Locale brLocale = new Locale( "pt", "BR" );
+                NumberFormat formatter = NumberFormat.getCurrencyInstance(brLocale);
                 moneyString = formatter.format(bean.getValor());
             }
 

@@ -25,18 +25,19 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 public class Utilities {
+
     public static void main(String[] args) {
         System.out.println("ola mundo");
     }
-    
-    public static String leftPad(Integer s ) {
+
+    public static String leftPad(Integer s) {
         return StringUtils.leftPad(s.toString(), 11, "0");
     }
-    
-    public static String leftPad(String s , String add, int size) {
+
+    public static String leftPad(String s, String add, int size) {
         return StringUtils.leftPad(s, size, add);
     }
-    
+
     public static String md5(String t) throws NoSuchAlgorithmException {
 
         MessageDigest m = MessageDigest.getInstance("MD5");
@@ -53,7 +54,7 @@ public class Utilities {
 
         return hashtext;
     }
-    
+
     public static void historicoUsuarioLogin(SessionRepository repository) throws NoSuchAlgorithmException {
         HistoricoUsuarioBean historico = new HistoricoUsuarioBean();
         historico.setLogin(new Date());
@@ -61,7 +62,7 @@ public class Utilities {
         repository.save(historico);
         repository.finalize();
     }
-    
+
     public static void historicoUsuarioLogOut(SessionRepository repository) throws NoSuchAlgorithmException {
         HistoricoUsuarioBean historico = new HistoricoUsuarioBean();
         historico.setLogout(new Date());
@@ -69,7 +70,7 @@ public class Utilities {
         repository.save(historico);
         repository.finalize();
     }
-    
+
     public static List<MusicaDTO> getMetadata(String path) {
         List<MusicaDTO> list = new ArrayList<MusicaDTO>();
         File dir = new File(path);
@@ -107,5 +108,37 @@ public class Utilities {
             }
         }
         return list;
+    }
+
+    public static MusicaDTO getMetadataByIS(InputStream input, String name, String path) {
+        MusicaDTO dto = new MusicaDTO();
+        try {
+            ContentHandler handler = new DefaultHandler();
+            Metadata metadata = new Metadata();
+            Parser parser = new Mp3Parser();
+            ParseContext parseCtx = new ParseContext();
+            parser.parse(input, handler, metadata);
+            input.close();
+
+            String[] metadataNames = metadata.names();
+
+            dto.setTitulo(metadata.get("title"));
+            dto.setArtistas(metadata.get("xmpDM:artist"));
+            dto.setCompositor(metadata.get("xmpDM:composer"));
+            dto.setGenero(metadata.get("xmpDM:genre"));
+            dto.setAlbum(metadata.get("xmpDM:album"));
+            dto.setNomeArquivo(name);
+            dto.setCaminhoCaminho(path);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (TikaException e) {
+            e.printStackTrace();
+        }
+        return dto;
     }
 }
