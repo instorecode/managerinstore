@@ -248,7 +248,7 @@
                     <div class="form-group">
                         <label>Cliente</label>
                         <br />
-                        <select  class="select2 sel_cliente"  data-rule-required="true" name="audiostoreMusicaBean.cliente.idcliente">
+                        <select  class="select2 sel_cliente select_cliente"  data-rule-required="true" name="audiostoreMusicaBean.cliente.idcliente">
                             <option value="" >Selecione um cliente</option>
                             <c:forEach items="${clienteBeanList}" var="cli">
                                 <option value="${cli.idcliente}" ${audiostoreMusicaBean.cliente.idcliente eq cli.idcliente ? 'selected="selected"':''}>${cli.nome}</option>

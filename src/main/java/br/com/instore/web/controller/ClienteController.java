@@ -45,6 +45,7 @@ public class ClienteController implements java.io.Serializable {
     @Restrict
     @Path("/cliente/cadastrar")
     public void cadastrar() {
+        result.include("isPageCadastro", true);
         result.include("filialBeanList2", requestCliente.filialDTOListAux(null, true , null));
         result.include("filialBeanList1", new ArrayList<ClienteDTO>());
         result.include("estadoBeanList", requestCliente.estadoBeanList());
@@ -61,6 +62,7 @@ public class ClienteController implements java.io.Serializable {
     @Restrict
     @Path("/cliente/atualizar/{id}")
     public void cadastrar(Integer id) {
+        result.include("isPageCadastro", false);
         ClienteBean cliente = requestCliente.clienteBean(id);
         Integer contador1 = 0;
         Integer contador2 = 0;

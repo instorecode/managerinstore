@@ -2,6 +2,9 @@
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jcifs.smb.NtlmPasswordAuthentication;
@@ -13,8 +16,19 @@ import jcifs.smb.SmbFileOutputStream;
 
 
 public class Main {
-
+    
     public static void main(String[] args) {
+        try {
+            Date d1 = new SimpleDateFormat("dd/MM/yyyy").parse("04/08/2014");
+            Date d2 = new Date();
+            
+            System.out.println(d1 == d2);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static void main1(String[] args) {
         try {
             String user = "administrativo";
             String pass = "";

@@ -88,9 +88,10 @@
             <script src="${url_cz}js/fuelux/loader.js" type="text/javascript"></script>
 
             <script type="text/javascript">
-                $(document).ready(function() {
+                jQuery(document).ready(function() {
                     App.init();
                     App.wizard();
+
 
                     $('.md-trigger').modalEffects();
                     jQuery.storageAdd = function(name, value) {
@@ -110,6 +111,23 @@
                             window.localStorage.clear();
                         }
                     };
+
+                    jQuery('[name="matriz_selecionada"]').on('change', function() {
+                        self = jQuery(this);
+                        jQuery.storageAdd("matriz_selecionada", self.val());
+
+                        jQuery('.select_cliente').val(self.val());
+                        jQuery('.select_cliente').change();
+                    });
+
+
+                    if (null != jQuery.storage("matriz_selecionada") && undefined != jQuery.storage("matriz_selecionada")) {
+                        jQuery('[name="matriz_selecionada"]').val(jQuery.storage("matriz_selecionada"));
+                        jQuery('[name="matriz_selecionada"]').change();
+
+                        jQuery('.select_cliente').val(jQuery.storage("matriz_selecionada"));
+                        jQuery('.select_cliente').change();
+                    }
 
                     $('#summernote').summernote();
                     // ws_url
@@ -138,12 +156,20 @@
             </script>
             <script type="text/javascript" charset="utf-8" src="${url_js}ws_cache.js?v=${machine_id}"></script>
             <script type="text/javascript" charset="utf-8" src="${url_js}main.js?v=${machine_id}"></script>
+            <style>
 
+                .info .select2-chosen {
+                    color: #3380FF !important;
+                }
+            </style>
             <c:if test="${null ne isGrid and isGrid eq true}">
                 <style>
                     .bbGrid-grid-nav {
                         margin-top: -1px !important;
                         height: 50px !important;
+                    }
+                    .info .select2-chosen {
+                        color: #3380FF !important;
                     }
                 </style>
                 <jsp:invoke fragment="gridColumn"></jsp:invoke>
@@ -389,11 +415,18 @@
                         <div class="menu-space">
                             <div class="content">
                                 <div class="side-user">
-                                    <div class="avatar"><img src="${url_cz}/images/logo.png" alt="Avatar" style="max-width: 50px;" /></div>
+                                    <div class="avatar"><img src="${url_cz}/images/logo.png" alt="Avatar" style="max-width: 170px;" /></div>
+                                    <hr style="border: 0px; border-top: 1px solid rgba(255,255,255,0.1)" />
                                     <div class="info">
-                                        <center>
-                                            <a href="#">${sessionUsuario.usuarioBean.nome}<img src="${url_cz}images/state_online.png" alt="Status" /> <span>Online</span> </a>
-                                        </center>
+                                        <a href="#">${sessionUsuario.usuarioBean.nome}</a>
+                                        <br /> 
+                                        <select class="select2" name="matriz_selecionada" style="color: #3380FF;">
+                                            <option>Selecione uma matriz</option>
+                                            <c:forEach items="${atalhoClienteList}" var="item">
+                                                <option value="${item.idcliente}">${item.nome}</option>
+                                            </c:forEach>
+                                        </select>
+
                                     </div>
                                 </div>
                                 <ul class="cl-vnavigation">
@@ -434,8 +467,7 @@
                         .show-case{margin-bottom:50px;}
                         .show-case img{max-width:362px;width:100%;}
                     </style>
-                    <div class="cl-mcont">
-
+                    <div class="cl-mcont"> 
                         <jsp:doBody />
                     </div>
                 </div> 

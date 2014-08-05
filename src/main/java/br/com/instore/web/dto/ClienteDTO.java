@@ -26,6 +26,9 @@ public class ClienteDTO extends AbstractDTO {
     private String local3;
     private String local4;
     private String local5;
+    private String codigoInterno;
+    private String codigoExterno;
+    private String nomeParente;
     
     public String getIdcliente() {
         return idcliente;
@@ -226,4 +229,28 @@ public class ClienteDTO extends AbstractDTO {
     public void setLocal5(String local5) {
         this.local5 = local5;
     }
+
+    public String getCodigoInterno() {
+        return codigoInterno;
+    }
+
+    public void setCodigoInterno(String codigoInterno) {
+        this.codigoInterno = codigoInterno;
+    }
+
+    public String getCodigoExterno() {
+        return codigoExterno;
+    }
+
+    public void setCodigoExterno(String codigoExterno) {
+        this.codigoExterno = codigoExterno;
+    }
+
+    public String getNomeParente() {
+        return nomeParente;
+    }
+
+    public void setNomeParente(String nomeParente) {
+        this.nomeParente = nomeParente;
+    }    
 }
