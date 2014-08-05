@@ -35,7 +35,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Cliente</label>
-                        <select class="select2" name="ocorrenciaBean.cliente.idcliente"  data-rule-required="true">
+                        <select class="select2 select_cliente" name="ocorrenciaBean.cliente.idcliente"  data-rule-required="true">
                             <c:forEach items="${clienteList}" var="item">
                                 <option value="${item.idcliente}" ${ocorrenciaBean.cliente.idcliente eq item.idcliente ? 'selected="selected"' :''}>${item.nome}</option>
                             </c:forEach>

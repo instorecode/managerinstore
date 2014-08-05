@@ -8,7 +8,8 @@
     <jsp:attribute name="gridColumn">
         <script>
             var gridColumn = [
-                {title: 'ID', name: 'idcliente', index: true, filter: true, filterType: 'input'},
+                {title: 'Cod. Interno', name: 'codigoInterno', index: true, filter: true, filterType: 'input'},
+                {title: 'Cod. Externo', name: 'codigoExterno', index: true, filter: true, filterType: 'input'},
                 {title: 'Nome', name: 'nome', index: true, filter: true, filterType: 'input'},
                 {title: 'Nome Fantasia', name: 'nomeFantasia', index: true, filter: true, filterType: 'input'},
                 {title: 'CNPJ', name: 'cnpj', index: true, filter: true, filterType: 'input'},

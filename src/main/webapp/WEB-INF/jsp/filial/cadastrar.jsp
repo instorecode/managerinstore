@@ -36,6 +36,26 @@
                 <input type="hidden" name="cliente.matriz" value="${false}" />
 
                 <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Cód. Interno</label>
+                            <input type="text" name="cliente.codigoInterno" class="form-control" placeholder="Cód. Interno"  
+                                   data-rule-required="true" 
+                                   data-rule-minlength="3"
+                                   data-rule-maxlength="255" value="${cliente.codigoInterno}">
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Cód. Externo</label>
+                            <input type="text" name="cliente.codigoExterno" class="form-control" placeholder="Cód. Externo" 
+                                   data-rule-required="true" 
+                                   data-rule-minlength="3"
+                                   data-rule-maxlength="255" 
+                                   value="${cliente.codigoExterno}">
+                        </div>
+                    </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label>Nome</label>
@@ -124,7 +144,19 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-2">
+                        <div class="form-group"> 
+                            <label>Tipo Log.</label>
+                            <input type="text" name="cliente.endereco.cep.bairro.tipo" class="form-control tipo_log" placeholder="Tipo do Logradouro" 
+                                   value="${cliente.endereco.cep.bairro.tipo}"
+                                   data-rule-required="true" 
+                                   data-rule-minlength="3"
+                                   data-rule-maxlength="255">
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
                         <div class="form-group"> 
                             <label>Logradouro</label>
                             <input type="text" name="cliente.endereco.cep.bairro.rua" class="form-control log" placeholder="Logradouro" 
@@ -158,11 +190,14 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Situação &nbsp;&nbsp;</label>
-                            <label class="radio-inline"> <input class="icheck" type="radio" name="cliente.situacao" id="optionsRadios1" value="${true}" ${cliente.situacao ? 'checked="checked"' : ''} >&nbsp;Ativo </label>
-                            <label class="radio-inline"> <input class="icheck" type="radio" name="cliente.situacao" id="optionsRadios1" value="${false}"  ${not cliente.situacao ? 'checked="checked"' : ''}>&nbsp;Inativo </label>
-
-
-
+                            <c:if test="${not isPageCadastro}">
+                                <label class="radio-inline"> <input class="icheck" type="radio" name="cliente.situacao" id="optionsRadios1" value="${true}" ${cliente.situacao ? 'checked="checked"' : ''} >&nbsp;Ativo </label>
+                                <label class="radio-inline"> <input class="icheck" type="radio" name="cliente.situacao" id="optionsRadios1" value="${false}"  ${not cliente.situacao ? 'checked="checked"' : ''}>&nbsp;Inativo </label>
+                            </c:if>
+                            <c:if test="${isPageCadastro}">
+                                <label class="radio-inline"> <input class="icheck" type="radio" name="cliente.situacao" id="optionsRadios1" value="${true}"  checked="checked">&nbsp;Ativo </label>
+                                <label class="radio-inline"> <input class="icheck" type="radio" name="cliente.situacao" id="optionsRadios1" value="${false}" >&nbsp;Inativo </label>
+                            </c:if>
                         </div>
                     </div>
                 </div>

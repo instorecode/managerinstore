@@ -26,7 +26,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>Cliente</label>
-                        <select  class="select2" name="audiostoreCategoriaBean.cliente.idcliente" data-rule-required="true" >
+                        <select  class="select2 select_cliente" name="audiostoreCategoriaBean.cliente.idcliente" data-rule-required="true" >
                             <option value>Selecione um cliente</option>
                             <c:forEach items="${clienteBeanList}" var="cliente">
                                 <option value="${cliente.idcliente}" ${cliente.idcliente eq audiostoreCategoriaBean.cliente.idcliente ? 'selected="selected"' : ''}>${cliente.nome}</option>

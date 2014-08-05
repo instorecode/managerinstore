@@ -28,7 +28,7 @@
                     <div class="form-group">
                         <label>Cliente</label>
                         <br />
-                        <select data-selectradio="true" class="form-control" name="vozBean.cliente.idcliente" data-rule-required="true" >
+                        <select  class="select2 select_cliente" name="vozBean.cliente.idcliente" data-rule-required="true" >
                             <c:forEach items="${clienteBeanList}" var="cliente">
                                 <option value="${cliente.idcliente}" ${cliente.idcliente eq vozBean.cliente.idcliente ? 'selected="selected"' : ''}>${cliente.nome}</option>
                             </c:forEach>

@@ -20,6 +20,26 @@
             <input type="hidden" name="cliente.matriz" value="${true}" />
 
             <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Cód. Interno</label>
+                        <input type="text" name="cliente.codigoInterno" class="form-control" placeholder="Cód. Interno"  
+                               data-rule-required="true" 
+                               data-rule-minlength="3"
+                               data-rule-maxlength="255" value="${cliente.codigoInterno}">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Cód. Externo</label>
+                        <input type="text" name="cliente.codigoExterno" class="form-control" placeholder="Cód. Externo" 
+                               data-rule-required="true" 
+                               data-rule-minlength="3"
+                               data-rule-maxlength="255" 
+                               value="${cliente.codigoExterno}">
+                    </div>
+                </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Nome</label>
@@ -70,10 +90,19 @@
                     <div class="form-group">
                         <label>Data de termino de contrato</label>
                         <div class="input-group date datetime" data-min-view="2" data-date-format="dd/mm/yyyy">
-                            <input type="text" name="dadosCliente.dataTerminoContrato" class="form-control datepicker" placeholder="Data de termino do contrato" 
-                                   data-rule-required="true" 
-                                   data-rule-minlength="10"
-                                   data-rule-maxlength="10" value="${cf:dateFormat(dadosCliente.dataTerminoContrato, "dd/MM/yyyy")}">
+                            <c:if test="${not isPageCadastro}">
+                                <input type="text" name="dadosCliente.dataTerminoContrato" class="form-control datepicker" placeholder="Data de termino do contrato" 
+                                       data-rule-required="true" 
+                                       data-rule-minlength="10"
+                                       data-rule-maxlength="10" value="${cf:dateFormat(dadosCliente.dataTerminoContrato, "dd/MM/yyyy")}">
+                            </c:if>
+                            <c:if test="${isPageCadastro}">
+                                <input type="text" name="dadosCliente.dataTerminoContrato" class="form-control datepicker" placeholder="Data de termino do contrato" 
+                                       data-rule-required="true" 
+                                       data-rule-minlength="10"
+                                       data-rule-maxlength="10" value="${cf:dateAfterOneYear()}">
+                            </c:if>
+
                             <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
                         </div>
                     </div>
@@ -131,7 +160,7 @@
                 <div class="col-md-12">
                     <div class="form-group"> 
                         <label>Local dos arquivos de musica</label>
-                        <input type="text" name="dadosCliente.localOrigemMusica" class="form-control cid" placeholder="Local dos arquivos de musica" 
+                        <input type="text" name="dadosCliente.localOrigemMusica" class="form-control" placeholder="Local dos arquivos de musica" 
                                value="${dadosCliente.localOrigemMusica}">
                     </div>
                 </div>
@@ -139,14 +168,14 @@
                 <div class="col-md-12">
                     <div class="form-group"> 
                         <label>Destino dos arquivos de musica</label>
-                        <input type="text" name="dadosCliente.localDestinoMusica" class="form-control cid" placeholder="Destino dos arquivos de musica" 
+                        <input type="text" name="dadosCliente.localDestinoMusica" class="form-control" placeholder="Destino dos arquivos de musica" 
                                value="${dadosCliente.localDestinoMusica}">
                     </div>
                 </div>
                 <div class="col-md-12">
                     <div class="form-group"> 
                         <label>Local dos arquivos de spot</label>
-                        <input type="text" name="dadosCliente.localOrigemSpot" class="form-control cid" placeholder="Local dos arquivos de spot" 
+                        <input type="text" name="dadosCliente.localOrigemSpot" class="form-control" placeholder="Local dos arquivos de spot" 
                                value="${dadosCliente.localOrigemSpot}">
                     </div>
                 </div>
@@ -154,7 +183,7 @@
                 <div class="col-md-12">
                     <div class="form-group"> 
                         <label>Destino dos arquivos de spot</label>
-                        <input type="text" name="dadosCliente.localDestinoSpot" class="form-control cid" placeholder="Destino dos arquivos de spot" 
+                        <input type="text" name="dadosCliente.localDestinoSpot" class="form-control" placeholder="Destino dos arquivos de spot" 
                                value="${dadosCliente.localDestinoSpot}">
                     </div>
                 </div>
@@ -162,7 +191,7 @@
                 <div class="col-md-12">
                     <div class="form-group"> 
                         <label>Destino dos arquivos Exp</label>
-                        <input type="text" name="dadosCliente.localDestinoExp" class="form-control cid" placeholder="Destino dos arquivos Exp" 
+                        <input type="text" name="dadosCliente.localDestinoExp" class="form-control" placeholder="Destino dos arquivos Exp" 
                                value="${dadosCliente.localDestinoExp}">
                     </div>
                 </div>
@@ -215,7 +244,18 @@
             </div>
 
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-2">
+                    <div class="form-group"> 
+                        <label>Tipo Log.</label>
+                        <input type="text" name="cliente.endereco.cep.bairro.tipo" class="form-control tipo_log" placeholder="Tipo do Logradouro" 
+                               value="${cliente.endereco.cep.bairro.tipo}"
+                               data-rule-required="true" 
+                               data-rule-minlength="3"
+                               data-rule-maxlength="255">
+
+                    </div>
+                </div>
+                <div class="col-md-4">
                     <div class="form-group"> 
                         <label>Logradouro</label>
                         <input type="text" name="cliente.endereco.cep.bairro.rua" class="form-control log" placeholder="Logradouro" 
@@ -248,11 +288,14 @@
                 <div class="col-md-12">
                     <div class="form-group">
                         <label>Situação &nbsp;&nbsp;</label>
-                        <label class="radio-inline"> <input class="icheck" type="radio" name="cliente.situacao" id="optionsRadios1" value="${true}" ${cliente.situacao ? 'checked="checked"' : ''} >&nbsp;Ativo </label>
-                        <label class="radio-inline"> <input class="icheck" type="radio" name="cliente.situacao" id="optionsRadios1" value="${false}"  ${not cliente.situacao ? 'checked="checked"' : ''}>&nbsp;Inativo </label>
-
-
-
+                        <c:if test="${not isPageCadastro}">
+                            <label class="radio-inline"> <input class="icheck" type="radio" name="cliente.situacao" id="optionsRadios1" value="${true}" ${cliente.situacao ? 'checked="checked"' : ''} >&nbsp;Ativo </label>
+                            <label class="radio-inline"> <input class="icheck" type="radio" name="cliente.situacao" id="optionsRadios1" value="${false}"  ${not cliente.situacao ? 'checked="checked"' : ''}>&nbsp;Inativo </label>
+                            </c:if>
+                            <c:if test="${isPageCadastro}">
+                            <label class="radio-inline"> <input class="icheck" type="radio" name="cliente.situacao" id="optionsRadios1" value="${true}"  checked="checked">&nbsp;Ativo </label>
+                            <label class="radio-inline"> <input class="icheck" type="radio" name="cliente.situacao" id="optionsRadios1" value="${false}" >&nbsp;Inativo </label>
+                            </c:if>
                     </div>
                 </div>
 
@@ -568,15 +611,21 @@
 
                             jQuery('.lista1_pesq').on('keyup', function() {
                                 var value = jQuery(this).val();
-                                jQuery(".lista_filial1 li").hide();
-                                jQuery(".lista_filial1 li:contains('" + value + "')").show();
-                                jQuery('.contador_l1').text("Total " + jQuery('.lista_filial1 li:visible').size());
+                                if (value != '') {
+                                    jQuery(".lista_filial1 li").hide();
+                                    jQuery(".lista_filial1 li div.text:like('%" + value + "%')").each(function() {
+                                        jQuery(this).parent('li').show();
+                                    });
+                                    jQuery('.contador_l1').text("Total " + jQuery('.lista_filial1 li:visible').size());
+                                }
                             });
 
                             jQuery('.lista2_pesq').on('keyup', function() {
                                 var value = jQuery(this).val();
                                 jQuery(".lista_filial2 li").hide();
-                                jQuery(".lista_filial2 li:contains('" + value + "')").show();
+                                jQuery(".lista_filial2 li div.text:like('%" + value + "%')").each(function() {
+                                    jQuery(this).parent('li').show();
+                                });
                                 jQuery('.contador_l2').text("Total " + jQuery('.lista_filial2 li:visible').size());
                             });
 
@@ -618,7 +667,7 @@
                                                         <b style="color: green">Não possui matriz</b>
                                                     </c:if>
                                                     <c:if test="${filial.parente ne 0}">
-                                                        <b style="color: red">Possui matriz</b>
+                                                        <b style="color: red">${filial.nomeParente}</b>
                                                     </c:if>
                                                 </small>
 

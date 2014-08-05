@@ -33,7 +33,12 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label>Saldo disponivel</label>
+                        <label>
+                            Saldo disponivel
+                            <c:if test="${lancamentoCnpjBean.saldoDisponivel < 0}">
+                                Negativo
+                            </c:if>
+                        </label>
                         <c:if test="${lancamentoCnpjBean.saldoDisponivel ne null}">
                             <input type="text" name="lancamentoCnpjBean.saldoDisponivel" class="form-control" placeholder="Saldo Disponivel"  
                                data-rule-required="true" 
