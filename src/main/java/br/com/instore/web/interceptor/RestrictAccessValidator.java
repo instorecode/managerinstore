@@ -7,22 +7,17 @@ import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.controller.ControllerMethod;
 import br.com.caelum.vraptor.interceptor.AcceptsWithAnnotations;
 import br.com.caelum.vraptor.interceptor.SimpleInterceptorStack;
-import br.com.instore.core.orm.Each;
+import br.com.instore.core.orm.bean.ClienteBean;
 import br.com.instore.core.orm.bean.FuncionalidadeBean;
 import br.com.instore.core.orm.bean.property.Funcionalidade;
 import br.com.instore.web.annotation.Restrict;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.controller.HomeController;
-import br.com.instore.web.tools.Utilities;
-import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -54,7 +49,7 @@ public class RestrictAccessValidator {
                 result.include("currentFuncionalidadeBean", f);
                 result.include("menu", constructMenu(null, path.value()[0]));
                 result.include("funcionalidadeBeanList", constructMenuChild(f));
-
+                loadClienteMatriz();
                 stack.next();
             } else if ("/sair".equals(path.value()[0])) {
                 stack.next();
@@ -63,7 +58,7 @@ public class RestrictAccessValidator {
                     result.include("currentFuncionalidadeBean", f);
                     result.include("menu", constructMenu(null, path.value()[0]));
                     result.include("funcionalidadeBeanList", constructMenuChild(f));
-
+                    loadClienteMatriz();
                     stack.next();
                 } else {
                     result.redirectTo(HomeController.class).index();
@@ -152,5 +147,9 @@ public class RestrictAccessValidator {
         }
 
         return html;
+    }
+    
+    public void loadClienteMatriz() {
+        result.include("atalhoClienteList", requestRepository.query(ClienteBean.class).eq("matriz",true).eq("parente",0).findAll());
     }
 }

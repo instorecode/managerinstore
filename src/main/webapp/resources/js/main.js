@@ -1,4 +1,75 @@
 jQuery(document).ready(function() {
+
+
+    jQuery.expr[':'].like = function(selector, i, m) {
+        var self = jQuery(selector);
+        var text = self.text();
+        text = text.replace(/[á|ã|â|à]/gi, "a");
+        text = text.replace(/[é|ê|è]/gi, "e");
+        text = text.replace(/[í|ì|î]/gi, "i");
+        text = text.replace(/[õ|ò|ó|ô]/gi, "o");
+        text = text.replace(/[ú|ù|û]/gi, "u");
+        text = text.replace(/[ç]/gi, "c");
+        text = text.replace(/[ñ]/gi, "n");
+        text = text.replace(/[á|ã|â]/gi, "a");
+
+        var like_query = m[m.length - 1];
+        var rule_start_char = like_query.substring(0, 1);
+        var rule_end_char = like_query.substring(like_query.length, like_query.length - 1);
+        var ruleText = like_query.replace('%', '');
+        var ruleText = ruleText.replace('%', '');
+        
+        ruleText = ruleText.replace(/[á|ã|â|à]/gi, "a");
+        ruleText = ruleText.replace(/[é|ê|è]/gi, "e");
+        ruleText = ruleText.replace(/[í|ì|î]/gi, "i");
+        ruleText = ruleText.replace(/[õ|ò|ó|ô]/gi, "o");
+        ruleText = ruleText.replace(/[ú|ù|û]/gi, "u");
+        ruleText = ruleText.replace(/[ç]/gi, "c");
+        ruleText = ruleText.replace(/[ñ]/gi, "n");
+        ruleText = ruleText.replace(/[á|ã|â]/gi, "a");
+        
+        var ruleTextUpperCase = ruleText.toUpperCase().trim();
+        var ruleTextLowerCase = ruleText.toLowerCase().trim();
+
+
+        // start
+        if (rule_end_char == '%' && rule_start_char != '%') {
+            var text_part = text.trim().substring(0, ruleText.length).trim();
+            if (text_part == ruleTextUpperCase || text_part == ruleTextLowerCase) {
+                return true;
+            }
+        }
+
+        // end
+        if (rule_end_char != '%' && rule_start_char == '%') {
+            var text_part = text.trim().substring(text.trim().length - ruleText.length, text.length).trim();
+            if (text_part == ruleTextUpperCase || text_part == ruleTextLowerCase) {
+                return true;
+            }
+        }
+
+        // any
+        if (rule_end_char == '%' && rule_start_char == '%') {
+            text = text.toLowerCase().trim();
+            text = text.replace(/\s/g, '');
+            ruleTextLowerCase = ruleTextLowerCase.replace(/\s/g, '');
+            console.log("regra lowercase: " + ruleTextLowerCase);
+            console.log("regra texto: " + text);
+            console.log("");
+            console.log("");
+            if (text.trim().indexOf(ruleTextLowerCase) != -1) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+    };
+
+    jQuery('p:like(%a%)').each(function() {
+        jQuery(this).css('color', 'red');
+    });
+
     formProccess();
     jQuery('[data-mask]').each(function() {
         jQuery(this).mask(jQuery(this).data('mask'));
@@ -76,13 +147,24 @@ jQuery(document).ready(function() {
             type: 'GET',
             url: url,
             data: {cep: value},
+            beforeSend: function() {
+                bootbox.hideAll();
+                bootbox.dialog({
+                    message: "Aguarde enquanto o CEP é consultado...",
+                    title: "Sistema processando informações",
+                    buttons: {}
+                });
+            },
             success: function(data) {
+                console.log(data);
                 self.val(valueOrig);
                 jQuery('[data-uf="' + data.uf + '"]').attr('selected', true);
                 $('.select2').change();
                 jQuery('.cid').val(data.cidade);
                 jQuery('.bai').val(data.bairro);
                 jQuery('.log').val(data.logradouro);
+                jQuery('.tipo_log').val(data.tipo_logradouro);
+                bootbox.hideAll();
             }
         });
     });
@@ -266,7 +348,7 @@ function formProccess() {
                             } else {
                                 jQuery.avisar();
                             }
-                            
+
                             if (data_success_url != null && data_success_url != undefined && data_success_url != '') {
                                 window.location.href = data_success_url;
                             } else {

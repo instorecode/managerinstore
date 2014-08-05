@@ -28,4 +28,10 @@
         <function-class>br.com.instore.web.tools.CustomFunctions</function-class>
         <function-signature>String leftPad(java.lang.String, java.lang.Integer , java.lang.String)</function-signature>
     </function>
+    
+    <function>
+        <name>dateAfterOneYear</name>
+        <function-class>br.com.instore.web.tools.CustomFunctions</function-class>
+        <function-signature>String dateAfterOneYear()</function-signature>
+    </function>
 </taglib>

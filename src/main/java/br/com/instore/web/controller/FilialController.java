@@ -44,6 +44,7 @@ public class FilialController implements java.io.Serializable {
     @Restrict
     @Path("/filial/cadastrar/{id}")
     public void cadastrar(Integer id) {
+        result.include("isPageCadastro", true);
         result.include("id", id);
         result.include("clienteBeanList", requestCliente.clienteBeanList());
         result.include("estadoBeanList", requestCliente.estadoBeanList());
@@ -61,6 +62,7 @@ public class FilialController implements java.io.Serializable {
     @Restrict
     @Path("/filial/atualizar/{id}")
     public void cadastrar(Integer id , String param) {
+        result.include("isPageCadastro", false);
         result.include("id", id);
         result.include("clienteBeanList", requestCliente.clienteBeanList());
         result.include("estadoBeanList", requestCliente.estadoBeanList());

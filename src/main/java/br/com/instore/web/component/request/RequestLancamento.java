@@ -11,6 +11,7 @@ import br.com.instore.web.dto.LancamentoDTO;
 import br.com.instore.web.dto.LancamentoRelatorioDTO;
 import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,13 +47,14 @@ public class RequestLancamento implements java.io.Serializable {
         List<LancamentoBean> lista = new ArrayList<LancamentoBean>();
         List<LancamentoDTO> lista2 = new ArrayList<LancamentoDTO>();
 
-        lista = repository.query(LancamentoBean.class).orderAsc("mes").and().orderAsc("datFechamento").findAll();
+        lista = repository.query(LancamentoBean.class).orderAsc("mes").findAll();
 
         for (LancamentoBean bean : lista) {
+
             LancamentoDTO dto = new LancamentoDTO();
             String moneyString = bean.getValor().toString();
             if (null != bean.getValor()) {
-                Locale brLocale = new Locale( "pt", "BR" );
+                Locale brLocale = new Locale("pt", "BR");
                 NumberFormat formatter = NumberFormat.getCurrencyInstance(brLocale);
                 moneyString = formatter.format(bean.getValor());
             }
@@ -67,7 +69,7 @@ public class RequestLancamento implements java.io.Serializable {
             dto.setMes(new SimpleDateFormat("dd/MM/yyyy").format(bean.getMes()));
             dto.setValor(moneyString);
             dto.setUsuarioNome(bean.getUsuario().getNome());
-            
+
             if (null != bean.getDatFechamento()) {
                 dto.setFinalizado("Sim");
                 dto.setDataFechamento("Finalizado na data " + new SimpleDateFormat("dd/MM/yyyy").format(bean.getDatFechamento()) + ".");
@@ -79,6 +81,96 @@ public class RequestLancamento implements java.io.Serializable {
             dto.setPositivo(bean.getPositivo() ? "Sim" : "Não");
 
             lista2.add(dto);
+        }
+        return lista2;
+    }
+
+    public List<LancamentoDTO> beanListByMesNow() {
+        List<LancamentoBean> lista = new ArrayList<LancamentoBean>();
+        List<LancamentoDTO> lista2 = new ArrayList<LancamentoDTO>();
+
+        lista = repository.query(LancamentoBean.class).eq("mes", new Date()).findAll();
+        for (LancamentoBean bean : lista) {
+
+
+            LancamentoDTO dto = new LancamentoDTO();
+            String moneyString = bean.getValor().toString();
+            if (null != bean.getValor()) {
+                Locale brLocale = new Locale("pt", "BR");
+                NumberFormat formatter = NumberFormat.getCurrencyInstance(brLocale);
+                moneyString = formatter.format(bean.getValor());
+            }
+
+
+            dto.setId(Utilities.leftPad(bean.getId()));
+            dto.setInstituicao(bean.getLancamentoCnpj().getNome());
+            dto.setCredito(bean.getCredito() ? "Sim" : "Não");
+            dto.setDebito(bean.getDebito() ? "Sim" : "Não");
+            dto.setTipo(bean.getCredito() ? "Receber" : "Pagar");
+            dto.setDescricao(bean.getDescricao());
+            dto.setMes(new SimpleDateFormat("dd/MM/yyyy").format(bean.getMes()));
+            dto.setValor(moneyString);
+            dto.setUsuarioNome(bean.getUsuario().getNome());
+
+            if (null != bean.getDatFechamento()) {
+                dto.setFinalizado("Sim");
+                dto.setDataFechamento("Finalizado na data " + new SimpleDateFormat("dd/MM/yyyy").format(bean.getDatFechamento()) + ".");
+            } else {
+                dto.setDataFechamento("Não foi finalizado");
+                dto.setFinalizado("Não");
+            }
+
+            dto.setPositivo(bean.getPositivo() ? "Sim" : "Não");
+
+            lista2.add(dto);
+
+
+        }
+        return lista2;
+    }
+
+    public List<LancamentoDTO> beanListByNaoFechado() {
+        List<LancamentoBean> lista = new ArrayList<LancamentoBean>();
+        List<LancamentoDTO> lista2 = new ArrayList<LancamentoDTO>();
+
+        lista = repository.query(LancamentoBean.class).orderAsc("mes").findAll();
+        
+        Integer i = 1;
+        for (LancamentoBean bean : lista) {
+            
+            if (null == bean.getDatFechamento() && i<= 5) {
+                LancamentoDTO dto = new LancamentoDTO();
+                String moneyString = bean.getValor().toString();
+                if (null != bean.getValor()) {
+                    Locale brLocale = new Locale("pt", "BR");
+                    NumberFormat formatter = NumberFormat.getCurrencyInstance(brLocale);
+                    moneyString = formatter.format(bean.getValor());
+                }
+
+
+                dto.setId(Utilities.leftPad(bean.getId()));
+                dto.setInstituicao(bean.getLancamentoCnpj().getNome());
+                dto.setCredito(bean.getCredito() ? "Sim" : "Não");
+                dto.setDebito(bean.getDebito() ? "Sim" : "Não");
+                dto.setTipo(bean.getCredito() ? "Receber" : "Pagar");
+                dto.setDescricao(bean.getDescricao());
+                dto.setMes(new SimpleDateFormat("dd/MM/yyyy").format(bean.getMes()));
+                dto.setValor(moneyString);
+                dto.setUsuarioNome(bean.getUsuario().getNome());
+
+                if (null != bean.getDatFechamento()) {
+                    dto.setFinalizado("Sim");
+                    dto.setDataFechamento("Finalizado na data " + new SimpleDateFormat("dd/MM/yyyy").format(bean.getDatFechamento()) + ".");
+                } else {
+                    dto.setDataFechamento("Não foi finalizado");
+                    dto.setFinalizado("Não");
+                }
+
+                dto.setPositivo(bean.getPositivo() ? "Sim" : "Não");
+
+                lista2.add(dto);
+                i++;
+            }
         }
         return lista2;
     }
@@ -303,14 +395,55 @@ public class RequestLancamento implements java.io.Serializable {
     }
 
     public void removeSaldo(Integer id, Double val) {
-//        LancamentoCnpjBean bean = repository.find(LancamentoCnpjBean.class, id);
-//        bean.setSaldoDisponivel(bean.getSaldoDisponivel() - val);
-//        repository.save(repository.marge(bean));
+        LancamentoCnpjBean bean = repository.find(LancamentoCnpjBean.class, id);
+        bean.setSaldoDisponivel(bean.getSaldoDisponivel() - val);
+        repository.save(repository.marge(bean));
     }
 
     public void addSaldo(Integer id, Double val) {
-//        LancamentoCnpjBean bean = repository.find(LancamentoCnpjBean.class, id);
-//        bean.setSaldoDisponivel(bean.getSaldoDisponivel() + val);
-//        repository.save(repository.marge(bean));
+        LancamentoCnpjBean bean = repository.find(LancamentoCnpjBean.class, id);
+        bean.setSaldoDisponivel(bean.getSaldoDisponivel() + val);
+        repository.save(repository.marge(bean));
+    }
+
+    public void incluirTotais() {
+        List<LancamentoBean> lista = new ArrayList<LancamentoBean>();
+        lista = repository.query(LancamentoBean.class).findAll();
+
+        BigDecimal receber = new BigDecimal(0);
+        BigDecimal pagar = new BigDecimal(0);
+        BigDecimal atrasado_receber = new BigDecimal(0);
+        BigDecimal atrasado_pagar = new BigDecimal(0);
+
+        for (LancamentoBean bean : lista) {
+            DateTime dt1 = new DateTime(bean.getMes());
+            DateTime dt2 = new DateTime(new Date());
+
+            String dateMes = new SimpleDateFormat("ddMMyyyy").format(bean.getMes());
+            String dateAtual = new SimpleDateFormat("ddMMyyyy").format(new Date());
+
+            if (bean.getDatFechamento() == null) {
+                if (bean.getCredito()) {
+                    if (dateMes.equals(dateAtual)) {
+                        atrasado_receber = atrasado_receber.add(new BigDecimal(bean.getValor()));
+                    }
+                    receber = receber.add(new BigDecimal(bean.getValor()));
+                }
+                if (bean.getDebito()) {
+                    if (dateMes.equals(dateAtual)) {
+                        atrasado_pagar = atrasado_pagar.add(new BigDecimal(bean.getValor()));
+                    }
+                    pagar = pagar.add(new BigDecimal(bean.getValor()));
+                }
+            }
+        }
+
+        Locale brLocale = new Locale("pt", "BR");
+        NumberFormat formatter = NumberFormat.getCurrencyInstance(brLocale);
+
+        result.include("receber", formatter.format(receber));
+        result.include("pagar", formatter.format(pagar));
+        result.include("atrasado_receber", formatter.format(atrasado_receber));
+        result.include("atrasado_pagar", formatter.format(atrasado_pagar));
     }
 }

@@ -38,8 +38,10 @@ function onMessage(evt) {
 
     var machine_id = jQuery.storage("machine_id");
     var ws_url = jQuery.storage("ws_url");
+    var matriz_selecionada = jQuery.storage("matriz_selecionada");
 
     jQuery.storageClear();
     jQuery.storageAdd("machine_id", machine_id);
     jQuery.storageAdd("ws_url", ws_url);
+    jQuery.storageAdd("matriz_selecionada", matriz_selecionada);
 }
