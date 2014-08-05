@@ -34,6 +34,9 @@ public class LancamentoController implements java.io.Serializable {
     @Restrict
     @Path("/lancamento")
     public void listar(Boolean datajson , Boolean efetuar , Integer id , Boolean efetuarJa) {
+        result.include("listaDeHoje", requestLancamento.beanListByMesNow());
+        result.include("beanListByNaoFechado", requestLancamento.beanListByNaoFechado()); 
+        requestLancamento.incluirTotais();
         if (null != datajson && datajson) {
             result.use(Results.json()).withoutRoot().from(requestLancamento.beanList()).recursive().serialize();
         }

@@ -9,6 +9,15 @@
     </jsp:attribute>
 
     <jsp:body>
+
+        <c:if test="${not (cadastrar or lancamentoBean.datFechamento eq null)}">
+            <div class="alert alert-warning alert-white rounded msg_err0">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <div class="icon"><i class="fa fa-warning"></i></div>
+                <strong>Importante!</strong> &nbsp;&nbsp;O lançamento já foi finalizado e não pode ser atualizado
+            </div>
+        </c:if>
+        
         <form d="cad_cliente" method="POST" data-form="true" data-success-url="${url}/lancamento">
             <input type="hidden" name="lancamentoBean.id" value="${lancamentoBean.id}" />
             <input type="hidden" name="lancamentoBean.positivo" value="${true}" />
@@ -130,11 +139,13 @@
                     </div>
                 </div>
             </div>
+            <c:if test="${cadastrar or lancamentoBean.datFechamento eq null}">
+                <button type="submit" class="btn btn-default">
+                    <i class="fa fa-save"></i> Salvar
+                </button>
+            </c:if>
 
 
-            <button type="submit" class="btn btn-default">
-                <i class="fa fa-save"></i> Salvar
-            </button>
             <script>
                 jQuery(document).ready(function() {
 
@@ -218,7 +229,7 @@
                     });
                 });
             </script>
-            
+
             <style type="text/css">
                 .tt-dropdown-menu {
                     background-color: white;

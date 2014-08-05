@@ -53,6 +53,9 @@ public class RequestCliente implements java.io.Serializable {
                 dto.setMatriz(clienteBean.getMatriz() ? "Sim" : "Não");
                 dto.setNome(clienteBean.getNome());
                 dto.setParente(clienteBean.getParente().toString());
+                
+                dto.setCodigoInterno(clienteBean.getCodigoInterno());
+                dto.setCodigoExterno(clienteBean.getCodigoExterno());
                 for (ClienteBean c : clienteBeanList) {
                     if (c.getIdcliente() == clienteBean.getParente()) {
                         dto.setParente(c.getNome());
@@ -99,6 +102,8 @@ public class RequestCliente implements java.io.Serializable {
                 dto.setInstore(clienteBean.getInstore() ? "Sim" : "Não");
                 dto.setMatriz(clienteBean.getMatriz() ? "Sim" : "Não");
                 dto.setNome(clienteBean.getNome());
+                dto.setCodigoInterno(clienteBean.getCodigoInterno());
+                dto.setCodigoExterno(clienteBean.getCodigoExterno());
                 for (ClienteBean c : clienteBeanList) {
                     if (c.getIdcliente() == clienteBean.getParente()) {
                         dto.setParente(c.getNome());
@@ -152,6 +157,8 @@ public class RequestCliente implements java.io.Serializable {
                 dto.setInstore(clienteBean.getInstore() ? "Sim" : "Não");
                 dto.setMatriz(clienteBean.getMatriz() ? "Sim" : "Não");
                 dto.setNome(clienteBean.getNome());
+                dto.setCodigoInterno(clienteBean.getCodigoInterno());
+                dto.setCodigoExterno(clienteBean.getCodigoExterno());
                 for (ClienteBean c : clienteBeanList) {
                     if (c.getIdcliente() == clienteBean.getParente()) {
                         dto.setParente(c.getNome());
@@ -445,6 +452,11 @@ public class RequestCliente implements java.io.Serializable {
                 dto.setMatriz(clienteBean.getMatriz() ? "Sim" : "Não");
                 dto.setNome(clienteBean.getNome());
                 dto.setParente(clienteBean.getParente().toString());
+                if(null!=clienteBean.getParente() && clienteBean.getParente() > 0) {
+                    ClienteBean clienteAux = repository.find(ClienteBean.class, clienteBean.getParente());
+                    dto.setNomeParente(clienteAux.getNome());
+                }
+                
                 for (ClienteBean c : clienteBeanList) {
                     if (c.getIdcliente() == clienteBean.getParente()) {
                         dto.setParente(c.getNome());
