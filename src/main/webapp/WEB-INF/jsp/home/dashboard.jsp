@@ -1,14 +1,7 @@
 <%@ taglib prefix="instore" tagdir="/WEB-INF/tags/" %> 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <instore:template  menucolapse="false">
-    <jsp:body>
-
-        <audio controls>
-            <source src="http://localhost/musica.mp3" type="audio/mpeg">
-        </audio>
-        
-        
-
+    <jsp:body> 
         <div class="row show-case">
             <div class="col-sm-4 text-center">
                 <img src="${url_cz}images/doc1.png" />       

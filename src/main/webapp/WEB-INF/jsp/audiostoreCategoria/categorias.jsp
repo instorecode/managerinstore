@@ -15,9 +15,10 @@
     <jsp:attribute name="gridColumn">
         <script type="text/javascript">
             var gridColumn = [
-                {title: 'Código', name: 'codigo', index: true, filter: true, filterType: 'input'},
+                {title: 'Cliente', name: 'clienteNome', index: true, filter: true},
                 {title: 'Nome da categoria', name: 'categoria', index: true, filter: true, filterType: 'input'},
-                {title: 'Nome do cliente', name: 'clienteNome', index: true, filter: true, filterType: 'input'},
+                {title: 'Tipo', name: 'tipo', index: true, filter: true},
+                {title: 'Duração', name: 'tempo', index: true, filter: true, filterType: 'input'},
             ];
 
             function onRowDblClick(data) {

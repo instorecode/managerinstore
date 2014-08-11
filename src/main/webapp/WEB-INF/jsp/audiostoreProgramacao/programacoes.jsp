@@ -3,8 +3,13 @@
 
     <jsp:attribute name="submenu">
         <a href="${url}/audiostore-programacao/cadastrar" class="btn btn-default"> <i class="fa fa-save"></i> Cadastrar </a>
-        <a style="display: none" xhref="${url}/audiostore-programacao/download-exp" class="btn btn-default btnDownloadEXP"> <i class="fa fa-save"></i> Download do arquivo EXP </a>
-        <a style="display: none" xhref="${url}/audiostore-programacao/upload-exp" class="btn btn-default btnUploadEXP"> <i class="fa fa-upload"></i> Enviar EXP para o repositório  </a>
+<!--        <a style="display: none" xhref="${url}/audiostore-programacao/download-exp" class="btn btn-default btnDownloadEXP"> <i class="fa fa-save"></i> Download do arquivo EXP </a>
+        <a style="display: none" xhref="${url}/audiostore-programacao/upload-exp" class="btn btn-default btnUploadEXP"> <i class="fa fa-upload"></i> Enviar EXP para o repositório  </a>-->
+    </jsp:attribute>
+
+    <jsp:attribute name="detailsButton">
+        <a data-toggle="tooltip" data-placement="bottom" data-original-title="Download do arquivo exp" style="display: none" xhref="${url}/audiostore-programacao/download-exp" class="btn btn-default btnDownloadEXP"> <i class="fa fa-download"></i></a>
+        <a data-toggle="tooltip" data-placement="right" data-original-title="Upload para repositorio de arquivos exp" style="display: none" xhref="${url}/audiostore-programacao/upload-exp" class="btn btn-default btnUploadEXP"> <i class="fa fa-upload"></i></a>
     </jsp:attribute>
 
     <jsp:attribute name="gridColumn">

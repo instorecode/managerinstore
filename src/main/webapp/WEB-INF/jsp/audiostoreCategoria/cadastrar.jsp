@@ -54,12 +54,23 @@
                     <div class="form-group">
                         <label>Data de termino</label>
                         <div class="input-group date datetime" data-min-view="2" data-date-format="dd/mm/yyyy">
-                            <input type="text" name="audiostoreCategoriaBean.dataFinal" class="form-control datepicker" placeholder="Data de termino"  
-                                   data-rule-required="true" 
-                                   data-rule-minlength="3"
-                                   data-rule-maxlength="255" 
-                                   data-mask="99/99/9999"
-                                   value="${cf:dateFormat(audiostoreCategoriaBean.dataFinal, "dd/MM/yyyy")}">
+                            <c:if test="${isPageCadastro}">
+                                <input type="text" name="audiostoreCategoriaBean.dataFinal" class="form-control datepicker" placeholder="Data de termino"  
+                                       data-rule-required="true" 
+                                       data-rule-minlength="3"
+                                       data-rule-maxlength="255" 
+                                       data-mask="99/99/9999"
+                                       value="${cf:dateAddYear(2)}">
+                            </c:if>
+                            <c:if test="${not isPageCadastro}">
+                                <input type="text" name="audiostoreCategoriaBean.dataFinal" class="form-control datepicker" placeholder="Data de termino"  
+                                       data-rule-required="true" 
+                                       data-rule-minlength="3"
+                                       data-rule-maxlength="255" 
+                                       data-mask="99/99/9999"
+                                       value="${cf:dateFormat(audiostoreCategoriaBean.dataFinal, "dd/MM/yyyy")}">
+                            </c:if>
+
                             <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
                         </div>
                     </div>
@@ -80,12 +91,23 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>Tempo de duração</label>
-                        <input type="text" name="tempo" class="form-control" placeholder="Tempo de duração"  
-                               data-rule-required="true" 
-                               data-rule-minlength="8"
-                               data-rule-maxlength="8" 
-                               data-mask="99:99:99"
-                               value="${audiostoreCategoriaBean.tempo}">
+                        <c:if test="${isPageCadastro}">
+                            <input type="text" name="tempo" class="form-control" placeholder="Tempo de duração"  
+                                   data-rule-required="true" 
+                                   data-rule-minlength="8"
+                                   data-rule-maxlength="8" 
+                                   data-mask="99:99:99"
+                                   value="00:00:00">
+                        </c:if>
+                        <c:if test="${not isPageCadastro}">
+                            <input type="text" name="tempo" class="form-control" placeholder="Tempo de duração"  
+                                   data-rule-required="true" 
+                                   data-rule-minlength="8"
+                                   data-rule-maxlength="8" 
+                                   data-mask="99:99:99"
+                                   value="${audiostoreCategoriaBean.tempo}">
+                        </c:if>
+
                     </div>
                 </div>
             </div>

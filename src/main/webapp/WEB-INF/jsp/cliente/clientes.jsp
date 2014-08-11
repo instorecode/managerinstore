@@ -37,6 +37,7 @@
         <a xhref="${url}/filial"  data-toggle="tooltip" data-placement="bottom" data-original-title="Filiais" type="button" class="btn btn-default btnFil"><i class="fa fa-cubes"></i></a>
         <a xhref="${url}/contatos" data-toggle="tooltip" data-placement="bottom" data-original-title="Contatos" type="button" class="btn btn-default btnCont"><i class="fa fa-users"></i></a>
         <a xhref="${url}/cliente-configuracao" data-toggle="tooltip" data-placement="bottom" data-original-title="Configurações" type="button" class="btn btn-default btnCont"><i class="fa fa-gear"></i></a>
+        <a xhref="${url}/cliente-ou-filial/suspender" data-toggle="tooltip" data-placement="bottom" data-original-title="Suspender cliente" type="button" class="btn btn-default btnCont"><i class="fa fa-calendar"></i></a>
     </jsp:attribute>
         
         
