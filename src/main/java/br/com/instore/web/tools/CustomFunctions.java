@@ -30,4 +30,11 @@ public class CustomFunctions {
         calendar.add(Calendar.YEAR, 1);
         return new SimpleDateFormat("dd/MM/yyyy").format(calendar.getTime());
     }
+    
+    public static String dateAddYear(Integer year) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.YEAR, year);
+        return new SimpleDateFormat("dd/MM/yyyy").format(calendar.getTime());
+    }
 }

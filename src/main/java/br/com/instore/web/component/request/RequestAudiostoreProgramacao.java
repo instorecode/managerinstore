@@ -107,7 +107,7 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
     }
 
     public List<ClienteBean> clienteBeanList() {
-        List<ClienteBean> clienteBeanList = repository.query(ClienteBean.class).findAll();
+        List<ClienteBean> clienteBeanList = repository.query(ClienteBean.class).eq("matriz", true).eq("parente", 0).findAll();
         return clienteBeanList;
     }
 
@@ -127,6 +127,21 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
 
     public void salvar(AudiostoreProgramacaoBean audiostoreProgramacaoBean, String horaInicio, String horaFinal, Integer[] categorias, Integer[] diasSemana) {
         try {
+            if (null == categorias || categorias.length <= 0) {
+                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Informe pelomenos uma categoria!")).recursive().serialize();
+                return;
+            }
+
+            if (null == diasSemana || diasSemana.length <= 0) {
+                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Informe pelomenos um dia da semana!")).recursive().serialize();
+                return;
+            }
+//            ValidatorFactory factory =
+//                    Validation.buildDefaultValidatorFactory();
+//            Validator validator = factory.getValidator();
+//            Set<ConstraintViolation<MyBean>> constraintViolations =
+//                    validator.validate(bean);
+
             repository.setUsuario(sessionUsuario.getUsuarioBean());
             audiostoreProgramacaoBean.setHoraInicio(new SimpleDateFormat("HH:mm:ss").parse(horaInicio));
             audiostoreProgramacaoBean.setHoraFinal(new SimpleDateFormat("HH:mm:ss").parse(horaFinal));
@@ -181,10 +196,12 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
             }
 
             for (Integer codigo : categorias) {
-                AudiostoreProgramacaoCategoriaBean bean = new AudiostoreProgramacaoCategoriaBean();
-                bean.setAudiostoreCategoria(new AudiostoreCategoriaBean(codigo));
-                bean.setAudiostoreProgramacao(audiostoreProgramacaoBean);
-                repository.save(bean);
+                if (null != codigo && codigo > 0) {
+                    AudiostoreProgramacaoCategoriaBean bean = new AudiostoreProgramacaoCategoriaBean();
+                    bean.setAudiostoreCategoria(new AudiostoreCategoriaBean(codigo));
+                    bean.setAudiostoreProgramacao(audiostoreProgramacaoBean);
+                    repository.save(bean);
+                }
             }
 
 
@@ -418,9 +435,9 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
                     conteudo += conteudoo;
                     conteudo += audiostoreProgramacaoBean.getLoopback() ? 1 : 0;
                 }
-                
-                File dir = new File(config.getDataPath()+"\\programacao-exp\\");
-                if(!dir.exists()) {
+
+                File dir = new File(config.getDataPath() + "\\programacao-exp\\");
+                if (!dir.exists()) {
                     dir.mkdirs();
                 }
 
@@ -433,5 +450,9 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public List<AudiostoreCategoriaBean> categorias(Integer id) {
+        return repository.query(AudiostoreCategoriaBean.class).eq("cliente.idcliente", id).findAll();
     }
 }

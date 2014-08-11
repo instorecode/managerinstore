@@ -10,7 +10,6 @@ import java.util.Properties;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.Annotations;
 import com.thoughtworks.xstream.io.xml.DomDriver;
-import java.io.InputStream;
 
 public class CepService {
 
@@ -59,9 +58,8 @@ public class CepService {
             // conecta com a url destino
             connection.connect();
 
-            
             // abre a conex�o pra input
-            BufferedReader br = new BufferedReader( new InputStreamReader((InputStream) connection.getContent(), "utf-8"));
+            BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
 
             // le ate o final
             StringBuffer newData = new StringBuffer();

@@ -7,6 +7,7 @@ import br.com.caelum.vraptor.Post;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.bean.ClienteBean;
+import br.com.instore.core.orm.bean.ClienteSuspensoBean;
 import br.com.instore.core.orm.bean.DadosClienteBean;
 import br.com.instore.web.annotation.Restrict;
 import br.com.instore.web.component.request.RequestCliente;
@@ -49,6 +50,7 @@ public class ClienteController implements java.io.Serializable {
         result.include("filialBeanList2", requestCliente.filialDTOListAux(null, true , null));
         result.include("filialBeanList1", new ArrayList<ClienteDTO>());
         result.include("estadoBeanList", requestCliente.estadoBeanList());
+        result.include("indiceReajusteList", requestCliente.indiceReajusteList());
     }
 
     @Post
@@ -89,6 +91,7 @@ public class ClienteController implements java.io.Serializable {
         result.include("estadoBeanList", requestCliente.estadoBeanList());
         result.include("cliente", cliente);
         result.include("dadosCliente", requestCliente.dadosClienteBean(id));
+        result.include("indiceReajusteList", requestCliente.indiceReajusteList());
     }
 
     @Post
@@ -127,5 +130,20 @@ public class ClienteController implements java.io.Serializable {
     @Path("/cliente-configuracao/{id}")
     public void configuracao(Integer id, String p1,String p2,String p3,String p4,String p5) {
         requestCliente.salvar3(id, p1, p2, p3, p4, p5);
+    }
+    
+    @Get
+    @Restrict
+    @Path("/cliente-ou-filial/suspender/{id}")
+    public void suspender(Integer id) {
+        result.include("cliente", requestCliente.clienteBean(id));
+        result.include("suspenderList", requestCliente.suspenderList(id));
+    }
+    
+    @Post
+    @Restrict
+    @Path("/cliente-ou-filial/suspender/{id}")
+    public void suspender(ClienteSuspensoBean clienteSuspenso) {
+        requestCliente.suspender(clienteSuspenso);
     }
 }

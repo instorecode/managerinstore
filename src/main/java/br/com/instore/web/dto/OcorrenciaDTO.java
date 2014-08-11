@@ -1,22 +1,5 @@
 package br.com.instore.web.dto;
 
-import br.com.instore.core.orm.bean.ClienteBean;
-import br.com.instore.core.orm.bean.OcorrenciaOrigemBean;
-import br.com.instore.core.orm.bean.OcorrenciaPrioridadeBean;
-import br.com.instore.core.orm.bean.OcorrenciaProblemaBean;
-import br.com.instore.core.orm.bean.OcorrenciaSolucaoBean;
-import br.com.instore.core.orm.bean.UsuarioBean;
-import java.util.Date;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
 public class OcorrenciaDTO  extends AbstractDTO {
     private String id;
     private String descricao;
@@ -28,6 +11,10 @@ public class OcorrenciaDTO  extends AbstractDTO {
     private String usuarioCriacao;
     private String ocorrenciaPrioridade;
     private String cliente;
+    private String statusNome;
+    private String statusCor;
+    private String statusUsuarioNome;
+    private String prioridade;
 
     public String getId() {
         return id;
@@ -108,4 +95,37 @@ public class OcorrenciaDTO  extends AbstractDTO {
     public void setCliente(String cliente) {
         this.cliente = cliente;
     }
+
+    public String getStatusNome() {
+        return statusNome;
+    }
+
+    public void setStatusNome(String statusNome) {
+        this.statusNome = statusNome;
+    }
+
+    public String getStatusUsuarioNome() {
+        return statusUsuarioNome;
+    }
+
+    public void setStatusUsuarioNome(String statusUsuarioNome) {
+        this.statusUsuarioNome = statusUsuarioNome;
+    }
+
+    public String getStatusCor() {
+        return statusCor;
+    }
+
+    public void setStatusCor(String statusCor) {
+        this.statusCor = statusCor;
+    }
+
+    public String getPrioridade() {
+        return prioridade;
+    }
+
+    public void setPrioridade(String prioridade) {
+        this.prioridade = prioridade;
+    }
+    
 }

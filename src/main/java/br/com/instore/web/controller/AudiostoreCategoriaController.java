@@ -43,6 +43,7 @@ public class AudiostoreCategoriaController implements java.io.Serializable {
     @Restrict
     @Path("/audiostore-categoria/cadastrar")
     public void cadastrar() {
+        result.include("isPageCadastro", true);
         result.include("clienteBeanList", requestAudiostoreCategoria.clienteBeanList());
     }
 
@@ -57,6 +58,7 @@ public class AudiostoreCategoriaController implements java.io.Serializable {
     @Restrict
     @Path("/audiostore-categoria/atualizar/{id}")
     public void cadastrar(Integer id) {
+        result.include("isPageCadastro", false);
         result.include("audiostoreCategoriaBean", requestAudiostoreCategoria.audiostoreCategoriaBean(id));
         result.include("clienteBeanList", requestAudiostoreCategoria.clienteBeanList());
     }
