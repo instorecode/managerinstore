@@ -101,7 +101,19 @@
                     </div>
                 </div>
 
-                <div class="col-md-5">
+                <div class="col-md-2">
+                    <div class="form-group"> 
+                        <label>Tipo Log.</label>
+                        <input type="text" name="usuarioBean.endereco.cep.bairro.tipo" class="form-control tipo_log" placeholder="Tipo do Logradouro" 
+                               value="${usuarioBean.endereco.cep.bairro.tipo}"
+                               data-rule-required="true" 
+                               data-rule-minlength="3"
+                               data-rule-maxlength="255">
+
+                    </div>
+                </div>
+
+                <div class="col-md-3">
                     <div class="form-group"> 
                         <label>Logradouro</label>
                         <input type="text" name="usuarioBean.endereco.cep.bairro.rua" class="form-control log" placeholder="Logradouro" 

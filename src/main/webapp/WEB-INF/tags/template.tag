@@ -116,20 +116,28 @@
                         self = jQuery(this);
                         jQuery.storageAdd("matriz_selecionada", self.val());
 
-                        jQuery('.select_cliente').val(self.val());
-                        jQuery('.select_cliente').change();
+                        if (self.val() == '0') {
+                            jQuery.storageClear();
+                        } else {
+                            if (null != self.val() && '' != self.val() && self.val() != '0') {                                
+                                if(null != jQuery('.select_cliente option:selected').val() && undefined != jQuery('.select_cliente option:selected').val() && jQuery('.select_cliente option:selected').val()>0) {
+                                    
+                                } else {
+                                    jQuery('.select_cliente').val(self.val());
+                                    jQuery('.select_cliente').change();
+                                }
+                            }
+                        }
                     });
-
 
                     if (null != jQuery.storage("matriz_selecionada") && undefined != jQuery.storage("matriz_selecionada")) {
                         jQuery('[name="matriz_selecionada"]').val(jQuery.storage("matriz_selecionada"));
                         jQuery('[name="matriz_selecionada"]').change();
-
-                        jQuery('.select_cliente').val(jQuery.storage("matriz_selecionada"));
-                        jQuery('.select_cliente').change();
                     }
 
+
                     $('#summernote').summernote();
+
                     // ws_url
                     var ws_url = jQuery.storage('ws_url');
                     if (ws_url == null || ws_url == undefined) {
@@ -239,7 +247,7 @@
                                 },
                                 onReady: function() {
                                     if (typeof(onReady) != "undefined") {
-                                        onReady();
+                                        onReady(this._collection.models);
                                     }
                                 },
                                 onRowClick: function(data) {
@@ -421,7 +429,7 @@
                                         <a href="#">${sessionUsuario.usuarioBean.nome}</a>
                                         <br /> 
                                         <select class="select2" name="matriz_selecionada" style="color: #3380FF;">
-                                            <option>Selecione uma matriz</option>
+                                            <option value="0">Selecione uma matriz</option>
                                             <c:forEach items="${atalhoClienteList}" var="item">
                                                 <option value="${item.idcliente}">${item.nome}</option>
                                             </c:forEach>

@@ -34,4 +34,10 @@
         <function-class>br.com.instore.web.tools.CustomFunctions</function-class>
         <function-signature>String dateAfterOneYear()</function-signature>
     </function>
+    
+    <function>
+        <name>dateAddYear</name>
+        <function-class>br.com.instore.web.tools.CustomFunctions</function-class>
+        <function-signature>String dateAddYear(java.lang.Integer)</function-signature>
+    </function>
 </taglib>

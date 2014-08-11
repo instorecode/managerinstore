@@ -82,10 +82,10 @@
 
 
                     var v1 = td.text();
-                    
+
                     v1 = v1.replace('R', '');
                     v1 = v1.replace('$', '');
-                    
+
                     if (v1.indexOf('.') != -1 && v1.indexOf(',') != -1) {
                         v1 = v1.replace('.', '');
                         v1 = v1.replace(',', '.');
@@ -94,46 +94,64 @@
                     if (v1.indexOf('.') == -1 && v1.indexOf(',') != -1) {
                         v1 = v1.replace(',', '.');
                     }
-                    
+
                     v1 = jQuery.trim(v1);
-                    
+
                     if (jQuery.trim(td_tipo.text()) == 'Pagar') {
                         pagar += parseFloat(v1);
                     }
-                    
+
                     if (jQuery.trim(td_tipo.text()) == 'Receber') {
                         receber += parseFloat(v1);
                     }
-                    
+
                 });
-                
+
                 var p = " " + pagar.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
                 var r = " " + receber.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
                 pagar = p;
                 receber = r;
-                
-                
+
+
 //                jQuery('.total_hoje_debito').text("R$ -" + pagar);
 //                jQuery('.total_hoje_credito').text("R$ +" + receber);
             });
         </script>
     </jsp:attribute>
     <jsp:body> 
+
         <div class="block">
-            <div class="header">
-                <h2><i class="fa  fa-money"></i>Total de Hoje</h2>
-            </div>
-            <div class="content no-padding">
-                <div class="fact-data text-center">
-                    <h3>Débito</h3>
-                    <h2 class="total_hoje_debito" style="color: red;">${atrasado_pagar}</h2>
-                </div>
-                <div class="fact-data text-center">
-                    <h3>Crédito</h3>							
-                    <h2 class="total_hoje_credito" style="color: green">${atrasado_receber}</h2>
-                </div>
+            <div class="content">
+                <h2>Total</h2>
+                <table class="no-border">
+                    <thead class="no-border">
+                        <tr>
+                            <th class="text-center"></th>
+                            <th class="text-center" style="color: red; text-align: right">Débito</th>
+                            <th class="text-center" style="color: green; text-align: right">Crédito</th>
+                        </tr>
+                    </thead>
+                    <tbody class="no-border-y">
+                            <tr>
+                                <td>De hoje</td>
+                                <td style="color: red; text-align: right"> ${atrasado_pagar} </td>
+                                <td style="color: green; text-align: right"> ${atrasado_receber} </td>
+                            </tr>
+                            <tr>
+                                <td>Do mês atual</td>
+                                <td style="color: red; text-align: right">  ${pagar_mes}</td>
+                                <td style="color: green; text-align: right">  ${receber_mes}</td>
+                            </tr>
+                            <tr>
+                                <td>Geral</td>
+                                <td style="color: red; text-align: right">  ${pagar}</td>
+                                <td style="color: green; text-align: right"> ${receber} </td>
+                            </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
+
 
         <div class="block">
             <div class="header">
@@ -166,6 +184,15 @@
                                 </td>
                             </tr>
                         </c:forEach>
+
+                        <tr class="hoje">
+                            <td colspan="5" style="text-align: right">
+                                Totais: &nbsp;&nbsp;
+                                <b class="total_hoje_debito" style="color: red;"> Débito ${atrasado_pagar}</b>
+                                &nbsp;&nbsp; | &nbsp;&nbsp;
+                                <b class="total_hoje_credito" style="color: green">Crédito ${atrasado_receber}</b>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -204,22 +231,6 @@
                         </c:forEach>
                     </tbody>
                 </table>
-            </div>
-        </div>
-
-        <div class="block">
-            <div class="header">
-                <h2><i class="fa  fa-money"></i>Total geral</h2>
-            </div>
-            <div class="content no-padding">
-                <div class="fact-data text-center">
-                    <h3>Débito</h3>
-                    <h2 class="total_debito" style="color: red;">${pagar}</h2>
-                </div>
-                <div class="fact-data text-center">
-                    <h3>Crédito</h3>							
-                    <h2 class="total_credito" style="color: green">${receber}</h2>
-                </div>
             </div>
         </div>
 

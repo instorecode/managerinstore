@@ -395,15 +395,15 @@ public class RequestLancamento implements java.io.Serializable {
     }
 
     public void removeSaldo(Integer id, Double val) {
-        LancamentoCnpjBean bean = repository.find(LancamentoCnpjBean.class, id);
-        bean.setSaldoDisponivel(bean.getSaldoDisponivel() - val);
-        repository.save(repository.marge(bean));
+//        LancamentoCnpjBean bean = repository.find(LancamentoCnpjBean.class, id);
+//        bean.setSaldoDisponivel(bean.getSaldoDisponivel() - val);
+//        repository.save(repository.marge(bean));
     }
 
     public void addSaldo(Integer id, Double val) {
-        LancamentoCnpjBean bean = repository.find(LancamentoCnpjBean.class, id);
-        bean.setSaldoDisponivel(bean.getSaldoDisponivel() + val);
-        repository.save(repository.marge(bean));
+//        LancamentoCnpjBean bean = repository.find(LancamentoCnpjBean.class, id);
+//        bean.setSaldoDisponivel(bean.getSaldoDisponivel() + val);
+//        repository.save(repository.marge(bean));
     }
 
     public void incluirTotais() {
@@ -414,6 +414,9 @@ public class RequestLancamento implements java.io.Serializable {
         BigDecimal pagar = new BigDecimal(0);
         BigDecimal atrasado_receber = new BigDecimal(0);
         BigDecimal atrasado_pagar = new BigDecimal(0);
+        
+        BigDecimal receber_mes = new BigDecimal(0);
+        BigDecimal pagar_mes = new BigDecimal(0);
 
         for (LancamentoBean bean : lista) {
             DateTime dt1 = new DateTime(bean.getMes());
@@ -421,18 +424,30 @@ public class RequestLancamento implements java.io.Serializable {
 
             String dateMes = new SimpleDateFormat("ddMMyyyy").format(bean.getMes());
             String dateAtual = new SimpleDateFormat("ddMMyyyy").format(new Date());
+            String dateMes_mes = new SimpleDateFormat("MM").format(bean.getMes());
+            String dateAtual_mes = new SimpleDateFormat("MM").format(new Date());
 
             if (bean.getDatFechamento() == null) {
                 if (bean.getCredito()) {
                     if (dateMes.equals(dateAtual)) {
                         atrasado_receber = atrasado_receber.add(new BigDecimal(bean.getValor()));
                     }
+                    
+                    if (dateMes_mes.equals(dateAtual_mes)) {
+                        receber_mes = receber_mes.add(new BigDecimal(bean.getValor()));
+                    }
+                    
                     receber = receber.add(new BigDecimal(bean.getValor()));
                 }
                 if (bean.getDebito()) {
                     if (dateMes.equals(dateAtual)) {
                         atrasado_pagar = atrasado_pagar.add(new BigDecimal(bean.getValor()));
                     }
+                    
+                    if (dateMes_mes.equals(dateAtual_mes)) {
+                        pagar_mes = pagar_mes.add(new BigDecimal(bean.getValor()));
+                    }
+                    
                     pagar = pagar.add(new BigDecimal(bean.getValor()));
                 }
             }
@@ -443,6 +458,10 @@ public class RequestLancamento implements java.io.Serializable {
 
         result.include("receber", formatter.format(receber));
         result.include("pagar", formatter.format(pagar));
+        
+        result.include("receber_mes", formatter.format(receber_mes));
+        result.include("pagar_mes", formatter.format(pagar_mes));
+        
         result.include("atrasado_receber", formatter.format(atrasado_receber));
         result.include("atrasado_pagar", formatter.format(atrasado_pagar));
     }

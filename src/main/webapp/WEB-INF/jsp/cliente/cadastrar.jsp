@@ -18,7 +18,8 @@
             <input type="hidden" name="cliente.endereco.cep.bairro.cidade.idcidade" value="${cliente.endereco.cep.bairro.cidade.idcidade}" />
             <input type="hidden" name="cliente.parente" value="0" />
             <input type="hidden" name="cliente.matriz" value="${true}" />
-
+            <input type="hidden" name="dadosCliente.indiceReajusteContrato" value="0">
+            
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
@@ -117,8 +118,13 @@
 
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label>Indice de reajuste do contrato</label>
-                        <input type="text" name="dadosCliente.indiceReajusteContrato" class="form-control" placeholder="Indice de reajuste do contrato" data-mask="00.00" value="${dadosCliente.indiceReajusteContrato}">
+                        <label>Índice de reajuste do contrato</label>
+                        <select class="select2" name="dadosCliente.indiceReajuste.id" class="form-control est">
+                            <option value>Selecione um índice</option>
+                            <c:forEach items="${indiceReajusteList}" var="indiceReajuste">
+                                <option value="${indiceReajuste.id}" data-uf="${est.sigla}" ${dadosCliente.indiceReajuste.id eq indiceReajuste.id ? 'selected="selected"' : ''}>${indiceReajuste.tipo}</option>
+                            </c:forEach>
+                        </select>
                     </div>
                 </div>
 

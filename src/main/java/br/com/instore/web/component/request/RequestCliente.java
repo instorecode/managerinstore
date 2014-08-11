@@ -7,9 +7,11 @@ import br.com.instore.core.orm.bean.CepBean;
 import br.com.instore.core.orm.bean.CidadeBean;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.core.orm.bean.ClienteBean;
+import br.com.instore.core.orm.bean.ClienteSuspensoBean;
 import br.com.instore.core.orm.bean.DadosClienteBean;
 import br.com.instore.core.orm.bean.EnderecoBean;
 import br.com.instore.core.orm.bean.EstadoBean;
+import br.com.instore.core.orm.bean.IndiceReajusteBean;
 import br.com.instore.core.orm.bean.property.DadosCliente;
 import br.com.instore.core.orm.bean.property.Estado;
 import br.com.instore.web.component.session.SessionUsuario;
@@ -18,6 +20,7 @@ import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -206,6 +209,11 @@ public class RequestCliente implements java.io.Serializable {
     public List<EstadoBean> estadoBeanList() {
         List<EstadoBean> estadoBeanList = repository.query(EstadoBean.class).findAll();
         return estadoBeanList;
+    }
+    
+    public List<IndiceReajusteBean> indiceReajusteList() {
+        List<IndiceReajusteBean> indiceReajusteList = repository.query(IndiceReajusteBean.class).findAll();
+        return indiceReajusteList;
     }
 
     public ClienteBean clienteBean(Integer id) {
@@ -519,6 +527,39 @@ public class RequestCliente implements java.io.Serializable {
             dcb.setLocalDestinoExp(p5);
             
             repository.save(dcb);
+            repository.finalize();
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Dados salvos com sucesso!")).recursive().serialize();
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel salvar os dados!")).recursive().serialize();
+        }
+    }
+    
+    public List<ClienteSuspensoBean> suspenderList(Integer id) {
+        return repository.query(ClienteSuspensoBean.class).eq("cliente.idcliente", id).orderDesc("data").findAll();
+    }
+    
+    public void suspender(ClienteSuspensoBean clienteSuspensoBean) {
+        try {
+            repository.setUsuario(sessionUsuario.getUsuarioBean());
+
+            clienteSuspensoBean.setUsuario(sessionUsuario.getUsuarioBean());
+            clienteSuspensoBean.setData(new Date());
+            
+            if(clienteSuspensoBean.getSuspenso()) {
+                if(clienteSuspensoBean.getDataInicio() == null) {
+                    result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Informe a data de inicio!")).recursive().serialize();
+                    return;
+                }
+                
+                if(clienteSuspensoBean.getDataFim()== null) {
+                    result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Informe a data final!")).recursive().serialize();
+                    return;
+                }
+            }
+            
+            repository.save(clienteSuspensoBean);
+
             repository.finalize();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Dados salvos com sucesso!")).recursive().serialize();
         } catch (Exception e) {

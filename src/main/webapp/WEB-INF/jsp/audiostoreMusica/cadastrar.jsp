@@ -70,10 +70,8 @@
                         console.log("aki2 " + value);
                         jQuery.ajax({
                             type: 'GET',
-                            url: '${url}/audiostore-musica/informacao',
-                            data: {
-                                idcliente: value
-                            },
+                            url: '${url}/audiostore-musica/informacao/'+value,
+             
                             beforeSend: function() {
                                 bootbox.dialog({
                                     message: "Aguarde...",

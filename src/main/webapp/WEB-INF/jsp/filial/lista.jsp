@@ -28,6 +28,7 @@
         
     <jsp:attribute name="detailsButton">
         <a xhref="${url}/contatos" data-toggle="tooltip" data-placement="bottom" data-original-title="Contatos" type="button" class="btn btn-default btnCont"><i class="fa fa-users"></i></a>
+        <a xhref="${url}/cliente-ou-filial/suspender" data-toggle="tooltip" data-placement="bottom" data-original-title="Suspender cliente" type="button" class="btn btn-default btnCont"><i class="fa fa-calendar"></i></a>
     </jsp:attribute>
         
         

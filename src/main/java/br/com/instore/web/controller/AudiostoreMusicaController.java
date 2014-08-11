@@ -104,7 +104,7 @@ public class AudiostoreMusicaController implements java.io.Serializable {
     }
 
     @Get
-    @Path("/audiostore-musica/informacao")
+    @Path("/audiostore-musica/informacao/{idcliente}")
     public void informacao(Integer idcliente) {
         try {
             requestAudiostoreMusica.carregarInforWizard(idcliente);

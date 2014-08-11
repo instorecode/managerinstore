@@ -14,6 +14,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import jcifs.smb.NtlmPasswordAuthentication;
 import org.apache.commons.lang.StringUtils;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
@@ -140,5 +141,12 @@ public class Utilities {
             e.printStackTrace();
         }
         return dto;
+    }
+
+    public static NtlmPasswordAuthentication getAuthSmb() {
+        String user = "admin";
+        String pass = "q1a2s3";
+
+        return new NtlmPasswordAuthentication("", user, pass);
     }
 }
