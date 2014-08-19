@@ -1,0 +1,42 @@
+.prop {
+    background-color: whitesmoke;
+    padding: 5px;
+    font-weight: bold;
+    font-style: italic;
+}
+.val {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    word-break: break-word;
+}
+
+
+.fixed_aside1::-webkit-scrollbar {
+    width: 2px;
+}
+
+.fixed_aside1::-webkit-scrollbar-track {
+}
+
+.fixed_aside1::-webkit-scrollbar-thumb {
+    background-color: #36a3ff;
+}
+
+body::-webkit-scrollbar {
+    width: 5px;
+}
+
+body::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: #272930;
+}
+
+.black-emphasis {
+    background-color: #555;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
+    color: #fff;
+    border-left-color: #555;
+}
