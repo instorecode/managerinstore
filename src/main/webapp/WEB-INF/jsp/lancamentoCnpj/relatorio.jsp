@@ -39,6 +39,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="col-md-2">
                     <div class="form-group">
                         <label>Filtro Data final</label>
@@ -57,15 +58,35 @@
                             </c:if>
                             <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
                         </div>
+                    </div>
+                </div>
 
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Situação</label>
+                        <br />
+                        <label class=""> <input type="radio" class="icheck"  name="sit" id="optionsRadios1" value="${true}" ${sit eq true or sit ? 'checked="checked"' : ''} >&nbsp;Pendente </label> &nbsp;&nbsp;&nbsp;
+                        <label class=""> <input type="radio" class="icheck"  name="sit" id="optionsRadios1" value="${false}"  ${sit eq false ? 'checked="checked"' : ''}>&nbsp;Finalizados </label>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Entidade Financeiro</label>
+                        <select name="entid" class="select2">
+                            <option value="">selecione uma entidade financeira</option>
+                            <c:forEach items="${beanList}" var="ent">
+                                <option value="${ent.id}" ${ent.id eq entid ? 'selected="selected"' : ''}>${ent.nome}</option>
+                            </c:forEach>
+                        </select>
                     </div>
                 </div>
             </div>
             <button type="submit" class="btn btn-default">
-                <i class="fa fa-save"></i> Salvar
+                Filtrar
             </button>
 
-            <a class="btn btn-default" href="${url}/lancamento-entidade/relatorio">Todos</a>
+            <a class="btn btn-default" href="${url}/lancamento-entidade/relatorio">Limpar filtro</a>
         </form>
 
         <br /><br />

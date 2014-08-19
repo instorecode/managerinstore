@@ -105,7 +105,7 @@
                     <div class="modal-body">
                         <div class="text-center">
                             <div class="i-circle success icone1"><i class="fa fa-download"></i></div>
-                            <div class="i-circle success icone2" style="display: none;"> <img src="${url_img}5.GIF" /> </div>
+                            <div class="i-circle success icone2" style="display: none;"> <img src="${url_img}25.GIF" /> </div>
                             <h4>Sincronização</h4>
                             <p>Escolha um diretório para ser importado para a base de dados automaticamente!</p>
                         </div>
@@ -124,7 +124,7 @@
                         </div>
 
                         <div class="alert alert-success erro2" style="display: none;">
-                            <i class="fa fa-warning sign"></i><strong>Ocorreu um erro:</strong> <div class="texto"></div>
+                            <i class="fa fa-warning sign"></i><strong>Importante:</strong> <div class="texto"></div>
                         </div>
 
                     </div>
@@ -143,38 +143,39 @@
                 <div datagrid-view="true" style="display: none">
                     <div class="block">
                         <div class="content">
-                            <div class="text-center">
-                                <div class="i-circle success">
-                                    <i class="fa fa-volume-up"></i>
-                                </div>
-                                <h4>Audio</h4>
-                                <p>Música selecionada para reproduzir!</p>
-                            </div>
-                        </div>
-                        <div style="display: block; width: 195px; margin: 0 auto; margin-top: 30px;">
-                            <div id="player_musicas_gerais" class="jp-jplayer"></div>
-                            <div id="jp_container_1" class="jp-audio">
-                                <div class="jp-type-single">
-                                    <div class="jp-gui jp-interface">
-                                        <div class="btn-group">
+                            <div style="display: block; width: 195px; margin: 0 auto; margin-top: -30px;">
+                                <div id="player_musicas_gerais" class="jp-jplayer"></div>
+                                <div id="jp_container_1" class="jp-audio">
+                                    <div class="jp-type-single">
+                                        <div class="jp-gui jp-interface">
+                                            <div class="jp-progress">
+                                                <div class="jp-seek-bar">
+                                                    <div class="jp-play-bar"></div>
+                                                </div>
+                                            </div>
+                                            <div class="jp-time-holder">
+                                                <div class="text-center">
+                                                    <div class="i-circle success">
+                                                        <i class="fa fa-volume-up"></i>
+                                                        <div class="jp-current-time"></div>
+                                                    </div>
+                                                    <h4>Audio</h4>
+                                                    <p>Música selecionada para reproduzir!</p>
+                                                </div>
+
+                                                <div class="jp-duration"></div>
+                                            </div>
+                                        </div>
+                                        <div class="btn-group" style="margin-left: 26px;">
                                             <button type="button" class="btn btn-success jp-play"><i class="fa fa-play"></i></button>
                                             <button type="button" class="btn btn-success jp-pause"><i class="fa fa-pause"></i></button>
                                             <button type="button" class="btn btn-default jp-stop"><i class="fa fa-stop"></i></button>
                                             <button type="button" class="btn btn-default jp-mute"><i class="fa fa-volume-down"></i></button>
                                             <button type="button" class="btn btn-default jp-unmute"><i class="fa fa-volume-off"></i></button>
                                             <button type="button" class="btn btn-default jp-volume-max"><i class="fa fa-volume-up"></i></button>
-                                            <button type="button" class="btn btn-default jp-repeat"><i class="fa fa-repeat"></i></button>
-                                            <button type="button" class="btn btn-default jp-repeat-off"><i class="fa fa-chain-broken"></i></button>
-                                        </div>
-                                        <div class="jp-progress">
-                                            <div class="jp-seek-bar">
-                                                <div class="jp-play-bar"></div>
-                                            </div>
-                                        </div>
-                                        <div class="jp-time-holder">
-                                            <div class="jp-current-time"></div>
-                                            <div class="jp-duration"></div>
-                                        </div>
+<!--                                            <button type="button" class="btn btn-default jp-repeat"><i class="fa fa-repeat"></i></button>
+                                            <button type="button" class="btn btn-default jp-repeat-off"><i class="fa fa-chain-broken"></i></button>-->
+                                        </div>              
                                     </div>
                                 </div>
                             </div>
