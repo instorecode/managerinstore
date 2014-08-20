@@ -89,6 +89,9 @@
             <script src="${url_js}prettify.js" type="text/javascript"></script>
 
 
+            <link type="text/css" href="${url}/resources/jplayer/skin/blue_monday/jplayer.blue.monday.css" rel="stylesheet" />
+            <script type="text/javascript" src="${url}/resources/jplayer/jquery.jplayer.min.js"></script>
+
             <script type="text/javascript">
                 jQuery(document).ready(function() {
                     App.init();
@@ -322,7 +325,7 @@
                                             ready: function() {
                                                 $(this).jPlayer("setMedia", {
                                                     title: "Musica",
-                                                    mp3: "${url}/musica/stream/"+data.attributes.id,
+                                                    mp3: "${url}/musica/stream/" + data.attributes.id,
                                                 });
                                             },
                                             swfPath: "${url}/resources/jplayer/",
@@ -397,95 +400,255 @@
         </head>
 
         <body>
-            <!-- Fixed navbar -->
-            <div id="head-nav" class="navbar navbar-default navbar-fixed-top">
-                <div class="container-fluid">
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                            <span class="fa fa-gear"></span>
-                        </button>
-                        <a class="navbar-brand" href="#"><span>ManagerInstore</span></a>
-                    </div>
-                    <div class="navbar-collapse collapse">
-                        <div class="navbar-collapse collapse">
-                            <ul class="nav navbar-nav">
-                                <li class="active"><a href="${url}">Dashboard</a></li>
-                                <li><a href="#ajuda">Ajuda</a></li>
-                                <li><a href="#contato">Contato</a></li>
-                                <li><a class="btn_up_cache" href="#"> <i class="fa fa-refresh"></i>&nbsp;&nbsp;Atualizar Cache da aplicação</a></li>
-                                <li><a class="btn_sair" href="${url}/sair">Sair</a></li>
-                            </ul>
+            <div class="enfoc">
+                <!-- Fixed navbar -->
+                <div id="head-nav" class="navbar navbar-default navbar-fixed-top">
+                    <div class="container-fluid">
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                                <span class="fa fa-gear"></span>
+                            </button>
+                            <a class="navbar-brand" href="#"><span>ManagerInstore</span></a>
                         </div>
-                    </div><!--/.nav-collapse -->
-                </div>
-            </div>
-
-
-            <div id="cl-wrapper" class="fixed-menu  ${menucolapse ? "sb-collapsed" : ""}">
-                <div class="cl-sidebar">
-                    <div class="cl-toggle"><i class="fa fa-bars"></i></div>
-                    <div class="cl-navblock">
-                        <div class="menu-space">
-                            <div class="content">
-                                <div class="side-user">
-                                    <div class="avatar"><img src="${url_cz}/images/logo.png" alt="Avatar" style="max-width: 170px;" /></div>
-                                    <hr style="border: 0px; border-top: 1px solid rgba(255,255,255,0.1)" />
-                                    <div class="info">
-                                        <a href="#">${sessionUsuario.usuarioBean.nome}</a>
-                                        <br /> 
-                                        <select class="select2" name="matriz_selecionada" style="color: #3380FF;">
-                                            <option value="0">Selecione uma matriz</option>
-                                            <c:forEach items="${atalhoClienteList}" var="item">
-                                                <option value="${item.idcliente}">${item.nome}</option>
-                                            </c:forEach>
-                                        </select>
-
-                                    </div>
-                                </div>
-                                <ul class="cl-vnavigation">
-                                    ${menu}
+                        <div class="navbar-collapse collapse">
+                            <div class="navbar-collapse collapse">
+                                <ul class="nav navbar-nav">
+                                    <li><a href="#menu" class="link_menu">Menu</a></li>
+                                    <li class="active"><a href="${url}">Dashboard</a></li>
+                                    <li><a href="#ajuda">Ajuda</a></li>
+                                    <li><a href="#contato">Contato</a></li>
+                                    <li><a class="btn_up_cache" href="#"> <i class="fa fa-refresh"></i>&nbsp;&nbsp;Atualizar Cache da aplicação</a></li>
+                                    <li><a class="btn_sair" href="${url}/sair">Sair</a></li>
                                 </ul>
                             </div>
-                        </div>
-                        <div class="text-right collapse-button" style="padding:7px 9px;">
-                            <button id="sidebar-collapse" class="btn btn-default" style=""><i style="color:#fff;" class="fa fa-angle-left"></i></button>
-                        </div>
-                    </div>
-                </div>
-                <div class="page-aside sld_view" style="display: none;">
-                    <div class="fixed fixed_aside1" style="overflow-y: auto;">
-                        <div class="content"> 
-                            <h2>Detalhes 
-                                <br />
-                                <button data-toggle="tooltip" data-placement="bottom" data-original-title="Fechar area" type="button" class="btn btn-default xclose"><i class="fa fa-long-arrow-left"></i></button>
-                                <button data-toggle="tooltip" data-placement="bottom" data-original-title="Atualizar dados" type="button" class="btn btn-default upd"><i class="fa fa-pencil"></i></button>
-                                <button data-toggle="tooltip" data-placement="bottom" data-original-title="Remover dados" type="button" class="btn btn-default trash"><i class="fa fa-trash-o"></i></button>
-                                    <jsp:invoke fragment="detailsButton" /> 
-                            </h2>
-                            <hr />
-                            <div class="xdet"></div>
-                        </div>
+                        </div><!--/.nav-collapse -->
                     </div>
                 </div>
 
-                <div class="container-fluid" id="pcont">
-                    <div class="page-head">
-                        <h2><i class="fa ${currentFuncionalidadeBean.icone}"></i> Instore ${currentFuncionalidadeBean.nome}</h2>
 
-                        <div style="float: right; margin-top: -40px; margin-right: 7px;">
-                            <jsp:invoke fragment="submenu" /> 
-                        </div>
-                    </div>		
-                    <style type="text/css">
-                        .show-case{margin-bottom:50px;}
-                        .show-case img{max-width:362px;width:100%;}
-                    </style>
-                    <div class="cl-mcont"> 
-                        <jsp:doBody />
-                    </div>
-                </div> 
+                <div id="cl-wrapper" class="fixed-menu  ${menucolapse ? "sb-collapsed" : ""}">
+                    <!--                    <div class="cl-sidebar">
+                                            <div class="cl-toggle"><i class="fa fa-bars"></i></div>
+                                            <div class="cl-navblock">
+                                                <div class="menu-space">
+                                                    <div class="content">
+                                                        <div class="side-user">
+                                                            <div class="avatar"><img src="${url_cz}/images/logo.png" alt="Avatar" style="max-width: 170px;" /></div>
+                                                            <hr style="border: 0px; border-top: 1px solid rgba(255,255,255,0.1)" />
+                                                            <div class="info">
+                                                                <a href="#">${sessionUsuario.usuarioBean.nome}</a>
+                                                                <br /> 
+                                                                <select class="select2" name="matriz_selecionada" style="color: #3380FF;">
+                                                                    <option value="0">Selecione uma matriz</option>
+                    <c:forEach items="${atalhoClienteList}" var="item">
+                        <option value="${item.idcliente}">${item.nome}</option>
+                    </c:forEach>
+                </select>
 
             </div>
+        </div>
+        <ul class="cl-vnavigation">
+                    ${menu}
+                </ul>
+            </div>
+        </div>
+        <div class="text-right collapse-button" style="padding:7px 9px;">
+            <button id="sidebar-collapse" class="btn btn-default" style=""><i style="color:#fff;" class="fa fa-angle-left"></i></button>
+        </div>
+    </div>
+</div>-->
+                    <div class="page-aside sld_view" style="display: none;">
+                        <div class="fixed fixed_aside1" style="overflow-y: auto;">
+                            <div class="content"> 
+                                <h2>Detalhes 
+                                    <br />
+                                    <button data-toggle="tooltip" data-placement="bottom" data-original-title="Fechar area" type="button" class="btn btn-default xclose"><i class="fa fa-long-arrow-left"></i></button>
+                                    <button data-toggle="tooltip" data-placement="bottom" data-original-title="Atualizar dados" type="button" class="btn btn-default upd"><i class="fa fa-pencil"></i></button>
+                                    <button data-toggle="tooltip" data-placement="bottom" data-original-title="Remover dados" type="button" class="btn btn-default trash"><i class="fa fa-trash-o"></i></button>
+                                        <jsp:invoke fragment="detailsButton" /> 
+                                </h2>
+                                <hr />
+                                <div class="xdet"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="container-fluid" id="pcont">
+                        <div class="page-head">
+                            <h2><i class="fa ${currentFuncionalidadeBean.icone}"></i> Instore ${currentFuncionalidadeBean.nome}</h2>
+
+                            <div style="float: right; margin-top: -40px; margin-right: 7px;">
+                                <jsp:invoke fragment="submenu" /> 
+                            </div>
+                        </div>		
+                        <style type="text/css">
+                            .show-case{margin-bottom:50px;}
+                            .show-case img{max-width:362px;width:100%;}
+                        </style>
+                        <div class="cl-mcont"> 
+                            <jsp:doBody />
+                        </div>
+                    </div> 
+
+                </div>
+            </div>
+
+            <div class="mask__menu" style="display: none;">
+                <b> <a class="_close"> <i class="fa fa-times"></i> </a> Precione a tecla ESC para sair do menu.</b>
+                <ul class="navv">
+                    ${menu}
+                </ul>
+            </div>
+            <style>
+                .desfoc {
+                    -webkit-filter: blur(5px);
+                    -moz-filter: blur(5px);
+                    -ms-filter: blur(5px);
+                    -o-filter: blur(5px);
+                    filter: blur(5px);
+
+                    opacity: 0.4;
+                }
+                .mask__menu {
+                    display: block;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0,0,0,0.7);
+
+                    position: fixed;
+                    top:0;
+                    left:0;
+
+                    z-index: 99999999;
+                    border: 1px solid rgba(255,255,255,0.1);
+                }
+
+                .mask__menu b {
+                    display: block;
+                    margin-left: 40px; 
+                    margin-right: 40px; 
+                    margin-top: 25px; 
+                    margin-bottom: 40px;
+
+                    color: #c9d4f6;
+                    font-size: 18px;
+                }
+
+                .navv {
+                    list-style: none; 
+                    margin-left: 40px; 
+                    margin-right: 40px; 
+                    margin-top: -40px; 
+                    margin-bottom: 40px;
+
+                    display: block;
+
+                    overflow-y: auto;
+                }
+
+
+                .navv::-webkit-scrollbar {
+                    width: 10px;
+                }
+
+                .navv::-webkit-scrollbar-track {
+                    background-color: transparent;
+                }
+
+                .navv::-webkit-scrollbar-thumb {
+                    background-color: #c9d4f6;
+                }
+
+                .navv li{ margin-left: -40px; }
+                .navv li a { 
+                    display: inline-block;
+                    width: 120px;
+                    height: 120px;
+                    padding: 10px;
+                    background-color: rgba(255,255,255,0.1);
+                    margin-left: 10px;
+                    margin-top: 10px;
+                    border-radius: 2px;
+
+                    border: 1px solid rgba(255,255,255,0.0);
+                }
+
+                .navv li a:hover { 
+                    background-color: rgba(255,255,255,0.2);
+                    border: 1px solid rgba(255,255,255,0.1);
+                }
+
+                .navv li i { 
+                    display: block;
+                    /*width: 100px;*/
+                    margin: 0 auto;
+                    font-size: 40px;
+                    padding-bottom: 10px;
+                    /*float: left;*/
+                    /*text-align: center;*/
+                    /*margin-left: 34px;*/
+                    color: #c9d4f6;
+                }
+
+                .navv li a { 
+                    font-size: 11px;
+                    float: left;
+                    text-align: center;
+                    color: #c9d4f6;
+                }
+
+                .navv li.active a { 
+                    background-color: #c9d4f6;
+                    color: rgba(0,0,0,0.6);
+                }
+                .navv li.active i { 
+                    color: rgba(0,0,0,0.6);
+                }
+
+                .mask__menu ._close {
+                    background-color: #c9d4f6;
+                    color: rgba(0,0,0,0.6);
+                    padding-top: 0px;
+                    padding-bottom: 0px;
+                    padding-left: 4px;
+                    padding-right: 0px;
+
+                    margin-right: 10px;
+
+                    cursor: pointer;
+                }
+
+
+            </style>
+
+            <script type="text/javascript">
+                jQuery(document).ready(function() {
+                    jQuery(window).resize(function() {
+                        jQuery('.navv').css('height', (jQuery(window).height() - 100) + 'px');
+                    });
+                    jQuery('.navv').css('height', (jQuery(window).height() - 100) + 'px');
+
+                    jQuery('.link_menu').on('click', function() {
+                        jQuery('.enfoc').addClass('desfoc');
+                        jQuery('.mask__menu').show();
+                        jQuery('body').css('overflow', 'hidden');
+                        return false;
+                    });
+
+                    jQuery(document).on('keyup', function(e) {
+                        if (e.keyCode == 27) {
+                            jQuery('.enfoc').removeClass('desfoc');
+                            jQuery('.mask__menu').hide();
+                            jQuery('body').css('overflow', 'auto');
+                        }
+                    });
+                    jQuery('.mask__menu ._close').on('click', function(e) {
+                        jQuery('.enfoc').removeClass('desfoc');
+                        jQuery('.mask__menu').hide();
+                        jQuery('body').css('overflow', 'auto');
+                    });
+                });
+            </script>
         </body>
     </html>
 </compress:html>

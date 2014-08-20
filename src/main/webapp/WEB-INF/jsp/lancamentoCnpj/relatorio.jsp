@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="instore" tagdir="/WEB-INF/tags/" %> 
 <%@ taglib prefix="cf" uri="CustomFunctions" %> 
-<instore:template isGrid="true">
+<instore:template isGrid="false">
 
     <jsp:attribute name="submenu">
         <a href="${url}/lancamento-entidade" class="btn btn-default"> <i class="fa fa-hand-o-left"></i> Entidades </a>
@@ -65,8 +65,8 @@
                     <div class="form-group">
                         <label>Situação</label>
                         <br />
-                        <label class=""> <input type="radio" class="icheck"  name="sit" id="optionsRadios1" value="${true}" ${sit eq true or sit ? 'checked="checked"' : ''} >&nbsp;Pendente </label> &nbsp;&nbsp;&nbsp;
-                        <label class=""> <input type="radio" class="icheck"  name="sit" id="optionsRadios1" value="${false}"  ${sit eq false ? 'checked="checked"' : ''}>&nbsp;Finalizados </label>
+                        <label class=""> <input type="radio" class="icheck"  name="sit" id="optionsRadios1" value="1" ${sit eq 1 or sit ? 'checked="checked"' : ''} >&nbsp;Pendente </label> &nbsp;&nbsp;&nbsp;
+                        <label class=""> <input type="radio" class="icheck"  name="sit" id="optionsRadios1" value="0"  ${sit eq 0 ? 'checked="checked"' : ''}>&nbsp;Finalizados </label>
                     </div>
                 </div>
 
@@ -74,7 +74,6 @@
                     <div class="form-group">
                         <label>Entidade Financeiro</label>
                         <select name="entid" class="select2">
-                            <option value="">selecione uma entidade financeira</option>
                             <c:forEach items="${beanList}" var="ent">
                                 <option value="${ent.id}" ${ent.id eq entid ? 'selected="selected"' : ''}>${ent.nome}</option>
                             </c:forEach>
@@ -85,7 +84,6 @@
             <button type="submit" class="btn btn-default">
                 Filtrar
             </button>
-
             <a class="btn btn-default" href="${url}/lancamento-entidade/relatorio">Limpar filtro</a>
         </form>
 

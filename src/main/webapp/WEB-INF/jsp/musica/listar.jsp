@@ -93,8 +93,7 @@
     </jsp:attribute>
 
     <jsp:body>        
-        <link type="text/css" href="${url}/resources/jplayer/skin/blue_monday/jplayer.blue.monday.css" rel="stylesheet" />
-        <script type="text/javascript" src="${url}/resources/jplayer/jquery.jplayer.min.js"></script>
+        
 
         <div class="modal fade" id="modal_sincronizacao" tabindex="-1" role="dialog">
             <div class="modal-dialog">

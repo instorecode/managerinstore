@@ -22,7 +22,7 @@
             });
 
             $('input').on('itemAdded', function(event) {
-                console.log(event.item);
+                
             });
                 </script>
 
