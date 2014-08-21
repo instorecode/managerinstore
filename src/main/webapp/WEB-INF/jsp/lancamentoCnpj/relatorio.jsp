@@ -74,6 +74,7 @@
                     <div class="form-group">
                         <label>Entidade Financeiro</label>
                         <select name="entid" class="select2">
+                            <option value="0">Todas</option>
                             <c:forEach items="${beanList}" var="ent">
                                 <option value="${ent.id}" ${ent.id eq entid ? 'selected="selected"' : ''}>${ent.nome}</option>
                             </c:forEach>

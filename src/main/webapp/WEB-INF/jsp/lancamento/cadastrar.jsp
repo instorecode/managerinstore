@@ -27,10 +27,7 @@
                     <div class="form-group">
                         <label>Descrição</label>
                         <div id="the-basics">
-                            <input type="text" name="lancamentoBean.descricao" class="form-control typeahead" placeholder="Descrição"  
-                                   data-rule-required="true" 
-                                   data-rule-minlength="3"
-                                   data-rule-maxlength="255"  value="${lancamentoBean.descricao}">
+                            <input type="text" name="lancamentoBean.descricao" class="form-control typeahead" placeholder="Descrição"    value="${lancamentoBean.descricao}">
                         </div>
                     </div>
                 </div>

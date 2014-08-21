@@ -1,5 +1,11 @@
 jQuery(document).ready(function() {
 
+//    window.console = {log: function(text) {
+//        if(!window.console) {
+//            
+//        }
+//    }};
+
 
     jQuery.expr[':'].like = function(selector, i, m) {
         var self = jQuery(selector);
@@ -18,7 +24,7 @@ jQuery(document).ready(function() {
         var rule_end_char = like_query.substring(like_query.length, like_query.length - 1);
         var ruleText = like_query.replace('%', '');
         var ruleText = ruleText.replace('%', '');
-        
+
         ruleText = ruleText.replace(/[á|ã|â|à]/gi, "a");
         ruleText = ruleText.replace(/[é|ê|è]/gi, "e");
         ruleText = ruleText.replace(/[í|ì|î]/gi, "i");
@@ -27,7 +33,7 @@ jQuery(document).ready(function() {
         ruleText = ruleText.replace(/[ç]/gi, "c");
         ruleText = ruleText.replace(/[ñ]/gi, "n");
         ruleText = ruleText.replace(/[á|ã|â]/gi, "a");
-        
+
         var ruleTextUpperCase = ruleText.toUpperCase().trim();
         var ruleTextLowerCase = ruleText.toLowerCase().trim();
 

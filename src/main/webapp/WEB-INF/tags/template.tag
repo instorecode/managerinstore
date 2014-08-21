@@ -116,27 +116,27 @@
                         }
                     };
 
-                    jQuery('[name="matriz_selecionada"]').on('change', function() {
+                    jQuery('.cliente_selecionado').on('click', function() {
                         self = jQuery(this);
-                        jQuery.storageAdd("matriz_selecionada", self.val());
-
+                        jQuery.storageAdd("matriz_selecionada", self.data('id'));
+                        console.log(self.data('id'));
                         if (self.val() == '0') {
                             jQuery.storageClear();
                         } else {
-                            if (null != self.val() && '' != self.val() && self.val() != '0') {
+                            if (null != self.data('id') && '' != self.data('id') && self.data('id') != '0') {
                                 if (null != jQuery('.select_cliente option:selected').val() && undefined != jQuery('.select_cliente option:selected').val() && jQuery('.select_cliente option:selected').val() > 0) {
 
                                 } else {
-                                    jQuery('.select_cliente').val(self.val());
+                                    jQuery('.select_cliente').val(self.data('id'));
                                     jQuery('.select_cliente').change();
                                 }
                             }
                         }
+//                        return false;
                     });
 
                     if (null != jQuery.storage("matriz_selecionada") && undefined != jQuery.storage("matriz_selecionada")) {
-                        jQuery('[name="matriz_selecionada"]').val(jQuery.storage("matriz_selecionada"));
-                        jQuery('[name="matriz_selecionada"]').change();
+                        jQuery('.cliente_selecionado[data-id="' + jQuery.storage("matriz_selecionada") + '"]').click();
                     }
 
 
@@ -419,6 +419,26 @@
                                     <li><a href="#contato">Contato</a></li>
                                     <li><a class="btn_up_cache" href="#"> <i class="fa fa-refresh"></i>&nbsp;&nbsp;Atualizar Cache da aplicação</a></li>
                                     <li><a class="btn_sair" href="${url}/sair">Sair</a></li>
+
+                                    <li class="button dropdown">
+                                        <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-building"></i><span class="bubble">${atalhoClienteList.size()}</span></a> 
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <div class="nano nscroller">
+                                                    <div class="content">
+                                                        <ul>
+                                                            <c:forEach items="${atalhoClienteList}" var="item">
+                                                                <li> 
+                                                                    <a class="cliente_selecionado" href="#cliente_selecionado=${item.idcliente}" data-id="${item.idcliente}"><i class="fa fa-building info"></i><b>Cliente</b> ${item.nome} <span class="date">${item.matriz ? 'Matriz' : 'Filial'}</span></a>
+                                                                </li>
+                                                            </c:forEach>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <ul class="foot"><li><a href="${url}/clientes">Ver todos</a></li></ul>           
+                                            </li>
+                                        </ul>
+                                    </li>
                                 </ul>
                             </div>
                         </div><!--/.nav-collapse -->
@@ -444,7 +464,7 @@
                         <option value="${item.idcliente}">${item.nome}</option>
                     </c:forEach>
                 </select>
-
+    
             </div>
         </div>
         <ul class="cl-vnavigation">
@@ -456,7 +476,7 @@
             <button id="sidebar-collapse" class="btn btn-default" style=""><i style="color:#fff;" class="fa fa-angle-left"></i></button>
         </div>
     </div>
-</div>-->
+    </div>-->
                     <div class="page-aside sld_view" style="display: none;">
                         <div class="fixed fixed_aside1" style="overflow-y: auto;">
                             <div class="content"> 
@@ -507,7 +527,7 @@
                     -o-filter: blur(5px);
                     filter: blur(5px);
 
-                    opacity: 0.4;
+                    opacity: 0.7;
                 }
                 .mask__menu {
                     display: block;

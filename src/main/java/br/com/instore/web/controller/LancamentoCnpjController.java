@@ -12,8 +12,6 @@ import br.com.instore.web.component.request.RequestLancamentoCnpj;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.inject.Inject;
 
 @Controller
@@ -89,10 +87,10 @@ public class LancamentoCnpjController implements java.io.Serializable {
     @Get
     @Restrict
     @Path("/lancamento-entidade/relatorio")
-    public void relatorio(Integer id, String d1s, String d2s) {
+    public void relatorio(Integer id, String d1s, String d2s , String entid , String sit) {
         Date d1 = null;
         Date d2 = null;
-
+        
         try {
             if (null != d1s && !d1s.isEmpty()) {
                 d1 = new SimpleDateFormat("dd/MM/yyyy").parse(d1s);
@@ -106,8 +104,27 @@ public class LancamentoCnpjController implements java.io.Serializable {
         }
 
         result.include("d1", d1);
-        result.include("d2", d2);
-
-        requestLancamentoCnpj.relatorios(id, d1, d2);
+        result.include("d2", d2); 
+        result.include("entid", entid); 
+        result.include("sit", sit); 
+        
+        result.include("beanList", requestLancamentoCnpj.beanList());
+        
+        if(d1 != null || d2 != null || entid != null || sit != null) {
+            Integer intEntid = null;
+            Integer intSit = null;
+            
+            if(entid != null) {
+                intEntid = Integer.parseInt(entid.trim());
+                if(intEntid == 0) {
+                    intEntid = null;
+                }
+            }
+            if(sit != null) {
+                intSit = Integer.parseInt(sit.trim());
+            }
+            
+            requestLancamentoCnpj.relatorios(id, d1, d2 , intEntid , intSit);
+        }   
     }
 }

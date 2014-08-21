@@ -137,7 +137,7 @@ public class RequestLancamentoCnpj implements java.io.Serializable {
         return lista;
     }
 
-    private List<LancamentoRelatorioDTO> relatorio(Integer id, Date d1, Date d2, int tipo) {
+    private List<LancamentoRelatorioDTO> relatorio(Integer id, Date d1, Date d2, int tipo, Integer entid , Integer sit) {
 
         String sqlRule = " \n";
         String sqlTipo = "\n\n";
@@ -152,6 +152,14 @@ public class RequestLancamentoCnpj implements java.io.Serializable {
 
         if (null != d2) {
             sqlRule += " \n and lancamento.mes <= date('" + new SimpleDateFormat("yyyy-MM-dd").format(d2) + "')";
+        }
+
+        if (null != entid) {
+            sqlRule += " \n  and lancamento_cnpj.id = "+entid;
+        }
+
+        if (null != sit) {
+            sqlRule += " \n  and data_fechamento "+ (sit == 1 ? "is null":"is not null") ;
         }
 
         String queries = "";
@@ -191,8 +199,8 @@ public class RequestLancamentoCnpj implements java.io.Serializable {
         return lista1;
     }
 
-    public void relatorios(Integer id, Date d1, Date d2) {
-        List<LancamentoRelatorioDTO> lista1 = relatorio(id, d1, d2, 0);
+    public void relatorios(Integer id, Date d1, Date d2, Integer entid , Integer sit) {
+        List<LancamentoRelatorioDTO> lista1 = relatorio(id, d1, d2, 0 , entid , sit);
         List<LancamentoRelatorioDTO> lista2 = new ArrayList<LancamentoRelatorioDTO>();
 
         List<LancamentoRelatorioDTO> listaAux = new ArrayList<LancamentoRelatorioDTO>();
@@ -208,15 +216,15 @@ public class RequestLancamentoCnpj implements java.io.Serializable {
 
         BigDecimal valurAnt = new BigDecimal("0");
         int indice = 0;
+        
         for (LancamentoRelatorioDTO item : listaAux) {
             if (indice == 0) {
                 valurAnt = item.getSaldo();
             }
-
+            
             item.setSaldo(valurAnt);
 
             if (item.getPositivo() > 0) {
-
                 item.setSaldoCalculado((valurAnt.add(item.getDebito())).add(item.getCredito()));
             } else {
                 item.setSaldoCalculado((valurAnt.subtract(item.getDebito())).subtract(item.getCredito()));
@@ -227,11 +235,8 @@ public class RequestLancamentoCnpj implements java.io.Serializable {
             indice++;
         }
 
-
-
         BigDecimal bd1 = new BigDecimal("0");
         BigDecimal bd2 = new BigDecimal("0");
-
 
         for (LancamentoRelatorioDTO item : lista1) {
             bd1 = bd1.add(item.getDebito());

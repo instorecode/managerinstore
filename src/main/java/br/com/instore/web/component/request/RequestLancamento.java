@@ -224,10 +224,14 @@ public class RequestLancamento implements java.io.Serializable {
             result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Informe a data de inicio e a data de termino!")).recursive().serialize();
             return;
         }
+        if (null == bean.getDescricao() || bean.getDescricao().isEmpty()) {
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "O campo descrição é obrigatório!")).recursive().serialize();
+            return;
+        }
 
         try {
             repository.setUsuario(sessionUsuario.getUsuarioBean());
-
+ 
             if (null != bean.getDebito() && bean.getDebito()) {
                 bean.setCredito(Boolean.FALSE);
             }
@@ -395,15 +399,15 @@ public class RequestLancamento implements java.io.Serializable {
     }
 
     public void removeSaldo(Integer id, Double val) {
-//        LancamentoCnpjBean bean = repository.find(LancamentoCnpjBean.class, id);
-//        bean.setSaldoDisponivel(bean.getSaldoDisponivel() - val);
-//        repository.save(repository.marge(bean));
+        LancamentoCnpjBean bean = repository.find(LancamentoCnpjBean.class, id);
+        bean.setSaldoDisponivel(bean.getSaldoDisponivel() - val);
+        repository.save(repository.marge(bean));
     }
 
     public void addSaldo(Integer id, Double val) {
-//        LancamentoCnpjBean bean = repository.find(LancamentoCnpjBean.class, id);
-//        bean.setSaldoDisponivel(bean.getSaldoDisponivel() + val);
-//        repository.save(repository.marge(bean));
+        LancamentoCnpjBean bean = repository.find(LancamentoCnpjBean.class, id);
+        bean.setSaldoDisponivel(bean.getSaldoDisponivel() + val);
+        repository.save(repository.marge(bean));
     }
 
     public void incluirTotais() {
@@ -465,4 +469,6 @@ public class RequestLancamento implements java.io.Serializable {
         result.include("atrasado_receber", formatter.format(atrasado_receber));
         result.include("atrasado_pagar", formatter.format(atrasado_pagar));
     }
+    
+    
 }
