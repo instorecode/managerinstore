@@ -48,10 +48,19 @@ public class MusicaController implements java.io.Serializable {
     @Get
     @Restrict
     @Path("/musica")
-    public void listar(Boolean datajson) {
-        if (null != datajson && datajson) {
-            result.use(Results.json()).withoutRoot().from(requestMusicaGeral.beanList()).recursive().serialize();
-        }
+    public void listar(Boolean datajson , int pagina , int qtd, int order, String titulo, String interprete, String velocidade, String anoGravacao, String letra, String categoria) {
+//        if (null != datajson && datajson) {
+//            result.use(Results.json()).withoutRoot().from(requestMusicaGeral.beanList()).recursive().serialize();
+//        }
+        requestMusicaGeral.list(pagina , qtd, order , titulo, interprete, velocidade, anoGravacao, letra, categoria);
+        result.include("order",order);
+        result.include("titulo",titulo);
+        result.include("interprete",interprete);
+        result.include("velocidade",velocidade);
+        result.include("anoGravacao",anoGravacao);
+        result.include("letra",letra);
+        result.include("categoria",categoria);
+        result.include("categorias", requestMusicaGeral.categorias());
     }
 
     @Get
@@ -126,8 +135,7 @@ public class MusicaController implements java.io.Serializable {
         try { 
             String caminho = requestMusicaGeral.bean(id).getArquivo();
             SmbFile smbDir = new SmbFile(caminho, Utilities.getAuthSmb());
-            SmbFileInputStream fileInputStream = new SmbFileInputStream(smbDir);
-            
+            SmbFileInputStream fileInputStream = new SmbFileInputStream(smbDir);    
             if(smbDir.exists()) {
                 return new InputStreamDownload(fileInputStream, smbDir.getContentType(), smbDir.getName());
             } else {

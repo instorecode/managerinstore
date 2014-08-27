@@ -2,6 +2,7 @@ package br.com.instore.web.component.request;
 
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.observer.download.InputStreamDownload;
+import br.com.caelum.vraptor.observer.upload.UploadedFile;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.bean.AudiostoreCategoriaBean;
 import br.com.instore.web.component.session.SessionRepository;
@@ -13,20 +14,17 @@ import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbFile;
 import jcifs.smb.SmbFileOutputStream;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
 @RequestScoped
@@ -162,22 +160,43 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
 
                 DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", audiostoreCategoriaBean.getCliente().getIdcliente()).findOne();
 
-                SmbFile smb = new SmbFile("smb://"+dados.getLocalDestinoExp(), Utilities.getAuthSmb());
-                SmbFile smb2 = new SmbFile("smb://"+dados.getLocalDestinoExp()+"/"+StringUtils.leftPad(audiostoreCategoriaBean.getCodigo().toString(), 5, " ")+".exp", Utilities.getAuthSmb());
-                
+                SmbFile smb = new SmbFile("smb://" + dados.getLocalDestinoExp(), Utilities.getAuthSmb());
+                SmbFile smb2 = new SmbFile("smb://" + dados.getLocalDestinoExp() + "/" + StringUtils.leftPad(audiostoreCategoriaBean.getCodigo().toString(), 5, " ") + ".exp", Utilities.getAuthSmb());
+
                 if (!smb.exists()) {
                     smb.mkdirs();
                 }
-                
+
                 SmbFileOutputStream sfous = new SmbFileOutputStream(smb2);
                 sfous.write(conteudo.getBytes());
                 sfous.close();
-                
+
                 result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "")).recursive().serialize();
             }
         } catch (Exception e) {
             e.printStackTrace();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "")).recursive().serialize();
+        }
+    }
+
+    public void upload(UploadedFile file) {
+        try {
+            if (!file.getFileName().endsWith(".exp")) {
+                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "O arquivo " + file.getFileName() + " não está num formato válido!")).recursive().serialize();
+            } else {
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(file.getFile()));
+                String readline;
+                List<String> lines = new ArrayList<String>();
+                while ((readline = bufferedReader.readLine()) != null) {
+                    lines.add(readline);
+                }
+                
+                for (String line : lines) {
+                    
+                }
+            }
+        } catch (IOException ex) {
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Ocorreu um erro ao tentar sincronizar o arquivo " + file.getFileName())).recursive().serialize();
         }
     }
 }

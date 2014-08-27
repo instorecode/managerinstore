@@ -2,8 +2,10 @@
 <instore:template isGrid="true">
 
     <jsp:attribute name="submenu">
-        <a href="${url}/audiostore-categoria/cadastrar" class="btn btn-default"> <i class="fa fa-save"></i> Cadastrar </a>
-
+        <div class="btn-group">
+            <a href="${url}/audiostore-categoria/cadastrar" class="btn btn-default"> <i class="fa fa-save"></i> Cadastrar </a>
+            <a href="#" class="btn btn-default" data-toggle="modal" data-target="#modal_sincronizacao" > <i class="fa fa-download"></i> Sincronizar </a>
+        </div>
     </jsp:attribute>
 
 
@@ -95,6 +97,32 @@
         </script>
     </jsp:attribute>
     <jsp:body> 
+        <link rel="stylesheet" type="text/css" href="${url_cz}js/dropzone/css/dropzone.css" />
+        <script type="text/javascript" src="${url_cz}js/dropzone/dropzone.js"></script>
+
+        <div class="modal fade" id="modal_sincronizacao" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>-->
+                    </div>
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <div class="i-circle success icone1"><i class="fa fa-download"></i></div>
+                            <div class="i-circle success icone2" style="display: none;"> <img src="${url_img}25.GIF" /> </div>
+                            <h4>Sincronização</h4>
+                            <p>Arraste os arquivos com extensão <code>.exp</code> para área de upload.</p>
+                        </div>
+                        <form action="${url}/audiostore-categoria/sinc" class="dropzone" id="my-awesome-dropzone"></form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default btn_sinc_fechar" data-dismiss="modal"> <i class="fa fa-times"></i> Fechar Janela</button>
+                        <button type="button" class="btn btn-success btn_sinc" disabled="disabled"> <i class="fa fa-download"></i> Sincronizar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="block-flat">
             <div class="content">
                 <div datagrid-view="true" style="display: none">

@@ -22,10 +22,11 @@ public class LancamentoServlet extends HttpServlet {
         try {
             final RepositoryViewer rv = new RepositoryViewer();
             rv.setUsuario(new UsuarioBean(1));
-
-            String query = "select concat('update lancamento_cnpj set saldo_disponivel = (select sum(valor) from lancamento where debito = 1 and data_fechamento is not null and mes > date(\\'2014-01-01\\') and lancamento_cnpj = ',1,') where lancamento_cnpj.id = ', 1) as debito ,\n"
-                    + "	   concat('update lancamento_cnpj set saldo_disponivel = (select sum(valor) from lancamento where credito = 1 and data_fechamento is not null and mes > date(\\'2014-01-01\\') and lancamento_cnpj = ',1,') where lancamento_cnpj.id = ', 1) as credito\n"
-                    + "from lancamento_cnpj;";
+            
+            
+            final String query =    "select concat('update lancamento_cnpj set saldo_disponivel = saldo_disponivel - (select sum(valor) from lancamento where debito = 1 and data_fechamento is not null and mes > date(\\'2014-08-26\\') and lancamento_cnpj = ',id,') where lancamento_cnpj.id = ', id) as debito ,\n" +
+                                    "	   concat('update lancamento_cnpj set saldo_disponivel = saldo_disponivel + (select sum(valor) from lancamento where credito = 1 and data_fechamento is not null and mes > date(\\'2014-08-26\\') and lancamento_cnpj = ',id,') where lancamento_cnpj.id = ', id) as credito\n" +
+                                    "from lancamento_cnpj;";
 
             rv.query(query).executeSQL(new Each() {
                 String debito;
@@ -34,6 +35,14 @@ public class LancamentoServlet extends HttpServlet {
                 @Override
                 public void each() {
                     try {
+                        System.out.println("SCRIPT");
+                        System.out.println(query);
+                        System.out.println("----------------------------------------------------------");
+                        System.out.println("DEBITO: " + debito);
+                        System.out.println("CREDITO: " + credito);
+                        System.out.println("----------------------------------------------------------");
+                        System.out.println("");
+                        
                         rv.query(debito).executeSQLCommand();
                         rv.query(credito).executeSQLCommand();
                     } catch (DataValidatorException e) {
@@ -41,6 +50,8 @@ public class LancamentoServlet extends HttpServlet {
                     }
                 }
             });
+            
+            rv.finalize();
         } catch (Exception e) {
             e.printStackTrace();
         }

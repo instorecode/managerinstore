@@ -1327,7 +1327,7 @@ define("almond", function(){});
 }.call(root));
     return amdExports;
 }); }(this));
-
+ 
 //Wrapped in an outer function to preserve global this
 (function (root) { var amdExports; define('bootstrap/bootstrap-modal',['bootstrap/bootstrap-transition'], function () { (function () {
 

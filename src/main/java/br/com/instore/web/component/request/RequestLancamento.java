@@ -377,7 +377,7 @@ public class RequestLancamento implements java.io.Serializable {
 
             LancamentoBean bean = repository.marge((LancamentoBean) repository.find(LancamentoBean.class, id));
 
-            if (null == bean.getDatFechamento()) {
+            if (null != bean.getDatFechamento()) {
                 addSaldo(bean.getLancamentoCnpj().getId(), bean.getValor());
             }
 

@@ -47,13 +47,21 @@ public class RequestLancamentoCnpj implements java.io.Serializable {
         for (LancamentoCnpjBean bean : lista) {
             LancamentoCnpjDTO dto = new LancamentoCnpjDTO(Utilities.leftPad(bean.getId()), bean.getNome());
 
-            String moneyString = bean.getSaldoDisponivel().toString();
             if (null != bean.getSaldoDisponivel()) {
-                NumberFormat formatter = NumberFormat.getCurrencyInstance();
-                moneyString = formatter.format(bean.getSaldoDisponivel());
+                String moneyString = bean.getSaldoDisponivel().toString();
+
+                if (null != bean.getSaldoDisponivel()) {
+                    NumberFormat formatter = NumberFormat.getCurrencyInstance();
+                    moneyString = formatter.format(bean.getSaldoDisponivel());
+                }
+                dto.setSaldoDisponivel(moneyString);
+            } else {
+                dto.setSaldoDisponivel("0.00");
             }
 
-            dto.setSaldoDisponivel(moneyString);
+
+
+
             dto.setCnpj(bean.getCnpj());
             lista2.add(dto);
         }
@@ -137,7 +145,7 @@ public class RequestLancamentoCnpj implements java.io.Serializable {
         return lista;
     }
 
-    private List<LancamentoRelatorioDTO> relatorio(Integer id, Date d1, Date d2, int tipo, Integer entid , Integer sit) {
+    private List<LancamentoRelatorioDTO> relatorio(Integer id, Date d1, Date d2, int tipo, Integer entid, Integer sit) {
 
         String sqlRule = " \n";
         String sqlTipo = "\n\n";
@@ -155,11 +163,11 @@ public class RequestLancamentoCnpj implements java.io.Serializable {
         }
 
         if (null != entid) {
-            sqlRule += " \n  and lancamento_cnpj.id = "+entid;
+            sqlRule += " \n  and lancamento_cnpj.id = " + entid;
         }
 
         if (null != sit) {
-            sqlRule += " \n  and data_fechamento "+ (sit == 1 ? "is null":"is not null") ;
+            sqlRule += " \n  and data_fechamento " + (sit == 1 ? "is null" : "is not null");
         }
 
         String queries = "";
@@ -199,8 +207,8 @@ public class RequestLancamentoCnpj implements java.io.Serializable {
         return lista1;
     }
 
-    public void relatorios(Integer id, Date d1, Date d2, Integer entid , Integer sit) {
-        List<LancamentoRelatorioDTO> lista1 = relatorio(id, d1, d2, 0 , entid , sit);
+    public void relatorios(Integer id, Date d1, Date d2, Integer entid, Integer sit) {
+        List<LancamentoRelatorioDTO> lista1 = relatorio(id, d1, d2, 0, entid, sit);
         List<LancamentoRelatorioDTO> lista2 = new ArrayList<LancamentoRelatorioDTO>();
 
         List<LancamentoRelatorioDTO> listaAux = new ArrayList<LancamentoRelatorioDTO>();
@@ -216,12 +224,12 @@ public class RequestLancamentoCnpj implements java.io.Serializable {
 
         BigDecimal valurAnt = new BigDecimal("0");
         int indice = 0;
-        
+
         for (LancamentoRelatorioDTO item : listaAux) {
             if (indice == 0) {
                 valurAnt = item.getSaldo();
             }
-            
+
             item.setSaldo(valurAnt);
 
             if (item.getPositivo() > 0) {

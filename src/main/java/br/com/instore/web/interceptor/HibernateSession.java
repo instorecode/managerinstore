@@ -67,12 +67,12 @@ public class HibernateSession {
 
                     try {
                         ((SessionImpl) session).connection().close();
+                        
+                        session.clear();
+                        session.close();
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
-
-                    session.clear();
-                    session.close();
                 }
             }
         }

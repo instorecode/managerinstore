@@ -1,6 +1,7 @@
 <%@ taglib prefix="instore" tagdir="/WEB-INF/tags/" %> 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<instore:template  menucolapse="false" isGrid="true">
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<instore:template  menucolapse="false" isGrid="false">
     <jsp:attribute name="submenu">
         <div class="btn-group">
             <a href="${url}/musica/cadastrar" class="btn btn-default"> <i class="fa fa-save"></i> Cadastrar </a>
@@ -57,6 +58,9 @@
                                 jQuery('.icone2').show();
                                 jQuery('.btn_sinc_fechar').attr('disabled', true);
                                 jQuery('.btn_sinc_fechar').text('Aguarde...');
+
+                                jQuery('.btn_sinc').hide();
+                                jQuery('.btn_sinc').attr('disabled', true);
                             },
                             success: function(response) {
                                 jQuery('.icone1').show();
@@ -65,6 +69,9 @@
                                 if (!response.success) {
                                     jQuery('.texto').text(response.response);
                                     jQuery('.erro2').show();
+
+                                    jQuery('.btn_sinc').show();
+                                    jQuery('.btn_sinc').attr('disabled', false);
                                 } else {
                                     jQuery('.erro2').hide();
                                     jQuery('.texto').text(response.response);
@@ -92,8 +99,99 @@
         </script>
     </jsp:attribute>
 
-    <jsp:body>        
+    <jsp:body>  
         
+        <script type="text/javascript">
+//            var gridColumn = [
+//                {title: 'Categorias', name: 'categoriaGeral', index: true, filter: true, filterType: 'input'},
+//                {title: 'Título', name: 'titulo', index: true, filter: true, filterType: 'input'},
+//                {title: 'Interprete', name: 'interprete', index: true, filter: true, filterType: 'input'},
+//                {title: 'Velocidade em BPM', name: 'bpm', index: true, filter: true, filterType: 'input'},
+//                {title: 'Ano de gravação', name: 'anoGravacao', index: true, filter: true},
+//                {title: 'Letra', name: 'letra', index: true, filter: true, filterType: 'input'},
+//            ];
+//
+//            function onRowDblClick(data) {
+//
+//            }
+//
+//            function onRowClick(data) {
+//
+//            }
+
+            jQuery(document).ready(function() {
+                jQuery('[name="url"]').on('keyup', function() {
+                    jQuery('.erro2').hide();
+
+                    if ('' != jQuery.trim(jQuery(this).val())) {
+                        jQuery('.btn_sinc').attr('disabled', false);
+                        jQuery('.erro1').hide();
+                    } else {
+                        jQuery('.btn_sinc').attr('disabled', true);
+                        jQuery('.erro1').show();
+                    }
+                });
+
+                jQuery('.btn_sinc').on('click', function() {
+                    var url = jQuery.trim(jQuery('[name="url"]').val());
+                    console.log(url);
+                    if ('' == url) {
+                        jQuery('.erro1').show();
+                    } else {
+                        jQuery('.erro1').hide();
+                        console.log("enviando");
+                        jQuery.ajax({
+                            type: 'POST',
+                            url: '${url}/musica/sinc',
+                            data: {dir: url},
+                            beforeSend: function() {
+                                jQuery('.icone1').hide();
+                                jQuery('.icone2').show();
+                                jQuery('.btn_sinc_fechar').attr('disabled', true);
+                                jQuery('.btn_sinc_fechar').text('Aguarde...');
+
+                                jQuery('.btn_sinc').hide();
+                                jQuery('.btn_sinc').attr('disabled', true);
+                            },
+                            success: function(response) {
+                                jQuery('.icone1').show();
+                                jQuery('.icone2').hide();
+                                console.log(response);
+                                if (!response.success) {
+                                    jQuery('.texto').text(response.response);
+                                    jQuery('.erro2').show();
+
+                                    jQuery('.btn_sinc').show();
+                                    jQuery('.btn_sinc').attr('disabled', false);
+                                } else {
+                                    jQuery('.erro2').hide();
+                                    jQuery('.texto').text(response.response);
+                                    jQuery('.erro2').show();
+
+                                    jQuery('.btn_sinc').hide();
+                                    jQuery('.btn_sinc_fechar').attr('disabled', false);
+                                    jQuery('.btn_sinc_fechar').text('Fechar e atualizar a página');
+                                }
+                            },
+                            error: function(repsonse) {
+                                jQuery('.icone1').show();
+                                jQuery('.icone2').hide();
+                                console.log(repsonse);
+                            }
+                        });
+                    }
+                });
+
+                jQuery('.btn_sinc_fechar').on('click', function() {
+                    jQuery.storageClear();
+                    window.location.reload();
+                });
+            });
+        </script>
+        
+        <link rel="stylesheet" type="text/css" href="${url_css}bootstrap-tagsinput.css" />
+        <script src="${url_js}bootstrap-tagsinput.js" type="text/javascript"></script>
+        <!--<script src="${url_cz}js/fuelux/loader.js" type="text/javascript"></script>-->
 
         <div class="modal fade" id="modal_sincronizacao" tabindex="-1" role="dialog">
             <div class="modal-dialog">
@@ -113,7 +211,10 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>Caminho do diretório</label>
-                                    <input type="text" name="url" class="form-control" placeholder="Exemplo: \\ftp\Audio\Musicas\Mp3">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">smb://</span>
+                                        <input type="text" name="url" class="form-control" placeholder="Exemplo: \\ftp\Audio\Musicas\Mp3">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -136,161 +237,356 @@
         </div>
 
 
+        <c:set scope="session" var="paginacao" value=""></c:set>
+        <c:set scope="session" var="paginacao_concat" value="?"></c:set>
+        <c:forEach var="item" items="${paramValues}">
+            <c:if test="${not fn:startsWith(item.key, 'pagina')}"> 
+                <c:set scope="session" var="paginacao" value="${paginacao}${paginacao_concat}${item.key}=${item.value[0]}"></c:set>
+                <c:set scope="session" var="paginacao_concat" value="&"></c:set>
+            </c:if>
+        </c:forEach>
 
-        <div class="block-flat">
-            <div class="content">
-                <div datagrid-view="true" style="display: none">
-                    <div class="block">
-                        <div class="content">
-                            <div style="display: block; width: 195px; margin: 0 auto; margin-top: -30px;">
-                                <div id="player_musicas_gerais" class="jp-jplayer"></div>
-                                <div id="jp_container_1" class="jp-audio">
-                                    <div class="jp-type-single">
-                                        <div class="jp-gui jp-interface">
-                                            <div class="jp-progress">
-                                                <div class="jp-seek-bar">
-                                                    <div class="jp-play-bar"></div>
-                                                </div>
-                                            </div>
-                                            <div class="jp-time-holder">
-                                                <div class="text-center">
-                                                    <div class="i-circle success">
-                                                        <i class="fa fa-volume-up"></i>
-                                                        <div class="jp-current-time"></div>
-                                                    </div>
-                                                    <h4>Audio</h4>
-                                                    <p>Música selecionada para reproduzir!</p>
-                                                </div>
+        <c:set scope="session" var="qtd" value=""></c:set>
+        <c:set scope="session" var="qtd_concat" value="?"></c:set>
+        <c:forEach var="item" items="${paramValues}">
+            <c:if test="${not fn:startsWith(item.key, 'qtd') and not fn:startsWith(item.key, 'pagina')}"> 
+                <c:set scope="session" var="qtd" value="${qtd}${qtd_concat}${item.key}=${item.value[0]}"></c:set>
+                <c:set scope="session" var="qtd_concat" value="&"></c:set>
+            </c:if>
+        </c:forEach>
 
-                                                <div class="jp-duration"></div>
-                                            </div>
-                                        </div>
-                                        <div class="btn-group" style="margin-left: 26px;">
-                                            <button type="button" class="btn btn-success jp-play"><i class="fa fa-play"></i></button>
-                                            <button type="button" class="btn btn-success jp-pause"><i class="fa fa-pause"></i></button>
-                                            <button type="button" class="btn btn-default jp-stop"><i class="fa fa-stop"></i></button>
-                                            <button type="button" class="btn btn-default jp-mute"><i class="fa fa-volume-down"></i></button>
-                                            <button type="button" class="btn btn-default jp-unmute"><i class="fa fa-volume-off"></i></button>
-                                            <button type="button" class="btn btn-default jp-volume-max"><i class="fa fa-volume-up"></i></button>
-<!--                                            <button type="button" class="btn btn-default jp-repeat"><i class="fa fa-repeat"></i></button>
-                                            <button type="button" class="btn btn-default jp-repeat-off"><i class="fa fa-chain-broken"></i></button>-->
-                                        </div>              
-                                    </div>
-                                </div>
+        <c:set scope="session" var="__order" value=""></c:set>
+        <c:set scope="session" var="__order_concat" value="?"></c:set>
+        <c:forEach var="item" items="${paramValues}">
+            <c:if test="${not fn:startsWith(item.key, 'order')}"> 
+                <c:set scope="session" var="__order" value="${__order}${__order_concat}${item.key}=${item.value[0]}"></c:set>
+                <c:set scope="session" var="__order_concat" value="&"></c:set>
+            </c:if>
+        </c:forEach>
+
+        <form>
+            <!--<input type="hidden" name="qtd" value="${qtd}" />-->
+
+            <div class="block-flat">
+                <style>
+                    .play, .pause, .stop, .mute, .unmute {
+                        display: inline-block;
+                        padding: 10px;
+                        width: 30px;
+                        height: 30px;
+
+                        background-color: #54A754;
+                        border-radius: 2px;
+                    }
+
+                    .play i, .pause i, .stop i, .mute i, .unmute i {
+                        font-size: 10px;
+                        font-size: 15px;
+                        text-align: center;
+                        margin-left: 6px;
+                        margin-top: 3px;
+                        color: #FFF;
+                    }
+                </style>
+                <c:forEach items="${lista2}" var="item" varStatus="vs">
+                    <div id="jquery_jplayer_${vs.index}" class="jp-jplayer"></div>
+                    <script type="text/javascript">
+            $(document).ready(function() {
+//                $("#jquery_jplayer_${vs.index}").jPlayer({
+//                    ready: function() {
+//                        $(this).jPlayer("setMedia", {
+//                            mp3: "${url}/musica/stream/${item.id}",
+//                        });
+//                    },
+//                    swfPath: "/js",
+//                    supplied: "mp3",
+//                    cssSelectorAncestor: "",
+//                    cssSelector: {
+//                        play: "#play${vs.index}",
+//                        pause: "#pause${vs.index}",
+//                        stop: "#stop${vs.index}",
+//                        mute: "#mute${vs.index}",
+//                        unmute: "#unmute${vs.index}",
+//                        currentTime: "#currentTime${vs.index}",
+//                        duration: "#duration${vs.index}"
+//                    },
+//                    size: {
+//                        width: "0px",
+//                        height: "0px"
+//                    }
+//                });
+//            });
+                    </script>
+                </c:forEach>
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Titulo</label>
+                            <input type="text" class="form-control arq" name="titulo" value="${titulo}" placeholder="Título" data-rule-required="true">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Interprete</label>
+                            <input type="text" class="form-control arq" name="interprete" value="${interprete}" placeholder="Interprete" data-rule-required="true">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Velocidade</label>
+                            <input type="text" class="form-control arq" name="velocidade" value="${velocidade}" placeholder="Velocidade" data-rule-required="true">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Ano de gravação</label>
+                            <input type="text" class="form-control arq" name="anoGravacao" value="${anoGravacao}" placeholder="Ano de gravação" data-rule-required="true">
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Letra</label>
+                            <input type="text" class="form-control arq" name="letra" value="${letra}" placeholder="Letra" data-rule-required="true">
+                        </div>
+                    </div>
+
+                    <div class="col-md-9">
+                        <div class="form-group">
+                            <label>Categoria</label>
+                            <input type="text" class="form-control arq" name="categoria" value="${categoria}" placeholder="Categoras" data-rule-required="true" data-role="tagsinput"> 
+
+                            <script type="text/javascript">
+                                var json = [ <c:forEach items="${categorias}" var="item" varStatus="vs"> '${item.nome}', </c:forEach> ];
+                                        jQuery('[data-role="tagsinput"]').tagsinput({
+                                    typeahead: {
+                                        source: json
+                                    }
+                                });
+
+                                $('input').on('itemAdded', function(event) {
+
+                                });
+                                </script>
                             </div>
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-12 prop"> 
-                            Arquivo
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-arquivo="true"></div> 
-                        </div>
+                    <hr />
 
-                        <div class="col-md-12 prop"> 
-                            Categoria
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-categoriaGeral="true"></div> 
-                        </div>
+                    <div class="clearfix"></div>
 
-                        <div class="col-md-12 prop"> 
-                            Título
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-titulo="true"></div> 
-                        </div>
-
-                        <div class="col-md-12 prop"> 
-                            Interprete
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-interprete="true"></div> 
-                        </div>
-
-                        <div class="col-md-12 prop"> 
-                            Tipo de interprete
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-tipoInterprete="true"></div> 
-                        </div>
-
-                        <div class="col-md-12 prop"> 
-                            Velocidade em BPM
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-bpm="true"></div> 
-                        </div>
-
-                        <div class="col-md-12 prop"> 
-                            Tempo total da música
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-tempoTotal="true"></div> 
-                        </div>
-
-                        <div class="col-md-12 prop"> 
-                            Gravadora
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-gravadora="true"></div> 
-                        </div>
-
-                        <div class="col-md-12 prop"> 
-                            Ano de gravação
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-anoGravacao="true"></div> 
-                        </div>
-
-                        <div class="col-md-12 prop"> 
-                            1ª Afinidade
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-afinidade1="true"></div> 
-                        </div>
-
-                        <div class="col-md-12 prop"> 
-                            2ª Afinidade
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-afinidade2="true"></div> 
-                        </div>
-
-                        <div class="col-md-12 prop"> 
-                            3ª Afinidade
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-afinidade3="true"></div> 
-                        </div>
-
-                        <div class="col-md-12 prop"> 
-                            4ª Afinidade
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-afinidade4="true"></div> 
-                        </div>
-
-                        <div class="col-md-12 prop"> 
-                            Usuário que cadastrou
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-usuario="true"></div> 
-                        </div>
-
-                        <div class="col-md-12 prop"> 
-                            Letra da música
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-letra="true"></div> 
-                        </div>
+                    <div style="float: right">
+                        <div class="btn-group">
+                            <a href="${url}/musica${paginacao}${paginacao_concat}pagina=${paginaAtual-1}" class="btn btn-default btn-flat"> 
+                            <i class="fa fa-arrow-left"></i>
+                        </a>
+                        <a href="javascript:void(0)" class="btn btn-default btn-flat"> 
+                            Página ${paginaAtual} de ${totalPaginas}
+                        </a>
+                        <a href="${url}/musica${paginacao}${paginacao_concat}pagina=${paginaAtual+1}" class="btn btn-default btn-flat">
+                            <i class="fa fa-arrow-right"></i>
+                        </a>
                     </div>
+                </div>	
+
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle btn-flat" data-toggle="dropdown">
+                        ${totalRegistrosPorPagina} registros <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="${url}/musica${qtd}${qtd_concat}qtd=5">5 registros</a></li>
+                        <li><a href="${url}/musica${qtd}${qtd_concat}qtd=10">10 registros</a></li>
+                        <li><a href="${url}/musica${qtd}${qtd_concat}qtd=25">25 registros</a></li>
+                        <li><a href="${url}/musica${qtd}${qtd_concat}qtd=50">50 registros</a></li>
+                        <li><a href="${url}/musica${qtd}${qtd_concat}qtd=100">100 registros</a></li>
+                        <li><a href="${url}/musica${qtd}${qtd_concat}qtd=250">250registros</a></li>
+                    </ul>
                 </div>
 
-                <div datagrid="true" data-id="id"></div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle btn-flat" data-toggle="dropdown">
+                        Ordenação <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+<!--                        <li><a href="${url}/musica${__order}${__order_concat}order=1">por categoria ascendente</a></li>
+                        <li><a href="${url}/musica${__order}${__order_concat}order=2">por categoria descendente</a></li>-->
+                        <li><a href="${url}/musica${__order}${__order_concat}order=3">por título ascendente</a></li>
+                        <li><a href="${url}/musica${__order}${__order_concat}order=4">por título descendente</a></li>
+                        <li><a href="${url}/musica${__order}${__order_concat}order=5">por interprete ascendente</a></li>
+                        <li><a href="${url}/musica${__order}${__order_concat}order=6">por interprete descendente</a></li>
+                        <li><a href="${url}/musica${__order}${__order_concat}order=7">por velocidade ascendente</a></li>
+                        <li><a href="${url}/musica${__order}${__order_concat}order=8">por velocidade descendente</a></li>
+<!--                        <li><a href="${url}/musica${__order}${__order_concat}order=9">por ano de gravação ascendente</a></li>
+                        <li><a href="${url}/musica${__order}${__order_concat}order=10">por ano de gravação descendente</a></li>-->
+                        <li><a href="${url}/musica${__order}${__order_concat}order=11">por letra ascendente</a></li>
+                        <li><a href="${url}/musica${__order}${__order_concat}order=12">por letra descendente</a></li>
+                    </ul>
+                </div>
+
+                <button type="submit" class="btn btn-default btn-flat"> Filtrar </button>
+                <a href="${url}/musica" class="btn btn-default btn-flat"> Limpar Filtro </a>
+
+                <div class="table-responsive">
+                    <table class="no-border">
+                        <thead class="no-border">
+                            <tr>
+                                <th></th>
+                                <th><strong>Categorias</strong></th>
+                                <th ><strong>Título</strong></th>
+                                <th><strong>Interprete</strong></th>
+                                <th><strong>Velocidade em BPM</strong></th>
+                                <th><strong>Ano de gravação</strong></th>
+                                <th><strong>Letra</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody class="no-border-y">
+                            <c:forEach items="${lista2}" var="item" varStatus="vs">
+                                <tr>
+                                    <td width="300">
+
+                                        <a class="label label-default"  href="#" data-toggle="modal" data-target="#modal_ver_${item.id}"><i class="fa fa-eye"></i></a>
+                                        <a class="label label-warning" href="${url}/musica/atualizar/${item.id}"><i class="fa fa-pencil"></i></a>
+                                        <a class="label label-danger" href="${url}/musica/remover/${item.id}"><i class="fa fa-trash-o"></i></a>
+
+                                        <a id="play${vs.index}" class="label label-info" href="http://localhost:8080/managerinstore/musica/stream/${item.id}">
+                                            <i class="fa fa-play"></i>
+                                        </a>
+                                        <a id="pause${vs.index}" class="label label-info" href="http://localhost:8080/managerinstore/musica/stream/${item.id}">
+                                            <i class="fa fa-pause"></i>
+                                        </a>
+                                        <a id="stop${vs.index}" class="label label-info" href="http://localhost:8080/managerinstore/musica/stream/${item.id}">
+                                            <i class="fa fa-stop"></i>
+                                        </a>
+
+                                        <a id="mute${vs.index}" class="label label-info" href="http://localhost:8080/managerinstore/musica/stream/${item.id}">
+                                            <i class="fa fa-volume-off"></i>
+                                        </a>
+
+                                        <a id="unmute${vs.index}" class="label label-info" href="http://localhost:8080/managerinstore/musica/stream/${item.id}">
+                                            <i class="fa fa-volume-up"></i>
+                                        </a>
+
+                                        <a id="time{vs.index}" class="label label-info" href="javascript:;">
+                                            <span id="currentTime${vs.index}"></span> 
+                                            <!--/  <span id="duration${vs.index}"></span>-->
+                                        </a>
+
+                                        <div class="modal fade" id="modal_ver_${item.id}" tabindex="-1" role="dialog">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <table class="no-border">
+                                                            <thead>
+                                                                <tr>
+                                                                    <td width="150"></td>
+                                                                    <td></td>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody class="no-border-x">
+                                                                <tr>
+                                                                    <td> <strong>Arquivo</strong></td>
+                                                                    <td style="word-break: break-all;">${item.arquivo}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><strong>Categoria</strong></td>
+                                                                    <td>${item.categoriaGeral}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><strong>Título</strong></td>
+                                                                    <td>${item.titulo}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><strong>Interprete</strong></td>
+                                                                    <td>${item.interprete}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><strong>Tipo de interprete</strong></td>
+                                                                    <td>${item.tipoInterprete}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><strong>Velocidade em BPM</strong></td>
+                                                                    <td>${item.bpm}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><strong>Tempo total da música</strong></td>
+                                                                    <td>${item.tempoTotal}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><strong>Gravadora</strong></td>
+                                                                    <td>${item.gravadora}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><strong>Ano de gravação</strong></td>
+                                                                    <td>${item.anoGravacao}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><strong>1ª Afinidade</strong></td>
+                                                                    <td>${item.afinidade1}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><strong>2ª Afinidade</strong></td>
+                                                                    <td>${item.afinidade2}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><strong>3ª Afinidade</strong></td>
+                                                                    <td>${item.afinidade3}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><strong>4ª Afinidade</strong></td>
+                                                                    <td>${item.afinidade4}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><strong>Usuário que cadastrou</strong></td>
+                                                                    <td>${item.usuario}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><strong>Letra da música</strong></td>
+                                                                    <td>${item.letra}</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i>Fechar Janela</button>
+                                                        <button type="button" class="btn btn-warning"><i class="fa fa-pencil"></i>Atualizar</button>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        </div>
+                                    </td>
+                                    <td>${item.categoriaGeral}</td>
+                                    <td>${item.titulo}</td>
+                                    <td>${item.interprete}</td>
+                                    <td>${item.bpm}</td>
+                                    <td>${item.anoGravacao}</td>
+                                    <td>
+                                        <c:if test="${fn:length(item.letra) > 50}">
+                                            <a href="javascript:;" data-popover="popover" data-content="${item.letra}" data-placement="left" data-trigger="hover">
+                                                ${fn:substring(item.letra, 0, 50)}...
+                                            </a>
+                                        </c:if> 
+                                        <c:if test="${fn:length(item.letra) <= 50}">
+                                            item.letra
+                                        </c:if> 
+
+
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </tbody>
+                    </table>		
+                    <b><strong>Total de músicas : ${totalRegistros}</strong></b>
+                </div>    
             </div>
-        </div>
+        </form>
+
     </jsp:body>
 </instore:template>

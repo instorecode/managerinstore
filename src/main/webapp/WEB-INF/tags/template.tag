@@ -15,6 +15,7 @@
 <c:set scope="session" var="url_img" value="http://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/resources/img/"></c:set>
 <c:set scope="session" var="url_cz" value="http://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/resources/cz/"></c:set>
 
+
 <compress:html enabled="true" removeComments="true" compressJavaScript="true" jsCompressor="closure" closureOptLevel="simple">
     <!DOCTYPE html>
     <html lang="en">
@@ -47,6 +48,7 @@
             <link rel="stylesheet" type="text/css" href="${url_cz}js/jquery.niftymodals/css/component.css" />
             <link href="${url_cz}css/style.css?v=${machine_id}" rel="stylesheet" />	
             <link rel="stylesheet" type="text/css" href="${url_cz}js/bootstrap.slider/css/slider.css" />
+
 
             <script type="text/javascript" charset="utf-8"  src="${url_cz}js/jquery.js?v=${machine_id}"></script>
             <script type="text/javascript" charset="utf-8"  src="${url_js}jquery.ui.min.js?v=${machine_id}"></script>
@@ -533,7 +535,7 @@
                     display: block;
                     width: 100%;
                     height: 100%;
-                    background-color: rgba(0,0,0,0.7);
+                    background-color: rgba(0,0,0,0.8);
 
                     position: fixed;
                     top:0;
@@ -672,3 +674,5 @@
         </body>
     </html>
 </compress:html>
+    
+    

@@ -1,12 +1,4 @@
 jQuery(document).ready(function() {
-
-//    window.console = {log: function(text) {
-//        if(!window.console) {
-//            
-//        }
-//    }};
-
-
     jQuery.expr[':'].like = function(selector, i, m) {
         var self = jQuery(selector);
         var text = self.text();

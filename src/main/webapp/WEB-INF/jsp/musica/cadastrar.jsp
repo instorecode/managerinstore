@@ -33,7 +33,10 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>Arquivo</label>
-                        <input type="text" class="form-control arq" name="musicaGeralBean.arquivo" value="${musicaGeralBean.arquivo}" placeholder="clique no botão ao lado para selecionar um arquivo" data-rule-required="true">
+                        <div class="input-group">
+                            <span class="input-group-addon">smb://</span>
+                            <input type="text" class="form-control arq" name="musicaGeralBean.arquivo" value="${musicaGeralBean.arquivo}" placeholder="clique no botão ao lado para selecionar um arquivo" data-rule-required="true">
+                        </div>
                     </div>
                 </div>
 

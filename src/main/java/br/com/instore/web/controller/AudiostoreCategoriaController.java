@@ -6,10 +6,12 @@ import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Post;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.observer.download.InputStreamDownload;
+import br.com.caelum.vraptor.observer.upload.UploadedFile;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.bean.AudiostoreCategoriaBean;
 import br.com.instore.web.annotation.Restrict;
 import br.com.instore.web.component.request.RequestAudiostoreCategoria;
+import br.com.instore.web.tools.AjaxResult;
 import javax.inject.Inject;
 
 @Controller
@@ -96,5 +98,11 @@ public class AudiostoreCategoriaController implements java.io.Serializable {
     @Path("/audiostore-categoria/upload-exp/{id}")
     public void upload(Integer id) {
         requestAudiostoreCategoria.upload(id);
+    }
+    
+    @Post
+    @Path("/audiostore-categoria/sinc")
+    public void upload(UploadedFile file) {
+        requestAudiostoreCategoria.upload(file);
     }
 }

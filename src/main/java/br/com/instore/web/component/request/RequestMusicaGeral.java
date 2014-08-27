@@ -2,6 +2,7 @@ package br.com.instore.web.component.request;
 
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.view.Results;
+import br.com.instore.core.orm.Query;
 import br.com.instore.core.orm.bean.AudiostoreCategoriaBean;
 import br.com.instore.core.orm.bean.AudiostoreGravadoraBean;
 import br.com.instore.core.orm.bean.CategoriaGeralBean;
@@ -11,8 +12,8 @@ import br.com.instore.core.orm.bean.MusicaGeralBean;
 import br.com.instore.core.orm.bean.UsuarioBean;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.component.session.SessionUsuario;
-import br.com.instore.web.dto.MusicaDTO;
 import br.com.instore.web.dto.MusicaGeralDTO;
+import br.com.instore.web.dto.MusicaId;
 import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
 import java.net.MalformedURLException;
@@ -74,7 +75,7 @@ public class RequestMusicaGeral implements java.io.Serializable {
                     }
                 }
             }
-            
+
             dto.setCategoriaGeral((categorias != null && !categorias.isEmpty() ? categorias : "sem categoria definida"));
             dto.setGravadora((agb != null ? agb.getNome() : "sem gravadora definida"));
             dto.setInterprete(bean.getInterprete());
@@ -239,6 +240,7 @@ public class RequestMusicaGeral implements java.io.Serializable {
 
     public void sinc(String dir) {
         try {
+
             if (!dir.endsWith("/")) {
                 dir += "/";
             }
@@ -250,9 +252,13 @@ public class RequestMusicaGeral implements java.io.Serializable {
             sinc(dir, musicaGeralBeanList);
             repository.setUsuario(sessionUsuario.getUsuarioBean());
 
+
             for (MusicaGeralBean musicaGeralBean : musicaGeralBeanList) {
                 repository.save(musicaGeralBean);
             }
+
+
+            repository.finalize();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Sincronização finalizada com sucesso!")).recursive().serialize();
         } catch (Exception e) {
             result.use(Results.json()).withoutRoot().from(new AjaxResult(false, e.getMessage())).recursive().serialize();
@@ -308,5 +314,224 @@ public class RequestMusicaGeral implements java.io.Serializable {
             e.printStackTrace();
             throw new Exception("O diretório informado não existe ou não pode ser acessado!");
         }
+    }
+
+    public long totalRegistros() {
+        return repository.query(MusicaGeralBean.class).count();
+    }
+
+    public long totalRegistrosPorPagina() {
+        return 100;
+    }
+
+    public long totalPaginas(long totalRegistros, long totalRegistrosPorPagina) {
+        return (long) Math.ceil((double) totalRegistros / totalRegistrosPorPagina);
+    }
+
+    public void list(int pagina, int qtd, int order, String titulo, String interprete, String velocidade, String anoGravacao, String letra, String categoria) {
+
+        if (pagina == 0) {
+            pagina = 1;
+        }
+
+        if (qtd == 0) {
+            qtd = 10;
+        }
+
+        if (order == 0) {
+            order = 10;
+        }
+
+
+        long totalRegistrosPorPagina = Long.parseLong("" + qtd);
+
+
+        Integer end = pagina * (int) totalRegistrosPorPagina;
+        Integer begin = end - (int) totalRegistrosPorPagina;
+
+        List<MusicaGeralBean> lista = new ArrayList<MusicaGeralBean>();
+        Query query = repository.query(MusicaGeralBean.class);
+        Query query2 = repository.query(MusicaGeralBean.class);
+        query.limit(begin, qtd);
+
+        switch (order) {
+            case 1:
+                query.orderAsc("titulo");
+                query2.orderAsc("titulo");
+                break;
+            case 2:
+                query.orderDesc("titulo");
+                query2.orderDesc("titulo");
+                break;
+            case 3:
+                query.orderAsc("titulo");
+                query2.orderAsc("titulo");
+                break;
+            case 4:
+                query.orderDesc("titulo");
+                query2.orderDesc("titulo");
+                break;
+            case 5:
+                query.orderAsc("interprete");
+                query2.orderAsc("interprete");
+                break;
+            case 6:
+                query.orderDesc("interprete");
+                query2.orderDesc("interprete");
+                break;
+            case 7:
+                query.orderAsc("bpm");
+                query2.orderAsc("bpm");
+                break;
+            case 8:
+                query.orderDesc("bpm");
+                query2.orderDesc("bpm");
+                break;
+            case 9:
+                query.orderAsc("bpm");
+                query2.orderAsc("bpm");
+                break;
+            case 10:
+                query.orderDesc("bpm");
+                query2.orderDesc("bpm");
+                break;
+            case 11:
+                query.orderAsc("letra");
+                query2.orderAsc("letra");
+                break;
+            case 12:
+                query.orderDesc("letra");
+                query2.orderDesc("letra");
+                break;
+        }
+
+        if (null != titulo && !titulo.isEmpty()) {
+            query.likeAnyWhere("titulo", titulo);
+            query2.likeAnyWhere("titulo", titulo);
+        }
+
+        if (null != interprete && !interprete.isEmpty()) {
+            query.eq("interprete", interprete);
+            query2.eq("interprete", interprete);
+        }
+
+        if (null != velocidade && !velocidade.isEmpty()) {
+            try {
+                query.eq("velocidade", Short.parseShort(velocidade));
+                query2.eq("velocidade", Short.parseShort(velocidade));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        if (null != anoGravacao && !anoGravacao.isEmpty()) {
+            try {
+                query.eq("anoGravacao", Integer.parseInt(anoGravacao));
+                query2.eq("anoGravacao", Integer.parseInt(anoGravacao));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (null != letra && !letra.isEmpty()) {
+            query.likeAnyWhere("letra", letra);
+            query2.likeAnyWhere("letra", letra);
+        }
+
+        if (null != categoria && !categoria.isEmpty()) {
+            String[] categs = categoria.split(",");
+            List<Integer> integerList = new ArrayList<Integer>();
+
+            for (String categ : categs) {
+                List<MusicaId> tests = repository.query("select \n"
+                        + "    mg.id as id,\n"
+                        + "	'param_a' as param_a,\n"
+                        + "	'param_b' as param_b,\n"
+                        + "	'param_c' as param_c\n"
+                        + "from\n"
+                        + "    categoria_musica_geral as cmg\n"
+                        + "inner join categoria_geral as cg on cg.id = cmg.categoria\n"
+                        + "inner join musica_geral as mg on mg.id = cmg.musica\n"
+                        + "where cg.nome like  '%" + categ + "%'").executeSQL(MusicaId.class);
+
+                if (null != tests && !tests.isEmpty()) {
+                    for (MusicaId item : tests) {
+                        if(!integerList.contains(item)) {
+                            integerList.add(item.id);
+                        }
+                    }
+                }
+
+            }
+            if (null != integerList && !integerList.isEmpty()) {
+                query.in("id", integerList.toArray(new Integer[integerList.size()])).findAll();
+            }
+        }
+
+        List<MusicaGeralDTO> lista2 = new ArrayList<MusicaGeralDTO>();
+        lista = query.findAll();
+        for (MusicaGeralBean bean : lista) {
+            MusicaGeralDTO dto = new MusicaGeralDTO();
+
+            dto.setId(Utilities.leftPad(bean.getId()));
+            dto.setAfinidade1(bean.getAfinidade1().isEmpty() ? "Sem afinidade definida" : bean.getAfinidade1());
+            dto.setAfinidade2(bean.getAfinidade2().isEmpty() ? "Sem afinidade definida" : bean.getAfinidade2());
+            dto.setAfinidade3(bean.getAfinidade3().isEmpty() ? "Sem afinidade definida" : bean.getAfinidade3());
+            dto.setAfinidade4(bean.getAfinidade4().isEmpty() ? "Sem afinidade definida" : bean.getAfinidade4());
+            dto.setAnoGravacao(bean.getAnoGravacao().toString());
+            dto.setArquivo(bean.getArquivo());
+            dto.setBpm("" + bean.getBpm() + " BPM");
+
+            AudiostoreGravadoraBean agb = repository.find(AudiostoreGravadoraBean.class, bean.getGravadora());
+            UsuarioBean u = repository.find(UsuarioBean.class, bean.getUsuario());
+
+            String categorias = "";
+            String virgula = "";
+            List<CategoriaMusicaGeralBean> categoriaMusicaGeralBeanList = repository.query(CategoriaMusicaGeralBean.class).eq("musica", bean.getId()).findAll();
+            if (null != categoriaMusicaGeralBeanList && !categoriaMusicaGeralBeanList.isEmpty()) {
+                for (CategoriaMusicaGeralBean item : categoriaMusicaGeralBeanList) {
+                    CategoriaGeralBean cbean = repository.find(CategoriaGeralBean.class, item.getCategoria());
+                    if (cbean != null) {
+                        categorias += virgula + cbean.getNome();
+                        virgula = ", ";
+                    }
+                }
+            }
+
+            dto.setCategoriaGeral((categorias != null && !categorias.isEmpty() ? categorias : "sem categoria definida"));
+            dto.setGravadora((agb != null ? agb.getNome() : "sem gravadora definida"));
+            dto.setInterprete(bean.getInterprete());
+            dto.setLetra(bean.getLetra().isEmpty() ? "Sem letra definida" : bean.getLetra());
+            dto.setTempoTotal(bean.getTempoTotal());
+
+            String ti = "";
+            switch (bean.getTipoInterprete()) {
+                case 1:
+                    ti = "Masculino";
+                case 2:
+                    ti = "Feminino";
+                case 3:
+                    ti = "Grupo";
+                case 4:
+                    ti = "Instrumental";
+                case 5:
+                    ti = "Jingle";
+            }
+            dto.setTipoInterprete(ti);
+            dto.setTitulo(bean.getTitulo());
+            dto.setUsuario(u != null ? u.getNome() : "sem usuário definida");
+
+            lista2.add(dto);
+        }
+
+        long totalRegistros = query2.count();
+        long totalPaginas = totalPaginas(totalRegistros, totalRegistrosPorPagina);
+
+        result.include("lista2", lista2);
+        result.include("totalRegistros", totalRegistros);
+        result.include("totalRegistrosPorPagina", totalRegistrosPorPagina);
+        result.include("totalPaginas", totalPaginas);
+        result.include("paginaAtual", pagina);
     }
 }
