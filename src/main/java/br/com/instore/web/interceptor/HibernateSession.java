@@ -52,7 +52,7 @@ public class HibernateSession {
                 }
             }
             if (!method.getMethod().isAnnotationPresent(NaoDeslogar.class)) {
-                httpSession.invalidate();
+//                httpSession.invalidate();
                 result.redirectTo(HomeController.class).index();
             }
         } finally {

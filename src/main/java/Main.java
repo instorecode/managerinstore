@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import jcifs.smb.SmbException;
@@ -16,10 +17,38 @@ import jcifs.smb.SmbFile;
 public class Main {
 
     public static void main(String[] args) {
+        double d = -39235.45;
+        System.out.println(formatDecimal(d));;
+
+        double money = d;
+        NumberFormat formatter = NumberFormat.getCurrencyInstance();
+        String moneyString = formatter.format(money);
+        System.out.println(moneyString);
+
+        if (moneyString.endsWith(".00")) {
+            int centsIndex = moneyString.lastIndexOf(".00");
+            if (centsIndex != -1) {
+                moneyString = moneyString.substring(1, centsIndex);
+            }
+        }
+        
+        System.out.println(moneyString);
+    }
+
+    public static String formatDecimal(double number) {
+        float epsilon = 0.004f; // 4 tenths of a cent
+        if (Math.abs(Math.round(number) - number) < epsilon) {
+            return String.format("%10.0f", number); // sdb
+        } else {
+            return String.format("%10.2f", number); // dj_segfault
+        }
+    }
+
+    public static void main2(String[] args) {
         String dirPath = "smb://192.168.1.249/Clientes/audiostore/teste_alex/ibm/musicas/";
         List<MusicaGeralBean> musicaGeralBeanList = new ArrayList<MusicaGeralBean>();
-        findFile(dirPath , musicaGeralBeanList);
-        
+        findFile(dirPath, musicaGeralBeanList);
+
         for (MusicaGeralBean mus : musicaGeralBeanList) {
             System.out.println(mus);
         }
@@ -39,7 +68,7 @@ public class Main {
                         m.setCategoriaGeral(0);
                         m.setGravadora(0);
                         m.setUsuario(0);
-                        m.setArquivo(dirPath+item.getName()+"/");
+                        m.setArquivo(dirPath + item.getName() + "/");
                         m.setTitulo(item.getName());
                         m.setInterprete("");
                         m.setTipoInterprete(new Short("1"));
@@ -55,7 +84,7 @@ public class Main {
                     }
                 } else {
                     if (item.isDirectory()) {
-                        findFile(item.getPath() , musicaGeralBeanList);
+                        findFile(item.getPath(), musicaGeralBeanList);
                     }
                 }
             }
@@ -66,7 +95,7 @@ public class Main {
         }
     }
 
-    public static void main2(String[] args) {
+    public static void main3(String[] args) {
         try {
             Class.forName("com.hxtt.sql.paradox.ParadoxDriver").newInstance();
 

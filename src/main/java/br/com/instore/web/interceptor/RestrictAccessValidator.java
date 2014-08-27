@@ -9,17 +9,21 @@ import br.com.caelum.vraptor.interceptor.AcceptsWithAnnotations;
 import br.com.caelum.vraptor.interceptor.SimpleInterceptorStack;
 import br.com.instore.core.orm.bean.ClienteBean;
 import br.com.instore.core.orm.bean.FuncionalidadeBean;
+import br.com.instore.core.orm.bean.UsuarioBean;
 import br.com.instore.core.orm.bean.property.Funcionalidade;
+import br.com.instore.core.orm.bean.property.Usuario;
 import br.com.instore.web.annotation.Restrict;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.controller.HomeController;
+import br.com.instore.web.tools.Utilities;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 @Intercepts(after = HibernateSession.class)
@@ -37,12 +41,14 @@ public class RestrictAccessValidator {
     private Result result;
     @Inject
     private SessionRepository requestRepository;
+    @Inject
+    private HttpServletRequest httpServletRequest;
 
     @AroundCall
     public void intercept(SimpleInterceptorStack stack) {
         Path path = controllerMethod.getMethod().getAnnotation(Path.class);
         if (null != path && sessionUsuario.isLogado()) {
-            result.include("machine_id", request.getRemoteAddr().replace(".", "").replace(":", "")+new SimpleDateFormat("ddMMyyyy").format(new Date()));
+            result.include("machine_id", request.getRemoteAddr().replace(".", "").replace(":", "") + new SimpleDateFormat("ddMMyyyy").format(new Date()));
             FuncionalidadeBean f = current(path.value()[0]);
 
             if ("/dashboard".equals(path.value()[0])) {
@@ -65,11 +71,22 @@ public class RestrictAccessValidator {
                 }
             }
         } else {
-            result.redirectTo(HomeController.class).index();
+            for (Cookie cookie : httpServletRequest.getCookies()) {
+                if (cookie.getName().equals("managerinstore_machine_userck")) {
+                    Integer id = Integer.parseInt(cookie.getValue());
+
+                    if (requestRepository.query(UsuarioBean.class).eq(Usuario.IDUSUARIO, id).count() > 0) {
+                        UsuarioBean usuario = requestRepository.query(UsuarioBean.class).eq(Usuario.IDUSUARIO, id).findOne();
+                        usuario.getPerfilBeanList();
+                        sessionUsuario.setUsuarioBean(usuario);
+                        sessionUsuario.setLogado(true);
+                        requestRepository.setUsuario(sessionUsuario.getUsuarioBean());
+                    } else {
+                        result.redirectTo(HomeController.class).index();
+                    }
+                }
+            }
         }
-
-
-
     }
 
     public FuncionalidadeBean current(String currentMappinId) {
@@ -82,13 +99,13 @@ public class RestrictAccessValidator {
                 + "left join perfil_usuario using(idperfil)\n"
                 + "inner join funcionalidade using(idfuncionalidade)\n"
                 + "where mapping_id = '" + currentMappinId + "' and idusuario = " + sessionUsuario.getUsuarioBean().getIdusuario() + " \n group by idfuncionalidade";
-        
+
         if (requestRepository.query(q).executeSQLCount() > 0) {
             FuncionalidadeBean fb = requestRepository.query(FuncionalidadeBean.class).eq(Funcionalidade.MAPPING_ID, currentMappinId).findOne();
             return fb;
         } else {
             return null;
-        }    
+        }
     }
 
     class Each {
@@ -140,7 +157,7 @@ public class RestrictAccessValidator {
                         html += "<li><a href=\"" + url + f.getMappingId() + "\"><i class=\"fa  " + f.getIcone() + "\"></i><span>" + f.getNome() + "</span></a></li>";
                     }
                 } else {
-                    
+
                     html += "<li><a href=\"" + url + f.getMappingId() + "\"><i class=\"fa  " + f.getIcone() + "\"></i><span>" + f.getNome() + "</span></a></li>";
                 }
             }
@@ -148,8 +165,8 @@ public class RestrictAccessValidator {
 
         return html;
     }
-    
+
     public void loadClienteMatriz() {
-        result.include("atalhoClienteList", requestRepository.query(ClienteBean.class).eq("matriz",true).eq("parente",0).findAll());
+        result.include("atalhoClienteList", requestRepository.query(ClienteBean.class).eq("matriz", true).eq("parente", 0).findAll());
     }
 }

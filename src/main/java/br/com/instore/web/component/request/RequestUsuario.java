@@ -30,6 +30,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.swing.tree.TreeNode;
 
@@ -44,6 +47,8 @@ public class RequestUsuario implements java.io.Serializable {
     private SessionUsuario sessionUsuario;
     @Inject
     private HttpSession httpSession;
+    @Inject
+    private HttpServletResponse httpServletResponse;
 
     public RequestUsuario() {
     }
@@ -66,7 +71,11 @@ public class RequestUsuario implements java.io.Serializable {
 
                 repository.setUsuario(sessionUsuario.getUsuarioBean());
                 Utilities.historicoUsuarioLogin(repository);
-
+                
+                Cookie cookie1 = new Cookie("managerinstore_machine_userck", usuario.getIdusuario().toString());
+                
+                httpServletResponse.addCookie(cookie1);
+                
                 result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Usuário logado com sucesso")).recursive().serialize();
             } else {
                 result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "E-mail / Senha inválidos.")).recursive().serialize();
@@ -74,6 +83,22 @@ public class RequestUsuario implements java.io.Serializable {
         } catch (Exception e) {
             e.printStackTrace();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "E-mail / Senha inválidos.")).recursive().serialize();
+        }
+    }
+    
+    public void autoLogIn(Integer id) {
+        try {
+            if (repository.query(UsuarioBean.class).eq(Usuario.IDUSUARIO, id).count() > 0) {
+                UsuarioBean usuario = repository.query(UsuarioBean.class).eq(Usuario.IDUSUARIO, id).findOne();
+                usuario.getPerfilBeanList();
+                sessionUsuario.setUsuarioBean(usuario);
+                sessionUsuario.setLogado(true);
+
+                repository.setUsuario(sessionUsuario.getUsuarioBean());
+                Utilities.historicoUsuarioLogin(repository);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

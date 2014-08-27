@@ -100,7 +100,7 @@
     </jsp:attribute>
 
     <jsp:body>  
-        
+
         <script type="text/javascript">
 //            var gridColumn = [
 //                {title: 'Categorias', name: 'categoriaGeral', index: true, filter: true, filterType: 'input'},
@@ -188,7 +188,7 @@
                 });
             });
         </script>
-        
+
         <link rel="stylesheet" type="text/css" href="${url_css}bootstrap-tagsinput.css" />
         <script src="${url_js}bootstrap-tagsinput.js" type="text/javascript"></script>
         <!--<script src="${url_cz}js/fuelux/loader.js" type="text/javascript"></script>-->
@@ -291,31 +291,35 @@
                 <c:forEach items="${lista2}" var="item" varStatus="vs">
                     <div id="jquery_jplayer_${vs.index}" class="jp-jplayer"></div>
                     <script type="text/javascript">
-            $(document).ready(function() {
-//                $("#jquery_jplayer_${vs.index}").jPlayer({
-//                    ready: function() {
-//                        $(this).jPlayer("setMedia", {
-//                            mp3: "${url}/musica/stream/${item.id}",
-//                        });
-//                    },
-//                    swfPath: "/js",
-//                    supplied: "mp3",
-//                    cssSelectorAncestor: "",
-//                    cssSelector: {
-//                        play: "#play${vs.index}",
-//                        pause: "#pause${vs.index}",
-//                        stop: "#stop${vs.index}",
-//                        mute: "#mute${vs.index}",
-//                        unmute: "#unmute${vs.index}",
-//                        currentTime: "#currentTime${vs.index}",
-//                        duration: "#duration${vs.index}"
-//                    },
-//                    size: {
-//                        width: "0px",
-//                        height: "0px"
-//                    }
-//                });
-//            });
+                        $(document).ready(function() {
+                            jQuery('#play${vs.index}').on('click', function() {
+                                $("#jquery_jplayer_${vs.index}").jPlayer({
+                                    ready: function() {
+                                        $(this).jPlayer("setMedia", {
+                                            mp3: "${url}/musica/stream/${item.id}",
+                                        }).jPlayer("play");;
+                                    },
+                                    swfPath: "/js",
+                                    supplied: "mp3",
+                                    cssSelectorAncestor: "",
+                                    cssSelector: {
+                                        play: "#play${vs.index}",
+                                        pause: "#pause${vs.index}",
+                                        stop: "#stop${vs.index}",
+                                        mute: "#mute${vs.index}",
+                                        unmute: "#unmute${vs.index}",
+                                        currentTime: "#currentTime${vs.index}",
+                                        duration: "#duration${vs.index}"
+                                    },
+                                    size: {
+                                        width: "0px",
+                                        height: "0px"
+                                    }
+                                }).jPlayer('play');
+
+                                return false;
+                            });
+                        });
                     </script>
                 </c:forEach>
 
@@ -453,23 +457,23 @@
                                         <a id="play${vs.index}" class="label label-info" href="http://localhost:8080/managerinstore/musica/stream/${item.id}">
                                             <i class="fa fa-play"></i>
                                         </a>
-                                        <a id="pause${vs.index}" class="label label-info" href="http://localhost:8080/managerinstore/musica/stream/${item.id}">
+                                        <a style="display: none" id="pause${vs.index}" class="label label-info" href="http://localhost:8080/managerinstore/musica/stream/${item.id}">
                                             <i class="fa fa-pause"></i>
                                         </a>
                                         <a id="stop${vs.index}" class="label label-info" href="http://localhost:8080/managerinstore/musica/stream/${item.id}">
                                             <i class="fa fa-stop"></i>
                                         </a>
 
-                                        <a id="mute${vs.index}" class="label label-info" href="http://localhost:8080/managerinstore/musica/stream/${item.id}">
+                                        <a  id="mute${vs.index}" class="label label-info" href="http://localhost:8080/managerinstore/musica/stream/${item.id}">
                                             <i class="fa fa-volume-off"></i>
                                         </a>
 
-                                        <a id="unmute${vs.index}" class="label label-info" href="http://localhost:8080/managerinstore/musica/stream/${item.id}">
+                                        <a style="display: none" id="unmute${vs.index}" class="label label-info" href="http://localhost:8080/managerinstore/musica/stream/${item.id}">
                                             <i class="fa fa-volume-up"></i>
                                         </a>
 
                                         <a id="time{vs.index}" class="label label-info" href="javascript:;">
-                                            <span id="currentTime${vs.index}"></span> 
+                                            <span id="currentTime${vs.index}">00:00</span> 
                                             <!--/  <span id="duration${vs.index}"></span>-->
                                         </a>
 

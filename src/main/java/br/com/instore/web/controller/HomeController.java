@@ -10,11 +10,12 @@ import br.com.instore.core.orm.bean.ConfigAppBean;
 import br.com.instore.web.annotation.NotRestrict;
 import br.com.instore.web.annotation.Restrict;
 import br.com.instore.web.component.request.RequestUsuario;
-import br.com.instore.web.component.session.ApplicationResources;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.tools.AjaxResult;
 import javax.inject.Inject;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class HomeController implements java.io.Serializable {
@@ -27,6 +28,9 @@ public class HomeController implements java.io.Serializable {
     private RequestUsuario requestUsuario;
     @Inject
     private Result result;
+    
+    @Inject
+    private HttpServletRequest httpServletRequest;
     
     public HomeController() {
     }
@@ -57,6 +61,7 @@ public class HomeController implements java.io.Serializable {
     @Path("/")
     @NotRestrict
     public void index() {
+        boolean temEmail = false;
     }
     
     @Post

@@ -24,8 +24,8 @@ public class LancamentoServlet extends HttpServlet {
             rv.setUsuario(new UsuarioBean(1));
             
             
-            final String query =    "select concat('update lancamento_cnpj set saldo_disponivel = saldo_disponivel - (select sum(valor) from lancamento where debito = 1 and data_fechamento is not null and mes > date(\\'2014-08-26\\') and lancamento_cnpj = ',id,') where lancamento_cnpj.id = ', id) as debito ,\n" +
-                                    "	   concat('update lancamento_cnpj set saldo_disponivel = saldo_disponivel + (select sum(valor) from lancamento where credito = 1 and data_fechamento is not null and mes > date(\\'2014-08-26\\') and lancamento_cnpj = ',id,') where lancamento_cnpj.id = ', id) as credito\n" +
+            final String query =    "select concat('update lancamento_cnpj set saldo_disponivel = saldo_disponivel - (select sum(valor) from lancamento where debito = 1 and data_fechamento is not null and mes = date(\\'2014-08-27\\') and lancamento_cnpj = ',id,') where lancamento_cnpj.id = ', id) as debito ,\n" +
+                                    "	   concat('update lancamento_cnpj set saldo_disponivel = saldo_disponivel + (select sum(valor) from lancamento where credito = 1 and data_fechamento is not null and mes = date(\\'2014-08-27\\') and lancamento_cnpj = ',id,') where lancamento_cnpj.id = ', id) as credito\n" +
                                     "from lancamento_cnpj;";
 
             rv.query(query).executeSQL(new Each() {

@@ -48,24 +48,24 @@ public class RequestLancamentoCnpj implements java.io.Serializable {
             LancamentoCnpjDTO dto = new LancamentoCnpjDTO(Utilities.leftPad(bean.getId()), bean.getNome());
 
             if (null != bean.getSaldoDisponivel()) {
-                String moneyString = bean.getSaldoDisponivel().toString();
-
-                if (null != bean.getSaldoDisponivel()) {
-                    NumberFormat formatter = NumberFormat.getCurrencyInstance();
-                    moneyString = formatter.format(bean.getSaldoDisponivel());
-                }
-                dto.setSaldoDisponivel(moneyString);
+                dto.setSaldoDisponivel(formatDecimal(bean.getSaldoDisponivel()));
             } else {
                 dto.setSaldoDisponivel("0.00");
             }
-
-
-
 
             dto.setCnpj(bean.getCnpj());
             lista2.add(dto);
         }
         return lista2;
+    }
+    
+    public String formatDecimal(double number) {
+        float epsilon = 0.004f; // 4 tenths of a cent
+        if (Math.abs(Math.round(number) - number) < epsilon) {
+            return "R$ "+String.format("%10.0f", number); // sdb
+        } else {
+            return "R$ "+String.format("%10.2f", number); // dj_segfault
+        }
     }
 
     public LancamentoCnpjBean bean(Integer id) {
