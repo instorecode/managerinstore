@@ -21,8 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 @RequestScoped
 @AcceptsWithAnnotations(NotRestrict.class)
 public class NotRestrictAccessValidator implements java.io.Serializable {
-    
-    
     @Inject 
     private SessionUsuario sessionUsuario;
     

@@ -26,7 +26,6 @@ public class HibernateSession {
 
     @AroundCall
     public void intercept(SimpleInterceptorStack stack, ControllerMethod method) {
-
         Session session = null;
         try {
             session = SessionFactoryUtils.getInstance().session();

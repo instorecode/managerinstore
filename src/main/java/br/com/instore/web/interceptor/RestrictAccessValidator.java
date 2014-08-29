@@ -71,21 +71,22 @@ public class RestrictAccessValidator {
                 }
             }
         } else {
-            for (Cookie cookie : httpServletRequest.getCookies()) {
-                if (cookie.getName().equals("managerinstore_machine_userck")) {
-                    Integer id = Integer.parseInt(cookie.getValue());
-
-                    if (requestRepository.query(UsuarioBean.class).eq(Usuario.IDUSUARIO, id).count() > 0) {
-                        UsuarioBean usuario = requestRepository.query(UsuarioBean.class).eq(Usuario.IDUSUARIO, id).findOne();
-                        usuario.getPerfilBeanList();
-                        sessionUsuario.setUsuarioBean(usuario);
-                        sessionUsuario.setLogado(true);
-                        requestRepository.setUsuario(sessionUsuario.getUsuarioBean());
-                    } else {
-                        result.redirectTo(HomeController.class).index();
-                    }
-                }
-            }
+//            for (Cookie cookie : httpServletRequest.getCookies()) {
+//                if (cookie.getName().equals("managerinstore_machine_userck")) {
+//                    Integer id = Integer.parseInt(cookie.getValue());
+//
+//                    if (requestRepository.query(UsuarioBean.class).eq(Usuario.IDUSUARIO, id).count() > 0) {
+//                        UsuarioBean usuario = requestRepository.query(UsuarioBean.class).eq(Usuario.IDUSUARIO, id).findOne();
+//                        usuario.getPerfilBeanList();
+//                        sessionUsuario.setUsuarioBean(usuario);
+//                        sessionUsuario.setLogado(true);
+//                        requestRepository.setUsuario(sessionUsuario.getUsuarioBean());
+//                    } else {
+//                        result.redirectTo(HomeController.class).index();
+//                    }
+//                }
+//            }
+            result.redirectTo(HomeController.class).index();
         }
     }
 

@@ -20,6 +20,7 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import jcifs.smb.SmbException;
@@ -252,15 +253,20 @@ public class RequestMusicaGeral implements java.io.Serializable {
             sinc(dir, musicaGeralBeanList);
             repository.setUsuario(sessionUsuario.getUsuarioBean());
 
-
-            for (MusicaGeralBean musicaGeralBean : musicaGeralBeanList) {
-                repository.save(musicaGeralBean);
+            StringBuilder inserts = new StringBuilder();
+            inserts.append("INSERT INTO musica_geral VALUES");
+            String comma = "";
+            for (MusicaGeralBean item : musicaGeralBeanList) {
+                inserts.append(comma+"(null , 0 , "+sessionUsuario.getUsuarioBean().getIdusuario()+", 0, '"+item.getTitulo()+"', '', 0, '', 120, '00:00',1990,'','','','','"+item.getArquivo()+"')");
+                comma = ",\n";
             }
-
+            inserts.append(";");
+            repository.query(inserts.toString()).executeSQLCommand2();
 
             repository.finalize();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Sincronização finalizada com sucesso!")).recursive().serialize();
         } catch (Exception e) {
+            e.printStackTrace();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(false, e.getMessage())).recursive().serialize();
         }
     }
@@ -276,7 +282,6 @@ public class RequestMusicaGeral implements java.io.Serializable {
             if (smbDir.listFiles().length <= 0) {
                 throw new Exception("O diretório informado está vazío!");
             }
-
             for (SmbFile item : smbDir.listFiles()) {
                 if (item.isFile()) {
                     if (item.getName().indexOf(".mp3") != -1
