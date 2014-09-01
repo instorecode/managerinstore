@@ -473,21 +473,21 @@
                                         <a class="label label-warning" href="${url}/musica/atualizar/${item.id}"><i class="fa fa-pencil"></i></a>
                                         <a class="label label-danger" href="${url}/musica/remover/${item.id}"><i class="fa fa-trash-o"></i></a>
 
-                                        <a id="play${vs.index}" class="label label-info" href="http://localhost:8080/managerinstore/musica/stream/${item.id}">
+                                        <a id="play${vs.index}" class="label label-info" href="#">
                                             <i class="fa fa-play"></i>
                                         </a>
-                                        <a style="display: none" id="pause${vs.index}" class="label label-info" href="http://localhost:8080/managerinstore/musica/stream/${item.id}">
+                                        <a style="display: none" id="pause${vs.index}" class="label label-info" href="#">
                                             <i class="fa fa-pause"></i>
                                         </a>
-                                        <a id="stop${vs.index}" class="label label-info" href="http://localhost:8080/managerinstore/musica/stream/${item.id}">
+                                        <a id="stop${vs.index}" class="label label-info" href="#">
                                             <i class="fa fa-stop"></i>
                                         </a>
 
-                                        <a  id="mute${vs.index}" class="label label-info" href="http://localhost:8080/managerinstore/musica/stream/${item.id}">
+                                        <a  id="mute${vs.index}" class="label label-info" href="#">
                                             <i class="fa fa-volume-off"></i>
                                         </a>
 
-                                        <a style="display: none" id="unmute${vs.index}" class="label label-info" href="http://localhost:8080/managerinstore/musica/stream/${item.id}">
+                                        <a style="display: none" id="unmute${vs.index}" class="label label-info" href="#">
                                             <i class="fa fa-volume-up"></i>
                                         </a>
 
