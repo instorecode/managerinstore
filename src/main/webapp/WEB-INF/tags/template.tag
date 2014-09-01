@@ -45,6 +45,7 @@
             <link href="${url_cz}js/jquery.icheck/skins/square/blue.css?v=${machine_id}" rel="stylesheet">
             <link href="${url_cz}js/fuelux/css/fuelux.css" rel="stylesheet" />	
             <link href="${url_css}main.css?v=${machine_id}" rel="stylesheet" />	
+            <link rel="stylesheet" type="text/css" href="${url_cz}js/bootstrap.wysihtml5/src/bootstrap-wysihtml5.css?v=${machine_id}"></link>
             <link rel="stylesheet" type="text/css" href="${url_cz}js/jquery.niftymodals/css/component.css" />
             <link href="${url_cz}css/style.css?v=${machine_id}" rel="stylesheet" />	
             <link rel="stylesheet" type="text/css" href="${url_cz}js/bootstrap.slider/css/slider.css" />
@@ -89,14 +90,22 @@
             <script src="${url_cz}js/bootstrap.slider/js/bootstrap-slider.js" type="text/javascript"></script>
             <script src="${url_js}bootstrap.multiselect.js" type="text/javascript"></script>
             <script src="${url_js}prettify.js" type="text/javascript"></script>
+            <script type="text/javascript" src="${url_cz}js/bootstrap.wysihtml5/lib/js/wysihtml5-0.3.0.js"></script>
+            <script type="text/javascript" src="${url_cz}js/bootstrap.wysihtml5/src/bootstrap-wysihtml5.js"></script>
 
 
             <link type="text/css" href="${url}/resources/jplayer/skin/blue_monday/jplayer.blue.monday.css" rel="stylesheet" />
             <script type="text/javascript" src="${url}/resources/jplayer/jquery.jplayer.min.js"></script>
 
+
+            <script src="${url_cz}js/ckeditor/ckeditor.js"></script>
+            <script src="${url_cz}js/ckeditor/adapters/jquery.js"></script>
+
             <script type="text/javascript">
                 jQuery(document).ready(function() {
                     App.init();
+                    App.textEditor();
+                    $('#some-textarea').wysihtml5();
 
                     $('.md-trigger').modalEffects();
 
@@ -674,5 +683,4 @@
         </body>
     </html>
 </compress:html>
-    
-    
+

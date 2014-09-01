@@ -20,7 +20,6 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import jcifs.smb.SmbException;
@@ -174,7 +173,7 @@ public class RequestMusicaGeral implements java.io.Serializable {
             if (bean.getId() != null && bean.getId() > 0) {
                 bean = repository.marge(bean);
             }
-
+            bean.setLetra(bean.getLetra().replace("\"", "'"));
             repository.save(bean);
 
 
@@ -239,9 +238,10 @@ public class RequestMusicaGeral implements java.io.Serializable {
         }
     }
 
-    public void sinc(String dir) {
+    public void sinc(String dir, String usuario , String senha) {
         try {
 
+            
             if (!dir.endsWith("/")) {
                 dir += "/";
             }
@@ -250,7 +250,7 @@ public class RequestMusicaGeral implements java.io.Serializable {
             dir = "smb://" + dir;
 
             List<MusicaGeralBean> musicaGeralBeanList = new ArrayList<MusicaGeralBean>();
-            sinc(dir, musicaGeralBeanList);
+            sinc(dir, musicaGeralBeanList , usuario , senha);
             repository.setUsuario(sessionUsuario.getUsuarioBean());
 
             StringBuilder inserts = new StringBuilder();
@@ -271,9 +271,12 @@ public class RequestMusicaGeral implements java.io.Serializable {
         }
     }
 
-    private static void sinc(String dirPath, List<MusicaGeralBean> musicaGeralBeanList) throws Exception {
+    private static void sinc(String dirPath, List<MusicaGeralBean> musicaGeralBeanList, String usuario , String senha) throws Exception {
         try {
-            SmbFile smbDir = new SmbFile(dirPath, Utilities.getAuthSmb());
+
+            SmbFile smbDir = null;
+            
+            smbDir = new SmbFile(dirPath, Utilities.getAuthSmb(usuario, senha));                
 
             if (!smbDir.exists()) {
                 throw new Exception("O diretório informado não existe ou não pode ser acessado!");
@@ -309,7 +312,7 @@ public class RequestMusicaGeral implements java.io.Serializable {
                     }
                 } else {
                     if (item.isDirectory()) {
-                        sinc(item.getPath(), musicaGeralBeanList);
+                        sinc(item.getPath(), musicaGeralBeanList , usuario , senha);
                     }
                 }
             }

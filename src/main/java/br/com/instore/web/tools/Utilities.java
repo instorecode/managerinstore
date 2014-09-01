@@ -147,10 +147,17 @@ public class Utilities {
         return dto;
     }
 
-    public static NtlmPasswordAuthentication getAuthSmb() {
+    public static NtlmPasswordAuthentication getAuthSmbDefault() {
         String user = "admin";
         String pass = "q1a2s3";
-
         return new NtlmPasswordAuthentication("", user, pass);
+    }
+    
+    public static NtlmPasswordAuthentication getAuthSmb(String usuario , String senha) {
+        if (null == usuario || usuario.isEmpty() || null == senha || senha.isEmpty()) {
+            return getAuthSmbDefault();
+        } else {
+            return new NtlmPasswordAuthentication("", usuario, senha);
+        }
     }
 }

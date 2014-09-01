@@ -4,8 +4,8 @@
 <instore:template  menucolapse="false" isGrid="false">
     <jsp:attribute name="submenu">
         <div class="btn-group">
-            <a href="${url}/musica/cadastrar" class="btn btn-default"> <i class="fa fa-save"></i> Cadastrar </a>
-            <a href="#" class="btn btn-default" data-toggle="modal" data-target="#modal_sincronizacao" > <i class="fa fa-download"></i> Sincronizar </a>
+            <a href="${url}/musica/cadastrar" class="btn btn-default"> <i class="fa fa-save"></i></a>
+            <a href="#" class="btn btn-default" data-toggle="modal" data-target="#modal_sincronizacao" > <i class="fa fa-download"></i></a>
         </div>
     </jsp:attribute>
 
@@ -43,7 +43,7 @@
 
                 jQuery('.btn_sinc').on('click', function() {
                     var url = jQuery.trim(jQuery('[name="url"]').val());
-                    console.log(url);
+                    
                     if ('' == url) {
                         jQuery('.erro1').show();
                     } else {
@@ -134,7 +134,7 @@
 
                 jQuery('.btn_sinc').on('click', function() {
                     var url = jQuery.trim(jQuery('[name="url"]').val());
-                    console.log(url);
+                    
                     if ('' == url) {
                         jQuery('.erro1').show();
                     } else {
@@ -209,6 +209,22 @@
 
                         <div class="row">
                             <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Usuário</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"> <i class="fa fa-user"></i> </span>
+                                        <input type="text" name="usuario" class="form-control" placeholder="">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Senha</label>
+                                    <div class="input-group"> 
+                                        <span class="input-group-addon"> <i class="fa fa-key"></i> </span>
+                                        <input type="password" name="senha" class="form-control" placeholder="">
+                                    </div>
+                                </div>
+
                                 <div class="form-group">
                                     <label>Caminho do diretório</label>
                                     <div class="input-group">
@@ -291,35 +307,39 @@
                 <c:forEach items="${lista2}" var="item" varStatus="vs">
                     <div id="jquery_jplayer_${vs.index}" class="jp-jplayer"></div>
                     <script type="text/javascript">
-                        $(document).ready(function() {
-                            jQuery('#play${vs.index}').on('click', function() {
-                                $("#jquery_jplayer_${vs.index}").jPlayer({
-                                    ready: function() {
-                                        $(this).jPlayer("setMedia", {
-                                            mp3: "${url}/musica/stream/${item.id}",
-                                        }).jPlayer("play");;
-                                    },
-                                    swfPath: "/js",
-                                    supplied: "mp3",
-                                    cssSelectorAncestor: "",
-                                    cssSelector: {
-                                        play: "#play${vs.index}",
-                                        pause: "#pause${vs.index}",
-                                        stop: "#stop${vs.index}",
-                                        mute: "#mute${vs.index}",
-                                        unmute: "#unmute${vs.index}",
-                                        currentTime: "#currentTime${vs.index}",
-                                        duration: "#duration${vs.index}"
-                                    },
-                                    size: {
-                                        width: "0px",
-                                        height: "0px"
-                                    }
-                                }).jPlayer('play');
+            $(document).ready(function() {
+                jQuery('#play${vs.index}').on('click', function() {
+                    //".btn_letra"    
+                    jQuery(this).next().next().next().next().next().next().click();
 
-                                return false;
-                            });
-                        });
+                    $("#jquery_jplayer_${vs.index}").jPlayer({
+                        ready: function() {
+                            $(this).jPlayer("setMedia", {
+                                mp3: "${url}/musica/stream/${item.id}",
+                            }).jPlayer("play");
+                            ;
+                        },
+                        swfPath: "/js",
+                        supplied: "mp3",
+                        cssSelectorAncestor: "",
+                        cssSelector: {
+                            play: "#play${vs.index}",
+                            pause: "#pause${vs.index}",
+                            stop: "#stop${vs.index}",
+                            mute: "#mute${vs.index}",
+                            unmute: "#unmute${vs.index}",
+                            currentTime: "#currentTime${vs.index}",
+                            duration: "#duration${vs.index}"
+                        },
+                        size: {
+                            width: "0px",
+                            height: "0px"
+                        }
+                    }).jPlayer('play');
+
+                    return false;
+                });
+            });
                     </script>
                 </c:forEach>
 
@@ -442,7 +462,6 @@
                                 <th><strong>Interprete</strong></th>
                                 <th><strong>Velocidade em BPM</strong></th>
                                 <th><strong>Ano de gravação</strong></th>
-                                <th><strong>Letra</strong></th>
                             </tr>
                         </thead>
                         <tbody class="no-border-y">
@@ -476,6 +495,11 @@
                                             <span id="currentTime${vs.index}">00:00</span> 
                                             <!--/  <span id="duration${vs.index}"></span>-->
                                         </a>
+
+                                        <a class="label label-info btn_letra" href="javascript:;" data-popover="popover" data-html="true" data-content="${item.letra}" data-placement="bottom">
+                                            <i class="fa fa-file-text"></i>
+                                        </a>
+
 
                                         <div class="modal fade" id="modal_ver_${item.id}" tabindex="-1" role="dialog">
                                             <div class="modal-dialog">
@@ -571,18 +595,6 @@
                                     <td>${item.interprete}</td>
                                     <td>${item.bpm}</td>
                                     <td>${item.anoGravacao}</td>
-                                    <td>
-                                        <c:if test="${fn:length(item.letra) > 50}">
-                                            <a href="javascript:;" data-popover="popover" data-content="${item.letra}" data-placement="left" data-trigger="hover">
-                                                ${fn:substring(item.letra, 0, 50)}...
-                                            </a>
-                                        </c:if> 
-                                        <c:if test="${fn:length(item.letra) <= 50}">
-                                            item.letra
-                                        </c:if> 
-
-
-                                    </td>
                                 </tr>
                             </c:forEach>
                         </tbody>

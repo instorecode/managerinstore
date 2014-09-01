@@ -124,8 +124,8 @@ public class MusicaController implements java.io.Serializable {
     
     @Post
     @Path("/musica/sinc")
-    public void sinc(String dir) {
-        requestMusicaGeral.sinc(dir);
+    public void sinc(String dir, String usuario , String senha) {
+        requestMusicaGeral.sinc(dir , usuario , senha);
     }
     
     @Get
@@ -134,7 +134,7 @@ public class MusicaController implements java.io.Serializable {
     public InputStreamDownload stream(Integer id) {
         try { 
             String caminho = requestMusicaGeral.bean(id).getArquivo();
-            SmbFile smbDir = new SmbFile(caminho, Utilities.getAuthSmb());
+            SmbFile smbDir = new SmbFile(caminho, Utilities.getAuthSmbDefault());
             SmbFileInputStream fileInputStream = new SmbFileInputStream(smbDir);    
             if(smbDir.exists()) {
                 return new InputStreamDownload(fileInputStream, smbDir.getContentType(), smbDir.getName());

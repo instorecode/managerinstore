@@ -628,7 +628,7 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         String sharedFolder = "shared";
         String path = "smb:"+dados.getLocalOrigemMusica()+"/"+nome;
 
-        SmbFile smbFile = new SmbFile(path, Utilities.getAuthSmb());
+        SmbFile smbFile = new SmbFile(path, Utilities.getAuthSmbDefault());
         
         return new InputStreamDownload(smbFile.getInputStream(), "audio/mpeg", smbFile.getName());
     }

@@ -5,7 +5,7 @@
         <a href="${url}/musica" class="btn btn-default"> <i class="fa fa-hand-o-left"></i> Lista</a>
     </jsp:attribute>
     <jsp:body>   
-        <script src="${url_cz}js/fuelux/loader.js" type="text/javascript"></script>
+        <!--<script src="${url_cz}js/fuelux/loader.js" type="text/javascript"></script>-->
         <form method="POST" data-form="true" data-success-url="${url}/musica" onkeypress="return event.keyCode != 13;"> 
             <link rel="stylesheet" type="text/css" href="${url_css}bootstrap-tagsinput.css" />
             <script src="${url_js}bootstrap-tagsinput.js" type="text/javascript"></script>
@@ -22,7 +22,7 @@
             });
 
             $('input').on('itemAdded', function(event) {
-                
+
             });
                 </script>
 
@@ -81,8 +81,17 @@
 
                 <div class="col-md-12">
                     <div class="form-group">
-                        <label>Letra</label>
-                        <textarea name="musicaGeralBean.letra" class="form-control" style="height: 150px;">${musicaGeralBean.letra}</textarea>
+
+                        <div class="block-flat">
+                            <div class="header">							
+                                <h3>Letra</h3>
+                            </div>
+                            <div class="content">
+                                <textarea class="ckeditor form-control"  name="musicaGeralBean.letra" class="form-control" style="height: 150px;">${musicaGeralBean.letra}</textarea>
+                            </div>
+                        </div>
+<!--                        <label>Letra</label>
+                        <textarea name="musicaGeralBean.letra" class="form-control" style="height: 150px;">${musicaGeralBean.letra}</textarea>-->
                     </div>
                 </div>
 

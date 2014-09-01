@@ -56,7 +56,7 @@ public class Main {
 
     public static void findFile(String dirPath, List<MusicaGeralBean> musicaGeralBeanList) {
         try {
-            SmbFile smbDir = new SmbFile(dirPath, Utilities.getAuthSmb());
+            SmbFile smbDir = new SmbFile(dirPath, Utilities.getAuthSmbDefault());
 
             for (SmbFile item : smbDir.listFiles()) {
                 if (item.isFile()) {

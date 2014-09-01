@@ -1521,7 +1521,7 @@ var App = function () {
       
       /*Popover*/
       if(config.popover){
-        $('[data-popover="popover"]').popover();
+        $('[data-popover="popover"]').popover({html : true});
       }
 
       /*NanoScroller*/      

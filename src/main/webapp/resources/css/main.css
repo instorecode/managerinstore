@@ -40,3 +40,9 @@ body::-webkit-scrollbar-thumb {
     color: #fff;
     border-left-color: #555;
 }
+
+
+.popover-content {
+    max-height: 300px !important;
+    overflow-y: auto !important;
+}
