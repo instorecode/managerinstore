@@ -18,7 +18,7 @@
             <button type="submit" class="btn btn-default">
                 <i class="fa fa-thumbs-o-down"></i> Remover
             </button>
-            <a href="${url}/indice-reajuste" class="btn btn-danger"> <i class="fa fa-times"></i> Não </a>
+            <a href="${url}/musica" class="btn btn-danger"> <i class="fa fa-times"></i> Não </a>
         </form>
 
     </jsp:body>

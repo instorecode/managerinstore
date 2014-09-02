@@ -8,6 +8,7 @@ import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.observer.download.InputStreamDownload;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.bean.AudiostoreMusicaBean;
+import br.com.instore.core.orm.bean.MusicaGeralBean;
 import br.com.instore.web.annotation.Restrict;
 import br.com.instore.web.component.request.RequestAudiostoreMusica;
 import java.io.IOException;
@@ -35,58 +36,73 @@ public class AudiostoreMusicaController implements java.io.Serializable {
 
     @Get
     @Restrict
-    @Path("/audiostore-musica")
-    public void musicas(Boolean datajson) {
-        if (null != datajson && datajson) {
-            result.use(Results.json()).withoutRoot().from(requestAudiostoreMusica.beanList()).recursive().serialize();
-        }
+    @Path("/musica/programacao-audiostore/{idmusicaGeral}")
+    public void listar(Integer idmusicaGeral , int pagina , int qtd, int order , AudiostoreMusicaBean filtro ) {
+        result.include("idmusicaGeral", idmusicaGeral);
+        requestAudiostoreMusica.beanList(idmusicaGeral , pagina , qtd , order , filtro);
+        result.include("categorias", requestAudiostoreMusica.categorias());
+        result.include("filtro", filtro);
+        result.include("clienteBeanList", requestAudiostoreMusica.clienteBeanList());
     }
 
     @Get
     @Restrict
-    @Path("/audiostore-musica/cadastrar")
-    public void cadastrar() {
+    @Path("/musica/programacao-audiostore/cadastrar/{idmusicaGeral}")
+    public void cadastrar(Integer idmusicaGeral) {
         result.include("cadastrar", true);
+        result.include("idmusicaGeral", idmusicaGeral);
         result.include("clienteBeanList", requestAudiostoreMusica.clienteBeanList());
         result.include("gravadoraBeanList", requestAudiostoreMusica.gravadoraBeanList());
     }
 
     @Post
     @Restrict
-    @Path("/audiostore-musica/cadastrar")
-    public void cadastrar(AudiostoreMusicaBean audiostoreMusicaBean, String tempoTotal) {
-        requestAudiostoreMusica.salvar(audiostoreMusicaBean, tempoTotal);
+    @Path("/musica/programacao-audiostore/cadastrar/{idmusicaGeral}")
+    public void cadastrar(AudiostoreMusicaBean audiostoreMusicaBean,Integer idmusicaGeral) {
+        requestAudiostoreMusica.salvar(audiostoreMusicaBean);
     }
 
     @Get
     @Restrict
-    @Path("/audiostore-musica/atualizar/{id}")
-    public void cadastrar(Integer id) {
+    @Path("/musica/programacao-audiostore/atualizar/{idmusicaGeral}/{id}")
+    public void cadastrar(Integer idmusicaGeral, Integer id) {
+        AudiostoreMusicaBean audiostoreMusicaBean  = requestAudiostoreMusica.bean(id);
         result.include("cadastrar", false);
-        result.include("gravadoraBeanList", requestAudiostoreMusica.gravadoraBeanList());
+        result.include("idmusicaGeral", idmusicaGeral);
         result.include("clienteBeanList", requestAudiostoreMusica.clienteBeanList());
-        result.include("audiostoreMusicaBean", requestAudiostoreMusica.bean(id));
+        result.include("audiostoreMusicaBean", audiostoreMusicaBean);
+        result.include("categoriasByCliente2", requestAudiostoreMusica.categoriasByCliente2(audiostoreMusicaBean.getCliente().getIdcliente()));
     }
 
     @Post
     @Restrict
-    @Path("/audiostore-musica/atualizar/{id}")
-    public void cadastrar(Integer id, AudiostoreMusicaBean audiostoreMusicaBean, String tempoTotal) {
-        requestAudiostoreMusica.salvar(audiostoreMusicaBean, tempoTotal);
+    @Path("/musica/programacao-audiostore/atualizar/{idmusicaGeral}/{id}")
+    public void cadastrar(Integer idmusicaGeral, Integer id , AudiostoreMusicaBean audiostoreMusicaBean) {
+        requestAudiostoreMusica.salvar(audiostoreMusicaBean);
     }
 
     @Get
     @Restrict
-    @Path("/audiostore-musica/remover/{id}")
-    public void remover(Integer id) {
-        result.include("audiostoreMusicaBean", requestAudiostoreMusica.bean(id));
+    @Path("/musica/programacao-audiostore/remover/{idmusicaGeral}/{id}")
+    public void remover(Integer idmusicaGeral, Integer id) {
+        AudiostoreMusicaBean audiostoreMusicaBean = requestAudiostoreMusica.bean(id);
+        MusicaGeralBean musicaGeralBean = requestAudiostoreMusica.musicaGeralBean(audiostoreMusicaBean.getMusicaGeral());
+        result.include("audiostoreMusicaBean", audiostoreMusicaBean);
+        result.include("musicaGeralBean", musicaGeralBean);
+        result.include("idmusicaGeral", idmusicaGeral);
     }
 
     @Post
     @Restrict
-    @Path("/audiostore-musica/remover/{id}")
-    public void remover(Integer id, String param) {
+    @Path("/musica/programacao-audiostore/remover/{idmusicaGeral}/{id}")
+    public void remover(Integer idmusicaGeral, Integer id, String param) {
         requestAudiostoreMusica.remover(id);
+    }
+    
+    @Post
+    @Path("/musica/programacao-audiostore/categorias-by-cliente/")
+    public void categoriasByCliente(Integer clienteid) {
+        requestAudiostoreMusica.categoriasByCliente(clienteid);
     }
 
     @Get

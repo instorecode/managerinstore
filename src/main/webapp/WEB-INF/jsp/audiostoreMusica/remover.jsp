@@ -6,14 +6,14 @@
     </jsp:attribute>
      
     <jsp:body>
-        Deseja remover o contato ${audiostoreMusicaBean.titulo} ?
+        Deseja remover o contato ${musicaGeralBean.titulo} ?
         <hr />
-        <form id="rm_cliente" method="POST" data-form="true" data-success-url="${url}/audiostore-musica">
+        <form id="rm_cliente" method="POST" data-form="true" data-success-url="${url}/musica/programacao-audiostore/${idmusicaGeral}">
             <input type="hidden" name="audiostoreGravadoraBean.id" value="${audiostoreGravadoraBean.id}" />
             <button type="submit" class="btn btn-default">
                 <i class="fa fa-thumbs-o-down"></i> Remover
             </button>
-            <a href="${url}/audiostore-musica" class="btn btn-danger"> <i class="fa fa-times"></i> Não </a>
+            <a href="${url}/musica/programacao-audiostore/${idmusicaGeral}" class="btn btn-danger"> <i class="fa fa-times"></i> Não </a>
         </form>
         
     </jsp:body>

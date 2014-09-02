@@ -403,13 +403,13 @@
 
                     <div style="float: right">
                         <div class="btn-group">
-                            <a href="${url}/musica${paginacao}${paginacao_concat}pagina=${paginaAtual-1}" class="btn btn-default btn-flat"> 
+                            <a href="${url}/musica${paginacao}${paginacao_concat}pagina=${paginaAtual-1}" class="btn btn-default btn-flat" ${(paginaAtual-1) < 1 ? 'disabled="disabled"':''}> 
                             <i class="fa fa-arrow-left"></i>
                         </a>
                         <a href="javascript:void(0)" class="btn btn-default btn-flat"> 
                             Página ${paginaAtual} de ${totalPaginas}
                         </a>
-                        <a href="${url}/musica${paginacao}${paginacao_concat}pagina=${paginaAtual+1}" class="btn btn-default btn-flat">
+                        <a href="${url}/musica${paginacao}${paginacao_concat}pagina=${paginaAtual+1}" class="btn btn-default btn-flat" ${(paginaAtual+1) > totalPaginas ? 'disabled="disabled"':''}>
                             <i class="fa fa-arrow-right"></i>
                         </a>
                     </div>
@@ -472,6 +472,7 @@
                                         <a class="label label-default"  href="#" data-toggle="modal" data-target="#modal_ver_${item.id}"><i class="fa fa-eye"></i></a>
                                         <a class="label label-warning" href="${url}/musica/atualizar/${item.id}"><i class="fa fa-pencil"></i></a>
                                         <a class="label label-danger" href="${url}/musica/remover/${item.id}"><i class="fa fa-trash-o"></i></a>
+                                        <a class="label label-success" href="${url}/musica/programacao-audiostore/${item.id}"><i class="fa fa-file-audio-o"></i></a>
 
                                         <a id="play${vs.index}" class="label label-info" href="#">
                                             <i class="fa fa-play"></i>

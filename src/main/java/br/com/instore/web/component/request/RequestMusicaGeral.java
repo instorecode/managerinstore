@@ -419,8 +419,8 @@ public class RequestMusicaGeral implements java.io.Serializable {
         }
 
         if (null != interprete && !interprete.isEmpty()) {
-            query.eq("interprete", interprete);
-            query2.eq("interprete", interprete);
+            query.likeAnyWhere("interprete", interprete);
+            query2.likeAnyWhere("interprete", interprete);
         }
 
         if (null != velocidade && !velocidade.isEmpty()) {
@@ -474,6 +474,7 @@ public class RequestMusicaGeral implements java.io.Serializable {
             }
             if (null != integerList && !integerList.isEmpty()) {
                 query.in("id", integerList.toArray(new Integer[integerList.size()])).findAll();
+                query2.in("id", integerList.toArray(new Integer[integerList.size()])).findAll();
             }
         }
 
