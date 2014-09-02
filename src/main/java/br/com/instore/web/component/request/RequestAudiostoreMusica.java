@@ -3,29 +3,24 @@ package br.com.instore.web.component.request;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.observer.download.InputStreamDownload;
 import br.com.caelum.vraptor.view.Results;
+import br.com.instore.core.orm.Query;
 import br.com.instore.core.orm.bean.AudiostoreCategoriaBean;
 import br.com.instore.core.orm.bean.AudiostoreGravadoraBean;
 import br.com.instore.core.orm.bean.ClienteBean;
 import br.com.instore.core.orm.bean.AudiostoreMusicaBean;
-import br.com.instore.core.orm.bean.ConfigAppBean;
 import br.com.instore.core.orm.bean.DadosClienteBean;
+import br.com.instore.core.orm.bean.MusicaGeralBean;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.dto.AudiostoreCategoriaDTO;
 import br.com.instore.web.dto.CadastroMusicaDTO;
-import br.com.instore.web.dto.AudiostoreMusicaDTO;
 import br.com.instore.web.dto.Mdto;
 import br.com.instore.web.dto.MusicaDTO;
 import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -36,8 +31,6 @@ import javax.inject.Inject;
 import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
-import org.apache.commons.compress.utils.IOUtils;
-import org.apache.commons.lang.StringUtils;
 
 @RequestScoped
 public class RequestAudiostoreMusica implements java.io.Serializable {
@@ -57,77 +50,71 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         this.result = result;
         this.sessionUsuario = sessionUsuario;
     }
+    
+    public long totalRegistros() {
+        return repository.query(MusicaGeralBean.class).count();
+    }
 
-    public List<AudiostoreMusicaDTO> beanList() {
-        List<AudiostoreMusicaBean> lista = new ArrayList<AudiostoreMusicaBean>();
-        List<AudiostoreMusicaDTO> lista2 = new ArrayList<AudiostoreMusicaDTO>();
-        lista = repository.query(AudiostoreMusicaBean.class).findAll();
-        for (AudiostoreMusicaBean bean : lista) {
-            AudiostoreMusicaDTO dto = new AudiostoreMusicaDTO();
+    public long totalRegistrosPorPagina() {
+        return 100;
+    }
 
-            dto.setId(Utilities.leftPad(bean.getId()));
-            dto.setGravadora(bean.getGravadora().getNome());
-            dto.setAfinidade1(bean.getAfinidade1());
-            dto.setAfinidade2(bean.getAfinidade2());
-            dto.setAfinidade3(bean.getAfinidade3());
-            dto.setAfinidade4(bean.getAfinidade4());
-            dto.setAnoGravacao(bean.getAnoGravacao().toString());
-            dto.setArquivo(bean.getArquivo());
-            if (null != bean.getCategoria1()) {
-                dto.setCategoria1(bean.getCategoria1().getCategoria());
-            }
-            if (null != bean.getCategoria2()) {
-                dto.setCategoria2(bean.getCategoria2().getCategoria());
-            }
-            if (null != bean.getCategoria3()) {
-                dto.setCategoria3(bean.getCategoria3().getCategoria());
-            }
-            dto.setCrossover(bean.getCrossover() ? "Sim" : "Não");
-            dto.setCut(bean.getCut() ? "Cut" : "FadeOut");
-            dto.setData(new SimpleDateFormat("dd/MM/yyyy").format(bean.getData()));
-            dto.setDataVencimento(new SimpleDateFormat("dd/MM/yyyy").format(bean.getDataVencimento()));
-            dto.setDataVencimentoCrossover(new SimpleDateFormat("dd/MM/yyyy").format(bean.getDataVencimentoCrossover()));
-            dto.setDiasExecucao1(bean.getDiasExecucao1().toString());
-            dto.setDiasExecucao2(bean.getDiasExecucao2().toString());
-            dto.setFrameFinal(bean.getFrameFinal().toString());
-            dto.setFrameInicio(bean.getFrameInicio().toString());
-            dto.setInterprete(bean.getInterprete());
-            dto.setMsg(bean.getMsg());
-            dto.setQtde(bean.getQtde().toString());
-            dto.setQtdePlayer(bean.getQtdePlayer().toString());
-            dto.setRandom(bean.getRandom().toString());
-            dto.setSemSom(bean.getSemSom() ? "Sim" : "Não");
-            dto.setSuperCrossover(bean.getSuperCrossover() ? "sim" : "Não");
-            dto.setTempoTotal(new SimpleDateFormat("HH:mm:ss").format(bean.getTempoTotal()));
-
-            switch (bean.getTipoInterprete()) {
-                case 1:
-                    dto.setTipoInterprete("Masculino");
-                    break;
-                case 2:
-                    dto.setTipoInterprete("Feminino");
-                    break;
-                case 3:
-                    dto.setTipoInterprete("Grupo");
-                    break;
-                case 4:
-                    dto.setTipoInterprete("Instrumental");
-                    break;
-                case 5:
-                    dto.setTipoInterprete("Jingle");
-                    break;
-            }
-
-
-
-            dto.setTitulo(bean.getTitulo());
-            dto.setUltimaExecucao(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(bean.getUltimaExecucao()));
-            dto.setUltimaExecucaoData(new SimpleDateFormat("dd/MM/yyyy").format(bean.getUltimaExecucaoData()));
-            dto.setVelocidade("" + bean.getVelocidade());
-
-            lista2.add(dto);
+    public long totalPaginas(long totalRegistros, long totalRegistrosPorPagina) {
+        return (long) Math.ceil((double) totalRegistros / totalRegistrosPorPagina);
+    }
+    
+    public void beanList(Integer id,  int pagina , int qtd, int order ,  AudiostoreMusicaBean filtro ) {
+        
+         if (pagina == 0) {
+            pagina = 1;
         }
-        return lista2;
+
+        if (qtd == 0) {
+            qtd = 10;
+        }
+
+        if (order == 0) {
+            order = 10;
+        }
+        
+        long totalRegistrosPorPagina = Long.parseLong("" + qtd);
+        
+        Integer end = pagina * (int) totalRegistrosPorPagina;
+        Integer begin = end - (int) totalRegistrosPorPagina;
+        
+        List<AudiostoreMusicaBean> lista = new ArrayList<AudiostoreMusicaBean>();
+        
+        Query query = repository.query(AudiostoreMusicaBean.class).eq("musicaGeral", id);
+        Query query2 = repository.query(AudiostoreMusicaBean.class).eq("musicaGeral", id);
+        
+        if(null != filtro) {
+            if(null != filtro.getCliente() && null != filtro.getCliente().getIdcliente() && filtro.getCliente().getIdcliente() > 0) {
+                query.eq("cliente.idcliente", filtro.getCliente().getIdcliente());
+                query2.eq("cliente.idcliente", filtro.getCliente().getIdcliente());
+            }
+            
+            if(null != filtro.getCategoria1()&& null != filtro.getCategoria1().getCodigo() && filtro.getCategoria1().getCodigo() > 0) {
+                query.eq("categoria1.codigo", filtro.getCategoria1().getCodigo())
+                     .or()
+                     .eq("categoria2.codigo", filtro.getCategoria1().getCodigo());
+                query2.eq("categoria1.codigo", filtro.getCategoria1().getCodigo())
+                     .or()
+                     .eq("categoria2.codigo", filtro.getCategoria1().getCodigo());
+            }
+        
+        }
+        query.limit(begin, qtd);
+        lista = query.findAll();
+        long totalRegistros = query2.count();
+        long totalPaginas = totalPaginas(totalRegistros, totalRegistrosPorPagina);
+        
+        result.include("totalRegistros", totalRegistros);
+        result.include("totalRegistrosPorPagina", totalRegistrosPorPagina);
+        result.include("totalPaginas", totalPaginas);
+        result.include("paginaAtual", pagina);
+        
+        result.include("audiostoreMusicaBeanList", lista);
+
     }
 
     public List<ClienteBean> clienteBeanList() {
@@ -135,9 +122,17 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         return clienteBeanList;
     }
 
-    public List<AudiostoreCategoriaBean> categoriaBeanList() {
-        List<AudiostoreCategoriaBean> audiostoreCategoriaBeanList = repository.query(AudiostoreCategoriaBean.class).findAll();
-        return audiostoreCategoriaBeanList;
+    public void categoriasByCliente(Integer id) {
+        List<AudiostoreCategoriaBean> audiostoreCategoriaBeanList = repository.query(AudiostoreCategoriaBean.class).eq("cliente.idcliente", id).findAll();
+        result.use(Results.json()).withoutRoot().from(audiostoreCategoriaBeanList).recursive().serialize();
+    }
+    
+    public List<AudiostoreCategoriaBean> categoriasByCliente2(Integer id) {
+        return repository.query(AudiostoreCategoriaBean.class).eq("cliente.idcliente", id).findAll();
+    }
+    
+    public List<AudiostoreCategoriaBean> categorias() {
+        return repository.query(AudiostoreCategoriaBean.class).findAll();
     }
 
     public List<AudiostoreGravadoraBean> gravadoraBeanList() {
@@ -149,18 +144,34 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         return repository.find(AudiostoreMusicaBean.class, id);
     }
 
-    public void salvar(AudiostoreMusicaBean bean, String tempoTotalString) {
+    public MusicaGeralBean musicaGeralBean(Integer id) {
+        return repository.find(MusicaGeralBean.class, id);
+    }
+
+    public void salvar(AudiostoreMusicaBean bean) {
         try {
             if (bean.getCrossover()) {
                 if (null == bean.getDataVencimentoCrossover()) {
                     result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Se estiver usando crossover, é obrigatório informar a data de vencimento!")).recursive().serialize();
+                    return;
                 }
             } else {
                 bean.setDataVencimentoCrossover(new Date());
             }
 
-            Date tempoTotal = new SimpleDateFormat("HH:mm:ss").parse(tempoTotalString);
-            bean.setTempoTotal(tempoTotal);
+            if (null == bean.getCliente() || null == bean.getCliente().getIdcliente() || bean.getCliente().getIdcliente() <= 0) {
+                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Selecione um cliente!")).recursive().serialize();
+                return;
+            } else {
+                if (   (null == bean.getCategoria1() || null == bean.getCategoria1().getCodigo() || bean.getCategoria1().getCodigo() <= 0)
+                    && (null == bean.getCategoria2() || null == bean.getCategoria2().getCodigo() || bean.getCategoria2().getCodigo() <= 0) ) {
+                    result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Selecione uma categoria!")).recursive().serialize();
+                    return;
+                }
+            }
+            
+            bean.setFrameInicio(0);
+            bean.setFrameFinal(0);
 
             bean.setSemSom(Boolean.FALSE);
             bean.setMsg("");
@@ -169,44 +180,12 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
             bean.setSuperCrossover(Boolean.FALSE);
             bean.setRandom(new Random().nextInt());
 
-            if (!(null != bean.getAfinidade1() && !bean.getAfinidade1().isEmpty())) {
-                bean.setAfinidade1("");
-            }
-
-            if (!(null != bean.getAfinidade2() && !bean.getAfinidade2().isEmpty())) {
-                bean.setAfinidade2("");
-            }
-
-            if (!(null != bean.getAfinidade3() && !bean.getAfinidade3().isEmpty())) {
-                bean.setAfinidade3("");
-            }
-
-            if (!(null != bean.getAfinidade4() && !bean.getAfinidade4().isEmpty())) {
-                bean.setAfinidade4("");
-            }
-
             repository.setUsuario(sessionUsuario.getUsuarioBean());
-
-            if (bean != null && bean.getId() != null && bean.getId() > 0) {
+            
+            if (bean != null && bean.getId() != null && bean.getId() > 0) {    
                 repository.save(repository.marge(bean));
             } else {
                 repository.save(bean);
-            }
-            DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", bean.getCliente().getIdcliente()).findOne();
-
-            String origem = dados.getLocalOrigemMusica() + "\\" + bean.getArquivo();
-            String destino = dados.getLocalDestinoMusica() + "\\" + bean.getArquivo();
-
-            File dir = new File(destino);
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
-
-            File f = new File(destino);
-            if (!f.exists()) {
-                FileInputStream fis = new FileInputStream(new File(origem));
-                FileOutputStream fos = new FileOutputStream(new File(destino));
-                IOUtils.copy(fis, fos);
             }
 
             repository.finalize();
@@ -238,111 +217,110 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         try {
             AudiostoreMusicaBean bean = bean(id);
             if (bean != null) {
-                String arquivo = bean.getArquivo();
-                if (arquivo.length() < 30) {
-                    arquivo = StringUtils.leftPad(arquivo, 30, " ");
-                } else {
-                    if (arquivo.length() > 30) {
-                        arquivo = arquivo.substring(0, 30);
-                    }
-                }
-
-                String interprete = bean.getInterprete();
-                if (interprete.length() < 30) {
-                    interprete = StringUtils.leftPad(interprete, 30, " ");
-                } else {
-                    if (interprete.length() > 30) {
-                        interprete = interprete.substring(0, 30);
-                    }
-                }
-
-                String titulo = bean.getTitulo();
-                if (titulo.length() < 30) {
-                    titulo = StringUtils.leftPad(titulo, 30, " ");
-                } else {
-                    if (titulo.length() > 30) {
-                        titulo = titulo.substring(0, 30);
-                    }
-                }
-
-                String afinidade1 = bean.getAfinidade1();
-                if (afinidade1.length() < 30) {
-                    afinidade1 = StringUtils.leftPad(afinidade1, 30, " ");
-                } else {
-                    if (afinidade1.length() > 30) {
-                        afinidade1 = afinidade1.substring(0, 30);
-                    }
-                }
-
-                String afinidade2 = bean.getAfinidade2();
-                if (afinidade2.length() < 30) {
-                    afinidade2 = StringUtils.leftPad(afinidade2, 30, " ");
-                } else {
-                    if (afinidade2.length() > 30) {
-                        afinidade2 = afinidade2.substring(0, 30);
-                    }
-                }
-
-                String afinidade3 = bean.getAfinidade3();
-                if (afinidade3.length() < 30) {
-                    afinidade3 = StringUtils.leftPad(afinidade3, 30, " ");
-                } else {
-                    if (afinidade3.length() > 30) {
-                        afinidade3 = afinidade3.substring(0, 30);
-                    }
-                }
-
-                String afinidade4 = bean.getAfinidade4();
-                if (afinidade4.length() < 30) {
-                    afinidade4 = StringUtils.leftPad(afinidade4, 30, " ");
-                } else {
-                    if (afinidade4.length() > 30) {
-                        afinidade4 = afinidade4.substring(0, 30);
-                    }
-                }
-
-                String msg = bean.getMsg();
-                if (msg.length() < 40) {
-                    msg = StringUtils.leftPad(msg, 40, " ");
-                } else {
-                    if (msg.length() > 40) {
-                        msg = msg.substring(0, 40);
-                    }
-                }
-
-                String conteudo = "";
-                conteudo += "";
-                conteudo += arquivo;
-                conteudo += interprete;
-                conteudo += bean.getTipoInterprete();
-                conteudo += titulo;
-                conteudo += bean.getCut() ? "nao" : "sim";
-                conteudo += (null != bean.getCategoria1() ? StringUtils.leftPad(bean.getCategoria1().getCodigo().toString(), 3, " ") : "   ");
-                conteudo += (null != bean.getCategoria2() ? StringUtils.leftPad(bean.getCategoria2().getCodigo().toString(), 3, " ") : "   ");
-                conteudo += (null != bean.getCategoria3() ? StringUtils.leftPad(bean.getCategoria3().getCodigo().toString(), 3, " ") : "   ");
-                conteudo += bean.getCrossover() ? "nao" : "sim";
-                conteudo += StringUtils.leftPad(bean.getDiasExecucao1().toString(), 4, " ");
-                conteudo += StringUtils.leftPad(bean.getDiasExecucao2().toString(), 4, " ");
-                conteudo += afinidade1;
-                conteudo += afinidade2;
-                conteudo += afinidade3;
-                conteudo += afinidade4;
-                conteudo += StringUtils.leftPad(bean.getGravadora().getId().toString(), 3, " ");
-                conteudo += bean.getAnoGravacao();
-                conteudo += bean.getVelocidade();
-                conteudo += new SimpleDateFormat("dd/MM/yy").format(bean.getData());
-                conteudo += new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(bean.getUltimaExecucao());
-                conteudo += new SimpleDateFormat("HH:mm:ss").format(bean.getTempoTotal());
-                conteudo += StringUtils.leftPad(bean.getQtdePlayer().toString(), 3, " ");
-                conteudo += new SimpleDateFormat("dd/MM/yy").format(bean.getDataVencimento());
-                conteudo += new SimpleDateFormat("dd/MM/yy").format(bean.getDataVencimentoCrossover());
-                conteudo += StringUtils.leftPad(bean.getFrameInicio().toString(), 8, " ");
-                conteudo += StringUtils.leftPad(bean.getFrameFinal().toString(), 8, " ");
-                conteudo += msg;
-                conteudo += bean.getSemSom() ? 1 : 0;
-
-                inputStreamDownload = new InputStreamDownload(new ByteArrayInputStream(conteudo.getBytes()), "application/exp", bean.getTitulo() + "+.exp");
-
+//                String arquivo = bean.getArquivo();
+//                if (arquivo.length() < 30) {
+//                    arquivo = StringUtils.leftPad(arquivo, 30, " ");
+//                } else {
+//                    if (arquivo.length() > 30) {
+//                        arquivo = arquivo.substring(0, 30);
+//                    }
+//                }
+//
+//                String interprete = bean.getInterprete();
+//                if (interprete.length() < 30) {
+//                    interprete = StringUtils.leftPad(interprete, 30, " ");
+//                } else {
+//                    if (interprete.length() > 30) {
+//                        interprete = interprete.substring(0, 30);
+//                    }
+//                }
+//
+//                String titulo = bean.getTitulo();
+//                if (titulo.length() < 30) {
+//                    titulo = StringUtils.leftPad(titulo, 30, " ");
+//                } else {
+//                    if (titulo.length() > 30) {
+//                        titulo = titulo.substring(0, 30);
+//                    }
+//                }
+//
+//                String afinidade1 = bean.getAfinidade1();
+//                if (afinidade1.length() < 30) {
+//                    afinidade1 = StringUtils.leftPad(afinidade1, 30, " ");
+//                } else {
+//                    if (afinidade1.length() > 30) {
+//                        afinidade1 = afinidade1.substring(0, 30);
+//                    }
+//                }
+//
+//                String afinidade2 = bean.getAfinidade2();
+//                if (afinidade2.length() < 30) {
+//                    afinidade2 = StringUtils.leftPad(afinidade2, 30, " ");
+//                } else {
+//                    if (afinidade2.length() > 30) {
+//                        afinidade2 = afinidade2.substring(0, 30);
+//                    }
+//                }
+//
+//                String afinidade3 = bean.getAfinidade3();
+//                if (afinidade3.length() < 30) {
+//                    afinidade3 = StringUtils.leftPad(afinidade3, 30, " ");
+//                } else {
+//                    if (afinidade3.length() > 30) {
+//                        afinidade3 = afinidade3.substring(0, 30);
+//                    }
+//                }
+//
+//                String afinidade4 = bean.getAfinidade4();
+//                if (afinidade4.length() < 30) {
+//                    afinidade4 = StringUtils.leftPad(afinidade4, 30, " ");
+//                } else {
+//                    if (afinidade4.length() > 30) {
+//                        afinidade4 = afinidade4.substring(0, 30);
+//                    }
+//                }
+//
+//                String msg = bean.getMsg();
+//                if (msg.length() < 40) {
+//                    msg = StringUtils.leftPad(msg, 40, " ");
+//                } else {
+//                    if (msg.length() > 40) {
+//                        msg = msg.substring(0, 40);
+//                    }
+//                }
+//
+//                String conteudo = "";
+//                conteudo += "";
+//                conteudo += arquivo;
+//                conteudo += interprete;
+//                conteudo += bean.getTipoInterprete();
+//                conteudo += titulo;
+//                conteudo += bean.getCut() ? "nao" : "sim";
+//                conteudo += (null != bean.getCategoria1() ? StringUtils.leftPad(bean.getCategoria1().getCodigo().toString(), 3, " ") : "   ");
+//                conteudo += (null != bean.getCategoria2() ? StringUtils.leftPad(bean.getCategoria2().getCodigo().toString(), 3, " ") : "   ");
+//                conteudo += (null != bean.getCategoria3() ? StringUtils.leftPad(bean.getCategoria3().getCodigo().toString(), 3, " ") : "   ");
+//                conteudo += bean.getCrossover() ? "nao" : "sim";
+//                conteudo += StringUtils.leftPad(bean.getDiasExecucao1().toString(), 4, " ");
+//                conteudo += StringUtils.leftPad(bean.getDiasExecucao2().toString(), 4, " ");
+//                conteudo += afinidade1;
+//                conteudo += afinidade2;
+//                conteudo += afinidade3;
+//                conteudo += afinidade4;
+//                conteudo += StringUtils.leftPad(bean.getGravadora().getId().toString(), 3, " ");
+//                conteudo += bean.getAnoGravacao();
+//                conteudo += bean.getVelocidade();
+//                conteudo += new SimpleDateFormat("dd/MM/yy").format(bean.getData());
+//                conteudo += new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(bean.getUltimaExecucao());
+//                conteudo += new SimpleDateFormat("HH:mm:ss").format(bean.getTempoTotal());
+//                conteudo += StringUtils.leftPad(bean.getQtdePlayer().toString(), 3, " ");
+//                conteudo += new SimpleDateFormat("dd/MM/yy").format(bean.getDataVencimento());
+//                conteudo += new SimpleDateFormat("dd/MM/yy").format(bean.getDataVencimentoCrossover());
+//                conteudo += StringUtils.leftPad(bean.getFrameInicio().toString(), 8, " ");
+//                conteudo += StringUtils.leftPad(bean.getFrameFinal().toString(), 8, " ");
+//                conteudo += msg;
+//                conteudo += bean.getSemSom() ? 1 : 0;
+//
+//                inputStreamDownload = new InputStreamDownload(new ByteArrayInputStream(conteudo.getBytes()), "application/exp", bean.getTitulo() + "+.exp");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -352,124 +330,124 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
 
     public void upload(Integer id) {
         try {
-            ConfigAppBean config = repository.find(ConfigAppBean.class, 1);
-            AudiostoreMusicaBean bean = bean(id);
-            if (bean != null) {
-
-                String arquivo = bean.getArquivo();
-                if (arquivo.length() < 30) {
-                    arquivo = StringUtils.leftPad(arquivo, 30, " ");
-                } else {
-                    if (arquivo.length() > 30) {
-                        arquivo = arquivo.substring(0, 30);
-                    }
-                }
-
-                String interprete = bean.getInterprete();
-                if (interprete.length() < 30) {
-                    interprete = StringUtils.leftPad(interprete, 30, " ");
-                } else {
-                    if (interprete.length() > 30) {
-                        interprete = interprete.substring(0, 30);
-                    }
-                }
-
-                String titulo = bean.getTitulo();
-                if (titulo.length() < 30) {
-                    titulo = StringUtils.leftPad(titulo, 30, " ");
-                } else {
-                    if (titulo.length() > 30) {
-                        titulo = titulo.substring(0, 30);
-                    }
-                }
-
-                String afinidade1 = bean.getAfinidade1();
-                if (afinidade1.length() < 30) {
-                    afinidade1 = StringUtils.leftPad(afinidade1, 30, " ");
-                } else {
-                    if (afinidade1.length() > 30) {
-                        afinidade1 = afinidade1.substring(0, 30);
-                    }
-                }
-
-                String afinidade2 = bean.getAfinidade2();
-                if (afinidade2.length() < 30) {
-                    afinidade2 = StringUtils.leftPad(afinidade2, 30, " ");
-                } else {
-                    if (afinidade2.length() > 30) {
-                        afinidade2 = afinidade2.substring(0, 30);
-                    }
-                }
-
-                String afinidade3 = bean.getAfinidade3();
-                if (afinidade3.length() < 30) {
-                    afinidade3 = StringUtils.leftPad(afinidade3, 30, " ");
-                } else {
-                    if (afinidade3.length() > 30) {
-                        afinidade3 = afinidade3.substring(0, 30);
-                    }
-                }
-
-                String afinidade4 = bean.getAfinidade4();
-                if (afinidade4.length() < 30) {
-                    afinidade4 = StringUtils.leftPad(afinidade4, 30, " ");
-                } else {
-                    if (afinidade4.length() > 30) {
-                        afinidade4 = afinidade4.substring(0, 30);
-                    }
-                }
-
-                String msg = bean.getMsg();
-                if (msg.length() < 40) {
-                    msg = StringUtils.leftPad(msg, 40, " ");
-                } else {
-                    if (msg.length() > 40) {
-                        msg = msg.substring(0, 40);
-                    }
-                }
-
-                String conteudo = "";
-                conteudo += "";
-                conteudo += arquivo;
-                conteudo += interprete;
-                conteudo += bean.getTipoInterprete();
-                conteudo += titulo;
-                conteudo += bean.getCut() ? "nao" : "sim";
-                conteudo += (null != bean.getCategoria1() ? StringUtils.leftPad(bean.getCategoria1().getCodigo().toString(), 3, " ") : "   ");
-                conteudo += (null != bean.getCategoria2() ? StringUtils.leftPad(bean.getCategoria2().getCodigo().toString(), 3, " ") : "   ");
-                conteudo += (null != bean.getCategoria3() ? StringUtils.leftPad(bean.getCategoria3().getCodigo().toString(), 3, " ") : "   ");
-                conteudo += bean.getCrossover() ? "nao" : "sim";
-                conteudo += StringUtils.leftPad(bean.getDiasExecucao1().toString(), 4, " ");
-                conteudo += StringUtils.leftPad(bean.getDiasExecucao2().toString(), 4, " ");
-                conteudo += afinidade1;
-                conteudo += afinidade2;
-                conteudo += afinidade3;
-                conteudo += afinidade4;
-                conteudo += StringUtils.leftPad(bean.getGravadora().getId().toString(), 3, " ");
-                conteudo += bean.getAnoGravacao();
-                conteudo += bean.getVelocidade();
-                conteudo += new SimpleDateFormat("dd/MM/yy").format(bean.getData());
-                conteudo += new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(bean.getUltimaExecucao());
-                conteudo += new SimpleDateFormat("HH:mm:ss").format(bean.getTempoTotal());
-                conteudo += StringUtils.leftPad(bean.getQtdePlayer().toString(), 3, " ");
-                conteudo += new SimpleDateFormat("dd/MM/yy").format(bean.getDataVencimento());
-                conteudo += new SimpleDateFormat("dd/MM/yy").format(bean.getDataVencimentoCrossover());
-                conteudo += StringUtils.leftPad(bean.getFrameInicio().toString(), 8, " ");
-                conteudo += StringUtils.leftPad(bean.getFrameFinal().toString(), 8, " ");
-                conteudo += msg;
-                conteudo += bean.getSemSom() ? 1 : 0;
-
-                File dir = new File(config.getDataPath() + "\\musica-exp\\");
-                if (!dir.exists()) {
-                    dir.mkdirs();
-                }
-
-                InputStream is = new ByteArrayInputStream(conteudo.getBytes());
-                FileOutputStream fos = new FileOutputStream(new File(config.getDataPath() + "\\musica-exp\\" + StringUtils.leftPad(bean.getId().toString(), 11, "0") + ".exp"));
-
-                org.apache.commons.io.IOUtils.copy(is, fos);
-                result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "")).recursive().serialize();
-            }
+//            ConfigAppBean config = repository.find(ConfigAppBean.class, 1);
+//            AudiostoreMusicaBean bean = bean(id);
+//            if (bean != null) {
+//
+//                String arquivo = bean.getArquivo();
+//                if (arquivo.length() < 30) {
+//                    arquivo = StringUtils.leftPad(arquivo, 30, " ");
+//                } else {
+//                    if (arquivo.length() > 30) {
+//                        arquivo = arquivo.substring(0, 30);
+//                    }
+//                }
+//
+//                String interprete = bean.getInterprete();
+//                if (interprete.length() < 30) {
+//                    interprete = StringUtils.leftPad(interprete, 30, " ");
+//                } else {
+//                    if (interprete.length() > 30) {
+//                        interprete = interprete.substring(0, 30);
+//                    }
+//                }
+//
+//                String titulo = bean.getTitulo();
+//                if (titulo.length() < 30) {
+//                    titulo = StringUtils.leftPad(titulo, 30, " ");
+//                } else {
+//                    if (titulo.length() > 30) {
+//                        titulo = titulo.substring(0, 30);
+//                    }
+//                }
+//
+//                String afinidade1 = bean.getAfinidade1();
+//                if (afinidade1.length() < 30) {
+//                    afinidade1 = StringUtils.leftPad(afinidade1, 30, " ");
+//                } else {
+//                    if (afinidade1.length() > 30) {
+//                        afinidade1 = afinidade1.substring(0, 30);
+//                    }
+//                }
+//
+//                String afinidade2 = bean.getAfinidade2();
+//                if (afinidade2.length() < 30) {
+//                    afinidade2 = StringUtils.leftPad(afinidade2, 30, " ");
+//                } else {
+//                    if (afinidade2.length() > 30) {
+//                        afinidade2 = afinidade2.substring(0, 30);
+//                    }
+//                }
+//
+//                String afinidade3 = bean.getAfinidade3();
+//                if (afinidade3.length() < 30) {
+//                    afinidade3 = StringUtils.leftPad(afinidade3, 30, " ");
+//                } else {
+//                    if (afinidade3.length() > 30) {
+//                        afinidade3 = afinidade3.substring(0, 30);
+//                    }
+//                }
+//
+//                String afinidade4 = bean.getAfinidade4();
+//                if (afinidade4.length() < 30) {
+//                    afinidade4 = StringUtils.leftPad(afinidade4, 30, " ");
+//                } else {
+//                    if (afinidade4.length() > 30) {
+//                        afinidade4 = afinidade4.substring(0, 30);
+//                    }
+//                }
+//
+//                String msg = bean.getMsg();
+//                if (msg.length() < 40) {
+//                    msg = StringUtils.leftPad(msg, 40, " ");
+//                } else {
+//                    if (msg.length() > 40) {
+//                        msg = msg.substring(0, 40);
+//                    }
+//                }
+//
+//                String conteudo = "";
+//                conteudo += "";
+//                conteudo += arquivo;
+//                conteudo += interprete;
+//                conteudo += bean.getTipoInterprete();
+//                conteudo += titulo;
+//                conteudo += bean.getCut() ? "nao" : "sim";
+//                conteudo += (null != bean.getCategoria1() ? StringUtils.leftPad(bean.getCategoria1().getCodigo().toString(), 3, " ") : "   ");
+//                conteudo += (null != bean.getCategoria2() ? StringUtils.leftPad(bean.getCategoria2().getCodigo().toString(), 3, " ") : "   ");
+//                conteudo += (null != bean.getCategoria3() ? StringUtils.leftPad(bean.getCategoria3().getCodigo().toString(), 3, " ") : "   ");
+//                conteudo += bean.getCrossover() ? "nao" : "sim";
+//                conteudo += StringUtils.leftPad(bean.getDiasExecucao1().toString(), 4, " ");
+//                conteudo += StringUtils.leftPad(bean.getDiasExecucao2().toString(), 4, " ");
+//                conteudo += afinidade1;
+//                conteudo += afinidade2;
+//                conteudo += afinidade3;
+//                conteudo += afinidade4;
+//                conteudo += StringUtils.leftPad(bean.getGravadora().getId().toString(), 3, " ");
+//                conteudo += bean.getAnoGravacao();
+//                conteudo += bean.getVelocidade();
+//                conteudo += new SimpleDateFormat("dd/MM/yy").format(bean.getData());
+//                conteudo += new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(bean.getUltimaExecucao());
+//                conteudo += new SimpleDateFormat("HH:mm:ss").format(bean.getTempoTotal());
+//                conteudo += StringUtils.leftPad(bean.getQtdePlayer().toString(), 3, " ");
+//                conteudo += new SimpleDateFormat("dd/MM/yy").format(bean.getDataVencimento());
+//                conteudo += new SimpleDateFormat("dd/MM/yy").format(bean.getDataVencimentoCrossover());
+//                conteudo += StringUtils.leftPad(bean.getFrameInicio().toString(), 8, " ");
+//                conteudo += StringUtils.leftPad(bean.getFrameFinal().toString(), 8, " ");
+//                conteudo += msg;
+//                conteudo += bean.getSemSom() ? 1 : 0;
+//
+//                File dir = new File(config.getDataPath() + "\\musica-exp\\");
+//                if (!dir.exists()) {
+//                    dir.mkdirs();
+//                }
+//
+//                InputStream is = new ByteArrayInputStream(conteudo.getBytes());
+//                FileOutputStream fos = new FileOutputStream(new File(config.getDataPath() + "\\musica-exp\\" + StringUtils.leftPad(bean.getId().toString(), 11, "0") + ".exp"));
+//
+//                org.apache.commons.io.IOUtils.copy(is, fos);
+//                result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "")).recursive().serialize();
+//            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -601,7 +579,7 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                                 mdt.setCaminhoCaminho(item.getPath());
                                 mdt.setTitulo(item.getName());
                                 mdt.setNomeArquivo(item.getName());
-                                mdt.setCaminhoFull(path+"/"+item.getName());
+                                mdt.setCaminhoFull(path + "/" + item.getName());
                                 dto.getMusicaList().add(mdt);
                             }
 
@@ -621,15 +599,15 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
 
     public InputStreamDownload loadMusica(Integer id, String nome) throws MalformedURLException, SmbException, IOException {
         DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", id).findOne();
-        
+
         String user = "admin";
         String pass = "q1a2s3";
 
         String sharedFolder = "shared";
-        String path = "smb:"+dados.getLocalOrigemMusica()+"/"+nome;
+        String path = "smb:" + dados.getLocalOrigemMusica() + "/" + nome;
 
         SmbFile smbFile = new SmbFile(path, Utilities.getAuthSmbDefault());
-        
+
         return new InputStreamDownload(smbFile.getInputStream(), "audio/mpeg", smbFile.getName());
     }
 }
