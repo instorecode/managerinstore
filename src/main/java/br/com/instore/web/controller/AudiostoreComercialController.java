@@ -6,6 +6,7 @@ import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Post;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.observer.download.InputStreamDownload;
+import br.com.caelum.vraptor.observer.upload.UploadedFile;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.bean.AudiostoreCategoriaBean;
 import br.com.instore.core.orm.bean.AudiostoreComercialBean;
@@ -80,8 +81,8 @@ public class AudiostoreComercialController implements java.io.Serializable {
     @Post
     @Restrict
     @Path("/audiostore-comercial/cadastrar")
-    public void cadastrar(AudiostoreComercialBean audiostoreComercialBean , String tempoTotal , AudiostoreComercialShBean []  sh) {
-        requestAudiostoreComercial.salvar(audiostoreComercialBean  , tempoTotal , sh);
+    public void cadastrar(AudiostoreComercialBean audiostoreComercialBean , String tempoTotal , AudiostoreComercialShBean []  sh, UploadedFile arquivo) {
+        requestAudiostoreComercial.salvar(audiostoreComercialBean  , tempoTotal , sh , arquivo);
     }
 
     @Get
@@ -98,8 +99,8 @@ public class AudiostoreComercialController implements java.io.Serializable {
     @Post
     @Restrict
     @Path("/audiostore-comercial/atualizar/{id}")
-    public void cadastrar(Integer id , AudiostoreComercialBean audiostoreComercialBean , String tempoTotal  , AudiostoreComercialShBean [] sh) {
-        requestAudiostoreComercial.salvar(audiostoreComercialBean,tempoTotal,sh);
+    public void cadastrar(Integer id , AudiostoreComercialBean audiostoreComercialBean , String tempoTotal  , AudiostoreComercialShBean [] sh, UploadedFile arquivo) {
+        requestAudiostoreComercial.salvar(audiostoreComercialBean,tempoTotal,sh,arquivo);
     }
 
     @Get

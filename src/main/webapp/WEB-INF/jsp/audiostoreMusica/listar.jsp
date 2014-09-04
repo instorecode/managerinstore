@@ -140,7 +140,6 @@
                         <thead class="no-border">
                             <tr>
                                 <th></th>
-                                <th></th>
                                 <th><strong>Cliente</strong></th>
                                 <th ><strong>Categorias</strong></th>
                                 <th><strong>Data de inclusão</strong></th>
@@ -150,9 +149,6 @@
                         <tbody class="no-border-y">
                             <c:forEach items="${audiostoreMusicaBeanList}" var="item" varStatus="vs">
                                 <tr>
-                                    <td width="40">
-                                        <label class="checkbox-inline"> <input type="checkbox" name="rad1" class="icheck"></label> 
-                                    </td>
                                     <td width="120">
                                         <a class="label label-default"  href="#" data-toggle="modal" data-target="#modal_ver_${item.id}"><i class="fa fa-eye"></i></a>
                                         <a class="label label-warning" href="${url}/musica/programacao-audiostore/atualizar/${idmusicaGeral}/${item.id}"><i class="fa fa-pencil"></i></a>

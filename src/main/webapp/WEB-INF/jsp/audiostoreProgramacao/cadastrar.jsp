@@ -173,6 +173,57 @@
 
                     <script type="text/javascript">
                         jQuery(document).ready(function() {
+                            
+                            if (null != jQuery('.select_cliente').children('option:selected').val()
+                                    && undefined != jQuery('.select_cliente').children('option:selected').val()
+                                    && '' != jQuery('.select_cliente').children('option:selected').val()) {
+
+                                var novo_id = jQuery('.select_cliente').children('option:selected').val();
+                                jQuery.ajax({
+                                    url: '${url}/audiostore-programacao/categorias/' + novo_id,
+                                    type: 'GET',
+                                    success: function(json) {
+
+                                        if (json.length == 0) {
+                                            jQuery('.cat_container').hide();
+                                            jQuery('.btn_salvar').hide();
+                                        } else {
+                                            var html = '';
+                                            for (i in json) {
+                                                var item = json[i];
+                                                var tipo = '';
+
+                                                if (item.tipo == 1) {
+                                                    tipo = 'música';
+                                                }
+
+                                                if (item.tipo == 2) {
+                                                    tipo = 'comercial';
+                                                }
+
+                                                if (item.tipo == 3) {
+                                                    tipo = 'video';
+                                                }
+                                                html += '<li id="' + i + '" data-index="' + i + '"> <i class="fa fa-cubes"></i> <div class="text">' + item.categoria + '</div> <small> <b style="color: green;"> ' + item.cliente.nome + ' -  ' + tipo + '</b> </small> <input type="hidden" name="categorias" value="' + item.codigo + '" disabled="disabled"/> </li>';
+
+                                            }
+                                            jQuery('.lista_filial2 li').each(function() {
+                                                if (jQuery(this).data('cliente') != novo_id) {
+                                                    jQuery(this).remove();
+                                                }
+                                            });
+                                            jQuery('.lista_filial1').html('');
+                                            jQuery('.lista_filial1').html(html);
+                                            jQuery('.cat_container').show();
+                                            jQuery('.btn_salvar').show();
+                                        }
+                                    },
+                                    error: function(err) {
+                                        console.log(err);
+                                    }
+                                });
+
+                            }
                             jQuery('.select_cliente').on('change', function() {
 
                                 var novo_id = jQuery(this).val();

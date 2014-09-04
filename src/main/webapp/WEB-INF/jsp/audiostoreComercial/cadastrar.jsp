@@ -8,22 +8,36 @@
     </jsp:attribute>
 
     <jsp:body>
-        <script type="text/javascript">
-            jQuery(document).ready(function() {
-                jQuery('.arquivosDeMusica').on('change', function() {
-                    var valor = jQuery(this).val();
-                    valor = valor.split('[|||SEPARADOR|||]');
-
-                    jQuery('[name="audiostoreComercialBean.titulo"]').val(valor[0]);
-                    jQuery('[name="audiostoreComercialBean.arquivo"]').val(valor[1]);
-                });
-            });
-        </script>
-        <form d="cad_cliente" method="POST" data-form="true" data-success-url="${url}/audiostore-comercial">
+        <!--<form d="cad_cliente" method="POST" data-form="true" data-success-url="${url}/audiostore-comercial" enctype="multipart/form-data">-->
+        <form  method="POST" enctype="multipart/form-data">
             <input type="hidden" name="audiostoreComercialBean.id" value="${audiostoreComercialBean.id}" />
-
+            <input type="file" name="arquivo" accept="audio/*" style="display: none" />
+            
+            <script type="text/javascript">
+                jQuery(document).ready(function(){
+                    jQuery('[name="audiostoreComercialBean.arquivo"]').on('click', function(){
+                        jQuery('[name="arquivo"]').click();
+                    });
+                    
+                    jQuery('[name="arquivo"]').on('change', function(){
+                        jQuery('[name="audiostoreComercialBean.arquivo"]').val(jQuery(this).val());
+                    });
+                });
+            </script>
+            
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Cliente</label>
+                        <select   class="select2" name="audiostoreComercialBean.cliente.idcliente" data-rule-required="true" >
+                            <c:forEach items="${clienteBeanList}" var="item">
+                                <option value="${item.idcliente}" ${audiostoreComercialBean.cliente.idcliente eq item.idcliente ? 'selected="selected"':''}>${item.nome}</option> 
+                            </c:forEach>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
                     <div class="form-group">
                         <label>Titulo</label>
                         <input type="text" name="audiostoreComercialBean.titulo" class="form-control" placeholder="Nome"  
@@ -33,32 +47,24 @@
                     </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <div class="form-group">
                         <label>Arquivo</label>
-                        <input type="text" name="audiostoreComercialBean.arquivo" class="form-control" placeholder="Nome"  
-                               data-rule-required="true" 
-                               data-rule-minlength="3"
-                               data-rule-maxlength="30" value="${audiostoreComercialBean.arquivo}">
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>Importar</label>
-                        <br />
-                        <select data-selectradio="true" data-drop-right="true" class="form-control arquivosDeMusica"  data-rule-required="true" style="margin-left: -30px;">
-                            <c:forEach items="${arquivoMusicaList}" var="musica">
-                                <option value="${musica.nome}[|||SEPARADOR|||]${musica.caminho}" >${musica.nome}</option>
-                            </c:forEach>
-                        </select>
+                        <div class="input-group">
+                            <input type="text" name="audiostoreComercialBean.arquivo" class="form-control" placeholder="Nome"  
+                                   data-rule-required="true" 
+                                   data-rule-minlength="3"
+                                   data-rule-maxlength="30" value="${audiostoreComercialBean.arquivo}">
+                            <span class="input-group-addon"> <i class="fa fa-file-audio-o"></i> </span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <div class="form-group">
                         <label>Categoria</label> 
                         <br />
-                        <select data-selectradio="true"  class="form-control" name="audiostoreComercialBean.audiostoreCategoria.codigo" data-rule-required="true" >
+                        <select   class="select2" name="audiostoreComercialBean.audiostoreCategoria.codigo" data-rule-required="true" >
                             <c:forEach items="${categoriaBeanList}" var="cat">
                                 <option value="${cat.codigo}" ${audiostoreComercialBean.audiostoreCategoria.codigo eq cat.codigo ? 'selected="selected"':''}>${cat.categoria}</option> 
                             </c:forEach>
@@ -66,11 +72,11 @@
                     </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <div class="form-group">
                         <label>Tipo interprete</label> 
                         <br />
-                        <select data-selectradio="true"  class="form-control" name="audiostoreComercialBean.tipoInterprete" data-rule-required="true" >
+                        <select class="select2" name="audiostoreComercialBean.tipoInterprete" data-rule-required="true" >
                             <option value="1" ${audiostoreComercialBean.tipoInterprete eq 1 ? 'selected="selected"' : ''} >Masculino</option> 
                             <option value="2" ${audiostoreComercialBean.tipoInterprete eq 2 ? 'selected="selected"' : ''} >Feminino</option> 
                             <option value="3" ${audiostoreComercialBean.tipoInterprete eq 3 ? 'selected="selected"' : ''} >Grupo</option> 
@@ -83,9 +89,7 @@
 
 
             <div class="row">
-                <div class="col-md-4"></div>
                 <div class="col-md-12">
-                    <br />
                     <b> Dependencias </b>
                     <hr />
                 </div>
@@ -94,7 +98,7 @@
                     <div class="form-group">
                         <label>Primária</label>
                         <br />
-                        <select name="audiostoreComercialBean.dependencia1" data-selectradio="true" data-drop-right="false" class="form-control"  data-rule-required="true" style="margin-left: -30px;">
+                        <select name="audiostoreComercialBean.dependencia1" class="select2"  data-rule-required="true">
                             <option value=" ">Nenhuma</option>
                             <c:forEach items="${arquivoMusicaList}" var="musica">
                                 <option value="${musica.caminho}" ${musica.caminho eq audiostoreComercialBean.dependencia1 ? 'selected="selected"' : ''}>${musica.nome}</option>
@@ -106,7 +110,7 @@
                     <div class="form-group">
                         <label>Secundária</label>
                         <br />
-                        <select name="audiostoreComercialBean.dependencia2" data-selectradio="true" data-drop-right="true" class="form-control"  data-rule-required="true" style="margin-left: -30px;">
+                        <select name="audiostoreComercialBean.dependencia2" class="select2"  data-rule-required="true">
                             <option value=" ">Nenhuma</option>
                             <c:forEach items="${arquivoMusicaList}" var="musica">
                                 <option value="${musica.caminho}" ${musica.caminho eq audiostoreComercialBean.dependencia2 ? 'selected="selected"' : ''}>${musica.nome}</option>
@@ -118,7 +122,7 @@
                     <div class="form-group">
                         <label value=" ">Terciária</label>
                         <br />
-                        <select name="audiostoreComercialBean.dependencia3" data-selectradio="true" data-drop-right="true" class="form-control"  data-rule-required="true" style="margin-left: -30px;">
+                        <select name="audiostoreComercialBean.dependencia3" class="select2"  data-rule-required="true">
                             <option>Nenhuma</option>
                             <c:forEach items="${arquivoMusicaList}" var="musica">
                                 <option value="${musica.caminho}" ${musica.caminho eq audiostoreComercialBean.dependencia3 ? 'selected="selected"' : ''}>${musica.nome}</option>
@@ -130,7 +134,7 @@
             <hr />
 
             <div class="row">
-                <div class="col-md-2">
+                <div class="col-md-1">
                     <div class="form-group">
                         <label>Tempo</label>
                         <input type="text" name="tempoTotal" class="form-control" placeholder="Nome"  
@@ -140,7 +144,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-1">
                     <div class="form-group">
                         <label>Quantidade </label>
 
@@ -153,62 +157,55 @@
                 <div class="col-md-2">
                     <div class="form-group">
                         <label>Ultima  execução</label>
-                        <input type="text" name="audiostoreComercialBean.ultimaExecucao" class="form-control datepicker" placeholder="Nome"  
-                               data-mask="99/99/9999"
-                               data-rule-maxlength="30" value="${audiostoreComercialBean.ultimaExecucao}">
+                        <div class="input-group date datetime" data-min-view="2" data-date-format="dd/mm/yyyy">
+                            <input type="text" name="audiostoreComercialBean.ultimaExecucao" class="form-control datepicker" placeholder="Nome"  
+                                   data-mask="99/99/9999"
+                                   data-rule-maxlength="30" value="${audiostoreComercialBean.ultimaExecucao}">
+                            <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <label>Frame inicial</label>
-                        <input type="text" name="audiostoreComercialBean.frameInicio" class="form-control" placeholder="Nome"  
-                               data-rule-required="true" 
-                               data-rule-number="true" value="${audiostoreComercialBean.frameInicio}">
-                    </div>
-                </div>
-
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <label>Frame final</label>
-                        <input type="text" name="audiostoreComercialBean.frameFinal" class="form-control" placeholder="Nome"  
-                               data-rule-required="true" 
-                               data-rule-number="true" value="${audiostoreComercialBean.frameFinal}">
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
                 <div class="col-md-2">
                     <div class="form-group">
                         <label>Data de vencimento</label>
-                        <input type="text" name="audiostoreComercialBean.dataVencimento" class="form-control datepicker" placeholder="Nome"  
-                               data-rule-required="true" 
-                               data-mask="99/99/9999" value="${cf:dateFormat(audiostoreComercialBean.dataVencimento, "dd/MM/yyyy")}">
+                        <div class="input-group date datetime" data-min-view="2" data-date-format="dd/mm/yyyy">
+                            <input type="text" name="audiostoreComercialBean.dataVencimento" class="form-control datepicker" placeholder="Nome"  
+                                   data-rule-required="true" 
+                                   data-mask="99/99/9999" value="${cf:dateFormat(audiostoreComercialBean.dataVencimento, "dd/MM/yyyy")}">
+                            <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
                     </div>
                 </div>
 
                 <div class="col-md-2">
                     <div class="form-group">
                         <label>Periodo Inicial</label>
-                        <input type="text" name="audiostoreComercialBean.periodoInicial" class="form-control datepicker" placeholder="Nome"  
-                               data-rule-required="true" 
-                               data-mask="99/99/9999" value="${cf:dateFormat(audiostoreComercialBean.periodoInicial, "dd/MM/yyyy")}">
+                        <div class="input-group date datetime" data-min-view="2" data-date-format="dd/mm/yyyy">
+                            <input type="text" name="audiostoreComercialBean.periodoInicial" class="form-control datepicker" placeholder="Nome"  
+                                   data-rule-required="true" 
+                                   data-mask="99/99/9999" value="${cf:dateFormat(audiostoreComercialBean.periodoInicial, "dd/MM/yyyy")}">
+                            <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
                         <label>Periodo Final</label>
-                        <input type="text" name="audiostoreComercialBean.periodoFinal" class="form-control datepicker" placeholder="Nome"  
-                               data-rule-required="true" 
-                               data-mask="99/99/9999" value="${cf:dateFormat(audiostoreComercialBean.periodoFinal, "dd/MM/yyyy")}">
+                        <div class="input-group date datetime" data-min-view="2" data-date-format="dd/mm/yyyy">
+                            <input type="text" name="audiostoreComercialBean.periodoFinal" class="form-control datepicker" placeholder="Nome"  
+                                   data-rule-required="true" 
+                                   data-mask="99/99/9999" value="${cf:dateFormat(audiostoreComercialBean.periodoFinal, "dd/MM/yyyy")}">
+                            <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-4">
+
+                <div class="col-md-2">
                     <div class="form-group">
                         <label>Tocar em dias alternados</label>
                         <br />
-                        <select name="audiostoreComercialBean.diasAlternados" data-selectradio="true" data-drop-right="true" class="form-control"  data-rule-required="true" style="margin-left: -30px;">
+                        <select name="audiostoreComercialBean.diasAlternados" class="select2"  data-rule-required="true">
                             <option value="${true}">Sim</option>
                             <option value="${false}">Não</option>
                         </select>
@@ -216,10 +213,9 @@
                 </div>
             </div>
 
+
             <div class="row">
-                <div class="col-md-4"></div>
                 <div class="col-md-12">
-                    <br />
                     <b> Horários pré definidos </b>
                     <hr />
                     <div class="row">
@@ -250,20 +246,20 @@
 
                         <div class="col-md-6">
                             <div style="float: left;">
-                                <input type="checkbox" name="segunda" value="1" />&nbsp;Segunda
+                                <label> <input type="checkbox" name="segunda" value="1" class="icheck" />&nbsp;Segunda</label> 
                                 <br />
-                                <input type="checkbox" name="terca" value="2"/>&nbsp;Terça
+                                <label> <input type="checkbox" name="terca" value="2" class="icheck"/>&nbsp;Terça</label> 
                                 <br />
-                                <input type="checkbox" name="quarta" value="3"/>&nbsp;Quarta
+                                <label> <input type="checkbox" name="quarta" value="3" class="icheck"/>&nbsp;Quarta</label> 
                                 <br />
-                                <input type="checkbox" name="quinta" value="4"/>&nbsp;Quinta
+                                <label> <input type="checkbox" name="quinta" value="4" class="icheck"/>&nbsp;Quinta</label> 
                                 <br />
-                                <input type="checkbox" name="sexta" value="5"/>&nbsp;Sexta
+                                <label> <input type="checkbox" name="sexta" value="5" class="icheck"/>&nbsp;Sexta</label> 
                                 <br />
-                                <input type="checkbox" name="sabado" value="6"/>&nbsp;Sábado
+                                <label> <input type="checkbox" name="sabado" value="6" class="icheck"/>&nbsp;Sábado</label> 
                                 <br />
-                                <input type="checkbox" name="domingo" value="7"/>&nbsp;Domingo&nbsp;&nbsp;
-                                <input type="checkbox" name="todos" value="0"/>&nbsp;Todos
+                                <label> <input type="checkbox" name="domingo" value="7" class="icheck"/>&nbsp;Domingo&nbsp;&nbsp;</label> 
+                                <label> <input type="checkbox" name="todos" value="0" class="icheck"/>&nbsp;Marcar Todos</label> 
                             </div>
                             <div class="col-xs-3">
                                 <input type="text" name="hora" class="form-control span5" placeholder="Nome"  
@@ -292,7 +288,7 @@
 
         <script>
             jQuery(document).ready(function() {
-                jQuery('[name="todos"]').on('click', function() {
+                jQuery('[name="todos"]').on('ifChecked', function() {
                     var segunda = jQuery('[name="segunda"]');
                     var terca = jQuery('[name="terca"]');
                     var quarta = jQuery('[name="quarta"]');
@@ -301,72 +297,31 @@
                     var sabado = jQuery('[name="sabado"]');
                     var domingo = jQuery('[name="domingo"]');
                     var todos = jQuery('[name="todos"]');
+                    segunda.iCheck('check');
+                    terca.iCheck('check');
+                    quarta.iCheck('check');
+                    quinta.iCheck('check');
+                    sexta.iCheck('check');
+                    sabado.iCheck('check');
+                    domingo.iCheck('check');
 
-                    if (jQuery(this).is(':checked')) {
-                        if (!segunda.is(':checked')) {
-                            segunda.trigger('click');
-                        }
-
-                        if (!terca.is(':checked')) {
-                            terca.trigger('click');
-                        }
-
-                        if (!quarta.is(':checked')) {
-                            quarta.trigger('click');
-                        }
-
-                        if (!quinta.is(':checked')) {
-                            quinta.trigger('click');
-                        }
-
-                        if (!sexta.is(':checked')) {
-                            sexta.trigger('click');
-                        }
-
-                        if (!sabado.is(':checked')) {
-                            sabado.trigger('click');
-                        }
-
-                        if (!domingo.is(':checked')) {
-                            domingo.trigger('click');
-                        }
-
-                        if (!todos.is(':checked')) {
-                            todos.trigger('click');
-                        }
-                    } else {
-                        if (segunda.is(':checked')) {
-                            segunda.trigger('click');
-                        }
-
-                        if (terca.is(':checked')) {
-                            terca.trigger('click');
-                        }
-
-                        if (quarta.is(':checked')) {
-                            quarta.trigger('click');
-                        }
-
-                        if (quinta.is(':checked')) {
-                            quinta.trigger('click');
-                        }
-
-                        if (sexta.is(':checked')) {
-                            sexta.trigger('click');
-                        }
-
-                        if (sabado.is(':checked')) {
-                            sabado.trigger('click');
-                        }
-
-                        if (domingo.is(':checked')) {
-                            domingo.trigger('click');
-                        }
-
-                        if (todos.is(':checked')) {
-                            todos.trigger('click');
-                        }
-                    }
+                });
+                jQuery('[name="todos"]').on('ifUnchecked', function() {
+                    var segunda = jQuery('[name="segunda"]');
+                    var terca = jQuery('[name="terca"]');
+                    var quarta = jQuery('[name="quarta"]');
+                    var quinta = jQuery('[name="quinta"]');
+                    var sexta = jQuery('[name="sexta"]');
+                    var sabado = jQuery('[name="sabado"]');
+                    var domingo = jQuery('[name="domingo"]');
+                    var todos = jQuery('[name="todos"]');
+                    segunda.iCheck('uncheck');
+                    terca.iCheck('uncheck');
+                    quarta.iCheck('uncheck');
+                    quinta.iCheck('uncheck');
+                    sexta.iCheck('uncheck');
+                    sabado.iCheck('uncheck');
+                    domingo.iCheck('uncheck');
                 });
 
                 jQuery(document).on('click', '.tbl tbody tr td', function(event) {
@@ -400,12 +355,12 @@
                     if (hora.val() != "") {
                         temHora = true;
                     }
-                    
+
                     var tbl = jQuery('.tbl tbody');
                     var diasLabel = '';
                     var connector = '';
                     var inputsHiddens = '';
-                    var i = tbl.children('tr').length+1;
+                    var i = tbl.children('tr').length + 1;
 
 
                     if (segunda.is(':checked')) {
@@ -514,7 +469,7 @@
                     }
 
                     if (temDiasSelecionados && temHora) {
-                        
+
 
                         if (tbl.children('tr').length < 24) {
                             tbl.append(inputsHiddens);
@@ -553,17 +508,17 @@
                         } else {
                             bootbox.alert('Ops! Já está no limite de dias e horas!');
                         }
-                        
+
                         if (tbl.children('tr').length >= 24) {
                             var i = 1;
-                            tbl.children('tr').each(function(){
-                                if(i > 24) {
+                            tbl.children('tr').each(function() {
+                                if (i > 24) {
                                     jQuery(this).remove();
                                 }
                                 i++;
                             });
-                            
-                            
+
+
                         }
                     }
                     return false;

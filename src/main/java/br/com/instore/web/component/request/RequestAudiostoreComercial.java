@@ -2,6 +2,7 @@ package br.com.instore.web.component.request;
 
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.observer.download.InputStreamDownload;
+import br.com.caelum.vraptor.observer.upload.UploadedFile;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.bean.AudiostoreCategoriaBean;
 import br.com.instore.core.orm.bean.ClienteBean;
@@ -28,6 +29,9 @@ import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import jcifs.smb.SmbFile;
+import jcifs.smb.SmbFileInputStream;
+import jcifs.smb.SmbFileOutputStream;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -113,7 +117,7 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
     }
 
     public List<ClienteBean> clienteBeanList() {
-        List<ClienteBean> clienteBeanList = repository.query(ClienteBean.class).findAll();
+        List<ClienteBean> clienteBeanList = repository.query(ClienteBean.class).eq("matriz", true).eq("parente", 0).findAll();
         return clienteBeanList;
     }
 
@@ -135,7 +139,7 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
         return repository.query(AudiostoreComercialShBean.class).eq(AudiostoreComercialSh.COMERCIAL_ID, id).findAll();
     }
 
-    public void salvar(AudiostoreComercialBean bean, String tempoTotalString, AudiostoreComercialShBean[] sh) {
+    public void salvar(AudiostoreComercialBean bean, String tempoTotalString, AudiostoreComercialShBean[] sh, UploadedFile arquivo) {
         try {
 
             Date tempoTotal = new SimpleDateFormat("HH:mm:ss").parse(tempoTotalString);
@@ -147,7 +151,11 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
             bean.setRandom(10);
 
             repository.setUsuario(sessionUsuario.getUsuarioBean());
-
+            
+            bean.setFrameInicio(0);
+            bean.setFrameFinal(0);
+            bean.setArquivo("temp");
+            
             if (bean != null && bean.getId() != null && bean.getId() > 0) {
                 repository.save(repository.marge(bean));
             } else {
@@ -165,28 +173,30 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
             }
 
             try {
-                DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", bean.getAudiostoreCategoria().getCliente().getIdcliente()).findOne();
+                DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", bean.getCliente().getIdcliente()).findOne();
 
-                String origem = dados.getLocalOrigemSpot()+ "\\" + bean.getArquivo();
-                String destino = dados.getLocalDestinoSpot()+ "\\" + bean.getArquivo();
+                String destino = "smb://"+dados.getLocalDestinoSpot()+ "/";
+                
+                SmbFile dir = new SmbFile(destino);
 
-                File dir = new File(destino);
                 if (!dir.exists()) {
                     dir.mkdirs();
                 }
-
-                File f = new File(destino);
-                if (f.exists()) {
-                    f.delete();
-                }
-
-                FileInputStream fis = new FileInputStream(new File(origem));
-                FileOutputStream fos = new FileOutputStream(new File(destino));
-                IOUtils.copy(fis, fos);
+                
+                SmbFile file = new SmbFile(destino + arquivo.getFileName() + "/");
+                SmbFileOutputStream smbFos = new SmbFileOutputStream(file);
+                byte[] bytes = IOUtils.toByteArray(arquivo.getFile());
+                
+                smbFos.write(bytes);
+                smbFos.flush();
+                smbFos.close();
+                
+                bean.setArquivo(destino + arquivo.getFileName());
+                repository.save(bean);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
+           
             repository.finalize();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Dados salvos com sucesso!")).recursive().serialize();
         } catch (Exception e) {

@@ -654,7 +654,10 @@ function formProccess() {
                     async: true,
                     type: form.attr('method'),
                     url: form.attr('action'),
-                    data: form.serialize(),
+//                    data: form.serialize(),
+                    data: new FormData( form ),
+                    processData: false,
+                    contentType: false,
                     dataType: 'json',
                     beforeSend: function() {
                         bootbox.hideAll();
@@ -690,6 +693,7 @@ function formProccess() {
                     }
                 });
             }
+            e.preventDefault();
             return false;
         });
 
