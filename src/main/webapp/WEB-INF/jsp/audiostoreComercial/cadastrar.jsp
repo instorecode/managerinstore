@@ -11,20 +11,27 @@
         <!--<form d="cad_cliente" method="POST" data-form="true" data-success-url="${url}/audiostore-comercial" enctype="multipart/form-data">-->
         <form  method="POST" enctype="multipart/form-data">
             <input type="hidden" name="audiostoreComercialBean.id" value="${audiostoreComercialBean.id}" />
-            <input type="file" name="arquivo" accept="audio/*" style="display: none" />
             
+            <c:if test="${isPageCadastro}">
+                <input type="file" name="arquivo" accept="audio/*" style="display: none" />
+            </c:if>
+            
+            <c:if test="${isPageCadastro eq false}">
+                <input type="hidden" name="audiostoreComercialBean.arquivo"  value="${audiostoreComercialBean.arquivo}" />
+            </c:if>
+
             <script type="text/javascript">
-                jQuery(document).ready(function(){
-                    jQuery('[name="audiostoreComercialBean.arquivo"]').on('click', function(){
+                jQuery(document).ready(function() {
+                    jQuery('[name="audiostoreComercialBean.arquivo"]').on('click', function() {
                         jQuery('[name="arquivo"]').click();
                     });
-                    
-                    jQuery('[name="arquivo"]').on('change', function(){
+
+                    jQuery('[name="arquivo"]').on('change', function() {
                         jQuery('[name="audiostoreComercialBean.arquivo"]').val(jQuery(this).val());
                     });
                 });
             </script>
-            
+
             <div class="row">
                 <div class="col-md-3">
                     <div class="form-group">
@@ -36,7 +43,7 @@
                         </select>
                     </div>
                 </div>
-                
+
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>Titulo</label>
@@ -46,19 +53,22 @@
                                data-rule-maxlength="30" value="${audiostoreComercialBean.titulo}">
                     </div>
                 </div>
-
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <label>Arquivo</label>
-                        <div class="input-group">
-                            <input type="text" name="audiostoreComercialBean.arquivo" class="form-control" placeholder="Nome"  
-                                   data-rule-required="true" 
-                                   data-rule-minlength="3"
-                                   data-rule-maxlength="30" value="${audiostoreComercialBean.arquivo}">
-                            <span class="input-group-addon"> <i class="fa fa-file-audio-o"></i> </span>
+                    
+                <c:if test="${isPageCadastro}">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Arquivo</label>
+                            <div class="input-group">
+                                <input type="text" name="audiostoreComercialBean.arquivo" class="form-control" placeholder="Nome"  
+                                       data-rule-required="true" 
+                                       data-rule-minlength="3"
+                                       data-rule-maxlength="30" value="${audiostoreComercialBean.arquivo}">
+                                <span class="input-group-addon"> <i class="fa fa-file-audio-o"></i> </span>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </c:if>
+
 
                 <div class="col-md-2">
                     <div class="form-group">
@@ -140,7 +150,7 @@
                         <input type="text" name="tempoTotal" class="form-control" placeholder="Nome"  
                                data-mask="99:99:99"  
                                data-rule-required="true" 
-                               value="${audiostoreComercialBean.tempoTotal}">
+                               value="${cf:dateFormat(audiostoreComercialBean.tempoTotal, "HH:mm:ss")}">
                     </div>
                 </div>
 
@@ -160,7 +170,7 @@
                         <div class="input-group date datetime" data-min-view="2" data-date-format="dd/mm/yyyy">
                             <input type="text" name="audiostoreComercialBean.ultimaExecucao" class="form-control datepicker" placeholder="Nome"  
                                    data-mask="99/99/9999"
-                                   data-rule-maxlength="30" value="${audiostoreComercialBean.ultimaExecucao}">
+                                   data-rule-maxlength="30" value="${cf:dateFormat(audiostoreComercialBean.ultimaExecucao,"dd/MM/yyyy")}">
                             <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
                         </div>
                     </div>
@@ -262,9 +272,8 @@
                                 <label> <input type="checkbox" name="todos" value="0" class="icheck"/>&nbsp;Marcar Todos</label> 
                             </div>
                             <div class="col-xs-3">
-                                <input type="text" name="hora" class="form-control span5" placeholder="Nome"  
-                                       data-mask="99:99:99"
-                                       value="${audiostoreComercialBean.arquivo}">
+                                <input type="text" name="hora" class="form-control span5" placeholder="Horário"  
+                                       data-mask="99:99:99">
                             </div>
 
                             <button type="button" class="btn btn-default add_sh" data-tooltip="true" title="Para adicionar é necessário seleionar um ou mais dias da semana e informa um horário!">

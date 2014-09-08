@@ -73,6 +73,7 @@ public class AudiostoreComercialController implements java.io.Serializable {
         
 //        result.include("audiostoreComercialBean", a);
         
+        result.include("isPageCadastro", true);
         result.include("categoriaBeanList", requestAudiostoreComercial.categoriaBeanList());
         result.include("clienteBeanList", requestAudiostoreComercial.clienteBeanList());
         result.include("audiostoreComercialShBeanList", requestAudiostoreComercial.audiostoreComercialShBeanList());
@@ -89,6 +90,7 @@ public class AudiostoreComercialController implements java.io.Serializable {
     @Restrict
     @Path("/audiostore-comercial/atualizar/{id}")
     public void cadastrar(Integer id) {
+        result.include("isPageCadastro", false);
         result.include("shs", requestAudiostoreComercial.shs(id));
         result.include("categoriaBeanList", requestAudiostoreComercial.categoriaBeanList());
         result.include("clienteBeanList", requestAudiostoreComercial.clienteBeanList());
@@ -99,8 +101,8 @@ public class AudiostoreComercialController implements java.io.Serializable {
     @Post
     @Restrict
     @Path("/audiostore-comercial/atualizar/{id}")
-    public void cadastrar(Integer id , AudiostoreComercialBean audiostoreComercialBean , String tempoTotal  , AudiostoreComercialShBean [] sh, UploadedFile arquivo) {
-        requestAudiostoreComercial.salvar(audiostoreComercialBean,tempoTotal,sh,arquivo);
+    public void cadastrar(Integer id , AudiostoreComercialBean audiostoreComercialBean , String tempoTotal  , AudiostoreComercialShBean [] sh) {
+        requestAudiostoreComercial.salvar2(audiostoreComercialBean,tempoTotal,sh);
     }
 
     @Get

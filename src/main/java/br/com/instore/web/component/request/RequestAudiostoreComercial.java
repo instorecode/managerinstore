@@ -14,6 +14,7 @@ import br.com.instore.core.orm.bean.DadosClienteBean;
 import br.com.instore.core.orm.bean.property.AudiostoreComercialSh;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.component.session.SessionUsuario;
+import br.com.instore.web.controller.AudiostoreComercialController;
 import br.com.instore.web.dto.CadastroMusicaDTO;
 import br.com.instore.web.dto.AudiostoreComercialDTO;
 import br.com.instore.web.tools.AjaxResult;
@@ -141,7 +142,6 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
 
     public void salvar(AudiostoreComercialBean bean, String tempoTotalString, AudiostoreComercialShBean[] sh, UploadedFile arquivo) {
         try {
-
             Date tempoTotal = new SimpleDateFormat("HH:mm:ss").parse(tempoTotalString);
             bean.setTempoTotal(tempoTotal);
             bean.setQtdePlayer(bean.getQtde());
@@ -154,7 +154,7 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
             
             bean.setFrameInicio(0);
             bean.setFrameFinal(0);
-            bean.setArquivo("temp");
+            bean.setArquivo(arquivo.getFileName());
             
             if (bean != null && bean.getId() != null && bean.getId() > 0) {
                 repository.save(repository.marge(bean));
@@ -177,13 +177,13 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
 
                 String destino = "smb://"+dados.getLocalDestinoSpot()+ "/";
                 
-                SmbFile dir = new SmbFile(destino);
+                SmbFile dir = new SmbFile(destino, Utilities.getAuthSmbDefault());
 
                 if (!dir.exists()) {
                     dir.mkdirs();
                 }
                 
-                SmbFile file = new SmbFile(destino + arquivo.getFileName() + "/");
+                SmbFile file = new SmbFile(destino + arquivo.getFileName() + "/" , Utilities.getAuthSmbDefault());
                 SmbFileOutputStream smbFos = new SmbFileOutputStream(file);
                 byte[] bytes = IOUtils.toByteArray(arquivo.getFile());
                 
@@ -191,18 +191,55 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
                 smbFos.flush();
                 smbFos.close();
                 
-                bean.setArquivo(destino + arquivo.getFileName());
-                repository.save(bean);
             } catch (Exception e) {
                 e.printStackTrace();
             }
            
             repository.finalize();
-            result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Dados salvos com sucesso!")).recursive().serialize();
+            result.redirectTo(AudiostoreComercialController.class).listar(false);
         } catch (Exception e) {
             e.printStackTrace();
             repository.finalize();
-            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel salvar os dados!")).recursive().serialize();
+            result.redirectTo(AudiostoreComercialController.class).cadastrar();
+        }
+    }
+    
+    public void salvar2(AudiostoreComercialBean bean, String tempoTotalString, AudiostoreComercialShBean[] sh) {
+        try {
+            Date tempoTotal = new SimpleDateFormat("HH:mm:ss").parse(tempoTotalString);
+            bean.setTempoTotal(tempoTotal);
+            bean.setQtdePlayer(bean.getQtde());
+            bean.setData(new Date());
+            bean.setMsg("");
+            bean.setSemSom(Boolean.FALSE);
+            bean.setRandom(10);
+
+            repository.setUsuario(sessionUsuario.getUsuarioBean());
+            
+            bean.setFrameInicio(0);
+            bean.setFrameFinal(0);
+            
+            if (bean != null && bean.getId() != null && bean.getId() > 0) {
+                repository.save(repository.marge(bean));
+            } else {
+                repository.save(bean);
+            }
+
+            String query = "delete from audiostore_comercial_sh where comercial = " + bean.getId();
+            repository.query(query).executeSQLCommand();
+
+            for (AudiostoreComercialShBean item : sh) {
+                if (item != null) {
+                    item.setComercial(bean);
+                    repository.save(item);
+                }
+            }
+           
+            repository.finalize();
+            result.redirectTo(AudiostoreComercialController.class).listar(false);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.redirectTo(AudiostoreComercialController.class).cadastrar();
         }
     }
 
