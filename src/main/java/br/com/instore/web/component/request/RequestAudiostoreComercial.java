@@ -108,7 +108,7 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
             String sh = "";
             String connector = "";
             for (AudiostoreComercialShBean item : shs(bean.getId())) {
-                sh += connector + item.getHorario() + " : " + item.getSemana();
+                sh += connector + item.getHorario() + " : " + item.getSemana() + "<br />";
                 connector = ",";
             }
             dto.setSemanaHora(sh);
