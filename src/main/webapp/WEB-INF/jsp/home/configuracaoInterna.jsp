@@ -16,22 +16,6 @@
                                data-rule-minlength="3"
                                data-rule-maxlength="255" value="${configAppBean.dataPath}">
                     </div>
-                    
-                    <div class="form-group">
-                        <label>Caminho de origem das musicas</label>
-                        <input type="text" name="configAppBean.audiostoreMusicaDirOrigem" class="form-control" placeholder="Nome"  
-                               data-rule-required="true" 
-                               data-rule-minlength="3"
-                               data-rule-maxlength="255" value="${configAppBean.audiostoreMusicaDirOrigem}">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Caminho de destino das musicas</label>
-                        <input type="text" name="configAppBean.audiostoreMusicaDirDestino" class="form-control" placeholder="Nome"  
-                               data-rule-required="true" 
-                               data-rule-minlength="3"
-                               data-rule-maxlength="255" value="${configAppBean.audiostoreMusicaDirDestino}">
-                    </div>
                 </div>
             </div>
             <button type="submit" class="btn btn-default">

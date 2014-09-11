@@ -97,12 +97,12 @@ public class AudiostoreCategoriaController implements java.io.Serializable {
     @Restrict
     @Path("/audiostore-categoria/upload-exp/{id}")
     public void upload(Integer id) {
-        requestAudiostoreCategoria.upload(id);
+//        requestAudiostoreCategoria.upload(id);
     }
     
     @Post
     @Path("/audiostore-categoria/sinc")
     public void upload(UploadedFile file) {
-        requestAudiostoreCategoria.upload(file);
+//        requestAudiostoreCategoria.upload(file);
     }
 }

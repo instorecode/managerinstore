@@ -97,6 +97,7 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
             }
 
             repository.finalize();
+            upload(audiostoreCategoriaBean);
             result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Dados salvos com sucesso!")).recursive().serialize();
         } catch (Exception e) {
             e.printStackTrace();
@@ -110,6 +111,16 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
             repository.setUsuario(sessionUsuario.getUsuarioBean());
 
             AudiostoreCategoriaBean audiostoreCategoriaBean = repository.marge((AudiostoreCategoriaBean) repository.find(AudiostoreCategoriaBean.class, id));
+
+            DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", audiostoreCategoriaBean.getCliente().getIdcliente()).findOne();
+            
+            String destino = dados.getLocalDestinoExp() + "exp/categoria/"+audiostoreCategoriaBean.getCodigo()+".exp";
+            SmbFile smb = new SmbFile(destino, Utilities.getAuthSmbDefault());
+
+            if (smb.exists()) {
+                smb.delete();
+            }
+
             repository.delete(audiostoreCategoriaBean);
 
             repository.finalize();
@@ -145,11 +156,9 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
         return inputStreamDownload;
     }
 
-    public void upload(Integer id) {
+    public void upload(AudiostoreCategoriaBean audiostoreCategoriaBean) throws Exception {
         try {
-            AudiostoreCategoriaBean audiostoreCategoriaBean = audiostoreCategoriaBean(id);
             if (audiostoreCategoriaBean != null) {
-
                 String conteudo = "";
 
                 conteudo += StringUtils.leftPad(audiostoreCategoriaBean.getCodigo().toString(), 5, " ");
@@ -159,9 +168,9 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
                 conteudo += audiostoreCategoriaBean.getTipo();
 
                 DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", audiostoreCategoriaBean.getCliente().getIdcliente()).findOne();
-
-                SmbFile smb = new SmbFile("smb://" + dados.getLocalDestinoExp(), Utilities.getAuthSmbDefault());
-                SmbFile smb2 = new SmbFile("smb://" + dados.getLocalDestinoExp() + "/" + StringUtils.leftPad(audiostoreCategoriaBean.getCodigo().toString(), 5, " ") + ".exp", Utilities.getAuthSmbDefault());
+                String destino = dados.getLocalDestinoExp() + "exp/categoria/";
+                SmbFile smb = new SmbFile(destino, Utilities.getAuthSmbDefault());
+                SmbFile smb2 = new SmbFile(destino + StringUtils.leftPad(audiostoreCategoriaBean.getCodigo().toString(), 5, " ") + ".exp", Utilities.getAuthSmbDefault());
 
                 if (!smb.exists()) {
                     smb.mkdirs();
@@ -170,12 +179,9 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
                 SmbFileOutputStream sfous = new SmbFileOutputStream(smb2);
                 sfous.write(conteudo.getBytes());
                 sfous.close();
-
-                result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "")).recursive().serialize();
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "")).recursive().serialize();
+            throw e;
         }
     }
 
@@ -190,9 +196,8 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
                 while ((readline = bufferedReader.readLine()) != null) {
                     lines.add(readline);
                 }
-                
+
                 for (String line : lines) {
-                    
                 }
             }
         } catch (IOException ex) {
