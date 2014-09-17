@@ -113,14 +113,14 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
             AudiostoreCategoriaBean audiostoreCategoriaBean = repository.marge((AudiostoreCategoriaBean) repository.find(AudiostoreCategoriaBean.class, id));
 
             DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", audiostoreCategoriaBean.getCliente().getIdcliente()).findOne();
-            
-            String destino = dados.getLocalDestinoExp() + "exp/categoria/"+audiostoreCategoriaBean.getCodigo()+".exp";
-            SmbFile smb = new SmbFile(destino, Utilities.getAuthSmbDefault());
+            if (dados != null) {
+                String destino = dados.getLocalDestinoExp() + "exp/categoria/" + audiostoreCategoriaBean.getCodigo() + ".exp";
+                SmbFile smb = new SmbFile(destino, Utilities.getAuthSmbDefault());
 
-            if (smb.exists()) {
-                smb.delete();
+                if (smb.exists()) {
+                    smb.delete();
+                }
             }
-
             repository.delete(audiostoreCategoriaBean);
 
             repository.finalize();
