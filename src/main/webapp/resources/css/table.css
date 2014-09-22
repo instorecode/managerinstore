@@ -78,12 +78,7 @@
 
 .xtable tbody tr:hover td.zz2
 {
-    background-color: #fffbd3 !important;
-}
-
-.xtable tbody tr.row_data:hover
-{
-    background-color: #fffbd3 !important;
+    /*background-color: #fffbd3 !important;*/
 }
 
 .xtable tbody tr.blur2
@@ -99,4 +94,13 @@
 {
     list-style: none;
     margin-left: -40px;
+}
+
+th.extra {
+    display: none;
+}
+
+.xtable tbody tr.selected td
+{
+    background-color: #fffbd3 !important;
 }

@@ -9,7 +9,9 @@ public class OcorrenciaOrigemJSON {
     private Integer page;
     private Integer size;
     private List<OcorrenciaOrigemDTO> rows = new ArrayList<OcorrenciaOrigemDTO>();
-
+    private Integer id = null;
+    private String descricao = null;
+    
     public Integer getPage() {
         return page;
     }
@@ -32,5 +34,21 @@ public class OcorrenciaOrigemJSON {
 
     public void setRows(List<OcorrenciaOrigemDTO> rows) {
         this.rows = rows;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 }

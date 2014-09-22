@@ -35,6 +35,7 @@ public class RequestOcorrenciaOrigem implements java.io.Serializable {
     }
 
     public void beanList(Integer page, Integer rows, Integer id, String descricao) {
+        OcorrenciaOrigemJSON json = new OcorrenciaOrigemJSON();
         page = (null == page || 0 == page ? 1 : page);
         rows = (null == rows || 0 == rows ? 10 : rows);
 
@@ -45,17 +46,21 @@ public class RequestOcorrenciaOrigem implements java.io.Serializable {
         Query q2 = repository.query(OcorrenciaOrigemBean.class);
 
         if (null != id && id > 0) {
+            q1.eq("id", id);
             q2.eq("id", id);
+            json.setId(id);
         }
 
         if (null != descricao && !descricao.isEmpty()) {
+            q1.ilikeAnyWhere("descricao", descricao);
             q2.ilikeAnyWhere("descricao", descricao);
+            json.setDescricao(descricao);
         }
 
         int size = q1.count().intValue() / rows + ((q1.count().intValue() % rows == 0) ? 0 : 1); 
         lista = q2.limit(offset, rows).findAll();
 
-        OcorrenciaOrigemJSON json = new OcorrenciaOrigemJSON();
+        
         json.setPage(page);
         json.setSize(size);
 

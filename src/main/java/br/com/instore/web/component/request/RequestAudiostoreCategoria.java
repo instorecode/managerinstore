@@ -48,7 +48,9 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
         this.sessionUsuario = sessionUsuario;
     }
 
-    public void beanList(Integer page, Integer rows, Integer id, Integer cliente, String nome, Integer tipo, String duracao, String dataInicio, String dataFinal) {
+    public void beanList(Integer page, Integer rows, Integer id, Integer idcliente, String nome, Integer tipo, String duracao, String dataInicio, String dataFinal) {
+        AudiostoreCategoriaJSON json = new AudiostoreCategoriaJSON();
+        
         page = (null == page || 0 == page ? 1 : page);
         rows = (null == rows || 0 == rows ? 10 : rows);
 
@@ -59,21 +61,57 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
         Query q2 = repository.query(AudiostoreCategoriaBean.class);
 
         if (null != id && id > 0) {
+            q1.eq("id", id);
             q2.eq("id", id);
+            json.setId(id);
+        }
+        
+        if (null != idcliente && idcliente > 0) {
+            q1.eq("cliente.idcliente", idcliente);
+            q2.eq("cliente.idcliente", idcliente);
+            json.setIdcliente(idcliente);
         }
 
         if (null != nome && !nome.isEmpty()) {
+            q1.ilikeAnyWhere("categoria", nome);
             q2.ilikeAnyWhere("categoria", nome);
+            json.setCategoria(nome);
         }
 
         if (null != tipo && tipo > 0) {
+            q1.eq("tipo", tipo);
             q2.eq("tipo", tipo);
+            json.setTipo(tipo);
         }
 
         if (null != duracao && !duracao.isEmpty()) {
             try {
                 Date d = new SimpleDateFormat("HH:mm:ss").parse(duracao);
+                q1.eq("tempo", d);
                 q2.eq("tempo", d);
+                json.setTempo(duracao);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+       
+        if (null != dataInicio && !dataInicio.isEmpty()) {
+            try {
+                Date d = new SimpleDateFormat("dd/MM/yyyy").parse(dataInicio);
+                q1.eq("dataInicio", d);
+                q2.eq("dataInicio", d);
+                json.setDataInicio(dataInicio);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+       
+        if (null != dataFinal && !dataFinal.isEmpty()) {
+            try {
+                Date d = new SimpleDateFormat("dd/MM/yyyy").parse(dataFinal);
+                q1.eq("dataFinal", d);
+                q2.eq("dataFinal", d);
+                json.setDataFinal(dataFinal);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -82,7 +120,7 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
         int size = q1.count().intValue() / rows + ((q1.count().intValue() % rows == 0) ? 0 : 1);
         lista = q2.limit(offset, rows).findAll();
 
-        AudiostoreCategoriaJSON json = new AudiostoreCategoriaJSON();
+        
         json.setPage(page);
         json.setSize(size);
 

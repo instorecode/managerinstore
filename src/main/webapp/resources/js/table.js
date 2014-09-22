@@ -8,7 +8,7 @@ jQuery(document).ready(function() {
     jQuery('[data-percent]').each(function() {
         $(this).mask('#0.00', {reverse: true});
     });
-    
+
     jQuery.extend(jQuery.validator.messages, {
         required: "Este campo &eacute; obrigat&oacute;rio.",
         remote: "Por favor, corrija este campo.",
@@ -30,7 +30,7 @@ jQuery(document).ready(function() {
         max: jQuery.validator.format("Por favor, forne&ccedil;a um valor menor ou igual a {0}."),
         min: jQuery.validator.format("Por favor, forne&ccedil;a um valor maior ou igual a {0}.")
     });
-    
+
     (function($) {
         $.extend(true, $.validator, {
             prototype: {
@@ -64,7 +64,7 @@ jQuery(document).ready(function() {
             }
         });
     }(jQuery));
-    
+
     xtable_load();
     function xtable_load() {
         jQuery('#table').each(function() {
@@ -78,8 +78,15 @@ jQuery(document).ready(function() {
 
             jQuery("td.filter").each(function() {
                 var input = jQuery(this).children("input");
-                if (null != input.val() && undefined != input.val() && "" != input.val())
+                if (null != input.val() && undefined != input.val() && "" != input.val()) {
                     url = url + "&" + input.attr("name") + "=" + input.val();
+                }
+
+                var input = jQuery(this).children("select");
+                if (null != input.val() && undefined != input.val() && "" != input.val()) {
+                    url = url + "&" + input.attr("name") + "=" + input.val();
+                    console.log(url);
+                }
             });
 
             jQuery.get(url, function(json) {
@@ -94,7 +101,33 @@ jQuery(document).ready(function() {
                     tr += "<td class=\"filter\">";
                     if (td.attr("options") == "false")
                     {
-                        tr += "<input type=\"text\" class=\"form-control\" name=\"" + td.attr("field") + "\" style=\"height:25px\">";
+                        if ("true" == td.attr("isfk")) {
+                            tr += "<select class=\"select2_filter\" name=\"" + td.attr("fk") + "\">";
+                            tr += "<option value=\"\">" + td.attr("fklabelselect") + "</option>";
+                            jQuery.ajax({
+                                async: false,
+                                url: td.attr("fkurl"),
+                                success: function(json_response) {
+                                    var selected = "";
+                                    if (null != json[td.attr("fk")] && undefined != json[td.attr("fk")] && "" != json[td.attr("fk")]) {
+                                        selected = "selected=\"selected\"";
+                                    }
+                                    for (indice in json_response) {
+                                        var item_fk = json_response[indice];
+                                        var fk = item_fk[td.attr("fk")];
+                                        var fk_label = item_fk[td.attr("fklabel")];
+                                        tr += "<option value=\"" + fk + "\" " + selected + ">" + fk_label + "</option>";
+                                    }
+                                }
+                            });
+                            tr += "</select>";
+                        } else {
+                            value = "";
+                            if (null != json[td.attr("field")] && undefined != json[td.attr("field")] && "" != json[td.attr("field")]) {
+                                value = "value=\"" + json[td.attr("field")] + "\"";
+                            }
+                            tr += "<input type=\"text\" class=\"form-control \" name=\"" + td.attr("field") + "\" " + value + ">";
+                        }
                     }
                     else
                     {
@@ -107,7 +140,7 @@ jQuery(document).ready(function() {
                 for (i in json["rows"])
                 {
                     var item = json["rows"][i];
-                    tr += "<tr class=\"row_data\">";
+                    tr += "<tr class=\"row_data\" data-json-item='"+JSON.stringify(item)+"'>";
 
                     table.children("thead").children("tr").children("th").each(function() {
                         var td = jQuery(this);
@@ -125,6 +158,8 @@ jQuery(document).ready(function() {
                         }
                         tr += "</td>";
                     });
+
+//                    tr += " texte " + jQuery("th.extra").html();
 
                     // tr view
                     tr += "</tr>";
@@ -153,6 +188,7 @@ jQuery(document).ready(function() {
                 table.append("<tbody>" + tr + "</tbody>");
 
                 jQuery('.block-xtable .loader').hide();
+                jQuery(".select2_filter").select2({width: '100%'});
             });
         });
     }
@@ -372,6 +408,7 @@ jQuery(document).ready(function() {
     jQuery(document).on("click", ".btn_filtrar2", function() {
         jQuery("td.filter").each(function() {
             jQuery(this).children("input").val("");
+            jQuery(this).children("select").val("");
         });
         xtable_load();
         return false;
@@ -447,6 +484,23 @@ jQuery(document).ready(function() {
             jQuery("div.form").show();
         }
     });
+
+    jQuery(document).on('click', '.row_data', function() {
+        if (jQuery(this).attr("class").indexOf("selected") != -1) {
+            jQuery(this).removeClass('selected', true);
+        } else {
+            jQuery(this).addClass('selected', true);
+        }
+    });
+    
+    jQuery.fn.rowsSelected = function(){
+        jQuery('.row_data.selected').each(function(){
+            var json_item = jQuery(this).data('jsonItem');
+            console.log(json_item);
+        });
+    };
+    
+    jQuery.fn.rowsSelected();
 });
 
 
