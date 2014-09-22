@@ -118,8 +118,33 @@ public class RestrictAccessValidator {
         if (null == fb) {
             return new ArrayList<FuncionalidadeBean>();
         }
-        List<FuncionalidadeBean> funcionalidadeBeanList = requestRepository.query(FuncionalidadeBean.class).eq(Funcionalidade.PARENTE, fb.getIdfuncionalidade()).findAll();
-        return funcionalidadeBeanList;
+
+        final List<Integer> id_s = new ArrayList<Integer>();
+        String query = "select \n"
+                + "    funcionalidade.idfuncionalidade as id , '' as param\n"
+                + "from\n"
+                + "    funcionalidade\n"
+                + "inner join perfil_funcionalidade using(idfuncionalidade)\n"
+                + "inner join perfil_usuario using(idperfil)\n"
+                + "\n"
+                + "where 	funcionalidade.parente = " + fb.getIdfuncionalidade() + "\n"
+                + "		and perfil_usuario.idusuario = " + sessionUsuario.getUsuarioBean().getIdusuario();
+
+        requestRepository.query(query).executeSQL(new br.com.instore.core.orm.Each() {
+            Integer id;
+            String param;
+
+            @Override
+            public void each() {
+                id_s.add(id);
+            }
+        });
+
+        if (!id_s.isEmpty()) {
+            return requestRepository.query(FuncionalidadeBean.class).in("idfuncionalidade", id_s.toArray(new Integer[id_s.size()])).findAll();
+        } else {
+            return new ArrayList<FuncionalidadeBean>();
+        }
     }
 
     public String constructMenu(Integer parente, String currentMappinId) {

@@ -1,0 +1,102 @@
+.view , .edit , .delete { display: none; }
+.form , .row_view , .row_edit , .row_delete
+{
+    display: none;
+}
+.options
+{
+    width: 140px;
+}
+.pag_info
+{
+    margin-left: 10px;
+    margin-top: 7px;
+    display: block;
+    float: left;
+}
+
+.block-xtable
+{
+    background-color: #FFF;
+    padding: 10px;
+}
+
+.block-xtable .loader
+{
+    display: block;
+    float: right;
+    z-index: 9999999;
+}
+
+.block-xtable .loader span.txt
+{
+    display: block;
+    width: 110px;
+    height: 30px;
+
+    color: #2494F2;
+    text-align: center;
+    line-height: 30px;
+    font-weight: bold;
+}
+
+.block-xtable .btn-group
+{
+    margin-left: 0px;
+}
+
+.xtable
+{
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.xtable thead th
+{
+    padding: 5px;
+    border:1px solid #ebebeb;
+    background-color: #2494F2;
+    color: #FFF;
+    font-weight: bold;
+}
+
+.xtable tbody tr td
+{
+    padding: 3px;
+    border:1px solid #ebebeb;
+}
+
+.xtable tbody tr td.filter
+{
+    background-color: #f9f9f9; 
+}
+
+.xtable tbody tr td
+{
+    background-color: #FFF;
+}
+
+.xtable tbody tr:hover td.zz2
+{
+    background-color: #fffbd3 !important;
+}
+
+.xtable tbody tr.row_data:hover
+{
+    background-color: #fffbd3 !important;
+}
+
+.xtable tbody tr.blur2
+{
+    -webkit-filter: blur(2px);
+    -moz-filter: blur(2px);
+    -o-filter: blur(2px);
+    -ms-filter: blur(2px);
+    filter: blur(2px);
+}
+
+.view_itens 
+{
+    list-style: none;
+    margin-left: -40px;
+}

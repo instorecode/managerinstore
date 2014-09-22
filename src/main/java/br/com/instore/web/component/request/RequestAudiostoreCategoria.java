@@ -4,23 +4,25 @@ import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.observer.download.InputStreamDownload;
 import br.com.caelum.vraptor.observer.upload.UploadedFile;
 import br.com.caelum.vraptor.view.Results;
+import br.com.instore.core.orm.Query;
 import br.com.instore.core.orm.bean.AudiostoreCategoriaBean;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.core.orm.bean.ClienteBean;
 import br.com.instore.core.orm.bean.DadosClienteBean;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.dto.AudiostoreCategoriaDTO;
+import br.com.instore.web.dto.AudiostoreCategoriaJSON;
 import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import jcifs.smb.SmbFile;
@@ -46,20 +48,57 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
         this.sessionUsuario = sessionUsuario;
     }
 
-    public List<AudiostoreCategoriaDTO> categoriaDTOList() {
-        List<AudiostoreCategoriaDTO> lista = new ArrayList<AudiostoreCategoriaDTO>();
-        List<AudiostoreCategoriaBean> lista2 = repository.query(AudiostoreCategoriaBean.class).findAll();
+    public void beanList(Integer page, Integer rows, Integer id, Integer cliente, String nome, Integer tipo, String duracao, String dataInicio, String dataFinal) {
+        page = (null == page || 0 == page ? 1 : page);
+        rows = (null == rows || 0 == rows ? 10 : rows);
 
-        for (AudiostoreCategoriaBean categoria : lista2) {
+        Integer offset = (page - 1) * rows;
+        List<AudiostoreCategoriaBean> lista = new ArrayList<AudiostoreCategoriaBean>();
+
+        Query q1 = repository.query(AudiostoreCategoriaBean.class);
+        Query q2 = repository.query(AudiostoreCategoriaBean.class);
+
+        if (null != id && id > 0) {
+            q2.eq("id", id);
+        }
+
+        if (null != nome && !nome.isEmpty()) {
+            q2.ilikeAnyWhere("categoria", nome);
+        }
+
+        if (null != tipo && tipo > 0) {
+            q2.eq("tipo", tipo);
+        }
+
+        if (null != duracao && !duracao.isEmpty()) {
+            try {
+                Date d = new SimpleDateFormat("HH:mm:ss").parse(duracao);
+                q2.eq("tempo", d);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+        int size = q1.count().intValue() / rows + ((q1.count().intValue() % rows == 0) ? 0 : 1);
+        lista = q2.limit(offset, rows).findAll();
+
+        AudiostoreCategoriaJSON json = new AudiostoreCategoriaJSON();
+        json.setPage(page);
+        json.setSize(size);
+
+        List<AudiostoreCategoriaDTO> rowsList = new ArrayList<AudiostoreCategoriaDTO>();
+        for (AudiostoreCategoriaBean bean : lista) {
+
             AudiostoreCategoriaDTO dto = new AudiostoreCategoriaDTO();
-
-            dto.setCategoria(categoria.getCategoria());
-            dto.setClienteNome(categoria.getCliente().getNome());
-            dto.setCodigo(categoria.getCodigo());
-            dto.setDataFinal(new SimpleDateFormat("dd/MM/yyyy").format(categoria.getDataFinal()));
-            dto.setDataInicio(new SimpleDateFormat("dd/MM/yyyy").format(categoria.getDataInicio()));
-            dto.setTempo(new SimpleDateFormat("hh:mm:ss").format(categoria.getTempo()));
-            switch (categoria.getTipo()) {
+            dto.setCodigo(bean.getCodigo());
+            dto.setCategoria(bean.getCategoria());
+            dto.setClienteNome(bean.getCliente().getNome());
+            dto.setDataInicio(new SimpleDateFormat("dd/MM/yyyy").format(bean.getDataInicio()));
+            dto.setDataFinal(new SimpleDateFormat("dd/MM/yyyy").format(bean.getDataFinal()));
+            dto.setTempo(new SimpleDateFormat("HH:mm:ss").format(bean.getTempo()));
+            dto.setTipoNum(""+bean.getTipo());
+            dto.setIdcliente(bean.getCliente().getIdcliente().toString());
+            switch (bean.getTipo()) {
                 case 1:
                     dto.setTipo("Música");
                     break;
@@ -71,9 +110,10 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
                     break;
             }
 
-            lista.add(dto);
+            rowsList.add(dto);
         }
-        return lista;
+        json.setRows(rowsList);
+        result.use(Results.json()).withoutRoot().from(json).recursive().serialize();
     }
 
     public List<ClienteBean> clienteBeanList() {
@@ -81,8 +121,37 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
         return clienteBeanList;
     }
 
-    public AudiostoreCategoriaBean audiostoreCategoriaBean(Integer id) {
+    public AudiostoreCategoriaBean bean(Integer id) {
         return repository.find(AudiostoreCategoriaBean.class, id);
+    }
+    
+    public AudiostoreCategoriaDTO audiostoreCategoriaBean(Integer id) {
+
+        AudiostoreCategoriaBean bean = repository.find(AudiostoreCategoriaBean.class, id);
+        AudiostoreCategoriaDTO dto = new AudiostoreCategoriaDTO();
+        dto.setCodigo(bean.getCodigo());
+        dto.setCategoria(bean.getCategoria());
+        dto.setClienteNome(bean.getCliente().getNome());
+        dto.setIdcliente(bean.getCliente().getIdcliente().toString());
+        dto.setDataInicio(new SimpleDateFormat("dd/MM/yyyy").format(bean.getDataInicio()));
+        dto.setDataFinal(new SimpleDateFormat("dd/MM/yyyy").format(bean.getDataFinal()));
+        dto.setTempo(new SimpleDateFormat("HH:mm:ss").format(bean.getTempo()));
+        dto.setTipoNum(""+bean.getTipo());
+        dto.setIdcliente(bean.getCliente().getIdcliente().toString());
+        
+        switch (bean.getTipo()) {
+            case 1:
+                dto.setTipo("Música");
+                break;
+            case 2:
+                dto.setTipo("Comercial");
+                break;
+            case 3:
+                dto.setTipo("Video");
+                break;
+        }
+
+        return dto;
     }
 
     public void salvar(AudiostoreCategoriaBean audiostoreCategoriaBean, String tempo) {
@@ -97,12 +166,10 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
             }
 
             repository.finalize();
-            upload(audiostoreCategoriaBean);
             result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Dados salvos com sucesso!")).recursive().serialize();
         } catch (Exception e) {
             e.printStackTrace();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel salvar os dados!")).recursive().serialize();
-            repository.finalize();
         }
     }
 
@@ -135,7 +202,7 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
     public InputStreamDownload download(Integer id) {
         InputStreamDownload inputStreamDownload = null;
         try {
-            AudiostoreCategoriaBean audiostoreCategoriaBean = audiostoreCategoriaBean(id);
+            AudiostoreCategoriaBean audiostoreCategoriaBean = repository.find(AudiostoreCategoriaBean.class, id);
             if (audiostoreCategoriaBean != null) {
 
                 String conteudo = "";

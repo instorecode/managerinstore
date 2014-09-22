@@ -177,8 +177,7 @@
                     });
                 });
             </script>
-            <script type="text/javascript" charset="utf-8" src="${url_js}ws_cache.js?v=${machine_id}"></script>
-            <script type="text/javascript" charset="utf-8" src="${url_js}main.js?v=${machine_id}"></script>
+            
             <style>
 
                 .info .select2-chosen {
@@ -324,7 +323,7 @@
                                             var txt = '';
                                             var sep = '';
                                             var txt = jQuery('[data-' + p + '="true"]').text() + ' ';
-                                            jQuery('[data-' + p + '="true"]').text(data.attributes[p]);
+                                            jQuery('[data-' + p + '="true"]').html(data.attributes[p]);
                                         }
 
                                         jQuery('.xdet [datagrid-view="true"]').remove();
@@ -408,6 +407,9 @@
                         });
                 </script>
             </c:if>
+                 
+            <link rel="stylesheet" type="text/css" href="${url_css}table.css" />
+        <script type="text/javascript" src="${url_js}table.js"></script>
         </head>
 
         <body>

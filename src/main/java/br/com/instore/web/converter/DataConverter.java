@@ -13,16 +13,20 @@ public class DataConverter implements Converter<Date> {
 
     @Override
     public Date convert(String string, Class<? extends Date> type) {
+        System.out.println("---------------------------------------------");
+        System.out.println("ERROR DATA");
+        System.out.println("---------------------------------------------");
         try {
             return new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(string);
         } catch (ParseException e) {
-            e.printStackTrace();
+
             try {
                 return new SimpleDateFormat("dd/MM/yyyy").parse(string);
             } catch (ParseException e2) {
                 e2.printStackTrace();
             }
         }
-        return null;
+        System.out.println("---------------------------------------------");
+        return null;        
     }
 }

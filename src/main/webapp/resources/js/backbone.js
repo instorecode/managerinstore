@@ -863,8 +863,9 @@
       var success = options.success;
       var collection = this;
 //      jQuery.storageClear();
+
        var __LIST__ = jQuery.storage(window.location.href);
-       if(!(__LIST__ != null && __LIST__ != undefined && __LIST__ != "")) {
+       if(!(__LIST__ != null && __LIST__ != undefined && __LIST__ != "") || window.location.href.indexOf("/managerinstore/audiostore-comercial") != -1) {
            options.success = function(resp) {        
                 jQuery.storageAdd(window.location.href,JSON.stringify(resp)); 
                 var method = options.reset ? 'reset' : 'set';

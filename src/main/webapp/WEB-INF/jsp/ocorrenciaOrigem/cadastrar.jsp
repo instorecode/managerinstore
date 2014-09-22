@@ -7,7 +7,7 @@
         <a href="${url}/ocorrencia-origem" class="btn btn-default"> <i class="fa fa-hand-o-left"></i> Lista </a>
     </jsp:attribute>
 
-    <jsp:body>
+    <jsp:body>        
         <form d="cad_cliente" method="POST" data-form="true" data-success-url="${url}/ocorrencia-origem">
             <input type="hidden" name="ocorrenciaOrigemBean.id" value="${ocorrenciaOrigemBean.id}" />
 

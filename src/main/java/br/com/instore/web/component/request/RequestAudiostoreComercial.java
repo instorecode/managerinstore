@@ -1,14 +1,13 @@
 package br.com.instore.web.component.request;
 
 import br.com.caelum.vraptor.Result;
-import br.com.caelum.vraptor.observer.download.InputStreamDownload;
 import br.com.caelum.vraptor.observer.upload.UploadedFile;
 import br.com.caelum.vraptor.view.Results;
+import br.com.instore.core.orm.Each;
 import br.com.instore.core.orm.bean.AudiostoreCategoriaBean;
 import br.com.instore.core.orm.bean.ClienteBean;
 import br.com.instore.core.orm.bean.AudiostoreComercialBean;
 import br.com.instore.core.orm.bean.AudiostoreComercialShBean;
-import br.com.instore.core.orm.bean.AudiostoreGravadoraBean;
 import br.com.instore.core.orm.bean.ConfigAppBean;
 import br.com.instore.core.orm.bean.DadosClienteBean;
 import br.com.instore.core.orm.bean.property.AudiostoreComercialSh;
@@ -21,7 +20,6 @@ import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -30,8 +28,8 @@ import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
-import jcifs.smb.SmbFileInputStream;
 import jcifs.smb.SmbFileOutputStream;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -118,7 +116,24 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
     }
 
     public List<ClienteBean> clienteBeanList() {
-        List<ClienteBean> clienteBeanList = repository.query(ClienteBean.class).eq("matriz", true).eq("parente", 0).findAll();
+        String script = "select \n" +
+                        "    cliente.idcliente , '' as param \n" +
+                        "from\n" +
+                        "    cliente\n" +
+                        "inner join dados_cliente using(idcliente)\n" +
+                        "where local_destino_spot is not null and parente = 0 and instore = 0 and matriz = 1";
+        
+        final List<Integer> idents = new ArrayList<Integer>();
+        repository.query(script).executeSQL(new Each() {
+            Integer idcliente;
+            String param;
+            @Override
+            public void each() {
+                idents.add(idcliente);
+            }
+        });
+        
+        List<ClienteBean> clienteBeanList = repository.query(ClienteBean.class).in("idcliente", idents.toArray(new Integer[idents.size()])).findAll();
         return clienteBeanList;
     }
 
@@ -144,6 +159,9 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
         try {
             Date tempoTotal = new SimpleDateFormat("HH:mm:ss").parse(tempoTotalString);
             bean.setTempoTotal(tempoTotal);
+            if(null == bean.getQtde()) {
+                bean.setQtde(0);
+            }
             bean.setQtdePlayer(bean.getQtde());
             bean.setData(new Date());
             bean.setMsg("");
@@ -166,7 +184,7 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
             repository.query(query).executeSQLCommand();
 
             for (AudiostoreComercialShBean item : sh) {
-                if (item != null) {
+                if (null != item && null != item.getHorario() && null != item.getSemana()) {
                     item.setComercial(bean);
                     repository.save(item);
                 }
@@ -175,31 +193,30 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
             try {
                 DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", bean.getCliente().getIdcliente()).findOne();
 
-                String destino = "smb://"+dados.getLocalDestinoSpot()+ "/";
-                
-                SmbFile dir = new SmbFile(destino, Utilities.getAuthSmbDefault());
+                if(null != dados) {
+                    SmbFile dir = new SmbFile(dados.getLocalDestinoSpot(), Utilities.getAuthSmbDefault());
 
-                if (!dir.exists()) {
-                    dir.mkdirs();
+                    if (!dir.exists()) {
+                        dir.mkdirs();
+                    }
+
+                    SmbFile file = new SmbFile(dados.getLocalDestinoSpot() + arquivo.getFileName() + "/" , Utilities.getAuthSmbDefault());
+                    SmbFileOutputStream smbFos = new SmbFileOutputStream(file);
+                    byte[] bytes = IOUtils.toByteArray(arquivo.getFile());
+
+                    smbFos.write(bytes);
+                    smbFos.flush();
+                    smbFos.close();
                 }
-                
-                SmbFile file = new SmbFile(destino + arquivo.getFileName() + "/" , Utilities.getAuthSmbDefault());
-                SmbFileOutputStream smbFos = new SmbFileOutputStream(file);
-                byte[] bytes = IOUtils.toByteArray(arquivo.getFile());
-                
-                smbFos.write(bytes);
-                smbFos.flush();
-                smbFos.close();
-                
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (SmbException e) {
+                System.out.println("ERROR DO SMB");
+                System.out.println(e.getMessage());
             }
            
             repository.finalize();
             result.redirectTo(AudiostoreComercialController.class).listar(false);
         } catch (Exception e) {
             e.printStackTrace();
-            repository.finalize();
             result.redirectTo(AudiostoreComercialController.class).cadastrar();
         }
     }
@@ -248,6 +265,7 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
             repository.setUsuario(sessionUsuario.getUsuarioBean());
 
             String query = "delete from audiostore_comercial_sh where comercial = " + id;
+            System.out.println("ID DO COMERCIAL " + id);
             repository.query(query).executeSQLCommand();
 
             AudiostoreComercialBean bean = repository.marge((AudiostoreComercialBean) repository.find(AudiostoreComercialBean.class, id));

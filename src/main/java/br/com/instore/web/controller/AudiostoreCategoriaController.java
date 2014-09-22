@@ -35,9 +35,17 @@ public class AudiostoreCategoriaController implements java.io.Serializable {
     @Get
     @Restrict
     @Path("/audiostore-categorias")
-    public void categorias(Boolean datajson) {
+    public void categorias(Boolean datajson , Boolean view , Integer page, Integer rows, Integer id , Integer cliente ,  String nome , Integer tipo , String duracao , String dataInicio, String dataFinal , Integer pk) {
         if (null != datajson && datajson) {
-            result.use(Results.json()).withoutRoot().from(requestAudiostoreCategoria.categoriaDTOList()).recursive().serialize();
+            requestAudiostoreCategoria.beanList(page, rows, id, cliente, nome, tipo, duracao, dataInicio, dataFinal);
+        } else {
+            result.include("clienteBeanList", requestAudiostoreCategoria.clienteBeanList());
+        }
+        
+        if (null != view && view) {
+            result.use(Results.json()).withoutRoot().from(requestAudiostoreCategoria.audiostoreCategoriaBean(pk)).recursive().serialize();
+        } else {
+            result.include("clienteBeanList", requestAudiostoreCategoria.clienteBeanList());
         }
     }
 

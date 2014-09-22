@@ -9,19 +9,11 @@ public class AudiostoreCategoriaDTO extends AbstractDTO {
     private String tipo;
     private String tempo;
     private String clienteNome;
+    private String idcliente;
+    private String tipoNum;
 
 
     public AudiostoreCategoriaDTO() {
-    }
-
-    public AudiostoreCategoriaDTO(Integer codigo, String categoria, String dataInicio, String dataFinal, String tipo, String tempo, String clienteNome) {
-        this.codigo = codigo;
-        this.categoria = categoria;
-        this.dataInicio = dataInicio;
-        this.dataFinal = dataFinal;
-        this.tipo = tipo;
-        this.tempo = tempo;
-        this.clienteNome = clienteNome;
     }
 
     public Integer getCodigo() {
@@ -78,5 +70,21 @@ public class AudiostoreCategoriaDTO extends AbstractDTO {
 
     public void setClienteNome(String clienteNome) {
         this.clienteNome = clienteNome;
+    }
+
+    public String getIdcliente() {
+        return idcliente;
+    }
+
+    public void setIdcliente(String idcliente) {
+        this.idcliente = idcliente;
+    }
+
+    public String getTipoNum() {
+        return tipoNum;
+    }
+
+    public void setTipoNum(String tipoNum) {
+        this.tipoNum = tipoNum;
     }
 }
