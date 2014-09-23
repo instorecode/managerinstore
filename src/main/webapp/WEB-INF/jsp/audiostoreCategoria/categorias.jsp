@@ -321,6 +321,9 @@
                     <li><a href="100">100</a></li>
                 </ul>
             </div>
+            <button type="button" class="btn btn-default btn-flat btn_export" style="display: none;"><i class="fa fa-upload"></i> Exportar arquivo </button>
+            &nbsp;
+            &nbsp;
             <div class="btn-group">
                 <button class="btn btn-default btn-flat _prev"> <i class="fa fa-angle-double-left"></i> </button>
                 <button class="btn btn-default btn-flat prev"> <i class="fa fa-angle-left"></i> </button>
@@ -351,5 +354,43 @@
                 </table>
             </div>
         </div>
+        
+        <div class="progress-mask"></div>
+        
+        <style type="text/css">
+            .progress-mask {
+                display: block;
+                width: 100%;
+                height: 100%;
+                
+                background-color: rgba(0,0,0,0.5);
+                
+                
+                
+            }
+        </style>
+        
+        <script type="text/javascript">
+            jQuery(document).ready(function(){
+                jQuery(document).on("selected" , ".row_data" , function(evt,item){
+                    jQuery('.btn_export').show();
+                }).on("unselected" , ".row_data" , function(evt,item){
+                    if(countRowsSelected() == 0) {
+                        jQuery('.btn_export').hide();
+                    }
+                });
+                
+                jQuery('.btn_export').on("click", function(){
+                    if(countRowsSelected() <= 0){
+                        bootbox.alert("Selecione no minimo um registro na tabela.", function(){});
+                    } else {
+                        var arr = rowsSelected();
+                        for(i in arr) {
+                            var item = arr[i];
+                        }
+                    }
+                });
+            });
+        </script>
     </jsp:body>
 </instore:template>

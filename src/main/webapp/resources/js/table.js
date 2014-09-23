@@ -1,4 +1,35 @@
+function tr_row_click(self) {
+    self = jQuery(self).parent();
+
+    if (self.attr("class").indexOf("selected") != -1) {
+        self.removeClass('selected', true);
+        self.trigger("unselected", null);
+    } else {
+        self.addClass('selected', true);
+        self.trigger("selected", self.data("jsonItem"));
+    }
+}
+function countRowsSelected() {
+    var index = 0;
+    jQuery('.row_data.selected').each(function() {
+        index++;
+    });
+    return index;
+}
+;
+
+function rowsSelected() {
+    var arr = [];
+    var index = 0;
+    jQuery('.row_data.selected').each(function() {
+        arr[index] = jQuery(this).data("jsonItem");
+        index++;
+    });
+    return arr;
+};
+
 jQuery(document).ready(function() {
+
     jQuery('[data-mask]').each(function() {
         jQuery(this).mask(jQuery(this).data('mask'));
     });
@@ -8,6 +39,24 @@ jQuery(document).ready(function() {
     jQuery('[data-percent]').each(function() {
         $(this).mask('#0.00', {reverse: true});
     });
+
+    jQuery.fn.countRowsSelected = function() {
+        var index = 0;
+        jQuery('.row_data.selected').each(function() {
+            index++;
+        });
+        return index;
+    }
+
+    jQuery.fn.rowsSelected = function() {
+        var arr = [];
+        var index = 0;
+        jQuery('.row_data.selected').each(function() {
+            arr[index] = jQuery(this).data("jsonItem");
+            index++;
+        });
+        return arr;
+    }
 
     jQuery.extend(jQuery.validator.messages, {
         required: "Este campo &eacute; obrigat&oacute;rio.",
@@ -140,11 +189,11 @@ jQuery(document).ready(function() {
                 for (i in json["rows"])
                 {
                     var item = json["rows"][i];
-                    tr += "<tr class=\"row_data\" data-json-item='"+JSON.stringify(item)+"'>";
+                    tr += "<tr id=\"row_data_" + i + "\" class=\"row_data\" data-json-item='" + JSON.stringify(item) + "'>";
 
                     table.children("thead").children("tr").children("th").each(function() {
                         var td = jQuery(this);
-                        tr += "<td class=\"" + (i % 2 == 0 ? "zz1" : "zz2") + "\">";
+                        tr += "<td class=\"" + (i % 2 == 0 ? "zz1" : "zz2") + "\"   onclick=\"javascript:tr_row_click(this)\">";
                         if (td.attr("options") == "false")
                         {
                             tr += item[td.attr("field")];
@@ -485,22 +534,16 @@ jQuery(document).ready(function() {
         }
     });
 
-    jQuery(document).on('click', '.row_data', function() {
-        if (jQuery(this).attr("class").indexOf("selected") != -1) {
-            jQuery(this).removeClass('selected', true);
-        } else {
-            jQuery(this).addClass('selected', true);
-        }
-    });
-    
-    jQuery.fn.rowsSelected = function(){
-        jQuery('.row_data.selected').each(function(){
-            var json_item = jQuery(this).data('jsonItem');
-            console.log(json_item);
-        });
-    };
-    
-    jQuery.fn.rowsSelected();
+
+//    jQuery(document).on('click', '.row_data', function() {
+//        if (jQuery(this).attr("class").indexOf("selected") != -1) {
+//            jQuery(this).removeClass('selected', true);
+//            jQuery(this).trigger("unselected", ["evento"]);
+//        } else {
+//            jQuery(this).addClass('selected', true);
+//            jQuery(this).trigger("selected", ["evento"]);
+//        }
+//    });
 });
 
 
