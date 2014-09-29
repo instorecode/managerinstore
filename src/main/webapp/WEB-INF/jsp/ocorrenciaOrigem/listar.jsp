@@ -172,7 +172,7 @@
                 <table  id="table" 
                         class="xtable" 
                         id="datatable" 
-                        url="http://localhost:8080/managerinstore/ocorrencia-origem"
+                        url="${url}/ocorrencia-origem"
                         page="1"
                         size="0"
                         rows="10"
@@ -180,7 +180,7 @@
                     <thead>
                         <tr>
                             <th options="true" class="options">#</th>
-                            <th field="id" options="false">ID</th>
+                            <!--<th field="id" options="false">ID</th>-->
                             <th field="descricao" options="false">Descrição</th>
                         </tr>
                     </thead>

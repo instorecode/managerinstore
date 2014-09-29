@@ -4,7 +4,7 @@ public class OcorrenciaSolucaoDTO  extends AbstractDTO {
 
     private String id;
     private String descricao;
-    private String prazoResolucao;
+    private String prazo;
 
     public String getId() {
         return id;
@@ -22,11 +22,11 @@ public class OcorrenciaSolucaoDTO  extends AbstractDTO {
         this.descricao = descricao;
     }
 
-    public String getPrazoResolucao() {
-        return prazoResolucao;
+    public String getPrazo() {
+        return prazo;
     }
 
-    public void setPrazoResolucao(String prazoResolucao) {
-        this.prazoResolucao = prazoResolucao;
+    public void setPrazo(String prazo) {
+        this.prazo = prazo;
     }
 }

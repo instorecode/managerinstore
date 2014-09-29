@@ -2,13 +2,13 @@ package br.com.instore.web.component.request;
 
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.view.Results;
-import br.com.instore.core.orm.bean.OcorrenciaProblemaBean;
+import br.com.instore.core.orm.Query;
 import br.com.instore.core.orm.bean.OcorrenciaProblemaBean;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.dto.OcorrenciaProblemaDTO;
+import br.com.instore.web.dto.OcorrenciaProblemaJSON;
 import br.com.instore.web.tools.AjaxResult;
-import br.com.instore.web.tools.Utilities;
 import java.util.ArrayList;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
@@ -35,18 +35,47 @@ public class RequestOcorrenciaProblema implements java.io.Serializable {
         this.sessionUsuario = sessionUsuario;
     }
     
-    public List<OcorrenciaProblemaDTO> beanList() {
+    public void beanList(Integer page, Integer rows, Integer id, String descricao) {
+        OcorrenciaProblemaJSON json = new OcorrenciaProblemaJSON();
+        page = (null == page || 0 == page ? 1 : page);
+        rows = (null == rows || 0 == rows ? 10 : rows);
+
+        Integer offset = (page - 1) * rows;
         List<OcorrenciaProblemaBean> lista = new ArrayList<OcorrenciaProblemaBean>();
-        List<OcorrenciaProblemaDTO> lista2 = new ArrayList<OcorrenciaProblemaDTO>();
-        lista = repository.query(OcorrenciaProblemaBean.class).findAll();
-        for (OcorrenciaProblemaBean bean : lista) {
-            OcorrenciaProblemaDTO dto = new OcorrenciaProblemaDTO();
-            dto.setId(Utilities.leftPad(bean.getId()));
-            dto.setDescricao(bean.getDescricao());
-            
-            lista2.add(dto);
+
+        Query q1 = repository.query(OcorrenciaProblemaBean.class);
+        Query q2 = repository.query(OcorrenciaProblemaBean.class);
+
+        if (null != id && id > 0) {
+            q1.eq("id", id);
+            q2.eq("id", id);
+            json.setId(id);
         }
-        return lista2;
+
+        if (null != descricao && !descricao.isEmpty()) {
+            q1.ilikeAnyWhere("descricao", descricao);
+            q2.ilikeAnyWhere("descricao", descricao);
+            json.setDescricao(descricao);
+        }
+
+        int size = q1.count().intValue() / rows + ((q1.count().intValue() % rows == 0) ? 0 : 1); 
+        lista = q2.limit(offset, rows).findAll();
+
+        
+        json.setPage(page);
+        json.setSize(size);
+
+        List<OcorrenciaProblemaDTO> rowsList = new ArrayList<OcorrenciaProblemaDTO>();
+        for (OcorrenciaProblemaBean bean : lista) {
+            
+            OcorrenciaProblemaDTO dto = new OcorrenciaProblemaDTO();
+            dto.setId(bean.getId().toString());
+            dto.setDescricao(bean.getDescricao());
+
+            rowsList.add(dto);
+        }
+        json.setRows(rowsList);
+        result.use(Results.json()).withoutRoot().from(json).recursive().serialize();
     }
 
     public OcorrenciaProblemaBean bean(Integer id) {

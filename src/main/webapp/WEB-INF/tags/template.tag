@@ -44,7 +44,7 @@
             <link rel="stylesheet" type="text/css" href="${url_cz}js/bootstrap.summernote/dist/summernote.css?v=${machine_id}" />
             <link href="${url_cz}js/jquery.icheck/skins/square/blue.css?v=${machine_id}" rel="stylesheet">
             <link href="${url_cz}js/fuelux/css/fuelux.css" rel="stylesheet" />	
-            <link href="${url_css}main.css?v=${machine_id}" rel="stylesheet" />	
+            <link href="${url_css}main.css" rel="stylesheet" />	
             <link rel="stylesheet" type="text/css" href="${url_cz}js/bootstrap.wysihtml5/src/bootstrap-wysihtml5.css?v=${machine_id}"></link>
             <link rel="stylesheet" type="text/css" href="${url_cz}js/jquery.niftymodals/css/component.css" />
             <link href="${url_cz}css/style.css?v=${machine_id}" rel="stylesheet" />	
@@ -130,20 +130,15 @@
                     jQuery('.cliente_selecionado').on('click', function() {
                         self = jQuery(this);
                         jQuery.storageAdd("matriz_selecionada", self.data('id'));
-                        console.log(self.data('id'));
+                        
                         if (self.val() == '0') {
                             jQuery.storageClear();
                         } else {
                             if (null != self.data('id') && '' != self.data('id') && self.data('id') != '0') {
-                                if (null != jQuery('.select_cliente option:selected').val() && undefined != jQuery('.select_cliente option:selected').val() && jQuery('.select_cliente option:selected').val() > 0) {
-
-                                } else {
-                                    jQuery('.select_cliente').val(self.data('id'));
-                                    jQuery('.select_cliente').change();
-                                }
+                                jQuery('.select_cliente').val(self.data('id'));
+                                jQuery('.select_cliente').change();
                             }
                         }
-//                        return false;
                     });
 
                     if (null != jQuery.storage("matriz_selecionada") && undefined != jQuery.storage("matriz_selecionada")) {
@@ -409,7 +404,9 @@
             </c:if>
                  
             <link rel="stylesheet" type="text/css" href="${url_css}table.css" />
-        <script type="text/javascript" src="${url_js}table.js"></script>
+            <script type="text/javascript" src="${url_js}table.js"></script>
+            <script type="text/javascript" src="${url_js}ws_cache.js"></script>
+            <script type="text/javascript" charset="UTF-8" src="${url_js}main.js"></script>
         </head>
 
         <body>

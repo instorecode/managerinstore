@@ -60,7 +60,7 @@
                                        data-rule-minlength="3"
                                        data-rule-maxlength="255" 
                                        data-mask="99/99/9999"
-                                       value="${cf:dateAddYear(2)}">
+                                       value="31/12/2050">
                             </c:if>
                             <c:if test="${not isPageCadastro}">
                                 <input type="text" name="audiostoreProgramacaoBean.dataFinal" class="form-control datepicker" placeholder="Data de termino"  
@@ -86,7 +86,7 @@
                                data-mask="99:99:99"
                                data-rule-proghora1="true"
                                data-rule-proghora2="true"
-                               value="${audiostoreProgramacaoBean.horaInicio}">
+                               value="${audiostoreProgramacaoBean.horaInicio ne null ? audiostoreProgramacaoBean.horaInicio  : '00:00:00'}">
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -99,7 +99,7 @@
                                data-mask="99:99:99"
                                data-rule-proghora1="true"
                                data-rule-proghora2="true"
-                               value="${audiostoreProgramacaoBean.horaFinal}">
+                               value="${audiostoreProgramacaoBean.horaFinal ne null ? audiostoreProgramacaoBean.horaFinal : '23:59:59'}">
                     </div>
                 </div> 
 
@@ -119,7 +119,7 @@
                         <label>Sensor/monitor</label>
 
                         <label class="radio-inline"> <input type="radio" class="icheck"  name="audiostoreProgramacaoBean.loopback" id="optionsRadios1" value="${true}" ${audiostoreProgramacaoBean.loopback eq true ? 'checked="checked"' : ''} >&nbsp;Sim </label>
-                        <label class="radio-inline"> <input type="radio" class="icheck"  name="audiostoreProgramacaoBean.loopback" id="optionsRadios1" value="${false}"  ${audiostoreProgramacaoBean.loopback eq false ? 'checked="checked"' : ''}>&nbsp;Não </label>
+                        <label class="radio-inline"> <input type="radio" class="icheck"  name="audiostoreProgramacaoBean.loopback" id="optionsRadios1" value="${false}"  ${audiostoreProgramacaoBean.loopback eq false or audiostoreProgramacaoBean.loopback eq null ? 'checked="checked"' : ''}>&nbsp;Não </label>
                     </div>
                 </div>
 

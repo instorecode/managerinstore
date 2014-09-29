@@ -136,6 +136,11 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
                 result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Informe pelomenos um dia da semana!")).recursive().serialize();
                 return;
             }
+            
+            if (audiostoreProgramacaoBean.getDataInicio().after(audiostoreProgramacaoBean.getDataFinal())) {
+                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "A data inicial deve ser menor que a data final!")).recursive().serialize();
+                return;
+            }
 //            ValidatorFactory factory =
 //                    Validation.buildDefaultValidatorFactory();
 //            Validator validator = factory.getValidator();

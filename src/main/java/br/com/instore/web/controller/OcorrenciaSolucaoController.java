@@ -32,9 +32,17 @@ public class OcorrenciaSolucaoController implements java.io.Serializable {
     @Get
     @Restrict
     @Path("/ocorrencia-solucao")
-    public void listar(Boolean datajson) {
+    public void listar(Boolean datajson , Boolean view , Integer page, Integer rows, Integer id, String prazo, String descricao , Integer pk) {
         if (null != datajson && datajson) {
-            result.use(Results.json()).withoutRoot().from(requestOcorrenciaSolucao.beanList()).recursive().serialize();
+            requestOcorrenciaSolucao.beanList(page, rows, id, descricao, prazo);
+        } else {
+            result.include("problemaList", requestOcorrenciaSolucao.problemaList());
+        }
+        
+        if (null != view && view) {
+            result.use(Results.json()).withoutRoot().from(requestOcorrenciaSolucao.bean(pk)).recursive().serialize();
+        } else {
+            result.include("problemaList", requestOcorrenciaSolucao.problemaList());
         }
     }
 

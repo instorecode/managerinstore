@@ -34,9 +34,13 @@ public class OcorrenciaPrioridadeController implements java.io.Serializable {
     @Get
     @Restrict
     @Path("/ocorrencia-prioridade")
-    public void listar(Boolean datajson) {
+    public void listar(Boolean datajson , Boolean view , Integer page, Integer rows, Integer id, Integer nivel, String descricao , Integer pk) {
         if (null != datajson && datajson) {
-            result.use(Results.json()).withoutRoot().from(requestOcorrenciaPrioridade.beanList()).recursive().serialize();
+            requestOcorrenciaPrioridade.beanList(page, rows, id, descricao, nivel);
+        }
+        
+        if (null != view && view) {
+            result.use(Results.json()).withoutRoot().from(requestOcorrenciaPrioridade.bean(pk)).recursive().serialize();
         }
     }
 

@@ -194,6 +194,12 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
 
     public void salvar(AudiostoreCategoriaBean audiostoreCategoriaBean, String tempo) {
         try {
+            
+            if(audiostoreCategoriaBean.getDataInicio().after(audiostoreCategoriaBean.getDataFinal())) {
+                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "A data de inicio deve ser menor que a data de termino da categoria!")).recursive().serialize();
+                return;
+            }
+            
             repository.setUsuario(sessionUsuario.getUsuarioBean());
             audiostoreCategoriaBean.setTempo(new SimpleDateFormat("HH:mm:ss").parse(tempo));
 

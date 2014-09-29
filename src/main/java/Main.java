@@ -17,22 +17,11 @@ import jcifs.smb.SmbFile;
 public class Main {
 
     public static void main(String[] args) {
-        double d = -39235.45;
-        System.out.println(formatDecimal(d));;
+       executaAlgo();
+    }
+    
+    public static void executaAlgo() {
 
-        double money = d;
-        NumberFormat formatter = NumberFormat.getCurrencyInstance();
-        String moneyString = formatter.format(money);
-        System.out.println(moneyString);
-
-        if (moneyString.endsWith(".00")) {
-            int centsIndex = moneyString.lastIndexOf(".00");
-            if (centsIndex != -1) {
-                moneyString = moneyString.substring(1, centsIndex);
-            }
-        }
-        
-        System.out.println(moneyString);
     }
 
     public static String formatDecimal(double number) {

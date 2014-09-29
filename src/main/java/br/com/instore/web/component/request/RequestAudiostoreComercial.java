@@ -2,6 +2,8 @@ package br.com.instore.web.component.request;
 
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.observer.upload.UploadedFile;
+import br.com.caelum.vraptor.validator.SimpleMessage;
+import br.com.caelum.vraptor.validator.Validator;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.Each;
 import br.com.instore.core.orm.bean.AudiostoreCategoriaBean;
@@ -22,10 +24,14 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import jcifs.smb.SmbException;
@@ -41,6 +47,8 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
     private SessionRepository repository;
     @Inject
     private Result result;
+    @Inject
+    private Validator validator;
     @Inject
     private SessionUsuario sessionUsuario;
 
@@ -116,23 +124,24 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
     }
 
     public List<ClienteBean> clienteBeanList() {
-        String script = "select \n" +
-                        "    cliente.idcliente , '' as param \n" +
-                        "from\n" +
-                        "    cliente\n" +
-                        "inner join dados_cliente using(idcliente)\n" +
-                        "where local_destino_spot is not null and parente = 0 and instore = 0 and matriz = 1";
-        
+        String script = "select \n"
+                + "    cliente.idcliente , '' as param \n"
+                + "from\n"
+                + "    cliente\n"
+                + "inner join dados_cliente using(idcliente)\n"
+                + "where local_destino_spot is not null and parente = 0 and instore = 0 and matriz = 1";
+
         final List<Integer> idents = new ArrayList<Integer>();
         repository.query(script).executeSQL(new Each() {
             Integer idcliente;
             String param;
+
             @Override
             public void each() {
                 idents.add(idcliente);
             }
         });
-        
+
         List<ClienteBean> clienteBeanList = repository.query(ClienteBean.class).in("idcliente", idents.toArray(new Integer[idents.size()])).findAll();
         return clienteBeanList;
     }
@@ -156,12 +165,16 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
     }
 
     public void salvar(AudiostoreComercialBean bean, String tempoTotalString, AudiostoreComercialShBean[] sh, UploadedFile arquivo) {
+        DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", bean.getCliente().getIdcliente()).findOne();
+
         try {
-            Date tempoTotal = new SimpleDateFormat("HH:mm:ss").parse(tempoTotalString);
+            Date tempoTotal = new SimpleDateFormat("HH:mm").parse(tempoTotalString);
             bean.setTempoTotal(tempoTotal);
-            if(null == bean.getQtde()) {
+
+            if (null == bean.getQtde()) {
                 bean.setQtde(0);
             }
+
             bean.setQtdePlayer(bean.getQtde());
             bean.setData(new Date());
             bean.setMsg("");
@@ -169,11 +182,11 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
             bean.setRandom(10);
 
             repository.setUsuario(sessionUsuario.getUsuarioBean());
-            
+
             bean.setFrameInicio(0);
             bean.setFrameFinal(0);
             bean.setArquivo(arquivo.getFileName());
-            
+
             if (bean != null && bean.getId() != null && bean.getId() > 0) {
                 repository.save(repository.marge(bean));
             } else {
@@ -191,16 +204,14 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
             }
 
             try {
-                DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", bean.getCliente().getIdcliente()).findOne();
-
-                if(null != dados) {
+                if (null != dados) {
                     SmbFile dir = new SmbFile(dados.getLocalDestinoSpot(), Utilities.getAuthSmbDefault());
 
                     if (!dir.exists()) {
                         dir.mkdirs();
                     }
 
-                    SmbFile file = new SmbFile(dados.getLocalDestinoSpot() + arquivo.getFileName() + "/" , Utilities.getAuthSmbDefault());
+                    SmbFile file = new SmbFile(dados.getLocalDestinoSpot() + arquivo.getFileName() + "/", Utilities.getAuthSmbDefault());
                     SmbFileOutputStream smbFos = new SmbFileOutputStream(file);
                     byte[] bytes = IOUtils.toByteArray(arquivo.getFile());
 
@@ -212,7 +223,7 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
                 System.out.println("ERROR DO SMB");
                 System.out.println(e.getMessage());
             }
-           
+
             repository.finalize();
             result.redirectTo(AudiostoreComercialController.class).listar(false);
         } catch (Exception e) {
@@ -220,7 +231,7 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
             result.redirectTo(AudiostoreComercialController.class).cadastrar();
         }
     }
-    
+
     public void salvar2(AudiostoreComercialBean bean, String tempoTotalString, AudiostoreComercialShBean[] sh) {
         try {
             Date tempoTotal = new SimpleDateFormat("HH:mm:ss").parse(tempoTotalString);
@@ -232,10 +243,10 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
             bean.setRandom(10);
 
             repository.setUsuario(sessionUsuario.getUsuarioBean());
-            
+
             bean.setFrameInicio(0);
             bean.setFrameFinal(0);
-            
+
             if (bean != null && bean.getId() != null && bean.getId() > 0) {
                 repository.save(repository.marge(bean));
             } else {
@@ -251,7 +262,7 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
                     repository.save(item);
                 }
             }
-           
+
             repository.finalize();
             result.redirectTo(AudiostoreComercialController.class).listar(false);
         } catch (Exception e) {
@@ -453,5 +464,53 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
             e.printStackTrace();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "")).recursive().serialize();
         }
+    }
+
+    public void validador(String titulo, String periodoInicial, String periodoFinal, String nomeArquivo, Integer idcliente) {
+        Date dataPeriodoInicial = null;
+        Date dataPeriodoFinal = null;
+        try {
+            dataPeriodoInicial = new SimpleDateFormat("dd/MM/yyyy").parse(periodoInicial);
+            dataPeriodoFinal = new SimpleDateFormat("dd/MM/yyyy").parse(periodoFinal);
+        } catch (ParseException ex) {
+            Logger.getLogger(RequestAudiostoreComercial.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        boolean bool = true;
+        String mensagem = "";
+
+        if (null != dataPeriodoInicial && null != dataPeriodoFinal) {
+            if (dataPeriodoInicial.after(dataPeriodoFinal)) {
+                mensagem = "O periodo inicial deve ser menor que o periodo final!";
+                bool = false;
+            }
+        }
+
+        if (repository.query(AudiostoreComercialBean.class).eq("cliente.idcliente", idcliente).eq("titulo", titulo).count() > 0) {
+            mensagem = "Já existe um comercial com este título!";
+            bool = false;
+        }
+
+        DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", idcliente).findOne();
+        if (null != dados) {
+
+            if (null == dados.getLocalDestinoSpot() || dados.getLocalDestinoSpot().trim().isEmpty()) {
+                mensagem = "O cliente selecionado não possui um local de destino para os arquivos dos comerciais!";
+                bool = false;
+            }
+
+            try {
+                SmbFile fileValid = new SmbFile(dados.getLocalDestinoSpot() + nomeArquivo + "/", Utilities.getAuthSmbDefault());
+                if (fileValid.exists()) {
+                    mensagem = "Já existe um comercial com este arquivo!";
+                    bool = false;
+                }
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (SmbException e) {
+                e.printStackTrace();
+            }
+        }
+        result.use(Results.json()).withoutRoot().from(new AjaxResult(bool, mensagem)).recursive().serialize();
     }
 }

@@ -469,6 +469,7 @@ jQuery(document).ready(function() {
         jQuery.ajax({
             type: 'GET',
             url: url,
+            contentType: 'application/json;charset=UTF-8',
             data: {cep: value},
             beforeSend: function() {
                 bootbox.hideAll();
@@ -607,14 +608,6 @@ jQuery(document).ready(function() {
         });
         return false;
     });
-
-//    jQuery('[dropdown-toggle="true"]').dropdown();
-//    jQuery('[data-mask]').each(function() {
-//        jQuery(this).mask(jQuery(this).data('mask'));
-//    });
-//    jQuery('[data-maskmoney]').each(function() {
-//        jQuery(this).mask("#.##0,00", {reverse: true, maxlength: false});
-//    });
 });
 
 function formProccess() {
@@ -640,7 +633,7 @@ function formProccess() {
         min: jQuery.validator.format("Por favor, forne&ccedil;a um valor maior ou igual a {0}.")
     });
 
-    jQuery('[data-form="true"]').each(function() {
+    jQuery('[data-form="true"]').each(function() { 
         var form = jQuery(this);
         form.validate();
 
@@ -655,9 +648,6 @@ function formProccess() {
                     type: form.attr('method'),
                     url: form.attr('action'),
                     data: form.serialize(),
-//                    data: new FormData( form ),
-//                    processData: false,
-//                    contentType: false,
                     dataType: 'json',
                     beforeSend: function() {
                         bootbox.hideAll();
@@ -695,13 +685,12 @@ function formProccess() {
             }
             return false;
         });
-
     });
 }
 
 function dialogAjax(msg) {
     bootbox.hideAll();
-    bootbox.dialog({
+    bootbox.dialog({ 
         message: msg,
         title: "Sistema processando informações",
         buttons: {}

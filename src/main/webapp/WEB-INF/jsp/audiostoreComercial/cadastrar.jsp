@@ -8,12 +8,21 @@
     </jsp:attribute>
 
     <jsp:body>
-        <!--<form d="cad_cliente" method="POST" data-form="true" data-success-url="${url}/audiostore-comercial" enctype="multipart/form-data">-->
-        <form  method="POST" enctype="multipart/form-data">
+        <c:forEach var="error" items="${errors}">
+            <div class="alert alert-danger">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <i class="fa fa-times-circle sign"></i><strong>Error!</strong> ${error.message}
+            </div>
+        </c:forEach>
+
+
+<!--<form d="cad_cliente" method="POST" data-form="true" data-success-url="${url}/audiostore-comercial" enctype="multipart/form-data">-->
+        <form data-form="false" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="audiostoreComercialBean.id" value="${audiostoreComercialBean.id}" />
+            <input type="hidden" name="audiostoreComercialBean.ultimaExecucao" value="01/01/2000" />
 
             <c:if test="${isPageCadastro}">
-                <input type="file" name="arquivo" accept="audio/*" style="display: none" />
+                <input type="file" name="arquivo" accept="audio/*" style="display: none" value="${arquivo}" />
             </c:if>
 
             <c:if test="${isPageCadastro eq false}">
@@ -33,10 +42,10 @@
             </script>
 
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-3"> 
                     <div class="form-group">
                         <label>Cliente</label>
-                        <select   class="select2" name="audiostoreComercialBean.cliente.idcliente" data-rule-required="true" >
+                        <select class="select2 ${isPageCadastro eq true ? 'select_cliente' : ''}" name="audiostoreComercialBean.cliente.idcliente" data-rule-required="true" >
                             <c:forEach items="${clienteBeanList}" var="item">
                                 <option value="${item.idcliente}" ${audiostoreComercialBean.cliente.idcliente eq item.idcliente ? 'selected="selected"':''}>${item.nome}</option> 
                             </c:forEach>
@@ -64,6 +73,18 @@
                                        data-rule-minlength="3"
                                        data-rule-maxlength="30" value="${audiostoreComercialBean.arquivo}">
                                 <span class="input-group-addon"> <i class="fa fa-file-audio-o"></i> </span>
+                            </div>
+                        </div>
+                    </div>
+                </c:if>
+
+                <c:if test="${isPageCadastro eq false}">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Arquivo</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control"  value="${audiostoreComercialBean.arquivo}" readonly="readonly">
+                                <span class="input-group-addon"> <i class="fa fa-file-audio-o"></i> </span> 
                             </div>
                         </div>
                     </div>
@@ -150,7 +171,7 @@
                         <input type="text" name="tempoTotal" class="form-control" placeholder="Nome"  
                                data-mask="99:99:99"  
                                data-rule-required="true" 
-                               value="${cf:dateFormat(audiostoreComercialBean.tempoTotal, "HH:mm:ss")}">
+                               value="${audiostoreComercialBean.tempoTotal ne null ? cf:dateFormat(audiostoreComercialBean.tempoTotal, "HH:mm:ss") : '00:00:00'}">
                     </div>
                 </div>
 
@@ -162,17 +183,6 @@
                     </div>
                 </div>
 
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <label>Ultima  execução</label>
-                        <div class="input-group date datetime" data-min-view="2" data-date-format="dd/mm/yyyy">
-                            <input type="text" name="audiostoreComercialBean.ultimaExecucao" class="form-control datepicker" placeholder="Nome"  
-                                   data-mask="99/99/9999"
-                                   data-rule-maxlength="30" value="${cf:dateFormat(audiostoreComercialBean.ultimaExecucao,"dd/MM/yyyy")}">
-                            <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="col-md-2">
                     <div class="form-group">
@@ -180,7 +190,7 @@
                         <div class="input-group date datetime" data-min-view="2" data-date-format="dd/mm/yyyy">
                             <input type="text" name="audiostoreComercialBean.dataVencimento" class="form-control datepicker" placeholder="Nome"  
                                    data-rule-required="true" 
-                                   data-mask="99/99/9999" value="${cf:dateFormat(audiostoreComercialBean.dataVencimento, "dd/MM/yyyy")}">
+                                   data-mask="99/99/9999" value="${audiostoreComercialBean.dataVencimento ne null ? cf:dateFormat(audiostoreComercialBean.dataVencimento, "dd/MM/yyyy") : '31/12/2050'}">
                             <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
                         </div>
                     </div>
@@ -203,7 +213,7 @@
                         <div class="input-group date datetime" data-min-view="2" data-date-format="dd/mm/yyyy">
                             <input type="text" name="audiostoreComercialBean.periodoFinal" class="form-control datepicker" placeholder="Nome"  
                                    data-rule-required="true" 
-                                   data-mask="99/99/9999" value="${cf:dateFormat(audiostoreComercialBean.periodoFinal, "dd/MM/yyyy")}">
+                                   data-mask="99/99/9999" value="${audiostoreComercialBean.periodoFinal ne null ? cf:dateFormat(audiostoreComercialBean.periodoFinal, "dd/MM/yyyy") : '31/12/2050'}">
                             <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
                         </div>
                     </div>
@@ -214,8 +224,8 @@
                         <label>Tocar em dias alternados</label>
                         <br />
                         <select name="audiostoreComercialBean.diasAlternados" class="select2"  data-rule-required="true">
-                            <option value="${true}">Sim</option>
-                            <option value="${false}">Não</option>
+                            <option value="${true}" ${audiostoreComercialBean.diasAlternados eq true ? 'selected="selected"' : ''}>Sim</option>
+                            <option value="${false}" ${audiostoreComercialBean.diasAlternados eq null or audiostoreComercialBean.diasAlternados eq false ? 'selected="selected"' : ''}>Não</option>
                         </select>
                     </div>
                 </div>
@@ -242,24 +252,24 @@
                                         <c:forEach items="${shs}" var="sh" varStatus="vs">
                                             <c:if test="${__HORA__ eq sh.horario}">
                                                 ${sh.semana} ,
-                                                <input type="hidden" name="sh[${indx}].semana" value="${sh.semana}" />
-                                                <input type="hidden" name="sh[${indx}].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ${sh.horario}" />
-                                            </c:if>
-                                                
-                                            <c:if test="${__HORA__ ne sh.horario}">
-                                                </tr>
-                                                </td>
-                                                <tr>
+                                            <input type="hidden" name="sh[${indx}].semana" value="${sh.semana}" />
+                                            <input type="hidden" name="sh[${indx}].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ${sh.horario}" />
+                                        </c:if>
+
+                                        <c:if test="${__HORA__ ne sh.horario}">
+                                            </tr>
+                                            </td>
+                                            <tr>
                                                 <td>${sh.horario}</td> 
                                                 <td>${sh.semana} ,
-                                                <input type="hidden" name="sh[${indx}].semana" value="${sh.semana}" />
-                                                <input type="hidden" name="sh[${indx}].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ${sh.horario}" />
-                                                <c:set scope="session"  var="__HORA__" value="${sh.horario}"></c:set>
-                                            </c:if>
-                                                
-                                            <c:set scope="session"  var="indx" value="${indx+1}"></c:set>
-                                        </c:forEach>
-                                    </tbody>
+                                                    <input type="hidden" name="sh[${indx}].semana" value="${sh.semana}" />
+                                                    <input type="hidden" name="sh[${indx}].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ${sh.horario}" />
+                                                    <c:set scope="session"  var="__HORA__" value="${sh.horario}"></c:set>
+                                                </c:if>
+
+                                                <c:set scope="session"  var="indx" value="${indx+1}"></c:set>
+                                            </c:forEach>
+                                            </tbody>
                                 </table>
                             </div>
                         </div>
@@ -282,8 +292,33 @@
                                 <label> <input type="checkbox" name="todos" value="0" class="icheck"/>&nbsp;Marcar Todos</label> 
                             </div>
                             <div class="col-xs-3">
-                                <input type="text" name="hora" class="form-control span5" placeholder="Horário"  
-                                       data-mask="99:99:99">
+                                <div class="col-xs-12">
+                                    <input type="text" name="hora" class="form-control span5" placeholder="Horário" data-mask="99:99" value="06:00">
+                                </div>
+
+                                <br />
+                                <br />
+
+                                <div class="col-xs-12"> 
+                                    <input type="text" name="hora_final" class="form-control span5" placeholder="Horário final" data-mask="99:99" value="18:00">
+                                </div>
+
+                                <br />
+                                <br />
+
+                                <div class="col-xs-12">
+                                    <input type="text" name="hora_intervalo" class="form-control span5" placeholder="Intervalo" data-mask="99:99" value="03:00">
+                                </div>
+
+                                <br />
+                                <br />
+
+                                <div class="col-xs-12">
+                                    <button type="button" class="btn btn-default add_sh_intervalo" data-tooltip="true" title="Para remover um selecione um registro da tabela!" style="margin-left: 0px;">
+                                        <i class="fa fa-plus"></i> Usar intervalo
+                                    </button>
+                                </div>
+
                             </div>
 
                             <button type="button" class="btn btn-default add_sh" data-tooltip="true" title="Para adicionar é necessário seleionar um ou mais dias da semana e informa um horário!">
@@ -371,166 +406,513 @@
                     var todos = jQuery('[name="todos"]');
 
                     var hora = jQuery('[name="hora"]');
-                    if (hora.val() != "") {
-                        temHora = true;
-                    }
 
-                    var tbl = jQuery('.tbl tbody');
-                    var diasLabel = '';
-                    var connector = '';
-                    var inputsHiddens = '';
-                    var i = 0;
-                    tbl.children('tr').each(function(){
-                        var ___tr = jQuery(this);
-                        ___tr.children('td').each(function(){
-                            var ___td = jQuery(this);
-                            ___td.children('[type="hidden"]').each(function(){
-                                i++;
+                    var date_inicial = new Date("2013-11-20T" + hora.val() + ":00.000Z");
+                    if (date_inicial == "Invalid Date") {
+                        bootbox.hideAll();
+                        bootbox.dialog({
+                            message: "Hora inválida",
+                            title: "Importante!",
+                            buttons: {}
+                        });
+
+                        setTimeout(function() {
+                            bootbox.hideAll();
+                        }, 2000);
+                    } else {
+                        if (hora.val() != "") {
+                            temHora = true;
+                        }
+
+                        var tbl = jQuery('.tbl tbody');
+                        var diasLabel = '';
+                        var connector = '';
+                        var inputsHiddens = '';
+                        var i = 0;
+                        tbl.children('tr').each(function() {
+                            var ___tr = jQuery(this);
+                            ___tr.children('td').each(function() {
+                                var ___td = jQuery(this);
+                                ___td.children('[type="hidden"]').each(function() {
+                                    i++;
+                                });
                             });
                         });
-                    });
-                    
-                    i = i/2;
 
-                    inputsHiddens += '<tr> ';
-                    inputsHiddens += ' <td>' + hora.val() + '</td>';
-                    inputsHiddens += '<td> ';
+                        i = i / 2;
 
-                    if (segunda.is(':checked')) {
-                        temDiasSelecionados = true;
-                        inputsHiddens += connector + 'Segunda';
-                        connector = ', ';
-                        inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Segunda" />';
-                        inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + '" />';
-                        i++;
-                    }
+                        inputsHiddens += '<tr> ';
+                        inputsHiddens += ' <td>' + hora.val() + '</td>';
+                        inputsHiddens += '<td> ';
 
-
-
-                    if (terca.is(':checked')) {
-                        temDiasSelecionados = true;
-                        inputsHiddens += connector + 'Terça';
-                        connector = ', ';
-                        inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Terça" />';
-                        inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + '" />';
-                        i++;
-                    }
-
-                    if (quarta.is(':checked')) {
-                        temDiasSelecionados = true;
-                        inputsHiddens += connector + 'Quarta';
-                        connector = ', ';
-                        inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Quarta" />';
-                        inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + '" />';
-                        i++;
-                    }
-
-                    if (quinta.is(':checked')) {
-                        temDiasSelecionados = true;
-                        inputsHiddens += connector + 'Quinta';
-                        connector = ', ';
-                        inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Quinta" />';
-                        inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + '" />';
-                        i++;
-                    }
-
-                    if (sexta.is(':checked')) {
-                        temDiasSelecionados = true;
-                        inputsHiddens += connector + 'Sexta';
-                        connector = ', ';
-                        inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Sexta" />';
-                        inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + '" />';
-                        i++;
-                    }
-
-                    if (sabado.is(':checked')) {
-                        temDiasSelecionados = true;
-                        inputsHiddens += connector + 'Sábado';
-                        connector = ', ';
-                        inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Sábado" />';
-                        inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + '" />';
-                        i++;
-                    }
-
-                    if (domingo.is(':checked')) {
-                        temDiasSelecionados = true;
-                        inputsHiddens += connector + 'Domingo';
-                        connector = ', ';
-                        inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Domingo" />';
-                        inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + '" />';
-                        i++;
-                    }
-                    inputsHiddens += '</td> ';
-                    inputsHiddens += '</tr>';
-
-                    if (temDiasSelecionados && temHora) {
-
-
-                        if (tbl.children('tr').length < 24) {
-                            tbl.append(inputsHiddens);
-
-                            if (segunda.is(':checked')) {
-                                segunda.trigger('click');
-                            }
-
-                            if (terca.is(':checked')) {
-                                terca.trigger('click');
-                            }
-
-                            if (quarta.is(':checked')) {
-                                quarta.trigger('click');
-                            }
-
-                            if (quinta.is(':checked')) {
-                                quinta.trigger('click');
-                            }
-
-                            if (sexta.is(':checked')) {
-                                sexta.trigger('click');
-                            }
-
-                            if (sabado.is(':checked')) {
-                                sabado.trigger('click');
-                            }
-
-                            if (domingo.is(':checked')) {
-                                domingo.trigger('click');
-                            }
-
-                            if (todos.is(':checked')) {
-                                todos.trigger('click');
-                            }
-                        } else {
-                            bootbox.alert('Ops! Já está no limite de dias e horas!');
+                        if (segunda.is(':checked')) {
+                            temDiasSelecionados = true;
+                            inputsHiddens += connector + 'Segunda';
+                            connector = ', ';
+                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Segunda" />';
+                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + '" />';
+                            i++;
                         }
 
-                        if (tbl.children('tr').length >= 24) {
-                            var i = 1;
-                            tbl.children('tr').each(function() {
-                                if (i > 24) {
-                                    jQuery(this).remove();
+
+
+                        if (terca.is(':checked')) {
+                            temDiasSelecionados = true;
+                            inputsHiddens += connector + 'Terça';
+                            connector = ', ';
+                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Terça" />';
+                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + '" />';
+                            i++;
+                        }
+
+                        if (quarta.is(':checked')) {
+                            temDiasSelecionados = true;
+                            inputsHiddens += connector + 'Quarta';
+                            connector = ', ';
+                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Quarta" />';
+                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + '" />';
+                            i++;
+                        }
+
+                        if (quinta.is(':checked')) {
+                            temDiasSelecionados = true;
+                            inputsHiddens += connector + 'Quinta';
+                            connector = ', ';
+                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Quinta" />';
+                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + '" />';
+                            i++;
+                        }
+
+                        if (sexta.is(':checked')) {
+                            temDiasSelecionados = true;
+                            inputsHiddens += connector + 'Sexta';
+                            connector = ', ';
+                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Sexta" />';
+                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + '" />';
+                            i++;
+                        }
+
+                        if (sabado.is(':checked')) {
+                            temDiasSelecionados = true;
+                            inputsHiddens += connector + 'Sábado';
+                            connector = ', ';
+                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Sábado" />';
+                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + '" />';
+                            i++;
+                        }
+
+                        if (domingo.is(':checked')) {
+                            temDiasSelecionados = true;
+                            inputsHiddens += connector + 'Domingo';
+                            connector = ', ';
+                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Domingo" />';
+                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + '" />';
+                            i++;
+                        }
+                        inputsHiddens += '</td> ';
+                        inputsHiddens += '</tr>';
+
+                        if (temDiasSelecionados && temHora) {
+
+
+                            if (tbl.children('tr').length < 10000000000000000) {
+                                tbl.append(inputsHiddens);
+
+                                if (segunda.is(':checked')) {
+                                    segunda.trigger('click');
                                 }
-                                i++;
-                            });
+
+                                if (terca.is(':checked')) {
+                                    terca.trigger('click');
+                                }
+
+                                if (quarta.is(':checked')) {
+                                    quarta.trigger('click');
+                                }
+
+                                if (quinta.is(':checked')) {
+                                    quinta.trigger('click');
+                                }
+
+                                if (sexta.is(':checked')) {
+                                    sexta.trigger('click');
+                                }
+
+                                if (sabado.is(':checked')) {
+                                    sabado.trigger('click');
+                                }
+
+                                if (domingo.is(':checked')) {
+                                    domingo.trigger('click');
+                                }
+
+                                if (todos.is(':checked')) {
+                                    todos.trigger('click');
+                                }
+                            } else {
+                                bootbox.alert('Ops! Já está no limite de dias e horas!');
+                            }
+
+                            if (tbl.children('tr').length >= 1000000) {
+                                var i = 1;
+                                tbl.children('tr').each(function() {
+                                    if (i > 24) {
+                                        jQuery(this).remove();
+                                    }
+                                    i++;
+                                });
+                            }
                         }
                     }
+
+
+
                     return false;
                 });
+
+                // __intervalo
+
+                jQuery('.add_sh_intervalo').on('click', function() {
+                    var temDiasSelecionados = false;
+                    var temHora = false;
+
+                    var segunda = jQuery('[name="segunda"]');
+                    var terca = jQuery('[name="terca"]');
+                    var quarta = jQuery('[name="quarta"]');
+                    var quinta = jQuery('[name="quinta"]');
+                    var sexta = jQuery('[name="sexta"]');
+                    var sabado = jQuery('[name="sabado"]');
+                    var domingo = jQuery('[name="domingo"]');
+                    var todos = jQuery('[name="todos"]');
+
+                    var hora = jQuery('[name="hora"]');
+                    var hora_final = jQuery('[name="hora_final"]');
+                    var hora_intervalo = jQuery('[name="hora_intervalo"]');
+
+                    var date_inicial = new Date("2013-11-20T" + hora.val() + ":00.000Z");
+                    var date_final = new Date("2013-11-20T" + hora_final.val() + ":00.000Z");
+                    var date_intervalo = new Date("2013-11-20T" + hora_intervalo.val() + ":00.000Z");
+
+                    if (date_inicial == "Invalid Date" || date_final == "Invalid Date" || date_intervalo == "Invalid Date") {
+                        bootbox.hideAll();
+                        bootbox.dialog({
+                            message: "Hora inválida",
+                            title: "Importante!",
+                            buttons: {}
+                        });
+
+                        setTimeout(function() {
+                            bootbox.hideAll();
+                        }, 2000);
+                    } else {
+                        var minutes = parseInt(date_intervalo.getUTCHours()) * 60;
+                        minutes += parseInt(date_intervalo.getUTCMinutes());
+
+
+                        var next = true;
+                        while (next) {
+                            var tdate_inicial = date_inicial.getTime();
+                            var tdate_final = date_final.getTime();
+                            date_inicial = new Date(tdate_inicial + minutes * 60000);
+
+                            if (date_inicial.getTime() > tdate_final) {
+                                next = false;
+                                break;
+                            } else {
+
+                                var horas_strings = "";
+                                if (date_inicial.getUTCHours().toString().length < 2) {
+                                    horas_strings += "0" + date_inicial.getUTCHours().toString();
+                                } else {
+                                    horas_strings += date_inicial.getUTCHours().toString();
+                                }
+
+                                horas_strings += ":";
+
+                                if (date_inicial.getUTCMinutes().toString().length < 2) {
+                                    horas_strings += "0" + date_inicial.getUTCMinutes().toString();
+                                } else {
+                                    horas_strings += date_inicial.getUTCMinutes().toString();
+                                }
+
+                                horas_strings += ":00";
+
+                                temHora = true;
+
+                                var tbl = jQuery('.tbl tbody');
+                                var diasLabel = '';
+                                var connector = '';
+                                var inputsHiddens = '';
+                                var i = 0;
+                                tbl.children('tr').each(function() {
+                                    var ___tr = jQuery(this);
+                                    ___tr.children('td').each(function() {
+                                        var ___td = jQuery(this);
+                                        ___td.children('[type="hidden"]').each(function() {
+                                            i++;
+                                        });
+                                    });
+                                });
+
+                                i = i / 2;
+
+                                inputsHiddens += '<tr> ';
+                                inputsHiddens += ' <td>' + horas_strings + '</td>';
+                                inputsHiddens += '<td> ';
+
+                                if (segunda.is(':checked')) {
+                                    temDiasSelecionados = true;
+                                    inputsHiddens += connector + 'Segunda';
+                                    connector = ', ';
+                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Segunda" />';
+                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + '" />';
+                                    i++;
+                                }
+
+
+
+                                if (terca.is(':checked')) {
+                                    temDiasSelecionados = true;
+                                    inputsHiddens += connector + 'Terça';
+                                    connector = ', ';
+                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Terça" />';
+                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + '" />';
+                                    i++;
+                                }
+
+                                if (quarta.is(':checked')) {
+                                    temDiasSelecionados = true;
+                                    inputsHiddens += connector + 'Quarta';
+                                    connector = ', ';
+                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Quarta" />';
+                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + '" />';
+                                    i++;
+                                }
+
+                                if (quinta.is(':checked')) {
+                                    temDiasSelecionados = true;
+                                    inputsHiddens += connector + 'Quinta';
+                                    connector = ', ';
+                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Quinta" />';
+                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + '" />';
+                                    i++;
+                                }
+
+                                if (sexta.is(':checked')) {
+                                    temDiasSelecionados = true;
+                                    inputsHiddens += connector + 'Sexta';
+                                    connector = ', ';
+                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Sexta" />';
+                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + '" />';
+                                    i++;
+                                }
+
+                                if (sabado.is(':checked')) {
+                                    temDiasSelecionados = true;
+                                    inputsHiddens += connector + 'Sábado';
+                                    connector = ', ';
+                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Sábado" />';
+                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + '" />';
+                                    i++;
+                                }
+
+                                if (domingo.is(':checked')) {
+                                    temDiasSelecionados = true;
+                                    inputsHiddens += connector + 'Domingo';
+                                    connector = ', ';
+                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Domingo" />';
+                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + '" />';
+                                    i++;
+                                }
+                                inputsHiddens += '</td> ';
+                                inputsHiddens += '</tr>';
+
+                                if (temDiasSelecionados && temHora) {
+
+
+                                    if (tbl.children('tr').length < 10000000000000000) {
+                                        tbl.append(inputsHiddens);
+
+                                        if (segunda.is(':checked')) {
+                                            segunda.trigger('click');
+                                        }
+
+                                        if (terca.is(':checked')) {
+                                            terca.trigger('click');
+                                        }
+
+                                        if (quarta.is(':checked')) {
+                                            quarta.trigger('click');
+                                        }
+
+                                        if (quinta.is(':checked')) {
+                                            quinta.trigger('click');
+                                        }
+
+                                        if (sexta.is(':checked')) {
+                                            sexta.trigger('click');
+                                        }
+
+                                        if (sabado.is(':checked')) {
+                                            sabado.trigger('click');
+                                        }
+
+                                        if (domingo.is(':checked')) {
+                                            domingo.trigger('click');
+                                        }
+
+                                        if (todos.is(':checked')) {
+                                            todos.trigger('click');
+                                        }
+                                    } else {
+                                        bootbox.alert('Ops! Já está no limite de dias e horas!');
+                                    }
+
+                                    if (tbl.children('tr').length >= 1000000) {
+                                        var i = 1;
+                                        tbl.children('tr').each(function() {
+                                            if (i > 24) {
+                                                jQuery(this).remove();
+                                            }
+                                            i++;
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    return false;
+                });
+
                 jQuery('.rm_sh').on('click', function() {
                     jQuery('[data-selected="true"]').remove();
+                });
+
+
+                jQuery('[type="submit"]').on("click", function() {
+                    bootbox.dialog({
+                        message: "Aguarde...",
+                        title: "Sistema processando informações",
+                        buttons: {}
+                    });
+
+                    var $return = false;
+                    var $preenchidos = true;
+
+                    var idcliente = jQuery('[name="audiostoreComercialBean.cliente.idcliente"]').val();
+                    var titulo = jQuery('[name="audiostoreComercialBean.titulo"]').val();
+                    var periodoInicial = jQuery('[name="audiostoreComercialBean.periodoInicial"]').val();
+                    var periodoFinal = jQuery('[name="audiostoreComercialBean.periodoFinal"]').val();
+                    var nomeArquivo = jQuery('[name="arquivo"]');
+                    // [0].files[0].name
+
+                    if (null == idcliente || undefined == idcliente || '' == idcliente) {
+                        bootbox.hideAll();
+                        bootbox.dialog({
+                            message: "Selecione um cliente!",
+                            title: "",
+                            buttons: {}
+                        });
+
+                        setTimeout(function() {
+                            bootbox.hideAll();
+                        }, 2000);
+                        $preenchidos = false;
+                    }
+
+                    if (null == titulo || undefined == titulo || '' == titulo) {
+                        bootbox.hideAll();
+                        bootbox.dialog({
+                            message: "Informe um título!",
+                            title: "",
+                            buttons: {}
+                        });
+
+                        setTimeout(function() {
+                            bootbox.hideAll();
+                        }, 2000);
+                        $preenchidos = false;
+                    }
+
+                    if (null == nomeArquivo || undefined == nomeArquivo || '' == nomeArquivo) {
+                        bootbox.hideAll();
+                        bootbox.dialog({
+                            message: "Informe um arquivo",
+                            title: "",
+                            buttons: {}
+                        });
+
+                        setTimeout(function() {
+                            bootbox.hideAll();
+                        }, 2000);
+                        $preenchidos = false;
+                    }
+
+                    if (null == periodoInicial || undefined == periodoInicial || '' == periodoInicial) {
+                        bootbox.hideAll();
+                        bootbox.dialog({
+                            message: "Informe um periodo inicial",
+                            title: "",
+                            buttons: {}
+                        });
+
+                        setTimeout(function() {
+                            bootbox.hideAll();
+                        }, 2000);
+                        $preenchidos = false;
+                    }
+
+                    if (null == periodoFinal || undefined == periodoFinal || '' == periodoFinal) {
+                        bootbox.hideAll();
+                        bootbox.dialog({
+                            message: "Informe um periodo final",
+                            title: "",
+                            buttons: {}
+                        });
+
+                        setTimeout(function() {
+                            bootbox.hideAll();
+                        }, 2000);
+                        $preenchidos = false;
+                    }
+
+                    if ($preenchidos == true) {
+                        jQuery.ajax({
+                            async: false,
+                            type: 'GET',
+                            url: '${url}/audiostore-comercial/cadastrar/validador',
+                            data: {
+                                titulo: titulo,
+                                periodoInicial: periodoInicial,
+                                periodoFinal: periodoFinal,
+                                nomeArquivo: nomeArquivo[0].files[0].name,
+                                idcliente: idcliente
+                            },
+                            success: function(json) {
+                                bootbox.hideAll();
+                                if (!json.success) {
+                                    bootbox.dialog({
+                                        message: json.response,
+                                        title: "Sistema processando informações",
+                                        buttons: {}
+                                    });
+
+                                    setTimeout(function() {
+                                        bootbox.hideAll();
+                                    }, 2000);
+                                } else {
+                                    $return = true;
+                                }
+                            }
+                        });
+                    }
+
+
+                    return false;
                 });
             });
         </script>
 
     </jsp:body>
 </instore:template>
-
-<tr>
-    <td>12:12:12</td>
-    <td> 
-        Segunda
-        <input type="hidden" name="sh[1].semana" value="" />
-        <input type="hidden" name="sh[1].horario" value="17/09/2014 12:12:12" /></td>
-        , Terça
-        <input type="hidden" name="sh[2].semana" value="" /><input type="hidden" name="sh[2].horario" value="17/09/2014 12:12:12" /></td></td> 
-</tr>

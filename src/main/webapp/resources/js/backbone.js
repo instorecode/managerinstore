@@ -865,9 +865,10 @@
 //      jQuery.storageClear();
 
        var __LIST__ = jQuery.storage(window.location.href);
-       if(!(__LIST__ != null && __LIST__ != undefined && __LIST__ != "") || window.location.href.indexOf("/managerinstore/audiostore-comercial") != -1) {
+//       if(!(__LIST__ != null && __LIST__ != undefined && __LIST__ != "") || window.location.href.indexOf("/managerinstore/audiostore-comercial") != -1) {
+       if(true) {
            options.success = function(resp) {        
-                jQuery.storageAdd(window.location.href,JSON.stringify(resp)); 
+//                jQuery.storageAdd(window.location.href,JSON.stringify(resp)); 
                 var method = options.reset ? 'reset' : 'set';
                 collection[method](resp, options);
                 if (success) success(collection, resp, options);

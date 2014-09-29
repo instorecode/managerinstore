@@ -109,7 +109,7 @@
                                                data-rule-maxlength="8" 
                                                data-mask="99:99:99"
                                                field="tempo"
-                                               value="">
+                                               value="00:00:00"> 
 
                                     </div>
                                 </div>
@@ -336,7 +336,7 @@
                 <table  id="table" 
                         class="xtable" 
                         id="datatable" 
-                        url="http://localhost:8080/managerinstore/audiostore-categorias"
+                        url="${url}/audiostore-categorias"
                         page="1"
                         size="0"
                         rows="10"

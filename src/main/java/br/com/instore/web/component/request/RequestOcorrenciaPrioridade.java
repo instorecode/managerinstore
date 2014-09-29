@@ -2,13 +2,13 @@ package br.com.instore.web.component.request;
 
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.view.Results;
-import br.com.instore.core.orm.bean.OcorrenciaPrioridadeBean;
+import br.com.instore.core.orm.Query;
 import br.com.instore.core.orm.bean.OcorrenciaPrioridadeBean;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.dto.OcorrenciaPrioridadeDTO;
+import br.com.instore.web.dto.OcorrenciaPrioridadeJSON;
 import br.com.instore.web.tools.AjaxResult;
-import br.com.instore.web.tools.Utilities;
 import java.util.ArrayList;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
@@ -35,19 +35,54 @@ public class RequestOcorrenciaPrioridade implements java.io.Serializable {
         this.sessionUsuario = sessionUsuario;
     }
     
-    public List<OcorrenciaPrioridadeDTO> beanList() {
+    public void beanList(Integer page, Integer rows, Integer id, String descricao , Integer nivel) {
+        OcorrenciaPrioridadeJSON json = new OcorrenciaPrioridadeJSON();
+        page = (null == page || 0 == page ? 1 : page);
+        rows = (null == rows || 0 == rows ? 10 : rows);
+
+        Integer offset = (page - 1) * rows;
         List<OcorrenciaPrioridadeBean> lista = new ArrayList<OcorrenciaPrioridadeBean>();
-        List<OcorrenciaPrioridadeDTO> lista2 = new ArrayList<OcorrenciaPrioridadeDTO>();
-        lista = repository.query(OcorrenciaPrioridadeBean.class).findAll();
+
+        Query q1 = repository.query(OcorrenciaPrioridadeBean.class);
+        Query q2 = repository.query(OcorrenciaPrioridadeBean.class);
+
+        if (null != id && id > 0) {
+            q1.eq("id", id);
+            q2.eq("id", id);
+            json.setId(id);
+        }
+
+        if (null != descricao && !descricao.isEmpty()) {
+            q1.ilikeAnyWhere("descricao", descricao);
+            q2.ilikeAnyWhere("descricao", descricao);
+            json.setDescricao(descricao);
+        }
+
+        if (null != nivel) {
+            q1.eq("nivel", nivel);
+            q2.eq("nivel", nivel);
+            json.setNivel(nivel);
+        }
+
+        int size = q1.count().intValue() / rows + ((q1.count().intValue() % rows == 0) ? 0 : 1); 
+        lista = q2.limit(offset, rows).findAll();
+
+        
+        json.setPage(page);
+        json.setSize(size);
+
+        List<OcorrenciaPrioridadeDTO> rowsList = new ArrayList<OcorrenciaPrioridadeDTO>();
         for (OcorrenciaPrioridadeBean bean : lista) {
+            
             OcorrenciaPrioridadeDTO dto = new OcorrenciaPrioridadeDTO();
-            dto.setId(Utilities.leftPad(bean.getId()));
+            dto.setId(bean.getId().toString());
             dto.setDescricao(bean.getDescricao());
             dto.setNivel(bean.getNivel());
-            
-            lista2.add(dto);
+
+            rowsList.add(dto);
         }
-        return lista2;
+        json.setRows(rowsList);
+        result.use(Results.json()).withoutRoot().from(json).recursive().serialize();
     }
 
     public OcorrenciaPrioridadeBean bean(Integer id) {

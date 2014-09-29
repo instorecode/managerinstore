@@ -112,7 +112,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>Valor do contrato</label> 
-                        <input type="text" name="dadosCliente.valorContrato" class="form-control" placeholder="Indice de reajuste do contrato" value='<fmt:formatNumber value="${dadosCliente.valorContrato}" minFractionDigits="2" />' data-maskmoney="true" data-rule-required="true">
+                        <input type="text" name="dadosCliente.valorContrato" class="form-control" placeholder="Valor do contrato" value='<fmt:formatNumber value="${dadosCliente.valorContrato}" minFractionDigits="2" />' data-maskmoney="true" data-rule-required="true">
                     </div>
                 </div>
 
@@ -130,8 +130,8 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>Renovação automatica do contrato</label>
-                        <label class="radio-inline"> <input type="radio" class="icheck"  name="dadosCliente.renovacaoAutomatica" id="optionsRadios1" value="${true}" ${dadosCliente.renovacaoAutomatica ? 'checked="checked"' : ''} >&nbsp;Sim </label>
-                        <label class="radio-inline"> <input type="radio" class="icheck"  name="dadosCliente.renovacaoAutomatica" id="optionsRadios1" value="${false}"  ${not dadosCliente.renovacaoAutomatica ? 'checked="checked"' : ''}>&nbsp;Não </label>
+                        <label class="radio-inline"> <input type="radio" class="icheck"  name="dadosCliente.renovacaoAutomatica" id="optionsRadios1" value="${true}" ${dadosCliente.renovacaoAutomatica eq true or dadosCliente.renovacaoAutomatica eq null ? 'checked="checked"' : ''} >&nbsp;Sim </label>
+                        <label class="radio-inline"> <input type="radio" class="icheck"  name="dadosCliente.renovacaoAutomatica" id="optionsRadios1" value="${false}"  ${dadosCliente.renovacaoAutomatica eq false ? 'checked="checked"' : ''}>&nbsp;Não </label>
                     </div>
                 </div>
 

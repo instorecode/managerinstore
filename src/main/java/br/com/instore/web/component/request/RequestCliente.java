@@ -96,7 +96,7 @@ public class RequestCliente implements java.io.Serializable {
 
     public List<ClienteDTO> clienteDTOList() {
         List<ClienteDTO> clienteDTOList = new ArrayList<ClienteDTO>();
-        List<ClienteBean> clienteBeanList = repository.query(ClienteBean.class).eq("parente", 0).findAll();
+        List<ClienteBean> clienteBeanList = repository.query(ClienteBean.class).eq("matriz", true).eq("parente", 0).findAll();
         if (null != clienteBeanList && !clienteBeanList.isEmpty()) {
             for (ClienteBean clienteBean : clienteBeanList) {
                 DadosClienteBean dados = repository.query(DadosClienteBean.class).eq(DadosCliente.IDCLIENTE, clienteBean.getIdcliente()).findOne();
@@ -313,7 +313,10 @@ public class RequestCliente implements java.io.Serializable {
             
             dadosCliente.setCliente(cliente);
             repository.save(dadosCliente);
-
+            
+            String sql = "update cliente set parente = 0 where parente = " + cliente.getIdcliente();
+            repository.query(sql).executeSQLCommand();
+            
             if (null != filialList && filialList.length > 0) {
                 for (Integer id : filialList) {
                     ClienteBean item = repository.find(ClienteBean.class, id);

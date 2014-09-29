@@ -26,7 +26,8 @@ function rowsSelected() {
         index++;
     });
     return arr;
-};
+}
+;
 
 jQuery(document).ready(function() {
 
@@ -127,6 +128,7 @@ jQuery(document).ready(function() {
 
             jQuery("td.filter").each(function() {
                 var input = jQuery(this).children("input");
+
                 if (null != input.val() && undefined != input.val() && "" != input.val()) {
                     url = url + "&" + input.attr("name") + "=" + input.val();
                 }
@@ -134,7 +136,6 @@ jQuery(document).ready(function() {
                 var input = jQuery(this).children("select");
                 if (null != input.val() && undefined != input.val() && "" != input.val()) {
                     url = url + "&" + input.attr("name") + "=" + input.val();
-                    console.log(url);
                 }
             });
 
@@ -492,23 +493,25 @@ jQuery(document).ready(function() {
 //                        } else {
 //                            jQuery.avisar();
 //                        }
-
                         if (data_success_url != null && data_success_url != undefined && data_success_url != '') {
                             xtable_load();
                             setTimeout(function() {
                                 bootbox.hideAll();
                             }, 2000);
+                            bootbox.hideAll();
                         } else {
                             xtable_load();
                             dialogAjax(data.response);
+                            bootbox.hideAll();
                         }
 
                         jQuery(".form").hide();
                     } else {
                         dialogAjax(data.response);
+                        setTimeout(function() {
+                            bootbox.hideAll();
+                        }, 2000);
                     }
-                    bootbox.hideAll();
-                    console.log(data);
                 },
                 error: function(data) {
                     if (data_error_url != null && data_error_url != undefined && data_error_url != '') {
