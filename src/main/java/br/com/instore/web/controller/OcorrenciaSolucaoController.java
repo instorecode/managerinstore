@@ -70,7 +70,7 @@ public class OcorrenciaSolucaoController implements java.io.Serializable {
     }
 
     @Post
-    @Restrict
+    @Restrict   
     @Path("/ocorrencia-solucao/atualizar/{id}")
     public void cadastrar(Integer id , OcorrenciaSolucaoBean ocorrenciaSolucaoBean  , Integer [] problemaList , String prazo) {
         requestOcorrenciaSolucao.salvar(ocorrenciaSolucaoBean , problemaList , prazo);
@@ -88,5 +88,11 @@ public class OcorrenciaSolucaoController implements java.io.Serializable {
     @Path("/ocorrencia-solucao/remover/{id}")
     public void remover(Integer id, String param) {
         requestOcorrenciaSolucao.remover(id);
+    }
+    
+    @Get
+    @Path("/ocorrencia-solucao/sp/{id}")
+    public void sp(Integer id) {
+        requestOcorrenciaSolucao.sp(id);
     }
 }

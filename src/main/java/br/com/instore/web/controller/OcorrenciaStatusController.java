@@ -31,9 +31,13 @@ public class OcorrenciaStatusController implements java.io.Serializable {
     @Get
     @Restrict
     @Path("/ocorrencia-status")
-    public void listar(Boolean datajson) {
+    public void listar(Boolean datajson , Boolean view , Integer page, Integer rows, Integer id, String descricao, String cor , Integer pk) {
         if (null != datajson && datajson) {
-            result.use(Results.json()).withoutRoot().from(requestOcorrenciaStatus.beanList()).recursive().serialize();
+            requestOcorrenciaStatus.beanList(page, rows, id, descricao ,cor);
+        }
+        
+        if (null != view && view) {
+            result.use(Results.json()).withoutRoot().from(requestOcorrenciaStatus.bean(pk)).recursive().serialize();
         }
     }
 

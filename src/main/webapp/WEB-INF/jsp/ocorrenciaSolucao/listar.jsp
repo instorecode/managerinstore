@@ -3,7 +3,7 @@
 
 <instore:template isGrid="false">
     <jsp:body> 
-        
+
         <c:set scope="session" var="form_access" value="${false}"></c:set>
         <c:set scope="session" var="update_access" value="${false}"></c:set>
         <c:set scope="session" var="delete_access" value="${false}"></c:set>
@@ -46,7 +46,7 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Prazo</label>
-                                        <input type="text" name="ocorrenciaSolucaoBean.nivel" class="form-control" placeholder="Nível"  
+                                        <input type="text" name="prazo" class="form-control" placeholder="Nível"  
                                                data-rule-required="true" 
                                                data-mask="00:00:00" 
                                                field="prazo" 
@@ -57,12 +57,12 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Problemas</label>
-                                        <select class="select2" multiple="multiple" name="problemaList">
-                                            <opntion>Nenhum</opntion>
-                                            <c:forEach items="${problemaList}" var="prob">
-                                                <opntion value="${prob.id}">${prob.descricao}</opntion>
-                                            </c:forEach>
-                                        </select>
+                                        <br />
+                                        <c:forEach items="${problemaList}" var="problema" varStatus="vs">
+                                            <div class="col-md-2">
+                                                <label> <input type="checkbox" class="icheck" name="problemaList[${vs.index}]" value="${problema.id}" /> </label> ${problema.descricao} 
+                                            </div>
+                                        </c:forEach>
                                     </div>
                                 </div>
                             </div>
@@ -114,7 +114,7 @@
                 <h2>Atualizar dados</h2>
                 <hr />
 
-                <form name="FORM_ALTERAR_[[__PK__]]" method="POST" data-formtable="true" action="${url}/ocorrencia-solucao/cadastrar">
+                <form name="FORM_ALTERAR_[[__PK__]]" method="POST" data-formtable="true" action="${url}/ocorrencia-solucao/cadastrar" callback="callback" reload="true"> 
                     <input type="hidden" name="ocorrenciaSolucaoBean.id" value="${ocorrenciaSolucaoBean.id}" field="id" />
 
                     <div class="row">
@@ -132,12 +132,24 @@
 
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label>Nível</label>
-                                <input type="text" name="ocorrenciaSolucaoBean.nivel" class="form-control" placeholder="Nível"  
-                                               data-rule-required="true" 
-                                               data-rule-number="true" 
-                                               field="nivel" 
-                                               value="${ocorrenciaSolucaoBean.nivel}">
+                                <label>Prazo</label>
+                                <input type="text" name="prazo" class="form-control" placeholder="Nível"  
+                                       data-rule-required="true" 
+                                       data-mask="00:00:00" 
+                                       field="prazo" 
+                                       value="${ocorrenciaSolucaoBean.nivel}">
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Problemas</label>
+                                <br />
+                                <c:forEach items="${problemaList}" var="problema" varStatus="vs">
+                                    <div class="col-md-2">
+                                        <label> <input type="checkbox" class="icheck2 chk_prob" data-id="${problema.id}|[[__PK__]]" name="problemaList" value="${problema.id}"  /> </label> ${problema.descricao} 
+                                    </div>
+                                </c:forEach>
                             </div>
                         </div>
                     </div>
@@ -226,5 +238,22 @@
                 </table>
             </div>
         </div>
+
+        <script type="text/javascript">
+            function callback(item) {
+                jQuery.get("${url}/ocorrencia-solucao/sp/" + item.id, function(json) {
+                    for (i in json) {
+                        var ji = json[i];
+                        jQuery('.chk_prob[data-id="'+ji.ocorrenciaProblema.id+'|'+item.id+'"]').attr('checked', true);
+                        jQuery('.chk_prob[data-id="'+ji.ocorrenciaProblema.id+'|'+item.id+'"]').iCheck('destroy');
+                        jQuery('.chk_prob[data-id="'+ji.ocorrenciaProblema.id+'|'+item.id+'"]').iCheck({
+                            checkboxClass: 'icheckbox_square-blue checkbox',
+                            radioClass: 'iradio_square-blue'
+                        });
+                        jQuery('.chk_prob[data-id="'+ji.ocorrenciaProblema.id+'|'+item.id+'"]').iCheck('check');
+                    }
+                });
+            }
+        </script>
     </jsp:body>
 </instore:template>

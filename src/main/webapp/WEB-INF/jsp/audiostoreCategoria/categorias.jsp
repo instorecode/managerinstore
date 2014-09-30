@@ -35,8 +35,20 @@
                         <hr />
                         <form name="FORM_CADASTRO" method="POST" data-formtable="true" action="${url}/audiostore-categoria/cadastrar">
                             <div class="row">
-                                <div class="col-md-9">
+                                <div class="col-md-2">
                                     <div class="form-group">
+                                        <label>Codigo</label>
+                                        <input type="text" name="audiostoreCategoriaBean.codInterno" class="form-control" placeholder="Código"  
+                                               data-rule-required="true" 
+                                               data-rule-minlength="3"
+                                               data-rule-maxlength="3"
+                                               data-rule-number="true"
+                                               data-mask="000" field="codInterno" value="">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-7">
+                                    <div class="form-group"> 
                                         <label>Nome</label>
                                         <input type="text" name="audiostoreCategoriaBean.categoria" class="form-control" placeholder="Nome"  
                                                data-rule-required="true" 
@@ -82,7 +94,7 @@
                                                    data-rule-maxlength="255" 
                                                    data-mask="99/99/9999"
                                                    field="dataFinal"
-                                                   value="${cf:dateAfterOneYear()}">
+                                                   value="31/12/2050">
 
                                             <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
                                         </div>
@@ -184,7 +196,18 @@
                     <input type="hidden" name="audiostoreCategoriaBean.codigo" value="[[__PK__]]" />
 
                     <div class="row">
-                        <div class="col-md-9">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Codigo</label>
+                                <input type="text" name="audiostoreCategoriaBean.codInterno" class="form-control" placeholder="Código"  
+                                       data-rule-required="true" 
+                                       data-rule-minlength="3"
+                                       data-rule-maxlength="3"
+                                       data-rule-number="true"
+                                       data-mask="000" field="codInterno" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-7">
                             <div class="form-group">
                                 <label>Nome</label>
                                 <input type="text" name="audiostoreCategoriaBean.categoria" class="form-control" placeholder="Nome"  
@@ -354,38 +377,39 @@
                 </table>
             </div>
         </div>
-        
+
         <div class="progress-mask"></div>
-        
+
         <style type="text/css">
             .progress-mask {
                 display: block;
                 width: 100%;
                 height: 100%;
-                
+
                 background-color: rgba(0,0,0,0.5);
-                
-                
-                
+
+
+
             }
         </style>
-        
+
         <script type="text/javascript">
-            jQuery(document).ready(function(){
-                jQuery(document).on("selected" , ".row_data" , function(evt,item){
+            jQuery(document).ready(function() {
+                jQuery(document).on("selected", ".row_data", function(evt, item) {
                     jQuery('.btn_export').show();
-                }).on("unselected" , ".row_data" , function(evt,item){
-                    if(countRowsSelected() == 0) {
+                }).on("unselected", ".row_data", function(evt, item) {
+                    if (countRowsSelected() == 0) {
                         jQuery('.btn_export').hide();
                     }
                 });
-                
-                jQuery('.btn_export').on("click", function(){
-                    if(countRowsSelected() <= 0){
-                        bootbox.alert("Selecione no minimo um registro na tabela.", function(){});
+
+                jQuery('.btn_export').on("click", function() {
+                    if (countRowsSelected() <= 0) {
+                        bootbox.alert("Selecione no minimo um registro na tabela.", function() {
+                        });
                     } else {
                         var arr = rowsSelected();
-                        for(i in arr) {
+                        for (i in arr) {
                             var item = arr[i];
                         }
                     }

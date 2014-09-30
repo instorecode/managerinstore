@@ -3,6 +3,7 @@ package br.com.instore.web.dto;
 public class AudiostoreCategoriaDTO extends AbstractDTO {
 
     private Integer codigo;
+    private String codInterno;
     private String categoria;
     private String dataInicio;
     private String dataFinal;
@@ -86,5 +87,13 @@ public class AudiostoreCategoriaDTO extends AbstractDTO {
 
     public void setTipoNum(String tipoNum) {
         this.tipoNum = tipoNum;
+    }
+
+    public String getCodInterno() {
+        return codInterno;
+    }
+
+    public void setCodInterno(String codInterno) {
+        this.codInterno = codInterno;
     }
 }

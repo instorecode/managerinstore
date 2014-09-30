@@ -8,8 +8,9 @@
     </jsp:attribute>
 
     <jsp:attribute name="detailsButton">
-        <a data-toggle="tooltip" data-placement="bottom" data-original-title="Download do arquivo exp" style="display: none" xhref="${url}/audiostore-programacao/download-exp" class="btn btn-default btnDownloadEXP"> <i class="fa fa-download"></i></a>
-        <a data-toggle="tooltip" data-placement="right" data-original-title="Upload para repositorio de arquivos exp" style="display: none" xhref="${url}/audiostore-programacao/upload-exp" class="btn btn-default btnUploadEXP"> <i class="fa fa-upload"></i></a>
+<!--        <a data-toggle="tooltip" data-placement="bottom" data-original-title="Download do arquivo exp" style="display: none" xhref="${url}/audiostore-programacao/download-exp" class="btn btn-default btnDownloadEXP"> <i class="fa fa-download"></i></a>
+        <a data-toggle="tooltip" data-placement="right" data-original-title="Upload para repositorio de arquivos exp" style="display: none" xhref="${url}/audiostore-programacao/upload-exp" class="btn btn-default btnUploadEXP"> <i class="fa fa-upload"></i></a>-->
+        <a data-toggle="tooltip" data-placement="right" data-original-title="Clonar" style="display: none" xhref="${url}/audiostore-programacao/cadastrar?clonar=" class="btn btn-default btn_clonar"> <i class="fa fa-random"></i></a>
     </jsp:attribute>
 
     <jsp:attribute name="gridColumn">
@@ -27,10 +28,15 @@
             function onRowClick(data) {
                 jQuery('.btnDownloadEXP').show();
                 jQuery('.btnUploadEXP').show();
+                jQuery('.btn_clonar').show();
+                
                 var xhref = jQuery('.btnDownloadEXP').attr('xhref') + '/' + data.id;
                 var xhref2 = jQuery('.btnUploadEXP').attr('xhref') + '/' + data.id;
+                var xhref3 = jQuery('.btn_clonar').attr('xhref') + data.id;
+                
                 jQuery('.btnDownloadEXP').attr('href', xhref);
                 jQuery('.btnUploadEXP').attr('href', xhref2);
+                jQuery('.btn_clonar').attr('href', xhref3);
             }
 
             jQuery(document).ready(function() {

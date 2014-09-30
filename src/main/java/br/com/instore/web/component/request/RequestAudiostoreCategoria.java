@@ -48,7 +48,7 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
         this.sessionUsuario = sessionUsuario;
     }
 
-    public void beanList(Integer page, Integer rows, Integer id, Integer idcliente, String nome, Integer tipo, String duracao, String dataInicio, String dataFinal) {
+    public void beanList(Integer page, Integer rows, Integer id, Integer idcliente, String nome, Integer tipo, String duracao, String dataInicio, String dataFinal, String codInterno) {
         AudiostoreCategoriaJSON json = new AudiostoreCategoriaJSON();
         
         page = (null == page || 0 == page ? 1 : page);
@@ -82,6 +82,12 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
             q1.eq("tipo", tipo);
             q2.eq("tipo", tipo);
             json.setTipo(tipo);
+        }
+        
+        if (null != codInterno && !codInterno.isEmpty()) {
+            q1.eq("codInterno", codInterno);
+            q2.eq("codInterno", codInterno);
+            json.setCodInterno(codInterno);
         }
 
         if (null != duracao && !duracao.isEmpty()) {
@@ -136,6 +142,7 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
             dto.setTempo(new SimpleDateFormat("HH:mm:ss").format(bean.getTempo()));
             dto.setTipoNum(""+bean.getTipo());
             dto.setIdcliente(bean.getCliente().getIdcliente().toString());
+            dto.setCodInterno(bean.getCodInterno());
             switch (bean.getTipo()) {
                 case 1:
                     dto.setTipo("Música");
@@ -176,6 +183,7 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
         dto.setTempo(new SimpleDateFormat("HH:mm:ss").format(bean.getTempo()));
         dto.setTipoNum(""+bean.getTipo());
         dto.setIdcliente(bean.getCliente().getIdcliente().toString());
+        dto.setCodInterno(bean.getCodInterno());
         
         switch (bean.getTipo()) {
             case 1:

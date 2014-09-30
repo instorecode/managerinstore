@@ -9,7 +9,10 @@
 
     <jsp:body>
         <form d="cad_cliente" method="POST" data-form="true" data-success-url="${url}/audiostore-programacao">
-            <input type="hidden" name="audiostoreProgramacaoBean.id" value="${audiostoreProgramacaoBean.id}" />
+            <c:if test="${isPageCadastro eq false}">
+                <input type="hidden" name="audiostoreProgramacaoBean.id" value="${audiostoreProgramacaoBean.id}" />
+            </c:if>
+            
 
             <div class="row">
                 <div class="col-md-9">
@@ -439,7 +442,7 @@
                             });
 
 //                            jQuery('.contador_l1').text("Total " + jQuery('.lista_filial1 li').size());
-                            jQuery('.contador_l2').text("Total " + (jQuery('.lista_filial2 li').size() - 1));
+                            jQuery('.contador_l2').text("Total " + (jQuery('.lista_filial2 li').size()));
 
                             jQuery('.btn_all_l1').on('click', function() {
                                 jQuery('.lista_filial1 li:visible').each(function() {

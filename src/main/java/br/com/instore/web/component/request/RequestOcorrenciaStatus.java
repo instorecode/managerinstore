@@ -2,10 +2,15 @@ package br.com.instore.web.component.request;
 
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.view.Results;
+import br.com.instore.core.orm.Query;
+import br.com.instore.core.orm.bean.OcorrenciaOrigemBean;
 import br.com.instore.core.orm.bean.OcorrenciaStatusBean;
 import br.com.instore.core.orm.bean.OcorrenciaStatusBean;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.component.session.SessionUsuario;
+import br.com.instore.web.dto.OcorrenciaOrigemDTO;
+import br.com.instore.web.dto.OcorrenciaOrigemJSON;
+import br.com.instore.web.dto.OcorrenciaSituacaoJSON;
 import br.com.instore.web.dto.OcorrenciaStatusDTO;
 import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
@@ -35,35 +40,53 @@ public class RequestOcorrenciaStatus implements java.io.Serializable {
         this.sessionUsuario = sessionUsuario;
     }
     
-    public List<OcorrenciaStatusDTO> beanList() {
+    public void beanList(Integer page, Integer rows, Integer id, String descricao, String cor) {
+        OcorrenciaSituacaoJSON json = new OcorrenciaSituacaoJSON();
+        page = (null == page || 0 == page ? 1 : page);
+        rows = (null == rows || 0 == rows ? 10 : rows);
+
+        Integer offset = (page - 1) * rows;
         List<OcorrenciaStatusBean> lista = new ArrayList<OcorrenciaStatusBean>();
-        List<OcorrenciaStatusDTO> lista2 = new ArrayList<OcorrenciaStatusDTO>();
-        lista = repository.query(OcorrenciaStatusBean.class).findAll();
-        for (OcorrenciaStatusBean bean : lista) {
-            OcorrenciaStatusDTO dto = new OcorrenciaStatusDTO();
-            dto.setId(Utilities.leftPad(bean.getId()));
-            dto.setDescricao(bean.getDescricao());
-            if("#4D90FD".equals(bean.getCor())) {
-                dto.setCor("Azul");
-            }
-            if("#54A754".equals(bean.getCor())) {
-                dto.setCor("Verde");
-            }
-            if("#ffa800".equals(bean.getCor())) {
-                dto.setCor("Amarelo");
-            }
-            if("#e64d35".equals(bean.getCor())) {
-                dto.setCor("Vermelho");
-            }
-            if("#000000".equals(bean.getCor())) {
-                dto.setCor("Preto");
-            }
-            
-            
-            
-            lista2.add(dto);
+
+        Query q1 = repository.query(OcorrenciaStatusBean.class);
+        Query q2 = repository.query(OcorrenciaStatusBean.class);
+
+        if (null != id && id > 0) {
+            q1.eq("id", id);
+            q2.eq("id", id);
+            json.setId(id.toString());
         }
-        return lista2;
+
+        if (null != descricao && !descricao.isEmpty()) {
+            q1.ilikeAnyWhere("descricao", descricao);
+            q2.ilikeAnyWhere("descricao", descricao);
+            json.setDescricao(descricao);
+        }
+
+        if (null != descricao && !descricao.isEmpty()) {
+            q1.ilikeAnyWhere("cor", cor);
+            q2.ilikeAnyWhere("cor", cor);
+            json.setCor(cor);
+        }
+
+        int size = q1.count().intValue() / rows + ((q1.count().intValue() % rows == 0) ? 0 : 1); 
+        lista = q2.limit(offset, rows).findAll();
+
+        
+        json.setPage(page);
+        json.setSize(size);
+
+        List<OcorrenciaStatusDTO> rowsList = new ArrayList<OcorrenciaStatusDTO>();
+        for (OcorrenciaStatusBean bean : lista) {
+            
+            OcorrenciaStatusDTO dto = new OcorrenciaStatusDTO();
+            dto.setId(bean.getId().toString());
+            dto.setDescricao(bean.getDescricao());
+
+            rowsList.add(dto);
+        }
+        json.setRows(rowsList);
+        result.use(Results.json()).withoutRoot().from(json).recursive().serialize();
     }
 
     public OcorrenciaStatusBean bean(Integer id) {

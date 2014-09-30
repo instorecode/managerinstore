@@ -335,6 +335,9 @@ jQuery(document).ready(function() {
     jQuery(document).on("click", ".btn_edit", function() {
         if (jQuery(this).parent().parent().parent().next().next().is(":visible"))
         {
+
+            jQuery('.icheck2').iCheck('uncheck');
+            jQuery('.icheck2').iCheck('destroy');
             jQuery(".row_data").removeClass("blur2");
             jQuery(this).parent().parent().parent().next().next().hide();
             jQuery(this).parent().parent().parent().children('td').each(function() {
@@ -355,6 +358,10 @@ jQuery(document).ready(function() {
         }
         else
         {
+            $('.icheck2').iCheck({
+                checkboxClass: 'icheckbox_square-blue checkbox',
+                radioClass: 'iradio_square-blue'
+            });
             jQuery(".row_opt").hide();
             jQuery(".row_data").attr("disabled", true).addClass("blur2");
             jQuery(".row_data").children('td').each(function() {
@@ -363,17 +370,19 @@ jQuery(document).ready(function() {
                 });
             });
 
-            jQuery(this).parent().parent().parent().removeClass("blur2");
-            jQuery(this).parent().parent().parent().next().next().show();
-            jQuery(this).parent().parent().parent().children('td').each(function() {
-                jQuery(this).css({
-                    "background-color": "#fffbd3"
-                });
-            });
+
             jQuery('.block-xtable .loader').show();
             form = jQuery(this).parent().parent().parent().next().next().children("td").children("form");
+            
+            var fn_callback = null;
+            
+            if (null != form.attr("callback") && undefined != form.attr("callback") && "" != form.attr("callback")) {
+                fn_callback = window[form.attr("callback")];
+            }
+
             var url = window.location.href + "?view=true&pk=" + jQuery(this).attr("pk");
             jQuery.get(url, function(json) {
+
                 var form_elements = form.find(":input");
                 form_elements.each(function() {
                     var f = jQuery(this).attr("field");
@@ -394,8 +403,19 @@ jQuery(document).ready(function() {
 
                     }
                 });
+                if (null != form.attr("callback") && undefined != form.attr("callback") && "" != form.attr("callback")) {
+                    fn_callback.call(this, json);
+                }
 
                 jQuery('.block-xtable .loader').hide();
+            });
+
+            jQuery(this).parent().parent().parent().removeClass("blur2");
+            jQuery(this).parent().parent().parent().next().next().show();
+            jQuery(this).parent().parent().parent().children('td').each(function() {
+                jQuery(this).css({
+                    "background-color": "#fffbd3"
+                });
             });
 
         }
@@ -503,6 +523,9 @@ jQuery(document).ready(function() {
                             xtable_load();
                             dialogAjax(data.response);
                             bootbox.hideAll();
+                        }
+                        if (form.attr("reload") == true || form.attr("reload") == "true") {
+                            window.location.reload();
                         }
 
                         jQuery(".form").hide();

@@ -19,7 +19,6 @@ public class AudiostoreProgramacaoController implements java.io.Serializable {
 
     @Inject
     private Result result;
-    
     @Inject
     private RequestAudiostoreProgramacao requestAudiostoreProgramacao;
 
@@ -30,7 +29,6 @@ public class AudiostoreProgramacaoController implements java.io.Serializable {
         this.result = result;
         this.requestAudiostoreProgramacao = requestAudiostoreProgramacao;
     }
-
 
     @Get
     @Restrict
@@ -44,8 +42,14 @@ public class AudiostoreProgramacaoController implements java.io.Serializable {
     @Get
     @Restrict
     @Path("/audiostore-programacao/cadastrar")
-    public void cadastrar() {
+    public void cadastrar(Integer clonar, String paramInut) {
         result.include("isPageCadastro", true);
+
+        if (null != clonar && clonar > 0) {
+            result.include("programacaoCategoriaBeanList", requestAudiostoreProgramacao.programacaoCategoriaBeanList(clonar));
+            result.include("audiostoreProgramacaoBean", requestAudiostoreProgramacao.audiostoreProgramacaoBean(clonar));
+        }
+
         result.include("clienteBeanList", requestAudiostoreProgramacao.clienteBeanList());
         result.include("categoriaBeanList", requestAudiostoreProgramacao.categoriaBeanList());
     }
@@ -53,8 +57,8 @@ public class AudiostoreProgramacaoController implements java.io.Serializable {
     @Post
     @Restrict
     @Path("/audiostore-programacao/cadastrar")
-    public void cadastrar(AudiostoreProgramacaoBean audiostoreProgramacaoBean , String horaInicio, String horaFinal, Integer[] categorias , Integer[] diasSemana) {
-        requestAudiostoreProgramacao.salvar(audiostoreProgramacaoBean,horaInicio,horaFinal , categorias ,  diasSemana);
+    public void cadastrar(AudiostoreProgramacaoBean audiostoreProgramacaoBean, String horaInicio, String horaFinal, Integer[] categorias, Integer[] diasSemana) {
+        requestAudiostoreProgramacao.salvar(audiostoreProgramacaoBean, horaInicio, horaFinal, categorias, diasSemana);
     }
 
     @Get
@@ -71,8 +75,8 @@ public class AudiostoreProgramacaoController implements java.io.Serializable {
     @Post
     @Restrict
     @Path("/audiostore-programacao/atualizar/{id}")
-    public void cadastrar(Integer id , AudiostoreProgramacaoBean audiostoreProgramacaoBean , String horaInicio, String horaFinal, Integer[] categorias , Integer[] diasSemana) {
-        requestAudiostoreProgramacao.salvar(audiostoreProgramacaoBean,horaInicio,horaFinal , categorias ,  diasSemana);
+    public void cadastrar(Integer id, AudiostoreProgramacaoBean audiostoreProgramacaoBean, String horaInicio, String horaFinal, Integer[] categorias, Integer[] diasSemana) {
+        requestAudiostoreProgramacao.salvar(audiostoreProgramacaoBean, horaInicio, horaFinal, categorias, diasSemana);
     }
 
     @Get
@@ -88,21 +92,21 @@ public class AudiostoreProgramacaoController implements java.io.Serializable {
     public void remover(Integer id, String param) {
         requestAudiostoreProgramacao.remover(id);
     }
-    
+
     @Get
     @Restrict
     @Path("/audiostore-programacao/download-exp/{id}")
     public InputStreamDownload download(Integer id) {
         return requestAudiostoreProgramacao.download(id);
     }
-    
+
     @Get
     @Restrict
     @Path("/audiostore-programacao/upload-exp/{id}")
     public void upload(Integer id) {
         requestAudiostoreProgramacao.upload(id);
     }
-    
+
     @Get
     @Path("/audiostore-programacao/categorias/{id}")
     public void categorias(Integer id) {

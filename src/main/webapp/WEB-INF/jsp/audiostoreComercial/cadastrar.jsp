@@ -253,17 +253,17 @@
                                             <c:if test="${__HORA__ eq sh.horario}">
                                                 ${sh.semana} ,
                                             <input type="hidden" name="sh[${indx}].semana" value="${sh.semana}" />
-                                            <input type="hidden" name="sh[${indx}].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ${sh.horario}" />
+                                            <input type="hidden" name="sh[${indx}].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ${cf:dateFormat(sh.horario, "HH:mm")}" />
                                         </c:if>
 
                                         <c:if test="${__HORA__ ne sh.horario}">
                                             </tr>
                                             </td>
                                             <tr>
-                                                <td>${sh.horario}</td> 
+                                                <td>${cf:dateFormat(sh.horario, "HH:mm")}</td> 
                                                 <td>${sh.semana} ,
                                                     <input type="hidden" name="sh[${indx}].semana" value="${sh.semana}" />
-                                                    <input type="hidden" name="sh[${indx}].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ${sh.horario}" />
+                                                    <input type="hidden" name="sh[${indx}].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ${cf:dateFormat(sh.horario, "HH:mm")}" />
                                                     <c:set scope="session"  var="__HORA__" value="${sh.horario}"></c:set>
                                                 </c:if>
 
@@ -293,27 +293,31 @@
                             </div>
                             <div class="col-xs-3">
                                 <div class="col-xs-12">
-                                    <input type="text" name="hora" class="form-control span5" placeholder="Horário" data-mask="99:99" value="06:00">
+                                    Horário inicial
+                                    <input type="text" name="hora" class="form-control span5" placeholder="Horário" data-mask="99:99" value="00:00"> 
                                 </div>
 
                                 <br />
                                 <br />
 
                                 <div class="col-xs-12"> 
-                                    <input type="text" name="hora_final" class="form-control span5" placeholder="Horário final" data-mask="99:99" value="18:00">
+                                    Horário final
+                                    <input type="text" name="hora_final" class="form-control span5" placeholder="Horário final" data-mask="99:99" value=""> 
                                 </div>
 
                                 <br />
                                 <br />
 
                                 <div class="col-xs-12">
-                                    <input type="text" name="hora_intervalo" class="form-control span5" placeholder="Intervalo" data-mask="99:99" value="03:00">
+                                    Intervalo
+                                    <input type="text" name="hora_intervalo" class="form-control span5" placeholder="Intervalo" data-mask="99:99" value=""> 
                                 </div>
 
-                                <br />
-                                <br />
+                                
+
 
                                 <div class="col-xs-12">
+                                    <br />
                                     <button type="button" class="btn btn-default add_sh_intervalo" data-tooltip="true" title="Para remover um selecione um registro da tabela!" style="margin-left: 0px;">
                                         <i class="fa fa-plus"></i> Usar intervalo
                                     </button>
@@ -635,7 +639,7 @@
                                     horas_strings += date_inicial.getUTCMinutes().toString();
                                 }
 
-                                horas_strings += ":00";
+                                horas_strings += "";
 
                                 temHora = true;
 
@@ -909,7 +913,7 @@
                     }
 
 
-                    return false;
+                    return $return;
                 });
             });
         </script>

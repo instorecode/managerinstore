@@ -2,7 +2,6 @@ package br.com.instore.web.component.request;
 
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.observer.upload.UploadedFile;
-import br.com.caelum.vraptor.validator.SimpleMessage;
 import br.com.caelum.vraptor.validator.Validator;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.Each;
@@ -220,10 +219,9 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
                     smbFos.close();
                 }
             } catch (SmbException e) {
-                System.out.println("ERROR DO SMB");
-                System.out.println(e.getMessage());
+                e.printStackTrace();
             }
-
+            
             repository.finalize();
             result.redirectTo(AudiostoreComercialController.class).listar(false);
         } catch (Exception e) {
@@ -276,12 +274,22 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
             repository.setUsuario(sessionUsuario.getUsuarioBean());
 
             String query = "delete from audiostore_comercial_sh where comercial = " + id;
-            System.out.println("ID DO COMERCIAL " + id);
             repository.query(query).executeSQLCommand();
 
             AudiostoreComercialBean bean = repository.marge((AudiostoreComercialBean) repository.find(AudiostoreComercialBean.class, id));
+            
+            DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", bean.getCliente().getIdcliente()).findOne();
+            
+            try {
+                if (null != dados) {
+                    SmbFile file = new SmbFile(dados.getLocalDestinoSpot() + bean.getArquivo()+ "/", Utilities.getAuthSmbDefault());
+                    file.delete();
+                }
+            } catch (SmbException e) {
+                e.printStackTrace();
+            }
+            
             repository.delete(bean);
-
             repository.finalize();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Comercial removido com sucesso!")).recursive().serialize();
         } catch (Exception e) {
@@ -507,8 +515,13 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
                 }
             } catch (MalformedURLException e) {
                 e.printStackTrace();
+                mensagem = "Não foi possivel verificar se o arquivo já existe, erro: " +e.getMessage();
+                bool = false;
             } catch (SmbException e) {
                 e.printStackTrace();
+                mensagem = "Não foi possivel verificar se o arquivo já existe, erro: " +e.getMessage();
+                mensagem = e.getMessage();
+                bool = false;
             }
         }
         result.use(Results.json()).withoutRoot().from(new AjaxResult(bool, mensagem)).recursive().serialize();

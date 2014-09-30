@@ -104,8 +104,15 @@ public class RequestOcorrenciaSolucao implements java.io.Serializable {
         result.use(Results.json()).withoutRoot().from(json).recursive().serialize();
     }
 
-    public OcorrenciaSolucaoBean bean(Integer id) {
-        return repository.find(OcorrenciaSolucaoBean.class, id);
+    public OcorrenciaSolucaoDTO bean(Integer id) {
+        OcorrenciaSolucaoBean bean = repository.find(OcorrenciaSolucaoBean.class, id);
+        
+        OcorrenciaSolucaoDTO dto = new OcorrenciaSolucaoDTO();
+        dto.setId(bean.getId().toString());
+        dto.setDescricao(bean.getDescricao());
+        dto.setPrazo(new SimpleDateFormat("HH:mm:ss").format(bean.getPrazoPesolucao()));
+
+        return dto;
     }
 
     public void salvar(OcorrenciaSolucaoBean bean, Integer[] problemaList, String prazo) {
@@ -142,6 +149,11 @@ public class RequestOcorrenciaSolucao implements java.io.Serializable {
     public void remover(Integer id) {
         try {
             repository.setUsuario(sessionUsuario.getUsuarioBean());
+            
+            List<OcorrenciaProblemaSolucaoBean> list = repository.query(OcorrenciaProblemaSolucaoBean.class).eq("ocorrenciaSolucao.id", id).findAll();
+            for (OcorrenciaProblemaSolucaoBean bean : list) {
+                repository.delete(bean);
+            }
 
             OcorrenciaSolucaoBean bean = repository.marge((OcorrenciaSolucaoBean) repository.find(OcorrenciaSolucaoBean.class, id));
             repository.delete(bean);
@@ -152,5 +164,9 @@ public class RequestOcorrenciaSolucao implements java.io.Serializable {
             e.printStackTrace();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel remover a problema da ocorrencia!")).recursive().serialize();
         }
+    }
+    
+    public void sp(Integer id) {
+        result.use(Results.json()).withoutRoot().from(repository.query(OcorrenciaProblemaSolucaoBean.class).eq("ocorrenciaSolucao.id", id).findAll()).recursive().serialize();
     }
 }

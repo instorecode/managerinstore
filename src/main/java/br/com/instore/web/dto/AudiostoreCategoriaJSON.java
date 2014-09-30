@@ -16,6 +16,7 @@ public class AudiostoreCategoriaJSON {
     private String dataFinal;
     private Integer idcliente;
     private String tempo;
+    private String codInterno;
 
     public String getTempo() {
         return tempo;
@@ -103,5 +104,13 @@ public class AudiostoreCategoriaJSON {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getCodInterno() {
+        return codInterno;
+    }
+
+    public void setCodInterno(String codInterno) {
+        this.codInterno = codInterno;
     }
 }
