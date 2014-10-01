@@ -208,6 +208,16 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
                 return;
             }
             
+            if(repository.query(AudiostoreCategoriaBean.class).eq("cliente.idcliente", audiostoreCategoriaBean.getCliente().getIdcliente()).eq("categoria", audiostoreCategoriaBean.getCategoria()).count() > 0) {
+                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Já existe uma categoria com este nome!")).recursive().serialize();
+                return;
+            }
+            
+            if(repository.query(AudiostoreCategoriaBean.class).eq("cliente.idcliente", audiostoreCategoriaBean.getCliente().getIdcliente()).eq("codInterno", audiostoreCategoriaBean.getCodInterno()).count() > 0) {
+                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Já existe uma categoria com este código!")).recursive().serialize();
+                return;
+            }
+            
             repository.setUsuario(sessionUsuario.getUsuarioBean());
             audiostoreCategoriaBean.setTempo(new SimpleDateFormat("HH:mm:ss").parse(tempo));
 

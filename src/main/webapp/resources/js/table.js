@@ -158,15 +158,20 @@ jQuery(document).ready(function() {
                                 async: false,
                                 url: td.attr("fkurl"),
                                 success: function(json_response) {
-                                    var selected = "";
-                                    if (null != json[td.attr("fk")] && undefined != json[td.attr("fk")] && "" != json[td.attr("fk")]) {
-                                        selected = "selected=\"selected\"";
-                                    }
+//                                    var selected = "";
+//                                    if (null != json[td.attr("fk")] && undefined != json[td.attr("fk")] && "" != json[td.attr("fk")]) {
+//                                        selected = "selected=\"selected\"";
+//                                    }
                                     for (indice in json_response) {
                                         var item_fk = json_response[indice];
                                         var fk = item_fk[td.attr("fk")];
                                         var fk_label = item_fk[td.attr("fklabel")];
-                                        tr += "<option value=\"" + fk + "\" " + selected + ">" + fk_label + "</option>";
+                                        if(json[td.attr("fk")] == fk) {
+                                            tr += "<option value=\"" + fk + "\" selected=\"selected\">" + fk_label + "</option>";
+                                        } else {
+                                            tr += "<option value=\"" + fk + "\">" + fk_label + "</option>";
+                                        }
+                                        
                                     }
                                 }
                             });
@@ -312,6 +317,7 @@ jQuery(document).ready(function() {
         }
         else
         {
+            jQuery("div.form").hide();
             jQuery(".row_opt").hide();
             jQuery(".row_data").attr("disabled", true).addClass("blur2");
             jQuery(".row_data").children('td').each(function() {
@@ -358,6 +364,7 @@ jQuery(document).ready(function() {
         }
         else
         {
+            jQuery("div.form").hide();
             $('.icheck2').iCheck({
                 checkboxClass: 'icheckbox_square-blue checkbox',
                 radioClass: 'iradio_square-blue'
@@ -406,7 +413,6 @@ jQuery(document).ready(function() {
                 if (null != form.attr("callback") && undefined != form.attr("callback") && "" != form.attr("callback")) {
                     fn_callback.call(this, json);
                 }
-
                 jQuery('.block-xtable .loader').hide();
             });
 
@@ -417,7 +423,7 @@ jQuery(document).ready(function() {
                     "background-color": "#fffbd3"
                 });
             });
-
+            
         }
         return false;
     });
@@ -446,6 +452,7 @@ jQuery(document).ready(function() {
         }
         else
         {
+            jQuery("div.form").hide();
             jQuery(".row_opt").hide();
             jQuery(".row_data").attr("disabled", true).addClass("blur2");
             jQuery(".row_data").children('td').each(function() {
@@ -557,6 +564,11 @@ jQuery(document).ready(function() {
         else
         {
             jQuery("div.form").show();
+            
+            jQuery(".row_data").removeClass("blur2");
+            jQuery(".row_view").hide();
+            jQuery(".row_edit").hide();
+            jQuery(".row_delete").hide();
         }
     });
 

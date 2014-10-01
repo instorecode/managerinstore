@@ -367,11 +367,12 @@
                     <thead>
                         <tr> 
                             <th options="true" class="options">#</th>
+                            <th field="codInterno" options="false">Código</th>
                             <th field="categoria" options="false">Categoria</th>
-                            <th field="clienteNome" isfk="true" fk="idcliente" fklabel="nome" fklabelselect="Clientes" fkurl="http://localhost:8080/managerinstore/audiostore-categorias?clientes=true"  options="false">Cliente</th>
+                            <th field="clienteNome" isfk="true" fk="idcliente" fklabel="nome" fklabelselect="Todos" fkurl="${url}/audiostore-categorias?clientes=true"  options="false">Cliente</th>
                             <th field="dataInicio" options="false">Data inicial</th>
                             <th field="dataFinal" options="false">Data final</th>
-                            <th field="tempo" options="false">Duração</th>
+                            <!--<th field="tempo" options="false">Duração</th>-->
                         </tr>
                     </thead>
                 </table>

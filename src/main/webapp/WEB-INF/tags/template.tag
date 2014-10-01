@@ -130,7 +130,7 @@
                     jQuery('.cliente_selecionado').on('click', function() {
                         self = jQuery(this);
                         jQuery.storageAdd("matriz_selecionada", self.data('id'));
-                        
+
                         if (self.val() == '0') {
                             jQuery.storageClear();
                         } else {
@@ -172,7 +172,7 @@
                     });
                 });
             </script>
-            
+
             <style>
 
                 .info .select2-chosen {
@@ -402,7 +402,7 @@
                         });
                 </script>
             </c:if>
-                 
+
             <link rel="stylesheet" type="text/css" href="${url_css}table.css" />
             <script type="text/javascript" src="${url_js}table.js"></script>
             <script type="text/javascript" src="${url_js}ws_cache.js"></script>
@@ -524,7 +524,7 @@
             </div>
 
             <div class="mask__menu" style="display: none;">
-                <b> <a class="_close"> <i class="fa fa-times"></i> </a> Precione a tecla ESC para sair do menu.</b>
+                <b> <a class="_close"> <i class="fa fa-times"></i> </a></b>
                 <ul class="navv">
                     ${menu}
                 </ul>
@@ -543,10 +543,11 @@
                     display: block;
                     width: 100%;
                     height: 100%;
-                    background-color: rgba(0,0,0,0.8);
+                    /*background-color: rgba(0,0,0,0.8);*/
+                    background-color: #fff;
 
                     position: fixed;
-                    top:0;
+                    top:50px;
                     left:0;
 
                     z-index: 99999999;
@@ -560,7 +561,7 @@
                     margin-top: 25px; 
                     margin-bottom: 40px;
 
-                    color: #c9d4f6;
+                    color: #fff;
                     font-size: 18px;
                 }
 
@@ -586,16 +587,17 @@
                 }
 
                 .navv::-webkit-scrollbar-thumb {
-                    background-color: #c9d4f6;
+                    background-color: #000;
                 }
 
                 .navv li{ margin-left: -40px; }
                 .navv li a { 
                     display: inline-block;
-                    width: 120px;
-                    height: 120px;
+                    width: 250px;
+                    height: 71px;
                     padding: 10px;
-                    background-color: rgba(255,255,255,0.1);
+                    /*background-color: rgba(255,255,255,0.1);*/
+                    background: #ebebeb;    
                     margin-left: 10px;
                     margin-top: 10px;
                     border-radius: 2px;
@@ -604,40 +606,54 @@
                 }
 
                 .navv li a:hover { 
-                    background-color: rgba(255,255,255,0.2);
-                    border: 1px solid rgba(255,255,255,0.1);
+                    /*                    background-color: rgba(255,255,255,0.2);
+                                        border: 1px solid rgba(255,255,255,0.1);*/
                 }
 
+                .navv li a span { 
+                    margin-left: 0px;
+                    margin-top: 16px;
+                    display: block;
+                    float: left;
+                }
                 .navv li i { 
                     display: block;
                     /*width: 100px;*/
                     margin: 0 auto;
-                    font-size: 40px;
+                    font-size: 36px;
                     padding-bottom: 10px;
                     /*float: left;*/
                     /*text-align: center;*/
                     /*margin-left: 34px;*/
-                    color: #c9d4f6;
+                    color: #000;
+
+                    /*                    background: #399df2;*/
+                    width: 60px;
+                    height: 60px;
+                    text-align: center;
+                    line-height: 60px;
+                    float: left;
+                    margin-top: -5px;
                 }
 
                 .navv li a { 
                     font-size: 11px;
                     float: left;
                     text-align: center;
-                    color: #c9d4f6;
+                    color: #000;
                 }
 
                 .navv li.active a { 
-                    background-color: #c9d4f6;
-                    color: rgba(0,0,0,0.6);
+                    background-color: #2494F2;
+                    color: #fff;
                 }
                 .navv li.active i { 
-                    color: rgba(0,0,0,0.6);
+                    color: #fff;
                 }
 
                 .mask__menu ._close {
-                    background-color: #c9d4f6;
-                    color: rgba(0,0,0,0.6);
+                    background-color: #fff;
+                    color: #000;
                     padding-top: 0px;
                     padding-bottom: 0px;
                     padding-left: 4px;
@@ -659,7 +675,7 @@
                     jQuery('.navv').css('height', (jQuery(window).height() - 100) + 'px');
 
                     jQuery('.link_menu').on('click', function() {
-                        jQuery('.enfoc').addClass('desfoc');
+//                        jQuery('.enfoc').addClass('desfoc');
                         jQuery('.mask__menu').show();
                         jQuery('body').css('overflow', 'hidden');
                         return false;
@@ -667,7 +683,7 @@
 
                     jQuery(document).on('keyup', function(e) {
                         if (e.keyCode == 27) {
-                            jQuery('.enfoc').removeClass('desfoc');
+//                            jQuery('.enfoc').removeClass('desfoc');
                             jQuery('.mask__menu').hide();
                             jQuery('body').css('overflow', 'auto');
                         }

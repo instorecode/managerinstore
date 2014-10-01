@@ -82,7 +82,18 @@ public class RequestOcorrenciaStatus implements java.io.Serializable {
             OcorrenciaStatusDTO dto = new OcorrenciaStatusDTO();
             dto.setId(bean.getId().toString());
             dto.setDescricao(bean.getDescricao());
-
+            
+            if("#4D90FD".equals(bean.getCor())) {
+                dto.setCor("Azul");
+            } else if("#54A754".equals(bean.getCor())) {
+                dto.setCor("Verde");
+            } else if("#ffa800".equals(bean.getCor())) {
+                dto.setCor("Amarelo");
+            } else if("#e64d35".equals(bean.getCor())) {
+                dto.setCor("Vermelho");
+            } else if("#000000".equals(bean.getCor())) {
+                dto.setCor("Preto");
+            }
             rowsList.add(dto);
         }
         json.setRows(rowsList);

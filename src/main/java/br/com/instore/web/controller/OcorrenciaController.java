@@ -34,7 +34,7 @@ public class OcorrenciaController implements java.io.Serializable {
     public void listar(Boolean datajson) {
         requestOcorrencia.totalPorStatus();
         if (null != datajson && datajson) {
-            result.use(Results.json()).withoutRoot().from(requestOcorrencia.beanList()).recursive().serialize();
+//            result.use(Results.json()).withoutRoot().from(requestOcorrencia.beanList()).recursive().serialize();
         }
     }
 

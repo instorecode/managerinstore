@@ -2,6 +2,7 @@ package br.com.instore.web.component.request;
 
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.view.Results;
+import br.com.instore.core.orm.Query;
 import br.com.instore.core.orm.bean.ClienteBean;
 import br.com.instore.core.orm.bean.OcorrenciaBean;
 import br.com.instore.core.orm.bean.OcorrenciaOrigemBean;
@@ -15,6 +16,8 @@ import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.dto.OcorrenciaDTO;
 import br.com.instore.web.dto.OcorrenciaFormDTO;
+import br.com.instore.web.dto.OcorrenciaJSON;
+import br.com.instore.web.dto.OcorrenciaOrigemDTO;
 import br.com.instore.web.dto.OcorrenciaRelatorioRapidoDTO;
 import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
@@ -43,12 +46,40 @@ public class RequestOcorrencia implements java.io.Serializable {
         this.result = result;
         this.sessionUsuario = sessionUsuario;
     }
+    
+    public void beanList(Integer page, Integer rows, Integer id, String descricao) {
+        OcorrenciaJSON json = new OcorrenciaJSON();
+        page = (null == page || 0 == page ? 1 : page);
+        rows = (null == rows || 0 == rows ? 10 : rows);
 
-    public List<OcorrenciaDTO> beanList() {
+        Integer offset = (page - 1) * rows;
         List<OcorrenciaBean> lista = new ArrayList<OcorrenciaBean>();
-        List<OcorrenciaDTO> lista2 = new ArrayList<OcorrenciaDTO>();
-        lista = repository.query(OcorrenciaBean.class).findAll();
+
+        Query q1 = repository.query(OcorrenciaBean.class);
+        Query q2 = repository.query(OcorrenciaBean.class);
+
+        if (null != id && id > 0) {
+            q1.eq("id", id);
+            q2.eq("id", id);
+//            json.setId(id);
+        }
+
+        if (null != descricao && !descricao.isEmpty()) {
+            q1.ilikeAnyWhere("descricao", descricao);
+            q2.ilikeAnyWhere("descricao", descricao);
+            json.setDescricao(descricao);
+        }
+
+        int size = q1.count().intValue() / rows + ((q1.count().intValue() % rows == 0) ? 0 : 1); 
+        lista = q2.limit(offset, rows).findAll();
+
+        
+        json.setPage(page);
+        json.setSize(size);
+
+        List<OcorrenciaDTO> rowsList = new ArrayList<OcorrenciaDTO>();
         for (OcorrenciaBean bean : lista) {
+            
             OcorrenciaDTO dto = new OcorrenciaDTO();
 
             dto.setId(Utilities.leftPad(bean.getId()));
@@ -75,11 +106,11 @@ public class RequestOcorrencia implements java.io.Serializable {
             dto.setStatusCor(oub.getOcorrenciaStatus().getCor());
             dto.setStatusUsuarioNome(oub.getUsuario().getNome());
             dto.setPrioridade(bean.getOcorrenciaPrioridade().getDescricao());
-                    
-            
-            lista2.add(dto);
+
+            rowsList.add(dto);
         }
-        return lista2;
+        json.setRows(rowsList);
+        result.use(Results.json()).withoutRoot().from(json).recursive().serialize();
     }
 
     public OcorrenciaBean bean(Integer id) {
