@@ -140,6 +140,12 @@
 
         <!--TABLE-->
         <div class="block-xtable">
+            <div class="mask_message" style="display: none;">
+                <div class="text">
+                    <img src="${url_img}486.GIF" />
+                    &nbsp; Aguarde, processando dados...
+                </div>
+            </div>
             <div class="loader">
                 <span class="txt">
                     <span class="fa fa-refresh"></span>&nbsp;&nbsp;Aguarde...

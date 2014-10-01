@@ -166,12 +166,12 @@ jQuery(document).ready(function() {
                                         var item_fk = json_response[indice];
                                         var fk = item_fk[td.attr("fk")];
                                         var fk_label = item_fk[td.attr("fklabel")];
-                                        if(json[td.attr("fk")] == fk) {
+                                        if (json[td.attr("fk")] == fk) {
                                             tr += "<option value=\"" + fk + "\" selected=\"selected\">" + fk_label + "</option>";
                                         } else {
                                             tr += "<option value=\"" + fk + "\">" + fk_label + "</option>";
                                         }
-                                        
+
                                     }
                                 }
                             });
@@ -380,9 +380,9 @@ jQuery(document).ready(function() {
 
             jQuery('.block-xtable .loader').show();
             form = jQuery(this).parent().parent().parent().next().next().children("td").children("form");
-            
+
             var fn_callback = null;
-            
+
             if (null != form.attr("callback") && undefined != form.attr("callback") && "" != form.attr("callback")) {
                 fn_callback = window[form.attr("callback")];
             }
@@ -423,7 +423,6 @@ jQuery(document).ready(function() {
                     "background-color": "#fffbd3"
                 });
             });
-            
         }
         return false;
     });
@@ -564,7 +563,7 @@ jQuery(document).ready(function() {
         else
         {
             jQuery("div.form").show();
-            
+
             jQuery(".row_data").removeClass("blur2");
             jQuery(".row_view").hide();
             jQuery(".row_edit").hide();
@@ -596,4 +595,20 @@ function dialogAjax(msg) {
     setTimeout(function() {
         bootbox.hideAll();
     }, 2000);
+}
+
+function msg_fadeIn() {
+    jQuery('.mask_message').css({
+        'height': jQuery('.block-xtable').css('height'),
+        'width': jQuery('.block-xtable').css('width')
+    });
+    jQuery('.mask_message .text').css({
+        'margin-top': ((jQuery('.mask_message').height() - jQuery('.mask_message .text').height()) / 2) + 'px',
+        'margin-left': ((jQuery('.mask_message').width() - 250) / 2) + 'px',
+    });
+    
+    jQuery('.mask_message').fadeIn();
+}
+function msg_fadeOut() {   
+    jQuery('.mask_message').fadeOut();
 }

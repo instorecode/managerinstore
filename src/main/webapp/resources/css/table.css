@@ -104,3 +104,24 @@ th.extra {
 {
     background-color: #fffbd3 !important;
 }
+
+.mask_message {
+    display: none;
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    z-index: 9999;
+    background-color: rgba(0,0,0,0.2);
+    margin-top: -10px;
+    margin-left: -10px;
+}
+
+.mask_message .text i { font-size: 24px; float: left; margin-right: 10px; }
+.mask_message .text {
+    display: block;
+    max-width: 250px;
+    padding: 10px;
+    border: 2px solid #c3c3c3;
+    background: #FFF;
+    color: #000;
+}
