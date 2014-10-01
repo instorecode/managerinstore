@@ -127,6 +127,7 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
 
     public void salvar(AudiostoreProgramacaoBean audiostoreProgramacaoBean, String horaInicio, String horaFinal, Integer[] categorias, Integer[] diasSemana) {
         try {
+            audiostoreProgramacaoBean.setConteudo(" ");
             if (null == categorias || categorias.length <= 0) {
                 result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Informe pelomenos uma categoria!")).recursive().serialize();
                 return;

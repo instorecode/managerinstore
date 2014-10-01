@@ -402,6 +402,7 @@
 
         <script type="text/javascript">
             jQuery(document).ready(function() {
+                
                 jQuery(document).on("selected", ".row_data", function(evt, item) {
                     jQuery('.btn_export').show();
                 }).on("unselected", ".row_data", function(evt, item) {
@@ -411,17 +412,34 @@
                 });
 
                 jQuery('.btn_export').on("click", function() {
+                    msg_fadeIn();
                     if (countRowsSelected() <= 0) {
                         bootbox.alert("Selecione no minimo um registro na tabela.", function() {
                         });
                     } else {
-                        msg_fadeIn();
+                        
                         var arr = rowsSelected();
+                        var id_list = new Array();
                         for (i in arr) {
                             var item = arr[i];
+                            id_list[i] = item.codigo;
                         }
+                        jQuery.ajax({
+                            type: 'POST',
+                            url : '${url}/audiostore-categoria/vld-ctg',
+                            data:{ id_list : id_list },
+                            success : function(json){
+                                if(!json.success) {
+                                    dialogAjax(json.response);
+                                } else {
+                                    
+                                }
+                            }
+                        });
                     }
+                    msg_fadeOut();
                 });
+                
             });
         </script>
     </jsp:body>

@@ -109,11 +109,7 @@
                 <div class="col-md-12">
                     <div class="form-group">
                         <label>Conteudo</label>
-                        <input type="text" name="audiostoreProgramacaoBean.conteudo" class="form-control" placeholder="Conteudo"  
-                               data-rule-required="true" 
-                               data-rule-minlength="3"
-                               data-rule-maxlength="70" 
-                               value="${audiostoreProgramacaoBean.conteudo}">
+                        <input type="text" name="audiostoreProgramacaoBean.conteudo" class="form-control" placeholder="Conteudo" data-rule-maxlength="70" value="${audiostoreProgramacaoBean.conteudo}">
                     </div>
                 </div>
 

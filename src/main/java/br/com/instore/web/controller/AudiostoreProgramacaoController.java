@@ -7,10 +7,8 @@ import br.com.caelum.vraptor.Post;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.observer.download.InputStreamDownload;
 import br.com.caelum.vraptor.view.Results;
-import br.com.instore.core.orm.bean.AudiostoreCategoriaBean;
 import br.com.instore.core.orm.bean.AudiostoreProgramacaoBean;
 import br.com.instore.web.annotation.Restrict;
-import br.com.instore.web.component.request.RequestAudiostoreCategoria;
 import br.com.instore.web.component.request.RequestAudiostoreProgramacao;
 import javax.inject.Inject;
 

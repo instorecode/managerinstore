@@ -119,4 +119,10 @@ public class AudiostoreCategoriaController implements java.io.Serializable {
     public void upload(UploadedFile file) {
 //        requestAudiostoreCategoria.upload(file);
     }
+    
+    @Post
+    @Path("/audiostore-categoria/vld-ctg")
+    public void validarCategorias(Integer [] id_list ) {
+        requestAudiostoreCategoria.validarCategorias(id_list);
+    }
 }

@@ -23,6 +23,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import jcifs.smb.SmbFile;
@@ -50,7 +52,7 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
 
     public void beanList(Integer page, Integer rows, Integer id, Integer idcliente, String nome, Integer tipo, String duracao, String dataInicio, String dataFinal, String codInterno) {
         AudiostoreCategoriaJSON json = new AudiostoreCategoriaJSON();
-        
+
         page = (null == page || 0 == page ? 1 : page);
         rows = (null == rows || 0 == rows ? 10 : rows);
 
@@ -65,7 +67,7 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
             q2.eq("id", id);
             json.setId(id);
         }
-        
+
         if (null != idcliente && idcliente > 0) {
             q1.eq("cliente.idcliente", idcliente);
             q2.eq("cliente.idcliente", idcliente);
@@ -83,7 +85,7 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
             q2.eq("tipo", tipo);
             json.setTipo(tipo);
         }
-        
+
         if (null != codInterno && !codInterno.isEmpty()) {
             q1.eq("codInterno", codInterno);
             q2.eq("codInterno", codInterno);
@@ -100,7 +102,7 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
                 e.printStackTrace();
             }
         }
-       
+
         if (null != dataInicio && !dataInicio.isEmpty()) {
             try {
                 Date d = new SimpleDateFormat("dd/MM/yyyy").parse(dataInicio);
@@ -111,7 +113,7 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
                 e.printStackTrace();
             }
         }
-       
+
         if (null != dataFinal && !dataFinal.isEmpty()) {
             try {
                 Date d = new SimpleDateFormat("dd/MM/yyyy").parse(dataFinal);
@@ -126,7 +128,7 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
         int size = q1.count().intValue() / rows + ((q1.count().intValue() % rows == 0) ? 0 : 1);
         lista = q2.limit(offset, rows).findAll();
 
-        
+
         json.setPage(page);
         json.setSize(size);
 
@@ -140,7 +142,7 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
             dto.setDataInicio(new SimpleDateFormat("dd/MM/yyyy").format(bean.getDataInicio()));
             dto.setDataFinal(new SimpleDateFormat("dd/MM/yyyy").format(bean.getDataFinal()));
             dto.setTempo(new SimpleDateFormat("HH:mm:ss").format(bean.getTempo()));
-            dto.setTipoNum(""+bean.getTipo());
+            dto.setTipoNum("" + bean.getTipo());
             dto.setIdcliente(bean.getCliente().getIdcliente().toString());
             dto.setCodInterno(bean.getCodInterno());
             switch (bean.getTipo()) {
@@ -169,7 +171,7 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
     public AudiostoreCategoriaBean bean(Integer id) {
         return repository.find(AudiostoreCategoriaBean.class, id);
     }
-    
+
     public AudiostoreCategoriaDTO audiostoreCategoriaBean(Integer id) {
 
         AudiostoreCategoriaBean bean = repository.find(AudiostoreCategoriaBean.class, id);
@@ -181,10 +183,10 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
         dto.setDataInicio(new SimpleDateFormat("dd/MM/yyyy").format(bean.getDataInicio()));
         dto.setDataFinal(new SimpleDateFormat("dd/MM/yyyy").format(bean.getDataFinal()));
         dto.setTempo(new SimpleDateFormat("HH:mm:ss").format(bean.getTempo()));
-        dto.setTipoNum(""+bean.getTipo());
+        dto.setTipoNum("" + bean.getTipo());
         dto.setIdcliente(bean.getCliente().getIdcliente().toString());
         dto.setCodInterno(bean.getCodInterno());
-        
+
         switch (bean.getTipo()) {
             case 1:
                 dto.setTipo("Música");
@@ -202,22 +204,24 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
 
     public void salvar(AudiostoreCategoriaBean audiostoreCategoriaBean, String tempo) {
         try {
-            
-            if(audiostoreCategoriaBean.getDataInicio().after(audiostoreCategoriaBean.getDataFinal())) {
+
+            if (audiostoreCategoriaBean.getDataInicio().after(audiostoreCategoriaBean.getDataFinal())) {
                 result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "A data de inicio deve ser menor que a data de termino da categoria!")).recursive().serialize();
                 return;
             }
-            
-            if(repository.query(AudiostoreCategoriaBean.class).eq("cliente.idcliente", audiostoreCategoriaBean.getCliente().getIdcliente()).eq("categoria", audiostoreCategoriaBean.getCategoria()).count() > 0) {
-                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Já existe uma categoria com este nome!")).recursive().serialize();
-                return;
+
+            if (!(null != audiostoreCategoriaBean && null != audiostoreCategoriaBean.getIdaudiostoreCategoria() && audiostoreCategoriaBean.getIdaudiostoreCategoria() > 0)) {
+                if (repository.query(AudiostoreCategoriaBean.class).eq("cliente.idcliente", audiostoreCategoriaBean.getCliente().getIdcliente()).eq("categoria", audiostoreCategoriaBean.getCategoria()).count() > 0) {
+                    result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Já existe uma categoria com este nome!")).recursive().serialize();
+                    return;
+                }
+
+                if (repository.query(AudiostoreCategoriaBean.class).eq("cliente.idcliente", audiostoreCategoriaBean.getCliente().getIdcliente()).eq("codInterno", audiostoreCategoriaBean.getCodInterno()).count() > 0) {
+                    result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Já existe uma categoria com este código!")).recursive().serialize();
+                    return;
+                }
             }
-            
-            if(repository.query(AudiostoreCategoriaBean.class).eq("cliente.idcliente", audiostoreCategoriaBean.getCliente().getIdcliente()).eq("codInterno", audiostoreCategoriaBean.getCodInterno()).count() > 0) {
-                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Já existe uma categoria com este código!")).recursive().serialize();
-                return;
-            }
-            
+
             repository.setUsuario(sessionUsuario.getUsuarioBean());
             audiostoreCategoriaBean.setTempo(new SimpleDateFormat("HH:mm:ss").parse(tempo));
 
@@ -285,30 +289,34 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
         return inputStreamDownload;
     }
 
-    public void upload(AudiostoreCategoriaBean audiostoreCategoriaBean) throws Exception {
+    public void upload(Integer [] id_list) throws Exception {
         try {
-            if (audiostoreCategoriaBean != null) {
-                String conteudo = "";
-
-                conteudo += StringUtils.leftPad(audiostoreCategoriaBean.getCodigo().toString(), 5, " ");
-                conteudo += StringUtils.leftPad(audiostoreCategoriaBean.getCategoria(), 30, " ");
-                conteudo += StringUtils.leftPad(new SimpleDateFormat("dd/MM/yy").format(audiostoreCategoriaBean.getDataInicio()), 8, " ");
-                conteudo += StringUtils.leftPad(new SimpleDateFormat("dd/MM/yy").format(audiostoreCategoriaBean.getDataFinal()), 8, " ");
-                conteudo += audiostoreCategoriaBean.getTipo();
-
-                DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", audiostoreCategoriaBean.getCliente().getIdcliente()).findOne();
-                String destino = dados.getLocalDestinoExp() + "exp/categoria/";
-                SmbFile smb = new SmbFile(destino, Utilities.getAuthSmbDefault());
-                SmbFile smb2 = new SmbFile(destino + StringUtils.leftPad(audiostoreCategoriaBean.getCodigo().toString(), 5, " ") + ".exp", Utilities.getAuthSmbDefault());
-
-                if (!smb.exists()) {
-                    smb.mkdirs();
+            String conteudo = "";
+            List<AudiostoreCategoriaBean> list = repository.query(AudiostoreCategoriaBean.class).in("codigo", id_list).findAll();
+            for (AudiostoreCategoriaBean audiostoreCategoriaBean : list) {
+                if (audiostoreCategoriaBean != null) {
+                    conteudo += StringUtils.leftPad(audiostoreCategoriaBean.getCodigo().toString(), 5, " ");
+                    conteudo += StringUtils.leftPad(audiostoreCategoriaBean.getCategoria(), 30, " ");
+                    conteudo += StringUtils.leftPad(new SimpleDateFormat("dd/MM/yy").format(audiostoreCategoriaBean.getDataInicio()), 8, " ");
+                    conteudo += StringUtils.leftPad(new SimpleDateFormat("dd/MM/yy").format(audiostoreCategoriaBean.getDataFinal()), 8, " ");
+                    conteudo += audiostoreCategoriaBean.getTipo();
+                    conteudo = "\n";
                 }
-
-                SmbFileOutputStream sfous = new SmbFileOutputStream(smb2);
-                sfous.write(conteudo.getBytes());
-                sfous.close();
             }
+
+            DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", list.get(0).getCliente().getIdcliente()).findOne();
+            String destino = dados.getLocalDestinoExp();
+            SmbFile smb = new SmbFile(destino, Utilities.getAuthSmbDefault());
+            SmbFile smb2 = new SmbFile(destino + StringUtils.leftPad(list.get(0).getCodInterno().toString(), 5, " ") + ".exp", Utilities.getAuthSmbDefault());
+
+            if (!smb.exists()) {
+                smb.mkdirs();
+            }
+
+            SmbFileOutputStream sfous = new SmbFileOutputStream(smb2);
+            sfous.write(conteudo.getBytes());
+            sfous.close();
+
         } catch (Exception e) {
             throw e;
         }
@@ -332,5 +340,40 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
         } catch (IOException ex) {
             result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Ocorreu um erro ao tentar sincronizar o arquivo " + file.getFileName())).recursive().serialize();
         }
+    }
+
+    public void validarCategorias(Integer[] id_list) {
+        List<AudiostoreCategoriaBean> list = repository.query(AudiostoreCategoriaBean.class).in("codigo", id_list).findAll();
+
+        boolean ajaxResultBool = true;
+        String ajaxResultStr = "";
+
+        // verifica se todos são do mesmo cliente
+        Integer idcliente = list.get(0).getCliente().getIdcliente();
+        for (AudiostoreCategoriaBean bean : list) {
+            if (!bean.getCliente().getIdcliente().equals(idcliente)) {
+                ajaxResultBool = false;
+                ajaxResultStr = "Você selecionou categorias de clientes diferentes!";
+                break;
+            }
+        }
+
+        if (ajaxResultBool) {
+            DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", list.get(0).getCliente().getIdcliente()).findOne();
+            if (null == dados || dados.getLocalDestinoExp().trim().isEmpty()) {
+                ajaxResultBool = false;
+                ajaxResultStr = "O cliente não possui um local de destino para os arquivos de exportação!";
+            }
+        }
+
+
+        try {
+            upload(id_list);
+        } catch (Exception e) {
+            ajaxResultBool = false;
+            ajaxResultStr = e.getMessage();
+        }
+
+        result.use(Results.json()).withoutRoot().from(new AjaxResult(ajaxResultBool, ajaxResultStr)).recursive().serialize();
     }
 }
