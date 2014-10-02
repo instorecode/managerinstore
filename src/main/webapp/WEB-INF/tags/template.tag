@@ -102,7 +102,7 @@
             <script src="${url_cz}js/ckeditor/adapters/jquery.js"></script>
             <script src="${url_js}gerarCsv.js" ></script>
             <script src="${url_js}testeFade.js"></script>
-            
+
             <script type="text/javascript">
                 jQuery(document).ready(function() {
                     App.init();
@@ -412,6 +412,8 @@
         </head>
 
         <body>
+            <br>
+
             <div class="enfoc">
                 <!-- Fixed navbar -->
                 <div id="head-nav" class="navbar navbar-default navbar-fixed-top">
@@ -526,10 +528,18 @@
             </div>
 
             <div class="mask__menu" style="display: none;">
-                <b> <a class="_close"> <i class="fa fa-times"></i> </a></b>
+                <b> <a class="_close"> <i class="fa fa-times"></i></a></b>
                 <ul class="navv">
                     ${menu}
                 </ul>
+
+                <div style="margin-left: 40px;">
+                    <a style="font-size:16px;color: #000" >Perfis Do Usuário</a><br>                
+                    <c:forEach var="item" items="${listaDePerfil}" >
+                        <a >${item.perfil.nome}</a><br/>
+                    </c:forEach>
+                </div>           
+
             </div>
             <style>
                 .desfoc {
@@ -672,9 +682,9 @@
             <script type="text/javascript">
                 jQuery(document).ready(function() {
                     jQuery(window).resize(function() {
-                        jQuery('.navv').css('height', (jQuery(window).height() - 100) + 'px');
+                        jQuery('.navv').css('height', (jQuery(window).height() - 300) + 'px');
                     });
-                    jQuery('.navv').css('height', (jQuery(window).height() - 100) + 'px');
+                    jQuery('.navv').css('height', (jQuery(window).height() - 200) + 'px');
 
                     jQuery('.link_menu').on('click', function() {
 //                        jQuery('.enfoc').addClass('desfoc');

@@ -9,6 +9,7 @@ import br.com.caelum.vraptor.interceptor.AcceptsWithAnnotations;
 import br.com.caelum.vraptor.interceptor.SimpleInterceptorStack;
 import br.com.instore.core.orm.bean.ClienteBean;
 import br.com.instore.core.orm.bean.FuncionalidadeBean;
+import br.com.instore.core.orm.bean.PerfilUsuarioBean;
 import br.com.instore.core.orm.bean.UsuarioBean;
 import br.com.instore.core.orm.bean.property.Funcionalidade;
 import br.com.instore.core.orm.bean.property.Usuario;
@@ -56,6 +57,7 @@ public class RestrictAccessValidator {
                 result.include("menu", constructMenu(null, path.value()[0]));
                 result.include("funcionalidadeBeanList", constructMenuChild(f));
                 loadClienteMatriz();
+                perfilUsuarios();
                 stack.next();
             } else if ("/sair".equals(path.value()[0])) {
                 stack.next();
@@ -190,6 +192,11 @@ public class RestrictAccessValidator {
         }
 
         return html;
+    }
+
+    public void perfilUsuarios() {
+        List<PerfilUsuarioBean> listaDePerfil = requestRepository.query(PerfilUsuarioBean.class).eq("usuario.idusuario", sessionUsuario.getUsuarioBean().getIdusuario()).findAll();
+        result.include("listaDePerfil", listaDePerfil);
     }
 
     public void loadClienteMatriz() {
