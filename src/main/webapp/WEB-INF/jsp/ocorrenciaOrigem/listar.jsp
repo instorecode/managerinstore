@@ -3,7 +3,7 @@
 
 <instore:template isGrid="false">
     <jsp:body> 
-        
+       
         <c:set scope="session" var="form_access" value="${false}"></c:set>
         <c:set scope="session" var="update_access" value="${false}"></c:set>
         <c:set scope="session" var="delete_access" value="${false}"></c:set>
@@ -151,13 +151,15 @@
                     <span class="fa fa-refresh"></span>&nbsp;&nbsp;Aguarde...
                 </span>
             </div>
-
+           
             <button type="button" class="btn btn-default btn-flat btn_cadastro" style="margin-left: 0px;"><i class="fa fa-save"></i> Cadastrar</button>
 
             <div class="btn-group">
                 <button type="button" class="btn btn-default dropdown-toggle btn-flat" data-toggle="dropdown">
                     Qtd.<span class="caret"></span>
                 </button>
+                
+                
                 <ul class="dropdown-menu qtd" role="menu">
                     <li><a href="10">10</a></li>
                     <li><a href="20">20</a></li>
@@ -165,6 +167,7 @@
                     <li><a href="50">50</a></li>
                     <li><a href="100">100</a></li>
                 </ul>
+                <button type="button" class="btn btn-default btn-flat " id="botaoCsv" ><i class="fa fa-file-excel-o"></i></button>
             </div>
             <div class="btn-group">
                 <button class="btn btn-default btn-flat _prev"> <i class="fa fa-angle-double-left"></i> </button>

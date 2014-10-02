@@ -140,6 +140,12 @@
 
         <!--TABLE-->
         <div class="block-xtable">
+            <div class="mask_message" style="display: none;">
+                <div class="text">
+                    <img src="${url_img}486.GIF" />
+                    &nbsp; Aguarde, processando dados...
+                </div>
+            </div>
             <div class="loader">
                 <span class="txt">
                     <span class="fa fa-refresh"></span>&nbsp;&nbsp;Aguarde...
@@ -159,6 +165,7 @@
                     <li><a href="50">50</a></li>
                     <li><a href="100">100</a></li>
                 </ul>
+                <button type="button" class="btn btn-default btn-flat " id="botaoCsv" ><i class="fa fa-file-excel-o"></i></button>
             </div>
             <div class="btn-group">
                 <button class="btn btn-default btn-flat _prev"> <i class="fa fa-angle-double-left"></i> </button>
