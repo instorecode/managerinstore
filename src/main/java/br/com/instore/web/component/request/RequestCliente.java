@@ -16,6 +16,7 @@ import br.com.instore.core.orm.bean.property.DadosCliente;
 import br.com.instore.core.orm.bean.property.Estado;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.dto.ClienteDTO;
+import br.com.instore.web.dto.ClienteDTO2;
 import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
 import java.text.SimpleDateFormat;
@@ -569,6 +570,16 @@ public class RequestCliente implements java.io.Serializable {
             e.printStackTrace();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel salvar os dados!")).recursive().serialize();
         }
+    }
+    
+    public List<ClienteDTO2> paginaCadastroListaFilial() {
+        List<ClienteDTO2> lista = repository.query("select idcliente , parente , nome  from cliente where matriz = 0").executeSQL(ClienteDTO2.class);
+        return lista;
+    }
+    
+    public List<ClienteDTO2> paginaCadastroListaFilial2(Integer id) {
+        List<ClienteDTO2> lista = repository.query("select idcliente , parente , nome  from cliente where matriz = 0 and parente = " + id).executeSQL(ClienteDTO2.class);
+        return lista;
     }
 }
 

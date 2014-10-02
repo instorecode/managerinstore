@@ -318,6 +318,7 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
             sfous.close();
 
         } catch (Exception e) {
+            e.printStackTrace();
             throw e;
         }
     }
@@ -360,12 +361,11 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
 
         if (ajaxResultBool) {
             DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", list.get(0).getCliente().getIdcliente()).findOne();
-            if (null == dados || dados.getLocalDestinoExp().trim().isEmpty()) {
+            if (null == dados || null == dados.getLocalDestinoExp() || dados.getLocalDestinoExp().trim().isEmpty()) {
                 ajaxResultBool = false;
                 ajaxResultStr = "O cliente não possui um local de destino para os arquivos de exportação!";
             }
         }
-
 
         try {
             upload(id_list);

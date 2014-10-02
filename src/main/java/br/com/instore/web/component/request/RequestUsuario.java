@@ -71,11 +71,11 @@ public class RequestUsuario implements java.io.Serializable {
 
                 repository.setUsuario(sessionUsuario.getUsuarioBean());
                 Utilities.historicoUsuarioLogin(repository);
-                
+
                 Cookie cookie1 = new Cookie("managerinstore_machine_userck", usuario.getIdusuario().toString());
-                
+
                 httpServletResponse.addCookie(cookie1);
-                
+
                 result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Usuário logado com sucesso")).recursive().serialize();
             } else {
                 result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "E-mail / Senha inválidos.")).recursive().serialize();
@@ -85,7 +85,7 @@ public class RequestUsuario implements java.io.Serializable {
             result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "E-mail / Senha inválidos.")).recursive().serialize();
         }
     }
-    
+
     public void autoLogIn(Integer id) {
         try {
             if (repository.query(UsuarioBean.class).eq(Usuario.IDUSUARIO, id).count() > 0) {
@@ -157,11 +157,19 @@ public class RequestUsuario implements java.io.Serializable {
     }
 
     public void salvar(UsuarioBean bean, Integer[] perfilListID) {
+        if (!(bean.getIdusuario()!= null && bean.getIdusuario() > 0)) {
+            if (repository.query(UsuarioBean.class).eq(Usuario.CPF, bean.getCpf()).count() > 0) {
+                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Já existe um usuário cadastrado com o este CPF!")).recursive().serialize();
+                return;
+            }
+        }
+
+
         try {
             repository.setUsuario(sessionUsuario.getUsuarioBean());
-            
-            bean.setSenha( Utilities.md5(bean.getSenha()));
-            
+
+            bean.setSenha(Utilities.md5(bean.getSenha()));
+
             EnderecoBean end = bean.getEndereco();
             CepBean cep = bean.getEndereco().getCep();
             BairroBean bairro = bean.getEndereco().getCep().getBairro();
@@ -216,7 +224,7 @@ public class RequestUsuario implements java.io.Serializable {
                 pub.setPerfil(new PerfilBean(id));
                 repository.save(pub);
             }
-            
+
             repository.finalize();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Dados salvos com sucesso!")).recursive().serialize();
         } catch (Exception e) {

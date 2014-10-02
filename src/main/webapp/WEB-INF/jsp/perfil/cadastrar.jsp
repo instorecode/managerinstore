@@ -37,39 +37,39 @@
         </form>
         <style type="text/css">
             .funcionalidades , .funcionalidades * {list-style: none;}
-            .funcionalidades li { margin-left: -20px; }
+            .funcionalidades { margin-left: -30px; }
         </style>
 
         <script type="text/javascript">
             jQuery(document).ready(function() {
                 jQuery(document).on('change', '.chkTree', function() {
-                    if(jQuery(this).is(':checked')) {
+                    if (jQuery(this).is(':checked')) {
                         var parente = jQuery(this).parent('li').data('parente');
-                        if(jQuery('#'+parente).length > 0) {
-                            var chk = jQuery('#'+parente).children('.chkTree');
-                            if(!chk.is(':checked')) {
-                                jQuery('#'+parente).children('.chkTree').trigger('click');
+                        if (jQuery('#' + parente).length > 0) {
+                            var chk = jQuery('#' + parente).children('.chkTree');
+                            if (!chk.is(':checked')) {
+                                jQuery('#' + parente).children('.chkTree').trigger('click');
                             }
                         }
                     } else {
-                       if(jQuery(this).parent('li').children('ul').children('li').length > 0) {
-                           var remarcar = false;
-                           jQuery(this).parent('li').children('ul').children('li').each(function(){
-                               var chk = jQuery(this).children('.chkTree');
-                               if(chk.is(':checked')) {
-                                   remarcar = true;
-                               }
-                           });
-                            
-                           if(remarcar) {
-                               jQuery(this).trigger('click');
-                           }
-                       }
+                        if (jQuery(this).parent('li').children('ul').children('li').length > 0) {
+                            var remarcar = false;
+                            jQuery(this).parent('li').children('ul').children('li').each(function() {
+                                var chk = jQuery(this).children('.chkTree');
+                                if (chk.is(':checked')) {
+                                    remarcar = true;
+                                }
+                            });
+
+                            if (remarcar) {
+                                jQuery(this).trigger('click');
+                            }
+                        }
                     }
                 });
-                
+
                 var idperfil = '${perfilBean.idperfil}';
-                jQuery.getJSON('${url}/utilidades/funcionalidadetree?idperfil='+idperfil, function(data) {
+                jQuery.getJSON('${url}/utilidades/funcionalidadetree?idperfil=' + idperfil, function(data) {
                     recursiveNode(data, null);
                 });
 
@@ -85,28 +85,38 @@
                     }
 
                     jQuery.each(jsonItem.filhos, function(key, item) {
-                        
+
                         var li = jQuery('<li />', {
                             id: +item.idfuncionalidade,
                         }).appendTo(elm);
+
+
+                        var label = jQuery('<label />', {
+                            id: "label" + item.idfuncionalidade,
+                        }).appendTo(li);
 
                         var input = jQuery('<input />', {
                             id: 'input-funcionalidade-' + item.idfuncionalidade,
                             type: 'checkbox',
                             name: 'funcionalidadeID',
-                            'class': 'chkTree',
-                            checked:(item.perfilTem ? true : false),
-                            value : item.idfuncionalidade
-                        }).appendTo(li);
+                            'class': 'chkTree icheck3',
+                            checked: (item.perfilTem ? true : false),
+                            value: item.idfuncionalidade
+                        }).appendTo(label);
 
                         var input = jQuery('<span />', {
-                            html: '&nbsp;&nbsp;' + item.nome
+                            html: '&nbsp;&nbsp;&nbsp;&nbsp;' + item.nome
                         }).appendTo(li);
 
                         li.attr('data-parente', item.parente);
                         if (item.filhos.length > 0) {
                             recursiveNode(item, li);
                         }
+                    });
+
+                    jQuery('.icheck3').iCheck({
+                        checkboxClass: 'icheckbox_square-blue checkbox',
+                        radioClass: 'iradio_square-blue'
                     });
                 }
             });

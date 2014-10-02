@@ -12,6 +12,7 @@ import br.com.instore.core.orm.bean.DadosClienteBean;
 import br.com.instore.web.annotation.Restrict;
 import br.com.instore.web.component.request.RequestCliente;
 import br.com.instore.web.dto.ClienteDTO;
+import br.com.instore.web.dto.ClienteDTO2;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -47,7 +48,7 @@ public class ClienteController implements java.io.Serializable {
     @Path("/cliente/cadastrar")
     public void cadastrar() {
         result.include("isPageCadastro", true);
-        result.include("filialBeanList2", requestCliente.filialDTOListAux(null, true , null));
+        result.include("filialBeanList2", requestCliente.paginaCadastroListaFilial());
         result.include("filialBeanList1", new ArrayList<ClienteDTO>());
         result.include("estadoBeanList", requestCliente.estadoBeanList());
         result.include("indiceReajusteList", requestCliente.indiceReajusteList());
@@ -69,14 +70,14 @@ public class ClienteController implements java.io.Serializable {
         Integer contador1 = 0;
         Integer contador2 = 0;
         
-        List<ClienteDTO> filialBeanList1 = requestCliente.filialDTOListAux(id, false , true);
-        List<ClienteDTO> filialBeanList2 = requestCliente.filialDTOListAux(id, false , false);
+        List<ClienteDTO2> filialBeanList1 = requestCliente.paginaCadastroListaFilial2(id);
+        List<ClienteDTO2> filialBeanList2 = requestCliente.paginaCadastroListaFilial();
         
-        for (ClienteDTO dto : filialBeanList1) {
+        for (ClienteDTO2 dto : filialBeanList1) {
             contador1++;
         }
         
-        for (ClienteDTO dto : filialBeanList2) {
+        for (ClienteDTO2 dto : filialBeanList2) {
             contador2++;
         }
         

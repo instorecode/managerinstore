@@ -669,11 +669,12 @@
                                                 <div class="text">${filial.nome}</div>
                                                 <small>
                                                     <c:if test="${filial.parente eq 0}">
-                                                        <b style="color: green">Não possui matriz</b>
+                                                        <b style="color: green"></b>
                                                     </c:if>
                                                     <c:if test="${filial.parente ne 0}">
-                                                        <b style="color: red">${filial.nomeParente}</b>
+                                                        <b style="color: red"></b>
                                                     </c:if>
+                                                        <br />
                                                 </small>
 
                                                 <input type="hidden" name="filialList" value="${filial.idcliente}" disabled="disabled"/>
@@ -733,4 +734,4 @@
         </form>
 
     </jsp:body>
-</instore:template>
+</instore:template> 

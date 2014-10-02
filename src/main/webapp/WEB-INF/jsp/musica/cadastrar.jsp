@@ -188,14 +188,6 @@
 
                 jQuery('[type="file"]').on('change', function() {
                     var file = this.files[0];
-                    console.log(this.files);
-                    console.log(file.name);
-                    console.log(file.type);
-                    console.log(file.size);
-                    console.log(file.lastModifiedDate);
-                    console.log(file.lastModifiedDate.toLocaleDateString());
-                    console.log(jQuery(this).val());
-
 
 //                     jQuery.ajax({
 //                         url : '${url}/musica/carrega-metadata?url='+path,
