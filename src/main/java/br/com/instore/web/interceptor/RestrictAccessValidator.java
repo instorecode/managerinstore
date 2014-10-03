@@ -67,6 +67,7 @@ public class RestrictAccessValidator {
                     result.include("menu", constructMenu(null, path.value()[0]));
                     result.include("funcionalidadeBeanList", constructMenuChild(f));
                     loadClienteMatriz();
+                    perfilUsuarios();
                     stack.next();
                 } else {
                     result.redirectTo(HomeController.class).index();
