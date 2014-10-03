@@ -460,17 +460,18 @@ jQuery(document).ready(function() {
     jQuery('.cepload').on('blur', function() {
         var self = jQuery(this);
         var valueOrig = self.val();
-        var value = self.val();
+        var cep1 = self.val();
         var url = self.data('url');
-
-        value = value.replace(".", "");
-        value = value.replace("-", "");
+        cep2 = cep1;
+        
+        cep2 = cep2.replace(".", "");
+        cep2= cep2.replace("-", "");
 
         jQuery.ajax({
             type: 'GET',
             url: url,
             contentType: 'application/json;charset=UTF-8',
-            data: {cep: value},
+            data: {cep1: cep1 , cep2:cep2},
             beforeSend: function() {
                 bootbox.hideAll();
                 bootbox.dialog({

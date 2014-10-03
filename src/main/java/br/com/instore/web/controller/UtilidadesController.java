@@ -37,16 +37,19 @@ public class UtilidadesController implements java.io.Serializable {
 
     @Get
     @Path("/utilidades/cepload")
-    public void cepload(String cep) {
+    public void cepload(String cep1 , String cep2) {
         CepResult res = new CepResult();
-        if (repository.query(CepBean.class).eq(Cep.NUMERO, cep).count() > 0) {
-            CepBean bean = repository.query(CepBean.class).eq(Cep.NUMERO, cep).findOne();
+        System.out.println("cep1 " + cep1);
+        System.out.println("cep2 " + cep2);
+        if (repository.query(CepBean.class).eq(Cep.NUMERO, cep1).count() > 0) {
+            CepBean bean = repository.query(CepBean.class).eq(Cep.NUMERO, cep1).findOne();
             res.setUf(bean.getBairro().getCidade().getEstado().getSigla());
             res.setCidade(bean.getBairro().getCidade().getNome());
             res.setBairro(bean.getBairro().getNome());
             res.setLogradouro(bean.getBairro().getRua());
+            res.setTipo_logradouro(bean.getBairro().getTipo());
         } else {
-            res = CepService.get(cep);
+            res = CepService.get(cep2);
         }
         result.use(Results.json()).withoutRoot().from(res).recursive().serialize();
 

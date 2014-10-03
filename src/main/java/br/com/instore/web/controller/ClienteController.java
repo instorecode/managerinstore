@@ -70,21 +70,21 @@ public class ClienteController implements java.io.Serializable {
         Integer contador1 = 0;
         Integer contador2 = 0;
         
-        List<ClienteDTO2> filialBeanList1 = requestCliente.paginaCadastroListaFilial2(id);
-        List<ClienteDTO2> filialBeanList2 = requestCliente.paginaCadastroListaFilial();
+        List<ClienteDTO2> filialBeanList2 = requestCliente.paginaCadastroListaFilial2(id);
+        List<ClienteDTO2> filialBeanList3 = requestCliente.paginaCadastroListaFilial3(id);
         
-        for (ClienteDTO2 dto : filialBeanList1) {
+        for (ClienteDTO2 dto : filialBeanList2) {
             contador1++;
         }
         
-        for (ClienteDTO2 dto : filialBeanList2) {
+        for (ClienteDTO2 dto : filialBeanList3) {
             contador2++;
         }
         
         
         
-        result.include("filialBeanList1", filialBeanList1);
-        result.include("filialBeanList2", filialBeanList2);
+        result.include("filialBeanList1", filialBeanList2);
+        result.include("filialBeanList2", filialBeanList3);
         
         
         result.include("contador1", contador1);

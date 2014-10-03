@@ -622,6 +622,9 @@
                                         jQuery(this).parent('li').show();
                                     });
                                     jQuery('.contador_l1').text("Total " + jQuery('.lista_filial1 li:visible').size());
+                                } else {
+                                    jQuery(".lista_filial1 li").show();
+                                    jQuery('.contador_l1').text("Total " + jQuery('.lista_filial1 li:visible').size());
                                 }
                             });
 
@@ -706,11 +709,12 @@
                                                 <div class="text">${filial.nome}</div>
                                                 <small>
                                                     <c:if test="${filial.parente eq 0}">
-                                                        <b style="color: green">Não possui matriz</b>
+                                                        <b style="color: green"></b>
                                                     </c:if>
                                                     <c:if test="${filial.parente ne 0}">
-                                                        <b style="color: red">Possui matriz</b>
+                                                        <b style="color: red"></b>
                                                     </c:if>
+                                                        <br />
                                                 </small>
 
                                                 <input type="hidden" name="filialList" value="${filial.idcliente}" />

@@ -54,14 +54,14 @@ public class HomeController implements java.io.Serializable {
     
     @Get
     @Path("/500")
-    public void page500() {
+    public void page500() {   
     }
     
     @Get
     @Path("/")
     @NotRestrict
     public void index() {
-        boolean temEmail = false;
+        boolean temEmail = false; 
     }
     
     @Post
