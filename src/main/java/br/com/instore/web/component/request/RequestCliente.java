@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import jcifs.smb.SmbFile;
 
 @RequestScoped
 public class RequestCliente implements java.io.Serializable {
@@ -506,10 +507,11 @@ public class RequestCliente implements java.io.Serializable {
     
     public void salvar3(Integer id, String p1,String p2,String p3,String p4,String p5) {
         try {            
-            
+                    
             if(null==p1 || p1.isEmpty()) {
                 p1 ="";
             }
+            
             if(null==p2 || p2.isEmpty()) {
                 p2 ="";
             }
@@ -522,6 +524,12 @@ public class RequestCliente implements java.io.Serializable {
             if(null==p5 || p5.isEmpty()) {
                 p5 ="";
             }
+           
+            p1 = Utilities.formatarURLConfigCliente(p1);
+            p2 = Utilities.formatarURLConfigCliente(p2);
+            p3 = Utilities.formatarURLConfigCliente(p3);
+            p4 = Utilities.formatarURLConfigCliente(p4);
+            p5 = Utilities.formatarURLConfigCliente(p5);
             
             DadosClienteBean dcb = repository.query(DadosClienteBean.class).eq("cliente.idcliente", clienteBean(id).getIdcliente()).findOne();
             dcb.setLocalOrigemMusica(p1);
@@ -529,6 +537,36 @@ public class RequestCliente implements java.io.Serializable {
             dcb.setLocalOrigemSpot(p3);
             dcb.setLocalDestinoSpot(p4);
             dcb.setLocalDestinoExp(p5);
+            
+            SmbFile smbP1 = new SmbFile(p1, Utilities.getAuthSmbDefault());
+            if (!smbP1.exists()) {
+                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel encontrar o diretório "+p1+"!")).recursive().serialize();
+                return;
+            }
+            
+            SmbFile smbP2 = new SmbFile(p2, Utilities.getAuthSmbDefault());
+            if (!smbP2.exists()) {
+                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel encontrar o diretório "+p2+"!")).recursive().serialize();
+                return;
+            }
+            
+            SmbFile smbP3 = new SmbFile(p3, Utilities.getAuthSmbDefault());
+            if (!smbP3.exists()) {
+                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel encontrar o diretório "+p3+"!")).recursive().serialize();
+                return;
+            }
+            
+            SmbFile smbP4 = new SmbFile(p4, Utilities.getAuthSmbDefault());
+            if (!smbP4.exists()) {
+                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel encontrar o diretório "+p4+"!")).recursive().serialize();
+                return;
+            }
+            
+            SmbFile smbP5 = new SmbFile(p5, Utilities.getAuthSmbDefault());
+            if (!smbP5.exists()) {
+                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel encontrar o diretório "+p5+"!")).recursive().serialize();
+                return;
+            }            
             
             repository.save(dcb);
             repository.finalize();

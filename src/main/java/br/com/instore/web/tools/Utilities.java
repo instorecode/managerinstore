@@ -160,4 +160,29 @@ public class Utilities {
             return new NtlmPasswordAuthentication("", usuario, senha);
         }
     }
+    
+    public static String formatarURLConfigCliente(String url) {
+        if(!url.endsWith("/")) {
+            url += "/";
+        }
+        
+        url = url.replace("smb://", "$$");
+        url = url.replace("\\", "/");
+        url = url.replace("//", "/");
+        url = url.replace("$$", "smb://");
+        
+        if(url.startsWith("/")) {
+            url  = url.substring(1, url.length());
+        }
+        
+        if(!url.startsWith("smb://")) {
+            url = "smb://" + url;
+        }
+        
+        if (StringUtils.countMatches(url, "smb://") > 1) {
+            url  = url.substring(6, url.length());
+            url = url.replace("smb://", "");
+        }
+        return "smb://" + url;
+    }
 }

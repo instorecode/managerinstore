@@ -12,6 +12,12 @@
         <form d="cad_cliente" method="POST" data-form="true" data-success-url="${url}/clientes">
             <input type="hidden" name="id" value="${dadosCliente.iddadosCliente}" />
 
+            <div class="alert alert-info alert-white rounded">
+                <!--<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>-->
+                <div class="icon"><i class="fa fa-info-circle"></i></div>
+                <strong>Informativo </strong> Deve se iniciar sempre com smb:// e finalizar sempre com /
+            </div>
+
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-group"> 

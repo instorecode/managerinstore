@@ -8,11 +8,11 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
+import org.apache.commons.lang.StringUtils;
 
 public class Main {
 
@@ -21,7 +21,7 @@ public class Main {
     }
     
     public static void executaAlgo() {
-
+        
     }
 
     public static String formatDecimal(double number) {
