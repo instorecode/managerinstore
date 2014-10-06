@@ -2,12 +2,14 @@ package br.com.instore.web.component.request;
 
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.view.Results;
+import br.com.instore.core.orm.Query;
 import br.com.instore.core.orm.bean.ClienteBean;
 import br.com.instore.core.orm.bean.VozBean;
 import br.com.instore.core.orm.bean.VozBean;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.dto.VozDTO;
+import br.com.instore.web.dto.VozJSON;
 import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
 import java.util.ArrayList;
@@ -42,27 +44,85 @@ public class RequestVoz implements java.io.Serializable {
         return lista;
     }
     
-    public List<VozDTO> beanList() {
+    public void beanList(Integer page, Integer rows, Integer idvoz, String clienteNome, String genero, String tipo, String nome, String email, String tel) {
+        VozJSON json = new VozJSON();
+        page = (null == page || 0 == page ? 1 : page);
+        rows = (null == rows || 0 == rows ? 10 :rows);
+        
+        Integer offset = (page - 1) * rows;
         List<VozBean> lista = new ArrayList<VozBean>();
-        List<VozDTO> lista2 = new ArrayList<VozDTO>();
-        lista = repository.query(VozBean.class).findAll();
-        for (VozBean voz : lista) {
-            VozDTO dto = new VozDTO();
-            
-            dto.setClienteNome(voz.getCliente().getNome());
-            dto.setEmail(voz.getEmail());
-            dto.setGenero(voz.isGenero() ? "Masculino" : "Feminino");
-            dto.setIdvoz(Utilities.leftPad(voz.getIdvoz()));
-            dto.setNome(voz.getNome());
-            dto.setTel(voz.getTel());
-            dto.setTipo("A");
-            
-            lista2.add(dto);
+        
+        Query q1 = repository.query(VozBean.class);
+        Query q2 = repository.query(VozBean.class);
+        
+        if(null != idvoz && idvoz > 0){
+            q1.eq("id", idvoz);
+            q2.eq("id", idvoz);
+            json.setIdvoz(idvoz);
         }
-        return lista2;
+        
+        if(null != clienteNome && !clienteNome.isEmpty()){
+            q1.ilikeAnyWhere("cliente", clienteNome);
+            q2.ilikeAnyWhere("cliente", clienteNome);
+            json.setClienteNome(clienteNome);
+        }
+        
+        if(null != genero && !genero.isEmpty()){
+            q1.ilikeAnyWhere("genero", genero);
+            q2.ilikeAnyWhere("genero", genero);
+            json.setGenero(genero);            
+        }
+        
+        if(null != tipo && !tipo.isEmpty()){
+            q1.ilikeAnyWhere("tipo", tipo);
+            q2.ilikeAnyWhere("tipo", tipo);
+            json.setTipo(tipo);
+        }
+        
+        if(null != nome && !nome.isEmpty()){
+            q1.ilikeAnyWhere("nome", nome);
+            q2.ilikeAnyWhere("nome", nome);
+            json.setNome(nome);
+        }
+                
+        if(null != email && !email.isEmpty()){
+            q1.ilikeAnyWhere("email", email);
+            q2.ilikeAnyWhere("email", email);
+            json.setEmail(email);
+        }        
+        
+        if(null != tel && !tel.isEmpty()){
+            q1.ilikeAnyWhere("telefone", tel);
+            q2.ilikeAnyWhere("telefone", tel);
+            json.setTel(tel);
+        }
+        
+        int size = q1.count().intValue() / rows + ((q1.count().intValue() % rows == 0) ? 0 : 1);
+        lista = q2.limit(offset, rows).findAll();
+        
+        json.setPage(page);
+        json.setSize(size);
+        
+        List<VozDTO> rowsList = new ArrayList<VozDTO>();
+        for (VozBean bean : lista){
+            
+            VozDTO dto = new VozDTO();
+            dto.setIdvoz(bean.getIdvoz());
+            dto.setClienteNome(bean.getCliente().getNome());
+            dto.setGenero((bean.isGenero() == true)? "Masculino" : "Feminino");
+            dto.setTipo("A");
+            dto.setNome(bean.getNome());
+            dto.setEmail(bean.getEmail());
+            dto.setTel(bean.getTel());
+            
+            rowsList.add(dto);           
+        }
+        
+        json.setRows(rowsList);
+        result.use(Results.json()).withoutRoot().from(json).recursive().serialize();
     }
 
-    public VozBean voz(Integer id) {
+    public VozBean bean(Integer id) {
         return repository.find(VozBean.class, id);
     }
 

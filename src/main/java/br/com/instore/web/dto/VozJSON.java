@@ -1,25 +1,45 @@
+
 package br.com.instore.web.dto;
 
-public class VozDTO extends AbstractDTO {
-    private Integer idvoz;
-    private String clienteNome;
-    private String genero;
-    private String tipo;
-    private String nome;
-    private String email;
-    private String tel;
+import java.util.ArrayList;
+import java.util.List;
 
-    public VozDTO() {
+
+public class VozJSON {
+    
+    private Integer page;
+    private Integer size;
+    private List<VozDTO> rows = new ArrayList<VozDTO>();
+    private Integer idvoz = null;
+    private String clienteNome = null;
+    private String genero = null;
+    private String tipo = null;
+    private String nome = null;
+    private String email = null;
+    private String tel = null;
+
+    public Integer getPage() {
+        return page;
     }
 
-    public VozDTO(Integer idvoz, String clienteNome, String genero, String tipo, String nome, String email, String tel) {
-        this.idvoz = idvoz;
-        this.clienteNome = clienteNome;
-        this.genero = genero;
-        this.tipo = tipo;
-        this.nome = nome;
-        this.email = email;
-        this.tel = tel;
+    public void setPage(Integer page) {
+        this.page = page;
+    }
+
+    public Integer getSize() {
+        return size;
+    }
+
+    public void setSize(Integer size) {
+        this.size = size;
+    }
+
+    public List<VozDTO> getRows() {
+        return rows;
+    }
+
+    public void setRows(List<VozDTO> rows) {
+        this.rows = rows;
     }
 
     public Integer getIdvoz() {
@@ -77,4 +97,7 @@ public class VozDTO extends AbstractDTO {
     public void setTel(String tel) {
         this.tel = tel;
     }
+    
+    
+    
 }

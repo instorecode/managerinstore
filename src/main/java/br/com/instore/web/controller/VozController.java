@@ -35,10 +35,21 @@ public class VozController implements java.io.Serializable {
     @Get
     @Restrict
     @Path("/voz")
-    public void vozes(Boolean datajson) {
+    public void listar (Boolean datajson , Boolean view, Integer page, Integer rows, Integer idvoz, String clienteNome, String genero, String tipo, String nome, String email, String tel, Integer pk) {
+        
         if (null != datajson && datajson) {
-            result.use(Results.json()).withoutRoot().from(requestVoz.beanList()).recursive().serialize();
+            requestVoz.beanList(page, rows, idvoz, clienteNome, genero, tipo, nome, email, tel);
+            //result.use(Results.json()).withoutRoot().from(requestVoz.beanList()).recursive().serialize();
+        }else{
+            result.include("clienteBeanList", requestVoz.clienteBeanList());
         }
+        
+        if(null != view && view){
+            result.use(Results.json()).withoutRoot().from(requestVoz.bean(pk)).recursive().serialize();
+        }else{
+            result.include("clienteBeanList", requestVoz.clienteBeanList());
+        }
+        
     }
 
     @Get
@@ -59,7 +70,7 @@ public class VozController implements java.io.Serializable {
     @Restrict
     @Path("/voz/atualizar/{id}")
     public void cadastrar(Integer id) {
-        result.include("vozBean", requestVoz.voz(id));
+        result.include("vozBean", requestVoz.bean(id));
         result.include("clienteBeanList", requestVoz.clienteBeanList());
     }
 
@@ -74,7 +85,7 @@ public class VozController implements java.io.Serializable {
     @Restrict
     @Path("/voz/remover/{id}")
     public void remover(Integer id) {
-        result.include("vozBean", requestVoz.voz(id));
+        result.include("vozBean", requestVoz.bean(id));
     }
 
     @Post
