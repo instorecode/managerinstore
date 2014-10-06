@@ -300,14 +300,14 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
                     conteudo += StringUtils.leftPad(new SimpleDateFormat("dd/MM/yy").format(audiostoreCategoriaBean.getDataInicio()), 8, " ");
                     conteudo += StringUtils.leftPad(new SimpleDateFormat("dd/MM/yy").format(audiostoreCategoriaBean.getDataFinal()), 8, " ");
                     conteudo += audiostoreCategoriaBean.getTipo();
-                    conteudo = "\n";
+                    conteudo += "\n";
                 }
             }
 
             DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", list.get(0).getCliente().getIdcliente()).findOne();
             String destino = dados.getLocalDestinoExp();
             SmbFile smb = new SmbFile(destino, Utilities.getAuthSmbDefault());
-            SmbFile smb2 = new SmbFile(destino + StringUtils.leftPad(list.get(0).getCodInterno().toString(), 5, " ") + ".exp", Utilities.getAuthSmbDefault());
+            SmbFile smb2 = new SmbFile(destino + "categoria.exp", Utilities.getAuthSmbDefault());
 
             if (!smb.exists()) {
                 smb.mkdirs();
