@@ -13,7 +13,6 @@
                 <input type="hidden" name="audiostoreProgramacaoBean.id" value="${audiostoreProgramacaoBean.id}" />
             </c:if>
             
-
             <div class="row">
                 <div class="col-md-9">
                     <div class="form-group">

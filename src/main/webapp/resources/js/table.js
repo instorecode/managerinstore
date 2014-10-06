@@ -205,16 +205,36 @@ jQuery(document).ready(function() {
                             tr += item[td.attr("field")];
                         } else
                         {
+                            var btn_view_onclick = table.attr("btn-view-onclick");
+                            if(null != btn_view_onclick && undefined != btn_view_onclick && "" != btn_view_onclick) {
+                                btn_view_onclick = 'onclick="'+btn_view_onclick.split("[[__PK__]]").join(item[table.attr("pk")])+'"';
+                            } else {
+                                btn_view_onclick = "  ";
+                            }
+                            
+                            var btn_edit_onclick = table.attr("btn-edit-onclick");
+                            if(null != btn_edit_onclick && undefined != btn_edit_onclick && "" != btn_edit_onclick) {
+                                btn_edit_onclick = 'onclick="'+btn_edit_onclick.split("[[__PK__]]").join(item[table.attr("pk")])+'"';
+                            } else {
+                                btn_edit_onclick = "  ";
+                            }
+                            
                             tr += "<div class=\"btn-group\">";
-                            tr += "<button class=\"btn btn-default btn-flat btn-xs btn_view\" pk=\"" + item[table.attr("pk")] + "\"> <i class=\"fa fa-eye\"></i> </button>";
-                            tr += "<button class=\"btn btn-default btn-flat btn-xs btn_edit\" pk=\"" + item[table.attr("pk")] + "\"> <i class=\"fa fa-pencil\"></i> </button>";
+                            tr += "<button class=\"btn btn-default btn-flat btn-xs btn_view\" pk=\"" + item[table.attr("pk")] + "\"  "+btn_view_onclick+"> <i class=\"fa fa-eye\"></i> </button>";
+                            tr += "<button class=\"btn btn-default btn-flat btn-xs btn_edit\" pk=\"" + item[table.attr("pk")] + "\"  "+btn_edit_onclick+"> <i class=\"fa fa-pencil\"></i> </button>";
                             tr += "<button class=\"btn btn-default btn-flat btn-xs btn_delete\" pk=\"" + item[table.attr("pk")] + "\"> <i class=\"fa fa-trash-o\"></i> </button>";
+                            
+                            // add btn
+                            if(null != jQuery(".addon") && undefined != jQuery(".addon")
+                                && null != jQuery(".addon").html() && undefined != jQuery(".addon").html()){
+                                tr += jQuery(".addon").html().split("[[__PK__]]").join(item[table.attr("pk")]); 
+                            }
+                            
+
                             tr += "</div>";
                         }
                         tr += "</td>";
                     });
-
-//                    tr += " texte " + jQuery("th.extra").html();
 
                     // tr view
                     tr += "</tr>";

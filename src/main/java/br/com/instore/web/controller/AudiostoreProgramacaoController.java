@@ -31,9 +31,23 @@ public class AudiostoreProgramacaoController implements java.io.Serializable {
     @Get
     @Restrict
     @Path("/audiostore-programacao")
-    public void programacoes(Boolean datajson) {
+    public void programacoes(Boolean datajson, Boolean view, Boolean clientes, Integer page, Integer rows, Integer id, Integer idcliente, String descricao, Integer pk) {
         if (null != datajson && datajson) {
-            result.use(Results.json()).withoutRoot().from(requestAudiostoreProgramacao.programacaoDTOList()).recursive().serialize();
+            requestAudiostoreProgramacao.beanList(page, rows, id, idcliente, descricao);
+        } else {
+            result.include("clienteBeanList", requestAudiostoreProgramacao.clienteBeanList());
+        }
+
+        if (null != view && view) {
+            result.use(Results.json()).withoutRoot().from(requestAudiostoreProgramacao.bean(pk)).recursive().serialize();
+        } else {
+            result.include("clienteBeanList", requestAudiostoreProgramacao.clienteBeanList());
+        }
+
+        if (null != clientes && clientes) {
+            result.use(Results.json()).withoutRoot().from(requestAudiostoreProgramacao.clienteBeanList()).recursive().serialize();
+        } else {
+            result.include("clienteBeanList", requestAudiostoreProgramacao.clienteBeanList());
         }
     }
 
@@ -45,7 +59,7 @@ public class AudiostoreProgramacaoController implements java.io.Serializable {
 
         if (null != clonar && clonar > 0) {
             result.include("programacaoCategoriaBeanList", requestAudiostoreProgramacao.programacaoCategoriaBeanList(clonar));
-            result.include("audiostoreProgramacaoBean", requestAudiostoreProgramacao.audiostoreProgramacaoBean(clonar));
+            result.include("audiostoreProgramacaoBean", requestAudiostoreProgramacao.bean(clonar));
         }
 
         result.include("clienteBeanList", requestAudiostoreProgramacao.clienteBeanList());
@@ -65,7 +79,7 @@ public class AudiostoreProgramacaoController implements java.io.Serializable {
     public void cadastrar(Integer id) {
         result.include("isPageCadastro", false);
         result.include("programacaoCategoriaBeanList", requestAudiostoreProgramacao.programacaoCategoriaBeanList(id));
-        result.include("audiostoreProgramacaoBean", requestAudiostoreProgramacao.audiostoreProgramacaoBean(id));
+        result.include("audiostoreProgramacaoBean", requestAudiostoreProgramacao.bean(id));
         result.include("clienteBeanList", requestAudiostoreProgramacao.clienteBeanList());
         result.include("categoriaBeanList", requestAudiostoreProgramacao.categoriaBeanList());
     }
@@ -81,7 +95,7 @@ public class AudiostoreProgramacaoController implements java.io.Serializable {
     @Restrict
     @Path("/audiostore-programacao/remover/{id}")
     public void remover(Integer id) {
-        result.include("audiostoreProgramacaoBean", requestAudiostoreProgramacao.audiostoreProgramacaoBean(id));
+        result.include("audiostoreProgramacaoBean", requestAudiostoreProgramacao.bean(id));
     }
 
     @Post
@@ -102,12 +116,18 @@ public class AudiostoreProgramacaoController implements java.io.Serializable {
     @Restrict
     @Path("/audiostore-programacao/upload-exp/{id}")
     public void upload(Integer id) {
-        requestAudiostoreProgramacao.upload(id);
+//        requestAudiostoreProgramacao.upload(id);
     }
 
     @Get
     @Path("/audiostore-programacao/categorias/{id}")
     public void categorias(Integer id) {
         result.use(Results.json()).withoutRoot().from(requestAudiostoreProgramacao.categorias(id)).recursive().serialize();
+    }
+
+    @Post
+    @Path("/audiostore-programacao/vld-prg")
+    public void validarProgramacao(Integer[] id_list) {
+        requestAudiostoreProgramacao.validarProgramacao(id_list);
     }
 }

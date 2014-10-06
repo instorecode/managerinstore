@@ -292,16 +292,18 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
     public void upload(Integer [] id_list) throws Exception {
         try {
             String conteudo = "";
+            String quebraLinha = "";
             List<AudiostoreCategoriaBean> list = repository.query(AudiostoreCategoriaBean.class).in("codigo", id_list).findAll();
             for (AudiostoreCategoriaBean audiostoreCategoriaBean : list) {
                 if (audiostoreCategoriaBean != null) {
-                    conteudo += StringUtils.leftPad(audiostoreCategoriaBean.getCodigo().toString(), 5, " ");
+                    conteudo += quebraLinha;
+                    conteudo += StringUtils.leftPad(audiostoreCategoriaBean.getCodInterno().toString(), 5, " ");
                     conteudo += StringUtils.leftPad(audiostoreCategoriaBean.getCategoria(), 30, " ");
                     conteudo += StringUtils.leftPad(new SimpleDateFormat("dd/MM/yy").format(audiostoreCategoriaBean.getDataInicio()), 8, " ");
                     conteudo += StringUtils.leftPad(new SimpleDateFormat("dd/MM/yy").format(audiostoreCategoriaBean.getDataFinal()), 8, " ");
                     conteudo += audiostoreCategoriaBean.getTipo();
-                    conteudo += "\n";
                 }
+                quebraLinha = "\r\n";
             }
 
             DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", list.get(0).getCliente().getIdcliente()).findOne();

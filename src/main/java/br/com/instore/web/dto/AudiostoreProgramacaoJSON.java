@@ -11,7 +11,7 @@ public class AudiostoreProgramacaoJSON  extends AbstractDTO {
     private Integer id = null;
     private String descricao = null;
     private String clienteNome = null;
-    private String icliente = null;
+    private Integer idcliente = null;
     private String dataInicio = null;
     private String dataFinal = null;
     private String horaInicio = null;
@@ -66,12 +66,12 @@ public class AudiostoreProgramacaoJSON  extends AbstractDTO {
         this.clienteNome = clienteNome;
     }
 
-    public String getIcliente() {
-        return icliente;
+    public Integer getIdcliente() {
+        return idcliente;
     }
 
-    public void setIcliente(String icliente) {
-        this.icliente = icliente;
+    public void setIdcliente(Integer idcliente) {
+        this.idcliente = idcliente;
     }
 
     public String getDataInicio() {
@@ -113,4 +113,6 @@ public class AudiostoreProgramacaoJSON  extends AbstractDTO {
     public void setDiasSemana(String diasSemana) {
         this.diasSemana = diasSemana;
     }
+
+   
 }

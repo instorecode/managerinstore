@@ -1,177 +1,225 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="instore" tagdir="/WEB-INF/tags/" %> 
-<instore:template isGrid="true">
+<%@ taglib prefix="cf" uri="CustomFunctions" %> 
 
-    <jsp:attribute name="submenu">
-        <a href="${url}/audiostore-programacao/cadastrar" class="btn btn-default"> <i class="fa fa-save"></i> Cadastrar </a>
-<!--        <a style="display: none" xhref="${url}/audiostore-programacao/download-exp" class="btn btn-default btnDownloadEXP"> <i class="fa fa-save"></i> Download do arquivo EXP </a>
-        <a style="display: none" xhref="${url}/audiostore-programacao/upload-exp" class="btn btn-default btnUploadEXP"> <i class="fa fa-upload"></i> Enviar EXP para o repositório  </a>-->
-    </jsp:attribute>
-
-    <jsp:attribute name="detailsButton">
-<!--        <a data-toggle="tooltip" data-placement="bottom" data-original-title="Download do arquivo exp" style="display: none" xhref="${url}/audiostore-programacao/download-exp" class="btn btn-default btnDownloadEXP"> <i class="fa fa-download"></i></a>
-        <a data-toggle="tooltip" data-placement="right" data-original-title="Upload para repositorio de arquivos exp" style="display: none" xhref="${url}/audiostore-programacao/upload-exp" class="btn btn-default btnUploadEXP"> <i class="fa fa-upload"></i></a>-->
-        <a data-toggle="tooltip" data-placement="right" data-original-title="Clonar" style="display: none" xhref="${url}/audiostore-programacao/cadastrar?clonar=" class="btn btn-default btn_clonar"> <i class="fa fa-random"></i></a>
-    </jsp:attribute>
-
-    <jsp:attribute name="gridColumn">
-        <script type="text/javascript">
-            var gridColumn = [
-                {title: 'ID', name: 'id', index: true, filter: true, filterType: 'input'},
-                {title: 'Descrição', name: 'descricao', index: true, filter: true, filterType: 'input'},
-                {title: 'Nome do cliente', name: 'clienteNome', index: true, filter: true, filterType: 'input'},
-            ];
-
-            function onRowDblClick(data) {
-
-            }
-
-            function onRowClick(data) {
-                jQuery('.btnDownloadEXP').show();
-                jQuery('.btnUploadEXP').show();
-                jQuery('.btn_clonar').show();
-                
-                var xhref = jQuery('.btnDownloadEXP').attr('xhref') + '/' + data.id;
-                var xhref2 = jQuery('.btnUploadEXP').attr('xhref') + '/' + data.id;
-                var xhref3 = jQuery('.btn_clonar').attr('xhref') + data.id;
-                
-                jQuery('.btnDownloadEXP').attr('href', xhref);
-                jQuery('.btnUploadEXP').attr('href', xhref2);
-                jQuery('.btn_clonar').attr('href', xhref3);
-            }
-
-            jQuery(document).ready(function() {
-                jQuery('.btnUploadEXP').on('click', function() {
-                    var self = jQuery(this);
-                    jQuery.ajax({
-                        type: 'GET',
-                        url: self.attr('href'),
-                        beforeSend: function(response) {
-                            bootbox.hideAll();
-                            bootbox.dialog({
-                                message: "Aguarde...",
-                                title: "Sistema processando informações",
-                                buttons: {}
-                            });
-                        },
-                        success: function(response) {
-                            bootbox.hideAll();
-
-                            if (response.success) {
-                                bootbox.dialog({
-                                    message: "Arquivo enviado para o repositório com sucesso!",
-                                    title: "Sistema processando informações",
-                                    buttons: {}
-                                });
-                            } else {
-                                bootbox.dialog({
-                                    message: "Lamento, não foi possivel enviar o arquivo para o repositório!",
-                                    title: "Sistema processando informações",
-                                    buttons: {}
-                                });
-                            }
-
-                            setTimeout(function() {
-                                bootbox.hideAll();
-                            }, 2000);
-                        },
-                        error: function(response) {
-                            bootbox.hideAll();
-                            bootbox.dialog({
-                                message: "Lamento, não foi possivel enviar o arquivo para o repositório!",
-                                title: "Sistema processando informações",
-                                buttons: {}
-                            });
-
-                            setTimeout(function() {
-                                bootbox.hideAll();
-                            }, 2000);
-                        }
-                    });
-                    return false;
-                });
-            });
-        </script>
-    </jsp:attribute>
+<instore:template isGrid="false">
     <jsp:body> 
-        <div class="block-flat">
+        <c:set scope="session" var="form_access" value="${false}"></c:set>
+        <c:set scope="session" var="update_access" value="${false}"></c:set>
+        <c:set scope="session" var="delete_access" value="${false}"></c:set>
+ 
+        <c:forEach items="${funcionalidadeBeanList}" var="func">
+            <c:if test="${func.mappingId eq '/audiostore-programacao/cadastrar'}">
+                <c:set scope="session" var="form_access" value="${true}"></c:set>
+            </c:if>
 
-            <div class="content">
-                <div datagrid-view="true" style="display: none">
-                    <div class="row">
-                        <div class="col-md-12 prop"> 
-                            ID
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-id="true"></div> 
-                        </div>
-                    </div>
+            <c:if test="${func.mappingId eq '/audiostore-programacao/atualizar/{id}'}">
+                <c:set scope="session" var="update_access" value="${true}"></c:set>
+            </c:if>
 
-                    <div class="row">
-                        <div class="col-md-12 prop"> 
-                            Descrição
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-descricao="true"></div> 
-                        </div>
-                    </div>
+            <c:if test="${func.mappingId eq '/audiostore-programacao/remover/{id}'}">
+                <c:set scope="session" var="delete_access" value="${true}"></c:set>
+            </c:if>
+        </c:forEach>
 
-                    <div class="row">
-                        <div class="col-md-12 prop"> 
-                            Nome do cliente
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-clienteNome="true"></div> 
-                        </div>
-                    </div>
+        <!--FORM-->
+        <div class="form">
+            
+        </div>
 
-                    <div class="row">
-                        <div class="col-md-12 prop"> 
-                            Data de inicio
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-dataInicio="true"></div> 
-                        </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-md-12 prop"> 
-                            Data de termino
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-dataFinal="true"></div> 
-                        </div>
-                    </div>
+        <!--VIEW-->
+        <div class="view"> 
+            <br />
+            <h2>Detalhes</h2>
+            <hr />
+            <ol class="view_itens" type="i">
+                <li>
+                    <strong>Identificador</strong>
+                    <br />
+                    <small field="codigo"></small>
+                </li>
+                <li>
+                    <strong>Cliente</strong>
+                    <br />
+                    <small field="clienteNome"></small>
+                </li>
+                <li>
+                    <strong>Categoria</strong>
+                    <br />
+                    <small field="programacao"></small>
+                </li>
+                <li>
+                    <strong>Data inicial</strong>
+                    <br />
+                    <small field="dataInicio"></small>
+                </li>
+                <li>
+                    <strong>Data final</strong>
+                    <br />
+                    <small field="dataFinal"></small>
+                </li>
+                <li>
+                    <strong>Duração</strong>
+                    <br />
+                    <small field="tempo"></small>
+                </li>
+                <li>
+                    <strong>Tipo</strong>
+                    <br />
+                    <small field="tipo"></small>
+                </li>
+            </ol>
+        </div>
 
-                    <div class="row">
-                        <div class="col-md-12 prop"> 
-                            Horário de inicio
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-horaInicio="true"></div> 
-                        </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-md-12 prop"> 
-                            Horário de termino
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-horaFinal="true"></div> 
-                        </div>
-                    </div>
+        <!--ATUALIZAR-->
+        <div class="edit">
+           
 
-                    <div class="row">
-                        <div class="col-md-12 prop"> 
-                            Dias da semana
-                        </div>
-                        <div class="col-md-12 val"> 
-                            <div data-diasSemana="true"></div> 
-                        </div>
-                    </div>           
+        </div>
+
+        <!--DELETE-->
+
+        <div class="delete">
+            <c:if test="${delete_access}">
+                <br />
+                <h2>Deseja remover a origem ?</h2>
+                <hr />
+
+                <form name="FORM_DELETAR_[[__PK__]]" method="POST" data-formtable="true" action="${url}/audiostore-programacao/remover/[[__PK__]]">
+                    <input type="hidden" name="audiostoreProgramacaoBean.id" value="[[__PK__]]" />
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fa fa-thumbs-o-down"></i> Remover
+                    </button>
+                </form>
+            </c:if>
+
+            <c:if test="${not delete_access}">
+                <br />
+                <h2>Acesso não permitdo a essa funcionaliade</h2>
+            </c:if>
+        </div>
+
+
+        <!--TABLE-->
+        <div class="block-xtable">
+            <div class="mask_message" style="display: none;">
+                <div class="text">
+                    <img src="${url_img}486.GIF" />
+                    &nbsp; Aguarde, processando dados...
                 </div>
-                <div datagrid="true" data-id="id"></div>
+            </div>
+            <div class="loader">
+                <span class="txt">
+                    <span class="fa fa-refresh"></span>&nbsp;&nbsp;Aguarde...
+                </span>
+            </div>
+
+            <a href="${url}/audiostore-programacao/cadastrar" class="btn btn-default btn-flat btn_cadastro" style="margin-left: 0px;"><i class="fa fa-save"></i> Cadastrar</a>
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle btn-flat" data-toggle="dropdown">
+                    Qtd.<span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu qtd" role="menu">
+                    <li><a href="10">10</a></li>
+                    <li><a href="20">20</a></li>
+                    <li><a href="30">30</a></li>
+                    <li><a href="50">50</a></li>
+                    <li><a href="100">100</a></li>
+                </ul>
+            </div>
+            <button type="button" class="btn btn-default btn-flat btn_export" style="display: none;"><i class="fa fa-upload"></i> Exportar arquivo </button>
+            <div class="addon" style="display: none;">
+                <a href="${url}/audiostore-programacao/cadastrar?clonar=[[__PK__]]" class="btn btn-default btn-flat btn-xs" id="clonar" ><i class="fa fa-repeat"></i></a>
+            </div>
+            &nbsp;
+            &nbsp;
+            <div class="btn-group">
+                <button class="btn btn-default btn-flat _prev"> <i class="fa fa-angle-double-left"></i> </button>
+                <button class="btn btn-default btn-flat prev"> <i class="fa fa-angle-left"></i> </button>
+                <button class="btn btn-default btn-flat next"> <i class="fa fa-angle-right"></i> </button>
+                <button class="btn btn-default btn-flat _next"> <i class="fa fa-angle-double-right"></i> </button>
+                <button type="button" class="btn btn-default btn-flat btn_refresh"><i class="fa fa-refresh"></i></button>
+                <span class="pag_info">Página 0 de 0</span>
+            </div>
+            <div class="content">
+                <table  id="table" 
+                        class="xtable" 
+                        id="datatable" 
+                        url="${url}/audiostore-programacao"
+                        page="1"
+                        size="0"
+                        rows="10"
+                        pk="id"                
+                        btn-edit-onclick="javascript:window.location.href='${url}/audiostore-programacao/atualizar/[[__PK__]]'"> 
+                    <thead>
+                        <tr> 
+                            <th options="true" class="options">#</th>
+                            <th field="descricao" options="false">Código</th>
+                            <th field="clienteNome" isfk="true" fk="idcliente" fklabel="nome" fklabelselect="Todos" fkurl="${url}/audiostore-programacao?clientes=true"  options="false">Cliente</th>
+                            <!--<th field="tempo" options="false">Duração</th>-->
+                        </tr>
+                    </thead>
+                </table>
             </div>
         </div>
 
+        <div class="progress-mask"></div>
+
+        <style type="text/css">
+            .progress-mask {
+                display: block;
+                width: 100%;
+                height: 100%;
+
+                background-color: rgba(0,0,0,0.5);
+            }
+        </style>
+
+        <script type="text/javascript">
+            jQuery(document).ready(function() {
+                
+                jQuery(document).on("selected", ".row_data", function(evt, item) {
+                    jQuery('.btn_export').show();
+                }).on("unselected", ".row_data", function(evt, item) {
+                    if (countRowsSelected() == 0) {
+                        jQuery('.btn_export').hide();
+                    }
+                });
+
+                jQuery('.btn_export').on("click", function() {
+                    msg_fadeIn();
+                    if (countRowsSelected() <= 0) {
+                        bootbox.alert("Selecione no minimo um registro na tabela.", function() {
+                        });
+                    } else {
+                        
+                        var arr = rowsSelected();
+                        var id_list = new Array();
+                        for (i in arr) {
+                            var item = arr[i];
+                            id_list[i] = item.id;
+                        }
+                        jQuery.ajax({
+                            type: 'POST',
+                            url : '${url}/audiostore-programacao/vld-prg',
+                            data:{ id_list : id_list },
+                            success : function(json){
+                                if(!json.success) {
+                                    dialogAjax(json.response);
+                                } else {
+                                    
+                                }
+                            }
+                        });
+                    }
+                    msg_fadeOut();
+                });
+                
+            });
+        </script>
     </jsp:body>
 </instore:template>

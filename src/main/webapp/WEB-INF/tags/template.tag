@@ -101,7 +101,6 @@
             <script src="${url_cz}js/ckeditor/ckeditor.js"></script>
             <script src="${url_cz}js/ckeditor/adapters/jquery.js"></script>
             <script src="${url_js}gerarCsv.js" ></script>
-            <script src="${url_js}testeFade.js"></script>
 
             <script type="text/javascript">
                 jQuery(document).ready(function() {
