@@ -31,9 +31,8 @@
                         <h2>Cadastro</h2>
                         <hr />
                         <form name="FORM_CADASTRO" method="POST" data-formtable="true" action="${url}/voz/cadastrar">
-                            <div class="row">
-
-                                <div class="col-md-12">
+                            <div class="row">                                                                    
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Cliente</label>
                                         <select  class="select2 select_cliente" name="vozBean.cliente.idcliente" data-rule-required="true" >
@@ -43,16 +42,18 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-12">
+
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Nome</label>
-                                        <input type="text" name="voz.id" class="form-control" placeholder="Nome"  
+                                        <input type="text" name="vozBean.nome" class="form-control" placeholder="Nome"  
                                                data-rule-required="true" 
                                                data-rule-minlength="3"
                                                data-rule-maxlength="255" value="${voz.nome}">
                                     </div>
                                 </div>
-                                <div class="col-md-12">
+
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Género</label>
                                         <select data-selectradio="true" class="form-control" name="vozBean.genero" data-rule-required="true" >
@@ -60,34 +61,29 @@
                                             <option value="${false}" ${not vozBean.genero ? 'selected="selected"' :''} >Feminino</option>
                                         </select>
                                     </div>
-                                </div>   
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label>Tipo</label>
-                                        <input type="text" name="voz.id" class="form-control" placeholder="Tipo"  
-                                               data-rule-required="true" 
-                                               data-rule-minlength="3"
-                                               data-rule-maxlength="255" value="${voz.tipo}">
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
+                                </div>  
+                            </div>                                        
+                            <div class="row">
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Email</label>
-                                        <input type="text" name="voz.id" class="form-control" placeholder="Email"  
+                                        <input type="text" name="vozBean.email" class="form-control" placeholder="Email"  
                                                data-rule-required="true" 
                                                data-rule-minlength="3"
                                                data-rule-maxlength="255" value="${voz.email}">
                                     </div>
                                 </div>
-                                <div class="col-md-12">
+
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Telefone</label>
-                                        <input type="text" name="voz.id" class="form-control" placeholder="Telefone"  
+                                        <input type="text" name="vozBean.tel" class="form-control" placeholder="Telefone"  
                                                data-rule-required="true" 
                                                data-rule-minlength="3"
                                                data-rule-maxlength="255" value="${voz.telefone}">
                                     </div>
-                                </div>                               
+                                </div>
+
                             </div>
                             <button type="submit" class="btn btn-success btn-flat" style="margin-left: 0px;">
                                 <i class="fa fa-save"></i> Salvar
@@ -112,14 +108,29 @@
             <hr />
             <ol class="view_itens" type="i">
                 <li>
-                    <strong>Identificador</strong>
+                    <strong>Cliente</strong>
                     <br />
-                    <small field="id"></small>
+                    <small field="clienteNome"></small>
                 </li>
                 <li>
-                    <strong>Descrição</strong>
+                    <strong>Nome</strong>
                     <br />
-                    <small field="descricao"></small>
+                    <small field="nome"></small>
+                </li>
+                <li>
+                    <strong>Género</strong>
+                    <br />
+                    <small field="genero"></small>
+                </li>
+                <li>
+                    <strong>Email</strong>
+                    <br />
+                    <small field="email"></small>
+                </li>
+                <li>
+                    <strong>Telefone</strong>
+                    <br />
+                    <small field="tel"></small>
                 </li>
             </ol>
         </div>
@@ -132,17 +143,59 @@
                 <h2>Atualizar dados</h2>
                 <hr />
 
-                <form name="FORM_ALTERAR_[[__PK__]]" method="POST" data-formtable="true" action="${url}/voz/cadastrar"  callback="callback" reload="true">
+                <form name="FORM_ALTERAR_[[__PK__]]" method="POST" data-formtable="true" action="${url}/voz/cadastrar" >
                     <input type="hidden" name="vozBean.idvoz" value="${vozBean.idvoz}" field="idvoz" />
 
-                    <div class="row">
-                        <div class="col-md-12">
+                    <div class="row">                                                                    
+                        <div class="col-md-4">
                             <div class="form-group">
-                                <label>Id</label>
-                                <input type="text" name="voz.idvoz" class="form-control" placeholder="ID"  
+                                <label>Cliente</label>
+                                <select  class="select2 select_cliente" name="vozBean.cliente.idcliente" data-rule-required="true" >
+                                    <c:forEach items="${clienteBeanList}" var="cliente">
+                                        <option value="${cliente.idcliente}" ${cliente.idcliente eq vozBean.cliente.idcliente ? 'selected="selected"' : ''}>${cliente.nome}</option>
+                                    </c:forEach>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Nome</label>
+                                <input type="text" name="vozBean.nome" class="form-control" placeholder="Nome"  
                                        data-rule-required="true" 
                                        data-rule-minlength="3"
-                                       data-rule-maxlength="255" field="id">
+                                       data-rule-maxlength="255" field="nome" value="${voz.nome}">
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Género</label>
+                                <select data-selectradio="true" class="form-control" name="vozBean.genero" data-rule-required="true" >
+                                    <option value="${true}"  ${vozBean.genero ? 'selected="selected"' :''} >Masculino</option>
+                                    <option value="${false}" ${not vozBean.genero ? 'selected="selected"' :''} >Feminino</option>
+                                </select>
+                            </div>
+                        </div>  
+                    </div>                                        
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="text" name="vozBean.email" class="form-control" placeholder="Email"  
+                                       data-rule-required="true" 
+                                       data-rule-minlength="3"
+                                       data-rule-maxlength="255" field="email" value="${voz.email}">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Telefone</label>
+                                <input type="text" name="vozBean.tel" class="form-control" placeholder="Telefone"  
+                                       data-rule-required="true" 
+                                       data-rule-minlength="3"
+                                       data-rule-maxlength="255" field="tel" value="${voz.telefone}">
                             </div>
                         </div>
 
@@ -228,34 +281,17 @@
                         page="1"
                         size="0"
                         rows="10"
-                        pk="id"> 
+                        pk="idvoz"> 
                     <thead>
                         <tr>
                             <th options="true" class="options">#</th>
                             <!--<th field="id" options="false">ID</th>-->
-                            <th field="id" options="false">ID</th>
                             <th field="nome" options="false">Nome</th>
-                            <th field="nome" options="false">Género</th>
-                            <th field="nome" options="false">Tipo</th>
-                            <th field="nome" options="false">Email</th>
-                            <th field="nome" options="false">Telefone</th>
+                            <th field="genero" options="false">Género</th>
                         </tr>
                     </thead>
                 </table>
             </div>
         </div>
-
-        <script type="text/javascript">
-            function callback(item) {
-                console.log('[value="' + item.cor + '"]');
-                jQuery('[value="' + item.cor + '"]').attr("checked", true);
-                jQuery('[value="' + item.cor + '"]').iCheck('destroy');
-                jQuery('[value="' + item.cor + '"]').iCheck({
-                    checkboxClass: 'icheckbox_square-blue checkbox',
-                    radioClass: 'iradio_square-blue'
-                });
-                jQuery('[value="' + item.cor + '"]').iCheck('check');
-            }
-        </script>
     </jsp:body>
 </instore:template>

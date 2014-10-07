@@ -43,7 +43,7 @@ jQuery(document).ready(function() {
         var titulo = jQuery("div.page-head").text();
         
         var a_hidden = document.createElement("a");
-        a_hidden.download = titulo+".csv";
+        a_hidden.download = jQuery.trim(titulo)+".csv";
         a_hidden.href = 'data:text/csv,' + encodeURIComponent(texto);
         a_hidden.style = 'display: none; visibility: hidden;ISO-8859-1';
         a_hidden.click();
