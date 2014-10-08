@@ -32,15 +32,31 @@ public class AudiostoreGravadoraController implements java.io.Serializable {
         this.result = result;
         this.requestAudiostoreGravadora = requestAudiostoreGravadora;
     }
-    
 
+    @Post
+    @Path("/audiostore-gravadora/download")
+    public void downloadExp (){
+        requestAudiostoreGravadora.gerarExp();
+    }
+    
     @Get
     @Restrict
     @Path("/audiostore-gravadora")
-    public void gravadoras(Boolean datajson) {
+    public void listar(Boolean datajson, Boolean view, Integer page, Integer rows, Integer id, String nome, Integer pk) {
+
         if (null != datajson && datajson) {
-            result.use(Results.json()).withoutRoot().from(requestAudiostoreGravadora.beanList()).recursive().serialize();
+            requestAudiostoreGravadora.beanList(datajson, view, page, rows, id, nome);
+        } else {
+            result.include("clienteBeanList", requestAudiostoreGravadora.clienteBeanList());
         }
+
+        if (null != view && view) {
+            result.use(Results.json()).withoutRoot().from(requestAudiostoreGravadora.beanDTO(pk)).recursive().serialize();
+        } else {
+            result.include("clienteBeanList", requestAudiostoreGravadora.clienteBeanList());
+        }
+
+
     }
 
     @Get
@@ -53,7 +69,7 @@ public class AudiostoreGravadoraController implements java.io.Serializable {
     @Post
     @Restrict
     @Path("/audiostore-gravadora/cadastrar")
-    public void cadastrar(AudiostoreGravadoraBean audiostoreGravadoraBean ) {
+    public void cadastrar(AudiostoreGravadoraBean audiostoreGravadoraBean) {
         requestAudiostoreGravadora.salvar(audiostoreGravadoraBean);
     }
 
@@ -67,7 +83,7 @@ public class AudiostoreGravadoraController implements java.io.Serializable {
     @Post
     @Restrict
     @Path("/audiostore-gravadora/atualizar/{id}")
-    public void cadastrar(Integer id , AudiostoreGravadoraBean audiostoreGravadoraBean  ) {
+    public void cadastrar(Integer id, AudiostoreGravadoraBean audiostoreGravadoraBean) {
         requestAudiostoreGravadora.salvar(audiostoreGravadoraBean);
     }
 
@@ -84,14 +100,14 @@ public class AudiostoreGravadoraController implements java.io.Serializable {
     public void remover(Integer id, String param) {
         requestAudiostoreGravadora.remover(id);
     }
-    
+
     @Get
     @Restrict
     @Path("/audiostore-gravadora/download-exp/{id}")
     public InputStreamDownload download(Integer id) {
         return requestAudiostoreGravadora.download(id);
     }
-    
+
     @Get
     @Restrict
     @Path("/audiostore-gravadora/upload-exp/{id}")

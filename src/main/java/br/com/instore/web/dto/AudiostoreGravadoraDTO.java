@@ -1,22 +1,22 @@
 package br.com.instore.web.dto;
 
 public class AudiostoreGravadoraDTO extends AbstractDTO {
-    private String id;
+    private Integer id;
     private String nome;
 
     public AudiostoreGravadoraDTO() {
     }
 
-    public AudiostoreGravadoraDTO(String id, String nome) {
+    public AudiostoreGravadoraDTO(Integer id, String nome) {
         this.id = id;
         this.nome = nome;
     }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

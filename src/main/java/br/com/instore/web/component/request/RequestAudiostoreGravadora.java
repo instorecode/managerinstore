@@ -1,10 +1,13 @@
 package br.com.instore.web.component.request;
 
 import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.observer.download.Download;
+import br.com.caelum.vraptor.observer.download.FileDownload;
 import br.com.caelum.vraptor.observer.download.InputStreamDownload;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.DataValidator;
 import br.com.instore.core.orm.DataValidatorException;
+import br.com.instore.core.orm.Query;
 import br.com.instore.core.orm.bean.AudiostoreCategoriaBean;
 import br.com.instore.core.orm.bean.ClienteBean;
 import br.com.instore.core.orm.bean.AudiostoreGravadoraBean;
@@ -12,16 +15,21 @@ import br.com.instore.core.orm.bean.AudiostoreGravadoraBean;
 import br.com.instore.core.orm.bean.ConfigAppBean;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.component.session.SessionUsuario;
+import br.com.instore.web.dto.AudiostoreCategoriaJSON;
 import br.com.instore.web.dto.AudiostoreGravadoraDTO;
+import br.com.instore.web.dto.AudiostoreGravadoraJSON;
 import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import org.apache.commons.io.IOUtils;
@@ -46,15 +54,89 @@ public class RequestAudiostoreGravadora implements java.io.Serializable {
         this.sessionUsuario = sessionUsuario;
     }
 
-    public List<AudiostoreGravadoraDTO> beanList() {
+    public void beanList(Boolean datajson, Boolean view, Integer page, Integer rows, Integer id, String nome) {
+        AudiostoreGravadoraJSON json = new AudiostoreGravadoraJSON();
         List<AudiostoreGravadoraBean> lista = new ArrayList<AudiostoreGravadoraBean>();
-        List<AudiostoreGravadoraDTO> lista2 = new ArrayList<AudiostoreGravadoraDTO>();
-        lista = repository.query(AudiostoreGravadoraBean.class).findAll();
-        for (AudiostoreGravadoraBean bean : lista) {
-            AudiostoreGravadoraDTO dto = new AudiostoreGravadoraDTO(Utilities.leftPad(bean.getId()), bean.getNome());
-            lista2.add(dto);
+
+        page = (null == page || 0 == page ? 1 : page);
+        rows = (null == rows || 0 == rows ? 10 : rows);
+        Integer offset = (page - 1) * rows;
+
+        Query q1 = repository.query(AudiostoreGravadoraBean.class);
+        Query q2 = repository.query(AudiostoreGravadoraBean.class);
+
+        if (null != id && id > 0) {
+            q1.eq("id", id);
+            q2.eq("id", id);
+            json.setId(id);
         }
-        return lista2;
+
+        if (null != nome && !nome.isEmpty()) {
+            q1.ilikeAnyWhere("nome", nome);
+            q2.ilikeAnyWhere("nome", nome);
+            json.setNome(nome);
+        }
+        int size = q1.count().intValue() / rows + ((q1.count().intValue() % rows == 0) ? 0 : 1);
+        lista = q2.limit(offset, rows).findAll();
+
+        json.setPage(page);
+        json.setSize(size);
+
+        List<AudiostoreGravadoraDTO> rowsList = new ArrayList<AudiostoreGravadoraDTO>();
+
+        for (AudiostoreGravadoraBean bean : lista) {
+            AudiostoreGravadoraDTO dto = new AudiostoreGravadoraDTO();
+            System.out.println("aqui aqui aqui" + bean.getNome());
+            dto.setId(bean.getId());
+            dto.setNome(bean.getNome());
+
+            rowsList.add(dto);
+        }
+
+        json.setRows(rowsList);
+        result.use(Results.json()).withoutRoot().from(json).recursive().serialize();
+
+    }
+
+    public List<ClienteBean> clienteBeanList() {
+        List<ClienteBean> lista = new ArrayList<ClienteBean>();
+        lista = repository.query(ClienteBean.class).findAll();
+        return lista;
+    }
+
+    public AudiostoreGravadoraDTO beanDTO(Integer id) {
+        AudiostoreGravadoraDTO dto = new AudiostoreGravadoraDTO();
+        AudiostoreGravadoraBean bean = repository.find(AudiostoreGravadoraBean.class, id);
+
+        dto.setId(bean.getId());
+        dto.setNome(bean.getNome());
+
+        return dto;
+    }
+
+    public Download gerarExp() {
+        List<AudiostoreGravadoraBean> lista = new ArrayList<AudiostoreGravadoraBean>();
+        Query q1 = repository.query(AudiostoreGravadoraBean.class);
+        String texto = "";
+        lista = q1.findAll();
+
+        for (AudiostoreGravadoraBean bean : lista) {
+            String id = String.valueOf(bean.getId());
+            String nome = bean.getNome();
+            id = StringUtils.leftPad(id, 5, " ");
+            nome = StringUtils.leftPad(nome, 30, " ");
+            texto = texto + id + nome + "\r\n";
+        }
+        
+        File file = new File("/teste.exp");
+        FileDownload arquivo = null; 
+        try {
+           arquivo =  new FileDownload(file,texto);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(RequestAudiostoreGravadora.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return arquivo ;
     }
 
     public AudiostoreGravadoraBean bean(Integer id) {
@@ -117,7 +199,7 @@ public class RequestAudiostoreGravadora implements java.io.Serializable {
                 conteudo += StringUtils.leftPad(bean.getId().toString(), 5, " ");
                 conteudo += nome;
 
-                inputStreamDownload = new InputStreamDownload(new ByteArrayInputStream(conteudo.getBytes()), "application/exp", bean.getId()+ ".exp");
+                inputStreamDownload = new InputStreamDownload(new ByteArrayInputStream(conteudo.getBytes()), "application/exp", bean.getId() + ".exp");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -143,12 +225,12 @@ public class RequestAudiostoreGravadora implements java.io.Serializable {
                 }
                 conteudo += StringUtils.leftPad(bean.getId().toString(), 5, " ");
                 conteudo += nome;
-                
-                File dir = new File(config.getDataPath()+"\\gravacao-exp\\");
-                if(!dir.exists()) {
+
+                File dir = new File(config.getDataPath() + "\\gravacao-exp\\");
+                if (!dir.exists()) {
                     dir.mkdirs();
                 }
-                
+
                 InputStream is = new ByteArrayInputStream(conteudo.getBytes());
                 FileOutputStream fos = new FileOutputStream(new File(config.getDataPath() + "\\gravacao-exp\\" + StringUtils.leftPad(bean.getId().toString(), 3, "0") + ".exp"));
 

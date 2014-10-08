@@ -1,6 +1,11 @@
 
+import br.com.instore.core.orm.Query;
+import br.com.instore.core.orm.bean.AudiostoreGravadoraBean;
 import br.com.instore.core.orm.bean.MusicaGeralBean;
+import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.tools.Utilities;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,6 +15,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import org.apache.commons.lang.StringUtils;
@@ -17,11 +24,27 @@ import org.apache.commons.lang.StringUtils;
 public class Main {
 
     public static void main(String[] args) {
-       executaAlgo();
+        executaAlgo();
     }
-    
+
     public static void executaAlgo() {
-        
+        SessionRepository repository = new SessionRepository();
+        List<AudiostoreGravadoraBean> lista = new ArrayList<AudiostoreGravadoraBean>();
+        Query q1 = repository.query(AudiostoreGravadoraBean.class);
+        String texto = "";
+        lista = q1.findAll();
+
+        for (AudiostoreGravadoraBean bean : lista) {
+            String id = String.valueOf(bean.getId());
+            String nome = bean.getNome();
+            id = StringUtils.leftPad(id, 5, " ");
+            nome = StringUtils.leftPad(nome, 30, " ");
+            texto = texto + id + nome+ "\r\n";
+            
+        }
+        System.out.print(texto);
+
+
     }
 
     public static String formatDecimal(double number) {
