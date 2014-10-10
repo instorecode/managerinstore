@@ -36,7 +36,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Cliente</label>
-                        <select class="select2 select_cliente" name="ocorrenciaBean.cliente.idcliente"  data-rule-required="true">
+                        <select class="form-control select_cliente" name="ocorrenciaBean.cliente.idcliente"  data-rule-required="true">
                             <c:forEach items="${clienteList}" var="item">
                                 <option value="${item.idcliente}" ${ocorrenciaBean.cliente.idcliente eq item.idcliente ? 'selected="selected"' :''}>${item.nome}</option>
                             </c:forEach>
@@ -105,9 +105,5 @@
                 <i class="fa fa-save"></i> Salvar
             </button>
         </form>
-        <script type="text/javascript">
-            jQuery(document).ready(function() {
-            });
-        </script>
     </jsp:body>
 </instore:template> 

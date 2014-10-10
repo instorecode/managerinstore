@@ -45,7 +45,7 @@
                 <div class="col-md-3"> 
                     <div class="form-group">
                         <label>Cliente</label>
-                        <select class="select2 ${isPageCadastro eq true ? 'select_cliente' : ''}" name="audiostoreComercialBean.cliente.idcliente" data-rule-required="true" >
+                        <select class="select2 ${isPageCadastro eq true ? 'select_cliente' : ''} tag_sel_cli" name="audiostoreComercialBean.cliente.idcliente" data-rule-required="true" >
                             <c:forEach items="${clienteBeanList}" var="item">
                                 <option value="${item.idcliente}" ${audiostoreComercialBean.cliente.idcliente eq item.idcliente ? 'selected="selected"':''}>${item.nome}</option> 
                             </c:forEach>
@@ -154,7 +154,7 @@
                         <label value=" ">Terciária</label>
                         <br />
                         <select name="audiostoreComercialBean.dependencia3" class="select2"  data-rule-required="true">
-                            <option>Nenhuma</option>
+                            <option value=" ">Nenhuma</option>
                             <c:forEach items="${arquivoMusicaList}" var="musica">
                                 <option value="${musica.caminho}" ${musica.caminho eq audiostoreComercialBean.dependencia3 ? 'selected="selected"' : ''}>${musica.nome}</option>
                             </c:forEach>
@@ -313,7 +313,7 @@
                                     <input type="text" name="hora_intervalo" class="form-control span5" placeholder="Intervalo" data-mask="99:99" value=""> 
                                 </div>
 
-                                
+
 
 
                                 <div class="col-xs-12">
@@ -340,12 +340,80 @@
                 <i class="fa fa-save"></i> Salvar
             </button>
         </form>
+                                        
         <style type="text/css">
-            .tbl tr { cursor:  pointer; }
+            .tbl tr { cursor: pointer; }
         </style>
 
-        <script>
+        <script type="text/javascript">
             jQuery(document).ready(function() {
+
+                function load_dep() {
+                    
+                    valor = jQuery(".tag_sel_cli").select2("val");
+                    if (null != valor && undefined != valor && "" != valor) {
+                        jQuery.ajax({
+                            url: "${url}/audiostore-comercial/dep/" + valor + "/${audiostoreComercialBean.id}",
+                            dataType: "json",
+                            success: function(json) {
+                                jQuery('[name="audiostoreComercialBean.dependencia1"]').html('');
+                                jQuery('[name="audiostoreComercialBean.dependencia2"]').html('');
+                                jQuery('[name="audiostoreComercialBean.dependencia3"]').html('');
+                                var option1 = '<option value=" " selected="selected">Nenhuma</option>';
+                                for(i in json) {
+                                    var item = json[i];
+                                    var dp = '${audiostoreComercialBean.dependencia1}';
+                                    
+                                    if(dp === item.arquivo) {
+                                        option1 += '<option value="'+item.arquivo+'" selected="selected">'+item.titulo+'</option>';
+                                    } else {
+                                        option1 += '<option value="'+item.arquivo+'">'+item.titulo+'</option>';
+                                    }
+                                }   
+                                
+                                var option2 = '<option value=" " selected="selected">Nenhuma</option>';
+                                for(i in json) {
+                                    var item = json[i];
+                                    var dp = '${audiostoreComercialBean.dependencia2}';
+                                    
+                                    if(dp === item.arquivo) {
+                                        option2 += '<option value="'+item.arquivo+'" selected="selected">'+item.titulo+'</option>';
+                                    } else {
+                                        option2 += '<option value="'+item.arquivo+'">'+item.titulo+'</option>';
+                                    }
+                                }   
+                                
+                                var option3 = '<option value=" " selected="selected">Nenhuma</option>';
+                                for(i in json) {
+                                    var item = json[i];
+                                    var dp = '${audiostoreComercialBean.dependencia3}';
+                                    
+                                    if(dp === item.arquivo) {
+                                        option3 += '<option value="'+item.arquivo+'" selected="selected">'+item.titulo+'</option>';
+                                    } else {
+                                        option3 += '<option value="'+item.arquivo+'">'+item.titulo+'</option>';
+                                    }
+                                }   
+                                
+                                jQuery('[name="audiostoreComercialBean.dependencia1"]').html(option1).change();
+                                jQuery('[name="audiostoreComercialBean.dependencia2"]').html(option2).change();
+                                jQuery('[name="audiostoreComercialBean.dependencia3"]').html(option3).change();
+                            },
+                            error: function(err) {
+                                console.err("ERRO AO CONSULTAR AS DEPENDENCIAS DO CLIENTE");
+                                console.log(err);
+                            }
+                        });
+                    }
+                }
+
+                jQuery(".tag_sel_cli").on("change", function() {
+                    load_dep();
+                });
+                jQuery('[name="audiostoreComercialBean.dependencia1"]').each(function() {
+                    load_dep();
+                });
+
                 jQuery('[name="todos"]').on('ifChecked', function() {
                     var segunda = jQuery('[name="segunda"]');
                     var terca = jQuery('[name="terca"]');
@@ -453,8 +521,8 @@
                             temDiasSelecionados = true;
                             inputsHiddens += connector + 'Segunda';
                             connector = ', ';
-                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Segunda" />';
-                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + '" />';
+                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="segunda" />';
+                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + ':00" />';
                             i++;
                         }
 
@@ -464,8 +532,8 @@
                             temDiasSelecionados = true;
                             inputsHiddens += connector + 'Terça';
                             connector = ', ';
-                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Terça" />';
-                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + '" />';
+                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="terca" />';
+                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + ':00" />';
                             i++;
                         }
 
@@ -473,8 +541,8 @@
                             temDiasSelecionados = true;
                             inputsHiddens += connector + 'Quarta';
                             connector = ', ';
-                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Quarta" />';
-                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + '" />';
+                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="quarta" />';
+                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + ':00" />';
                             i++;
                         }
 
@@ -482,8 +550,8 @@
                             temDiasSelecionados = true;
                             inputsHiddens += connector + 'Quinta';
                             connector = ', ';
-                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Quinta" />';
-                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + '" />';
+                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="quinta" />';
+                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + ':00" />';
                             i++;
                         }
 
@@ -491,8 +559,8 @@
                             temDiasSelecionados = true;
                             inputsHiddens += connector + 'Sexta';
                             connector = ', ';
-                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Sexta" />';
-                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + '" />';
+                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="sexta" />';
+                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + ':00" />';
                             i++;
                         }
 
@@ -500,8 +568,8 @@
                             temDiasSelecionados = true;
                             inputsHiddens += connector + 'Sábado';
                             connector = ', ';
-                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Sábado" />';
-                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + '" />';
+                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="sabado" />';
+                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + ':00" />';
                             i++;
                         }
 
@@ -509,8 +577,8 @@
                             temDiasSelecionados = true;
                             inputsHiddens += connector + 'Domingo';
                             connector = ', ';
-                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Domingo" />';
-                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + '" />';
+                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="domingo" />';
+                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + ':00" />';
                             i++;
                         }
                         inputsHiddens += '</td> ';
@@ -668,8 +736,8 @@
                                     temDiasSelecionados = true;
                                     inputsHiddens += connector + 'Segunda';
                                     connector = ', ';
-                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Segunda" />';
-                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + '" />';
+                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="segunda" />';
+                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + ':00" />';
                                     i++;
                                 }
 
@@ -679,8 +747,8 @@
                                     temDiasSelecionados = true;
                                     inputsHiddens += connector + 'Terça';
                                     connector = ', ';
-                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Terça" />';
-                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + '" />';
+                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="terca" />';
+                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + ':00" />';
                                     i++;
                                 }
 
@@ -688,8 +756,8 @@
                                     temDiasSelecionados = true;
                                     inputsHiddens += connector + 'Quarta';
                                     connector = ', ';
-                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Quarta" />';
-                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + '" />';
+                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="quarta" />';
+                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + ':00" />';
                                     i++;
                                 }
 
@@ -697,8 +765,8 @@
                                     temDiasSelecionados = true;
                                     inputsHiddens += connector + 'Quinta';
                                     connector = ', ';
-                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Quinta" />';
-                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + '" />';
+                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="quinta" />';
+                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + ':00" />';
                                     i++;
                                 }
 
@@ -706,8 +774,8 @@
                                     temDiasSelecionados = true;
                                     inputsHiddens += connector + 'Sexta';
                                     connector = ', ';
-                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Sexta" />';
-                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + '" />';
+                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="sexta" />';
+                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + ':00" />';
                                     i++;
                                 }
 
@@ -715,8 +783,8 @@
                                     temDiasSelecionados = true;
                                     inputsHiddens += connector + 'Sábado';
                                     connector = ', ';
-                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Sábado" />';
-                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + '" />';
+                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="sabado" />';
+                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + ':00" />';
                                     i++;
                                 }
 
@@ -724,8 +792,8 @@
                                     temDiasSelecionados = true;
                                     inputsHiddens += connector + 'Domingo';
                                     connector = ', ';
-                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="Domingo" />';
-                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + '" />';
+                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="domingo" />';
+                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + ':00" />';
                                     i++;
                                 }
                                 inputsHiddens += '</td> ';

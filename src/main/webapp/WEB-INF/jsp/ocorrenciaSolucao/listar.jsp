@@ -171,7 +171,7 @@
         <div class="delete">
             <c:if test="${delete_access}">
                 <br />
-                <h2>Deseja remover a origem ?</h2>
+                <h2>Deseja remover  ?</h2>
                 <hr />
 
                 <form name="FORM_DELETAR_[[__PK__]]" method="POST" data-formtable="true" action="${url}/ocorrencia-solucao/remover/[[__PK__]]">
@@ -196,11 +196,6 @@
                     <img src="${url_img}486.GIF" />
                     &nbsp; Aguarde, processando dados...
                 </div>
-            </div>
-            <div class="loader">
-                <span class="txt">
-                    <span class="fa fa-refresh"></span>&nbsp;&nbsp;Aguarde...
-                </span>
             </div>
 
             <button type="button" class="btn btn-default btn-flat btn_cadastro" style="margin-left: 0px;"><i class="fa fa-save"></i> Cadastrar</button>

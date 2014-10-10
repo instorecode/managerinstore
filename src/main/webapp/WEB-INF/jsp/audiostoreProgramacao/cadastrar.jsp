@@ -12,7 +12,7 @@
             <c:if test="${isPageCadastro eq false}">
                 <input type="hidden" name="audiostoreProgramacaoBean.id" value="${audiostoreProgramacaoBean.id}" />
             </c:if>
-            
+
             <div class="row">
                 <div class="col-md-9">
                     <div class="form-group">
@@ -20,7 +20,7 @@
                         <input type="text" name="audiostoreProgramacaoBean.descricao" class="form-control" placeholder="Nome"  
                                data-rule-required="true" 
                                data-rule-minlength="3"
-                               data-rule-maxlength="20" value="${audiostoreProgramacaoBean.descricao}">
+                               data-rule-maxlength="18" value="${audiostoreProgramacaoBean.descricao}">
                     </div>
                 </div>
 
@@ -79,16 +79,16 @@
                 </div>
 
                 <div class="col-md-3">
-                    <div class="form-group">
-                        <label>Horário inicial</label>
+                    <div class="form-group"> 
+                        <label>Horário inicial ${audiostoreProgramacaoBean.horaInicio}</label>
                         <input type="text" name="horaInicio" class="form-control" placeholder="Tempo de duração"  
                                data-rule-required="true" 
                                data-rule-minlength="8"
                                data-rule-maxlength="8" 
                                data-mask="99:99:99"
-                               data-rule-proghora1="true"
+                               data-rule-proghora1="true" 
                                data-rule-proghora2="true"
-                               value="${audiostoreProgramacaoBean.horaInicio ne null ? audiostoreProgramacaoBean.horaInicio  : '00:00:00'}">
+                               value="${audiostoreProgramacaoBean.horaInicio ne null ? cf:dateFormat(audiostoreProgramacaoBean.horaInicio , "HH:mm:ss") : '00:00:00'}">
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -101,7 +101,7 @@
                                data-mask="99:99:99"
                                data-rule-proghora1="true"
                                data-rule-proghora2="true"
-                               value="${audiostoreProgramacaoBean.horaFinal ne null ? audiostoreProgramacaoBean.horaFinal : '23:59:59'}">
+                               value="${audiostoreProgramacaoBean.horaFinal ne null ? cf:dateFormat(audiostoreProgramacaoBean.horaFinal, "HH:mm:ss") : '23:59:59'}">
                     </div>
                 </div> 
 
@@ -171,7 +171,7 @@
 
                     <script type="text/javascript">
                         jQuery(document).ready(function() {
-                            
+
                             if (null != jQuery('.select_cliente').children('option:selected').val()
                                     && undefined != jQuery('.select_cliente').children('option:selected').val()
                                     && '' != jQuery('.select_cliente').children('option:selected').val()) {
@@ -202,7 +202,7 @@
                                                 if (item.tipo == 3) {
                                                     tipo = 'video';
                                                 }
-                                                html += '<li id="' + i + '" data-index="' + i + '"> <i class="fa fa-cubes"></i> <div class="text">' + item.categoria + '</div> <small> <b style="color: green;"> ' + item.cliente.nome + ' -  ' + tipo + '</b> </small> <input type="hidden" name="categorias" value="' + item.codigo + '" disabled="disabled"/> </li>';
+                                                html += '<li id="' + i + '" data-index="' + i + '"> <i class="fa fa-file-code-o"></i> <div class="text">' + item.categoria + '</div> <small> <b style="color: green;"> ' + item.cliente.nome + ' -  ' + tipo + '</b> </small> <input type="hidden" name="categorias" value="' + item.codigo + '" disabled="disabled"/> </li>';
 
                                             }
                                             jQuery('.lista_filial2 li').each(function() {
@@ -250,7 +250,7 @@
                                                 if (item.tipo == 3) {
                                                     tipo = 'video';
                                                 }
-                                                html += '<li id="' + i + '" data-index="' + i + '"> <i class="fa fa-cubes"></i> <div class="text">' + item.categoria + '</div> <small> <b style="color: green;"> ' + item.cliente.nome + ' -  ' + tipo + '</b> </small> <input type="hidden" name="categorias" value="' + item.codigo + '" disabled="disabled"/> </li>';
+                                                html += '<li id="' + i + '" data-index="' + i + '"> <i class="fa fa-file-code-o"></i> <div class="text">' + item.categoria + '</div> <small> <b style="color: green;"> ' + item.cliente.nome + ' -  ' + tipo + '</b> </small> <input type="hidden" name="categorias" value="' + item.codigo + '" disabled="disabled"/> </li>';
 
                                             }
                                             jQuery('.lista_filial2 li').each(function() {
@@ -403,17 +403,22 @@
                             }
 
                             function addLista2(self) {
-
-                                if (null != self && undefined != self) {
-                                    self.fadeOut('500', function() {
-                                        var id = jQuery(this).attr("id");
-                                        jQuery(this).remove();
-                                    });
-                                }
-                                jQuery('.lista_filial1 li').each(function() {
-                                    jQuery(this).show();
+                                bootbox.confirm("Deseja realmente remover a categoria?", function(result) {
+                                    if (result) {
+                                        if (null != self && undefined != self) {
+                                            self.fadeOut('500', function() {
+                                                var id = jQuery(this).attr("id");
+                                                jQuery(this).remove();
+                                            });
+                                        }
+                                        jQuery('.lista_filial1 li').each(function() {
+                                            jQuery(this).show();
+                                        });
+                                        jQuery('.contador_l2').text("Total " + (jQuery('.lista_filial2 li').size() - 1));
+                                    } 
+                                    return true;
                                 });
-                                jQuery('.contador_l2').text("Total " + (jQuery('.lista_filial2 li').size() - 1));
+
                             }
 
                             jQuery('.lista1_pesq').on('keyup', function() {
@@ -478,7 +483,7 @@
                                     <ul class="items lista_filial lista_filial1">
                                         <c:forEach items="${categoriaBeanList}" var="categoria" varStatus="vs">
                                             <li id="${vs.index}" data-index="${vs.index}">
-                                                <i class="fa fa-cubes"></i>
+                                                <i class="fa-file-code-o"></i>
                                                 <div class="text">${categoria.categoria}</div>
                                                 <small>
                                                     <b style="color: green;">
@@ -520,7 +525,7 @@
                                     <ul class="items lista_filial lista_filial2">
                                         <c:forEach items="${programacaoCategoriaBeanList}" var="pcb" varStatus="vs">
                                             <li id="${vs.index}" data-index="${vs.index}" data-cliente="${pcb.audiostoreCategoria.cliente.idcliente}">
-                                                <i class="fa fa-cubes"></i>
+                                                <i class="fa fa-file-code-o"></i>
                                                 <div class="text">${pcb.audiostoreCategoria.categoria}</div>
                                                 <small>
                                                     <b style="color: green;">

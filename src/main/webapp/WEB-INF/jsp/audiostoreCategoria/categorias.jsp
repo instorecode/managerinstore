@@ -302,7 +302,7 @@
         <div class="delete">
             <c:if test="${delete_access}">
                 <br />
-                <h2>Deseja remover a origem ?</h2>
+                <h2>Deseja remover ?</h2>
                 <hr />
 
                 <form name="FORM_DELETAR_[[__PK__]]" method="POST" data-formtable="true" action="${url}/audiostore-categoria/remover/[[__PK__]]">
