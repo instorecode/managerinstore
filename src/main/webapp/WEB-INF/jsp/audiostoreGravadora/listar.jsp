@@ -160,6 +160,17 @@
                 </ul>
                 <button type="button" class="btn btn-default btn-flat " id="botaoCsv" ><i class="fa fa-file-excel-o"></i></button>
             </div>
+
+            <button type="button" class="btn btn-default btn-flat btn_export" style="display: none;"><i class="fa fa-upload"></i> Exportar arquivo </button>
+
+            <div class="btn-group cliente">                
+                <select  class="form-control select_cliente" data-rule-required="true" >
+                    <c:forEach items="${clienteBeanList}" var="cliente">
+                        <option value="${cliente.idcliente}" >${cliente.nome}</option>
+                    </c:forEach>
+                </select>
+            </div>
+
             <div class="btn-group">
                 <button class="btn btn-default btn-flat _prev"> <i class="fa fa-angle-double-left"></i> </button>
                 <button class="btn btn-default btn-flat prev"> <i class="fa fa-angle-left"></i> </button>
@@ -187,5 +198,50 @@
                 </table>
             </div>
         </div>
+        <script type="text/javascript">
+            jQuery(document).ready(function() {
+
+                jQuery(document).on("selected", ".row_data", function(evt, item) {
+                    jQuery('.btn_export').show();
+                });
+
+                jQuery(document).on("unselected", ".row_data", function(evt, item) {
+                    if (countRowsSelected() == 0) {
+                        jQuery('.btn_export').hide();
+                    }
+                });
+
+                jQuery('.btn_export').on("click", function() {
+                    msg_fadeIn();
+                    var id_cliente = jQuery('.select_cliente').val();
+                    if(countRowsSelected() <= 0){
+                        bootbox.alert("Selecione no minimo um registro na tabela.", function(){});
+                    } else {
+                        var arr = rowsSelected();
+                        var id_list = new Array();
+                        for(i in arr) {
+                            var item = arr[i];
+                            id_list[i] = item.id;                            
+                        }
+                        //console.log(id_list);
+                        jQuery.ajax({
+                            type:'POST',
+                            url:'${url}/audiostore-gravadora/exp',
+                            data:{id_list:id_list,
+                                  id_cliente: id_cliente},
+                            success: function(json){
+                                if(!json.success){
+                                    dialogAjax(json.response);
+                                } else {
+                                    
+                                }
+                            }
+                        });
+                    }
+                    msg_fadeOut();
+                });
+
+            });
+        </script>
     </jsp:body>
 </instore:template>

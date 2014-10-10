@@ -1,6 +1,7 @@
 
 import br.com.instore.core.orm.Query;
 import br.com.instore.core.orm.bean.AudiostoreGravadoraBean;
+import br.com.instore.core.orm.bean.ClienteBean;
 import br.com.instore.core.orm.bean.MusicaGeralBean;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.tools.Utilities;
@@ -29,21 +30,16 @@ public class Main {
 
     public static void executaAlgo() {
         SessionRepository repository = new SessionRepository();
-        List<AudiostoreGravadoraBean> lista = new ArrayList<AudiostoreGravadoraBean>();
-        Query q1 = repository.query(AudiostoreGravadoraBean.class);
-        String texto = "";
-        lista = q1.findAll();
-
-        for (AudiostoreGravadoraBean bean : lista) {
-            String id = String.valueOf(bean.getId());
-            String nome = bean.getNome();
-            id = StringUtils.leftPad(id, 5, " ");
-            nome = StringUtils.leftPad(nome, 30, " ");
-            texto = texto + id + nome+ "\r\n";
-            
+        List<ClienteBean> lista = new ArrayList<ClienteBean>();
+        Query q1 = repository.query(ClienteBean.class);
+        q1.eq("parente", 0);
+        q1.eq("matriz",true);
+        lista = q1.findAll();  
+        
+        for(ClienteBean bean : lista){
+            System.out.println(bean.getNome());
         }
-        System.out.print(texto);
-
+        
 
     }
 

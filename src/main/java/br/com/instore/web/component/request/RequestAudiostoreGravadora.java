@@ -13,6 +13,7 @@ import br.com.instore.core.orm.bean.ClienteBean;
 import br.com.instore.core.orm.bean.AudiostoreGravadoraBean;
 import br.com.instore.core.orm.bean.AudiostoreGravadoraBean;
 import br.com.instore.core.orm.bean.ConfigAppBean;
+import br.com.instore.core.orm.bean.DadosClienteBean;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.dto.AudiostoreCategoriaJSON;
@@ -32,6 +33,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import jcifs.smb.SmbFile;
+import jcifs.smb.SmbFileOutputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -86,21 +89,23 @@ public class RequestAudiostoreGravadora implements java.io.Serializable {
 
         for (AudiostoreGravadoraBean bean : lista) {
             AudiostoreGravadoraDTO dto = new AudiostoreGravadoraDTO();
-            System.out.println("aqui aqui aqui" + bean.getNome());
             dto.setId(bean.getId());
             dto.setNome(bean.getNome());
-
             rowsList.add(dto);
         }
-
         json.setRows(rowsList);
         result.use(Results.json()).withoutRoot().from(json).recursive().serialize();
-
     }
 
     public List<ClienteBean> clienteBeanList() {
         List<ClienteBean> lista = new ArrayList<ClienteBean>();
         lista = repository.query(ClienteBean.class).findAll();
+        return lista;
+    }
+
+    public List<ClienteBean> clienteMatrizBeanList() {
+        List<ClienteBean> lista = new ArrayList<ClienteBean>();
+        lista = repository.query(ClienteBean.class).eq("parente", 0).eq("matriz", true).findAll();
         return lista;
     }
 
@@ -114,29 +119,55 @@ public class RequestAudiostoreGravadora implements java.io.Serializable {
         return dto;
     }
 
-    public Download gerarExp() {
-        List<AudiostoreGravadoraBean> lista = new ArrayList<AudiostoreGravadoraBean>();
-        Query q1 = repository.query(AudiostoreGravadoraBean.class);
-        String texto = "";
-        lista = q1.findAll();
-
-        for (AudiostoreGravadoraBean bean : lista) {
-            String id = String.valueOf(bean.getId());
-            String nome = bean.getNome();
-            id = StringUtils.leftPad(id, 5, " ");
-            nome = StringUtils.leftPad(nome, 30, " ");
-            texto = texto + id + nome + "\r\n";
-        }
-        
-        File file = new File("/teste.exp");
-        FileDownload arquivo = null; 
+    public void upload(Integer[] id_list, String caminho) {
         try {
-           arquivo =  new FileDownload(file,texto);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(RequestAudiostoreGravadora.class.getName()).log(Level.SEVERE, null, ex);
+            String conteudo = "";
+            String quebraLinha = "";
+            List<AudiostoreGravadoraBean> lista = repository.query(AudiostoreGravadoraBean.class).in("id", id_list).findAll();
+            for (AudiostoreGravadoraBean audiostoreGravadoraBean : lista) {
+                if (audiostoreGravadoraBean != null) {
+                    conteudo += quebraLinha;
+                    conteudo += StringUtils.leftPad(String.valueOf(audiostoreGravadoraBean.getId()), 5, " ");
+                    conteudo += StringUtils.leftPad(String.valueOf(audiostoreGravadoraBean.getNome()), 30, " ");
+                }
+                quebraLinha = "\r\n";
+            }
+            SmbFile smb = new SmbFile(caminho, Utilities.getAuthSmbDefault());
+            SmbFile smb2 = new SmbFile(caminho + "gravadora.exp", Utilities.getAuthSmbDefault());
+
+            if (!smb.exists()) {
+                smb.mkdirs();
+            }
+
+            SmbFileOutputStream sfous = new SmbFileOutputStream(smb2);
+            sfous.write(conteudo.getBytes());
+            sfous.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            
         }
-        
-        return arquivo ;
+    }
+
+    public void validarGravadora(Integer[] id_list, Integer id_cliente) {
+        DadosClienteBean resultado = repository.query(DadosClienteBean.class).eq("cliente.idcliente", id_cliente).findOne();
+
+        boolean ajaxResultBool = true;
+        String ajaxResultStr = "";
+
+        if (ajaxResultBool) {
+            if (resultado == null || resultado.getLocalDestinoExp().trim().isEmpty() || null == resultado.getLocalDestinoExp()) {
+                ajaxResultBool = false;
+                ajaxResultStr = "O cliente não possui um local de destino para os arquivos de exportação!";
+            }
+        }
+
+        if (ajaxResultBool) {
+            upload(id_list, resultado.getLocalDestinoExp());
+        }
+
+        result.use(Results.json()).withoutRoot().from(new AjaxResult(ajaxResultBool, ajaxResultStr)).recursive().serialize();
+
     }
 
     public AudiostoreGravadoraBean bean(Integer id) {

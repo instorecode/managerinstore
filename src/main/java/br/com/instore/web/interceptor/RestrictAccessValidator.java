@@ -206,6 +206,6 @@ public class RestrictAccessValidator {
     }
 
     public void loadClienteMatriz() {
-        result.include("atalhoClienteList", requestRepository.query(ClienteBean.class).eq("matriz", true).eq("parente", 0).findAll());
+        result.include("atalhoClienteList", requestRepository.query(ClienteBean.class).eq("parente", 0).eq("matriz", true).findAll());
     }
 }

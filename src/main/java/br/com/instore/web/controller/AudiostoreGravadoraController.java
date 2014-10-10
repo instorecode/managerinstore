@@ -32,12 +32,6 @@ public class AudiostoreGravadoraController implements java.io.Serializable {
         this.result = result;
         this.requestAudiostoreGravadora = requestAudiostoreGravadora;
     }
-
-    @Post
-    @Path("/audiostore-gravadora/download")
-    public void downloadExp (){
-        requestAudiostoreGravadora.gerarExp();
-    }
     
     @Get
     @Restrict
@@ -47,13 +41,13 @@ public class AudiostoreGravadoraController implements java.io.Serializable {
         if (null != datajson && datajson) {
             requestAudiostoreGravadora.beanList(datajson, view, page, rows, id, nome);
         } else {
-            result.include("clienteBeanList", requestAudiostoreGravadora.clienteBeanList());
+            result.include("clienteBeanList", requestAudiostoreGravadora.clienteMatrizBeanList());
         }
 
         if (null != view && view) {
             result.use(Results.json()).withoutRoot().from(requestAudiostoreGravadora.beanDTO(pk)).recursive().serialize();
         } else {
-            result.include("clienteBeanList", requestAudiostoreGravadora.clienteBeanList());
+            result.include("clienteBeanList", requestAudiostoreGravadora.clienteMatrizBeanList());
         }
 
 
@@ -113,5 +107,13 @@ public class AudiostoreGravadoraController implements java.io.Serializable {
     @Path("/audiostore-gravadora/upload-exp/{id}")
     public void upload(Integer id) {
         requestAudiostoreGravadora.upload(id);
+    }
+    
+    @Post
+    @Path("/audiostore-gravadora/exp")
+    public void gerarExp (Integer [] id_list, Integer id_cliente){
+//        System.out.println("id cliente " + id_cliente);
+//        System.out.println("id list " + id_list);
+       requestAudiostoreGravadora.validarGravadora(id_list, id_cliente);
     }
 }
