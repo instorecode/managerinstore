@@ -36,7 +36,7 @@
                                     <div class="form-group">
                                         <label>Cliente</label>
                                         <select  class="select2 select_cliente" name="vozBean.cliente.idcliente" data-rule-required="true" >
-                                            <c:forEach items="${clienteBeanList}" var="cliente">
+                                            <c:forEach items="${atalhoClienteList}" var="cliente">
                                                 <option value="${cliente.idcliente}" ${cliente.idcliente eq vozBean.cliente.idcliente ? 'selected="selected"' : ''}>${cliente.nome}</option>
                                             </c:forEach>
                                         </select>
