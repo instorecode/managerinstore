@@ -156,7 +156,7 @@ jQuery(document).ready(function() {
                 jQuery.storageAdd(url,JSON.stringify(json));
             }
             
-//            setTimeout(function() { location.reload() },180000);
+
             setInterval(function(){jQuery.storageClear()},180000);
              
             table.children("tbody").html("");
