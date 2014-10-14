@@ -4,8 +4,9 @@
 <instore:template  menucolapse="false" isGrid="false">
     <jsp:attribute name="submenu">
         <div class="btn-group">
-            <a href="${url}/musica/cadastrar" class="btn btn-default"> <i class="fa fa-save"></i></a>
-            <a href="#" class="btn btn-default" data-toggle="modal" data-target="#modal_sincronizacao" > <i class="fa fa-download"></i></a>
+            <a href="${url}/musica/cadastrar" class="btn btn-default btn-flat btn_exp_arquivo" style="display: none;"> <i class="fa fa-upload"></i> Exportar arquivo</a>
+            <a href="${url}/musica/cadastrar" class="btn btn-default btn-flat"> <i class="fa fa-save"></i></a>
+            <a href="#" class="btn btn-default btn-flat" data-toggle="modal" data-target="#modal_sincronizacao" > <i class="fa fa-download"></i></a>
         </div>
     </jsp:attribute>
 
@@ -43,7 +44,7 @@
 
                 jQuery('.btn_sinc').on('click', function() {
                     var url = jQuery.trim(jQuery('[name="url"]').val());
-                    
+
                     if ('' == url) {
                         jQuery('.erro1').show();
                     } else {
@@ -134,7 +135,7 @@
 
                 jQuery('.btn_sinc').on('click', function() {
                     var url = jQuery.trim(jQuery('[name="url"]').val());
-                    
+
                     if ('' == url) {
                         jQuery('.erro1').show();
                     } else {
@@ -453,7 +454,7 @@
                 <a href="${url}/musica" class="btn btn-default btn-flat"> Limpar Filtro </a>
 
                 <div class="table-responsive">
-                    <table class="no-border">
+                    <table class="no-border __tabela">
                         <thead class="no-border">
                             <tr>
                                 <th></th>
@@ -466,7 +467,7 @@
                         </thead>
                         <tbody class="no-border-y">
                             <c:forEach items="${lista2}" var="item" varStatus="vs">
-                                <tr>
+                                <tr data-item-id="${item.id}">
                                     <td width="300">
 
                                         <a class="label label-default"  href="#" data-toggle="modal" data-target="#modal_ver_${item.id}"><i class="fa fa-eye"></i></a>
@@ -605,5 +606,69 @@
             </div>
         </form>
 
+
+        <script type="text/javascript">
+            jQuery(document).ready(function() {
+                var tabela = jQuery('.__tabela');
+                tabela.children('tbody').children('tr').on('click', function() {
+                    var tr = jQuery(this);
+
+                    var klass = tr.attr("class");
+
+                    if (null == klass || undefined == klass) {
+                        klass = "tr__unselected";
+                    }
+
+                    if (klass.indexOf("tr__selected") != -1) {
+                        tr.removeClass("tr__selected");
+                        tr.addClass("tr__unselected");
+                    } else if (klass.indexOf("tr__unselected") != -1) {
+                        tr.removeClass("tr__unselected");
+                        tr.addClass("tr__selected");
+                    } else {
+                        tr.removeClass("tr__selected");
+                        tr.addClass("tr__unselected");
+                    }
+
+                    if (tabela.children('tbody').children('tr.tr__selected').size() > 0) {
+                        jQuery('.btn_exp_arquivo').show();
+                    } else {
+                        jQuery('.btn_exp_arquivo').hide();
+                    }
+                });
+
+                jQuery('.btn_exp_arquivo').on("click", function() {
+                    var selected_line = tabela.children('tbody').children('tr.tr__selected').size();
+                    var selected_cliente = jQuery.storage('matriz_selecionada');
+                    if ( null != selected_line && undefined != selected_line && selected_line > 0
+                         && null != selected_cliente && undefined != selected_cliente && '' != selected_cliente ) {
+                        var id_list = [];
+                        var i = 0;
+
+                        tabela.children('tbody').children('tr.tr__selected').each(function() {
+                            var tr = jQuery(this);
+                            id_list[i] = tr.data('itemId');
+                            i++;
+                        });
+                        
+                        jQuery.ajax({
+                            type: 'POST',
+                            url : '${url}/musica/vld-msc',
+                            data:{ id_list : id_list, idcliente : selected_cliente },
+                            success : function(json){
+                                dialogAjax(json.response);
+                            }
+                        });
+                    }
+                    return false;
+                });
+            });
+        </script>
+
+        <style>
+            .tr__selected {
+                background-color: #fffbd3 !important;
+            }
+        </style>
     </jsp:body>
 </instore:template>

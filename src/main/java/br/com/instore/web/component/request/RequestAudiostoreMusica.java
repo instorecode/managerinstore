@@ -123,7 +123,7 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
     }
 
     public void categoriasByCliente(Integer id) {
-        List<AudiostoreCategoriaBean> audiostoreCategoriaBeanList = repository.query(AudiostoreCategoriaBean.class).eq("cliente.idcliente", id).findAll();
+        List<AudiostoreCategoriaBean> audiostoreCategoriaBeanList = repository.query(AudiostoreCategoriaBean.class).eq("cliente.idcliente", id).eq("tipo", new Short("1")).findAll();
         result.use(Results.json()).withoutRoot().from(audiostoreCategoriaBeanList).recursive().serialize();
     }
     

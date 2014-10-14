@@ -9,20 +9,23 @@ public class OcorrenciaJSON {
     private Integer page;
     private Integer size;
     private List<OcorrenciaDTO> rows = new ArrayList<OcorrenciaDTO>();
-    private Integer id;
+    private String id;
     private String descricao;
     private String dataCadastro;
     private String ocorrenciaProblema;
     private String ocorrenciaSolucao;    
     private String ocorrenciaOrigem;
     private String dataResolucao;
-    private String usuarioCriacao;
+    private String usuario;
+    private String idusuario;
     private String ocorrenciaPrioridade;
     private String cliente;
+    private String idcliente;
     private String statusNome;
     private String statusCor;
-    private String statusUsuarioNome;
+    private String idstatus;
     private String prioridade;
+    private String idprioridade;
 
     public Integer getPage() {
         return page;
@@ -48,11 +51,11 @@ public class OcorrenciaJSON {
         this.rows = rows;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -104,12 +107,20 @@ public class OcorrenciaJSON {
         this.dataResolucao = dataResolucao;
     }
 
-    public String getUsuarioCriacao() {
-        return usuarioCriacao;
+    public String getUsuario() {
+        return usuario;
     }
 
-    public void setUsuarioCriacao(String usuarioCriacao) {
-        this.usuarioCriacao = usuarioCriacao;
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
+    }
+
+    public String getIdusuario() {
+        return idusuario;
+    }
+
+    public void setIdusuario(String idusuario) {
+        this.idusuario = idusuario;
     }
 
     public String getOcorrenciaPrioridade() {
@@ -128,6 +139,14 @@ public class OcorrenciaJSON {
         this.cliente = cliente;
     }
 
+    public String getIdcliente() {
+        return idcliente;
+    }
+
+    public void setIdcliente(String idcliente) {
+        this.idcliente = idcliente;
+    }
+
     public String getStatusNome() {
         return statusNome;
     }
@@ -144,12 +163,12 @@ public class OcorrenciaJSON {
         this.statusCor = statusCor;
     }
 
-    public String getStatusUsuarioNome() {
-        return statusUsuarioNome;
+    public String getIdstatus() {
+        return idstatus;
     }
 
-    public void setStatusUsuarioNome(String statusUsuarioNome) {
-        this.statusUsuarioNome = statusUsuarioNome;
+    public void setIdstatus(String idstatus) {
+        this.idstatus = idstatus;
     }
 
     public String getPrioridade() {
@@ -160,5 +179,13 @@ public class OcorrenciaJSON {
         this.prioridade = prioridade;
     }
 
-   
+    public String getIdprioridade() {
+        return idprioridade;
+    }
+
+    public void setIdprioridade(String idprioridade) {
+        this.idprioridade = idprioridade;
+    }
+
+    
 }

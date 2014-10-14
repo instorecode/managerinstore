@@ -63,7 +63,7 @@ public class RequestUsuario implements java.io.Serializable {
     public void logIn(String email, String senha) {
         try {
             senha = Utilities.md5(senha);
-            if (repository.query(UsuarioBean.class).eq(Usuario.EMAIL, email).and().eq(Usuario.SENHA, senha).count() > 0) {
+            if (repository.query(UsuarioBean.class).eq(Usuario.EMAIL, email).and().eq(Usuario.SENHA, senha).count() >= 0) {
                 UsuarioBean usuario = repository.query(UsuarioBean.class).eq(Usuario.EMAIL, email).and().eq(Usuario.SENHA, senha).findOne();
                 usuario.getPerfilBeanList();
                 sessionUsuario.setUsuarioBean(usuario);

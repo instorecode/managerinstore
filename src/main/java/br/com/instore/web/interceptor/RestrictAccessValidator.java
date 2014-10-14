@@ -196,8 +196,8 @@ public class RestrictAccessValidator {
     }
 
     public void perfilUsuarios() {
-        List<PerfilUsuarioBean> listaDePerfil = requestRepository.query(PerfilUsuarioBean.class).eq("usuario.idusuario", sessionUsuario.getUsuarioBean().getIdusuario()).findAll();
-        result.include("listaDePerfil", listaDePerfil);
+//        List<PerfilUsuarioBean> listaDePerfil = requestRepository.query(PerfilUsuarioBean.class).eq("usuario.idusuario", sessionUsuario.getUsuarioBean().getIdusuario()).findAll();
+//        result.include("listaDePerfil", listaDePerfil);
     }
     
     public void clientesMatriz(){

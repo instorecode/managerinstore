@@ -328,11 +328,6 @@
                     &nbsp; Aguarde, processando dados...
                 </div>
             </div>
-            <div class="loader">
-                <span class="txt">
-                    <span class="fa fa-refresh"></span>&nbsp;&nbsp;Aguarde...
-                </span>
-            </div>
 
             <button type="button" class="btn btn-default btn-flat btn_cadastro" style="margin-left: 0px;"><i class="fa fa-save"></i> Cadastrar</button>
 
@@ -392,9 +387,6 @@
                 height: 100%;
 
                 background-color: rgba(0,0,0,0.5);
-
-
-
             }
         </style>
 

@@ -45,14 +45,14 @@ public class AudiostoreComercialController implements java.io.Serializable {
     @Get
     @Restrict
     @Path("/audiostore-comercial")
-    public void listar(Boolean datajson) {
+    public void listar(Boolean datajson, Boolean view, Boolean clientes, Integer page, Integer rows, Integer id, String titulo, String arquivo, Integer pk) {
         if (null != datajson && datajson) {
-            result.use(Results.json()).withoutRoot().from(requestAudiostoreComercial.beanList()).recursive().serialize();
+            requestAudiostoreComercial.beanList(page, rows, id, titulo, arquivo);
         }
     }
 
     @Get
-    @Restrict
+    @Restrict 
     @Path("/audiostore-comercial/cadastrar")
     public void cadastrar() {
         result.include("isPageCadastro", true);
@@ -119,6 +119,24 @@ public class AudiostoreComercialController implements java.io.Serializable {
     @Restrict
     @Path("/audiostore-comercial/upload-exp/{id}")
     public void upload(Integer id) {
-        requestAudiostoreComercial.upload(id);
+//        requestAudiostoreComercial.upload(id);
+    }
+    
+    @Get
+    @Path("/audiostore-comercial/dep/{idcliente}/{id}")
+    public void dep(Integer idcliente, Integer id) {
+        requestAudiostoreComercial.dep(idcliente , id);
+    }
+    
+    @Post
+    @Path("/audiostore-comercial/vld-comm")
+    public void validarComercial(Integer[] id_list) {
+        requestAudiostoreComercial.validarComercial(id_list);
+    }
+    
+    @Post
+    @Path("/audiostore-comercial/vld-categ")
+    public void validarCateg(Integer idcliente) {
+        requestAudiostoreComercial.validarCateg(idcliente);
     }
 }

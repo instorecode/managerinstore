@@ -7,7 +7,6 @@ import br.com.caelum.vraptor.Post;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.bean.OcorrenciaBean;
-import br.com.instore.core.orm.bean.OcorrenciaUsuarioBean;
 import br.com.instore.web.annotation.Restrict;
 import br.com.instore.web.component.request.RequestOcorrencia;
 import javax.inject.Inject;
@@ -31,10 +30,29 @@ public class OcorrenciaController implements java.io.Serializable {
     @Get
     @Restrict
     @Path("/ocorrencia")
-    public void listar(Boolean datajson) {
-        requestOcorrencia.totalPorStatus();
+    public void listar(Boolean datajson , Boolean view , Boolean clientes , Boolean prioridade , Boolean status , Boolean usuario , Integer page, Integer rows,  Integer id, String descricao , Integer idcliente  , Integer idusuario , Integer idprioridade , Integer idstatus , Integer pk) {
         if (null != datajson && datajson) {
-//            result.use(Results.json()).withoutRoot().from(requestOcorrencia.beanList()).recursive().serialize();
+            requestOcorrencia.beanList(page, rows, id, descricao, idcliente, idusuario, idprioridade, idstatus);
+        }
+        
+        if (null != view && view) {
+            result.use(Results.json()).withoutRoot().from(requestOcorrencia.dto(pk)).recursive().serialize();
+        }
+        
+        if (null != clientes && clientes) {
+            result.use(Results.json()).withoutRoot().from(requestOcorrencia.clienteBeanList()).recursive().serialize();
+        }
+        
+        if (null != prioridade && prioridade) {
+            result.use(Results.json()).withoutRoot().from(requestOcorrencia.prioridadeBeanList()).recursive().serialize();
+        }
+        
+        if (null != status && status) {
+            result.use(Results.json()).withoutRoot().from(requestOcorrencia.statusBeanList()).recursive().serialize();
+        }
+        
+        if (null != usuario && usuario) {
+            result.use(Results.json()).withoutRoot().from(requestOcorrencia.usuarioBeanList()).recursive().serialize();
         }
     }
 
@@ -72,7 +90,7 @@ public class OcorrenciaController implements java.io.Serializable {
         result.include("ocorrenciaSolucaoList", requestOcorrencia.ocorrenciaSolucaoList());
         result.include("ocorrenciaUsuario", requestOcorrencia.ocorrenciaUsuario(id));
         result.include("usuarioList", requestOcorrencia.usuarioList());
-        result.include("ocorrenciaBean", requestOcorrencia.bean(id));
+        result.include("ocorrenciaBean", requestOcorrencia.dto(id));
     }
 
     @Post
@@ -86,7 +104,7 @@ public class OcorrenciaController implements java.io.Serializable {
     @Restrict
     @Path("/ocorrencia/remover/{id}")
     public void remover(Integer id) {
-        result.include("ocorrenciaBean", requestOcorrencia.bean(id));
+        result.include("ocorrenciaBean", requestOcorrencia.dto(id));
     }
 
     @Post
@@ -141,7 +159,7 @@ public class OcorrenciaController implements java.io.Serializable {
         result.include("ocorrenciaSolucaoList", requestOcorrencia.ocorrenciaSolucaoList());
         result.include("ocorrenciaUsuario", requestOcorrencia.ocorrenciaUsuario(id));
         result.include("usuarioList", requestOcorrencia.usuarioList());
-        result.include("ocorrenciaBean", requestOcorrencia.bean(id));
+        result.include("ocorrenciaBean", requestOcorrencia.dto(id));
     }
 
     @Post
@@ -155,7 +173,7 @@ public class OcorrenciaController implements java.io.Serializable {
     @Restrict
     @Path("/minha-ocorrencia/remover/{id}")
     public void remover2(Integer id) {
-        result.include("ocorrenciaBean", requestOcorrencia.bean(id));
+        result.include("ocorrenciaBean", requestOcorrencia.dto(id));
     }
 
     @Post

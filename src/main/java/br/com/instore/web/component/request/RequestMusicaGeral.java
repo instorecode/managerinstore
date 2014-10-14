@@ -5,9 +5,11 @@ import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.Query;
 import br.com.instore.core.orm.bean.AudiostoreCategoriaBean;
 import br.com.instore.core.orm.bean.AudiostoreGravadoraBean;
+import br.com.instore.core.orm.bean.AudiostoreMusicaBean;
 import br.com.instore.core.orm.bean.CategoriaGeralBean;
 import br.com.instore.core.orm.bean.CategoriaMusicaGeralBean;
 import br.com.instore.core.orm.bean.ClienteBean;
+import br.com.instore.core.orm.bean.DadosClienteBean;
 import br.com.instore.core.orm.bean.MusicaGeralBean;
 import br.com.instore.core.orm.bean.UsuarioBean;
 import br.com.instore.web.component.session.SessionRepository;
@@ -17,6 +19,7 @@ import br.com.instore.web.dto.MusicaId;
 import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
 import java.net.MalformedURLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,6 +27,8 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
+import jcifs.smb.SmbFileOutputStream;
+import org.apache.commons.lang.StringUtils;
 
 @RequestScoped
 public class RequestMusicaGeral implements java.io.Serializable {
@@ -238,10 +243,10 @@ public class RequestMusicaGeral implements java.io.Serializable {
         }
     }
 
-    public void sinc(String dir, String usuario , String senha) {
+    public void sinc(String dir, String usuario, String senha) {
         try {
 
-            
+
             if (!dir.endsWith("/")) {
                 dir += "/";
             }
@@ -250,14 +255,14 @@ public class RequestMusicaGeral implements java.io.Serializable {
             dir = "smb://" + dir;
 
             List<MusicaGeralBean> musicaGeralBeanList = new ArrayList<MusicaGeralBean>();
-            sinc(dir, musicaGeralBeanList , usuario , senha);
+            sinc(dir, musicaGeralBeanList, usuario, senha);
             repository.setUsuario(sessionUsuario.getUsuarioBean());
 
             StringBuilder inserts = new StringBuilder();
             inserts.append("INSERT INTO musica_geral VALUES");
             String comma = "";
             for (MusicaGeralBean item : musicaGeralBeanList) {
-                inserts.append(comma+"(null , 0 , "+sessionUsuario.getUsuarioBean().getIdusuario()+", 0, '"+item.getTitulo()+"', '', 0, '', 120, '00:00',1990,'','','','','"+item.getArquivo()+"')");
+                inserts.append(comma + "(null , 0 , " + sessionUsuario.getUsuarioBean().getIdusuario() + ", 0, '" + item.getTitulo() + "', '', 0, '', 120, '00:00',1990,'','','','','" + item.getArquivo() + "')");
                 comma = ",\n";
             }
             inserts.append(";");
@@ -271,12 +276,12 @@ public class RequestMusicaGeral implements java.io.Serializable {
         }
     }
 
-    private static void sinc(String dirPath, List<MusicaGeralBean> musicaGeralBeanList, String usuario , String senha) throws Exception {
+    private static void sinc(String dirPath, List<MusicaGeralBean> musicaGeralBeanList, String usuario, String senha) throws Exception {
         try {
 
             SmbFile smbDir = null;
-            
-            smbDir = new SmbFile(dirPath, Utilities.getAuthSmb(usuario, senha));                
+
+            smbDir = new SmbFile(dirPath, Utilities.getAuthSmb(usuario, senha));
 
             if (!smbDir.exists()) {
                 throw new Exception("O diretório informado não existe ou não pode ser acessado!");
@@ -312,7 +317,7 @@ public class RequestMusicaGeral implements java.io.Serializable {
                     }
                 } else {
                     if (item.isDirectory()) {
-                        sinc(item.getPath(), musicaGeralBeanList , usuario , senha);
+                        sinc(item.getPath(), musicaGeralBeanList, usuario, senha);
                     }
                 }
             }
@@ -465,7 +470,7 @@ public class RequestMusicaGeral implements java.io.Serializable {
 
                 if (null != tests && !tests.isEmpty()) {
                     for (MusicaId item : tests) {
-                        if(!integerList.contains(item)) {
+                        if (!integerList.contains(item)) {
                             integerList.add(item.id);
                         }
                     }
@@ -542,5 +547,234 @@ public class RequestMusicaGeral implements java.io.Serializable {
         result.include("totalRegistrosPorPagina", totalRegistrosPorPagina);
         result.include("totalPaginas", totalPaginas);
         result.include("paginaAtual", pagina);
+    }
+
+    public void validarMsc(Integer[] id_list, Integer idcliente) {
+        ClienteBean cliente = repository.find(ClienteBean.class, idcliente);
+        List<MusicaGeralBean> list = repository.query(MusicaGeralBean.class).in("id", id_list).findAll();
+
+        boolean ajaxResultBool = true;
+        String ajaxResultStr = "";
+
+
+        if (null == cliente) {
+            ajaxResultBool = false;
+            ajaxResultStr = "O cliente selecionado não existe!";
+        }
+
+        // verifica se todos são do mesmo cliente
+        if (ajaxResultBool) {
+            for (MusicaGeralBean bean : list) {
+                if (repository.query(AudiostoreMusicaBean.class).eq("musicaGeral", bean.getId()).count() <= 0) {
+                    ajaxResultBool = false;
+                    ajaxResultStr = "O cliente " + cliente.getNome() + " não possui a música " + bean.getTitulo() + "!";
+                }
+            }
+        }
+        if (ajaxResultBool) {
+            try {
+                upload(id_list);
+                ajaxResultBool = true;
+                ajaxResultStr = "Arquivo exportando com sucesso!";
+            } catch (Exception e) {
+                ajaxResultBool = false;
+                ajaxResultStr = e.getMessage();
+            }
+        }
+
+
+
+        result.use(Results.json()).withoutRoot().from(new AjaxResult(ajaxResultBool, ajaxResultStr)).recursive().serialize();
+    }
+
+    public void upload(Integer[] id_list) throws Exception {
+        try {
+            String conteudo = "";
+            String quebraLinha = "";
+            List<AudiostoreMusicaBean> list = repository.query(AudiostoreMusicaBean.class).in("musicaGeral", id_list).findAll();
+            for (AudiostoreMusicaBean bean : list) {
+                if (bean != null) {
+                    MusicaGeralBean mgb = repository.query(MusicaGeralBean.class).in("id", bean.getMusicaGeral()).findOne();
+                    if (mgb != null) {
+                        conteudo += quebraLinha;
+
+                        // arquivo
+                        if (Arrays.asList(mgb.getArquivo().split("/")).size() > 0) {
+                            List<String> lista = Arrays.asList(mgb.getArquivo().split("/"));
+                            String arq = lista.get(lista.size() - 2);
+
+                            if (arq.length() > 30) {
+                                arq = arq.substring(0, 30);
+                            }
+
+                            if (arq.length() < 30) {
+                                arq = StringUtils.leftPad(arq, 30, " ");
+                            }
+                            conteudo += arq;
+                        }
+
+                        // interprete
+                        String interprete = mgb.getInterprete();
+                        if (interprete.length() > 30) {
+                            interprete = interprete.substring(0, 30);
+                        }
+
+                        if (interprete.length() < 30) {
+                            interprete = StringUtils.leftPad(interprete, 30, " ");
+                        }
+                        conteudo += interprete;
+
+                        // tipo interprete
+                        conteudo += mgb.getTipoInterprete();
+
+                        // titulo
+                        String titulo = mgb.getTitulo();
+                        if (titulo.length() > 30) {
+                            titulo = titulo.substring(0, 30);
+                        }
+
+                        if (titulo.length() < 30) {
+                            titulo = StringUtils.leftPad(titulo, 30, " ");
+                        }
+                        conteudo += titulo;
+
+                        // cut
+                        conteudo += bean.getCut() ? "sim" : "nao";
+
+                        // categoria 1 
+                        conteudo += (null == bean.getCategoria1() ? "000" : bean.getCategoria1().getCodInterno());
+
+                        // categoria 2
+                        conteudo += (null == bean.getCategoria2() ? "000" : bean.getCategoria2().getCodInterno());
+
+                        // categoria 3
+                        conteudo += (null == bean.getCategoria3() ? "000" : bean.getCategoria3().getCodInterno());
+
+                        // dias de execucao  
+                        conteudo += StringUtils.leftPad(bean.getDiasExecucao1().toString(), 4, "0");
+
+                        // dias de execucao 2
+                        conteudo += StringUtils.leftPad(bean.getDiasExecucao2().toString(), 4, "0");
+
+                        // afinidade1
+                        String afinidade1 = mgb.getAfinidade1();
+                        if (afinidade1.length() > 30) {
+                            afinidade1 = afinidade1.substring(0, 30);
+                        }
+
+                        if (afinidade1.length() < 30) {
+                            afinidade1 = StringUtils.leftPad(afinidade1, 30, " ");
+                        }
+                        conteudo += afinidade1;
+
+                        // afinidade2
+                        String afinidade2 = mgb.getAfinidade2();
+                        if (afinidade2.length() > 30) {
+                            afinidade2 = afinidade2.substring(0, 30);
+                        }
+
+                        if (afinidade2.length() < 30) {
+                            afinidade2 = StringUtils.leftPad(afinidade2, 30, " ");
+                        }
+                        conteudo += afinidade2;
+
+                        // afinidade3
+                        String afinidade3 = mgb.getAfinidade3();
+                        if (afinidade3.length() > 30) {
+                            afinidade3 = afinidade2.substring(0, 30);
+                        }
+
+                        if (afinidade3.length() < 30) {
+                            afinidade3 = StringUtils.leftPad(afinidade3, 30, " ");
+                        }
+                        conteudo += afinidade3;
+
+                        // afinidade4
+                        String afinidade4 = mgb.getAfinidade4();
+                        if (afinidade4.length() > 30) {
+                            afinidade4 = afinidade4.substring(0, 30);
+                        }
+
+                        if (afinidade4.length() < 30) {
+                            afinidade4 = StringUtils.leftPad(afinidade4, 30, " ");
+                        }
+                        conteudo += afinidade4;
+
+                        // gravadora
+                        conteudo += null != mgb.getGravadora() ? mgb.getGravadora() : "000";
+
+                        // ano gravacao
+                        conteudo += mgb.getAnoGravacao();
+
+                        // ano velocidade
+                        conteudo += (mgb.getBpm() > 180 ? 3 : (mgb.getBpm() > 120 ? 2 : 1));
+
+                        // data
+                        conteudo += new SimpleDateFormat("dd/MM/yy").format(bean.getData());
+
+                        // data ultima execução
+                        conteudo += new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(bean.getUltimaExecucaoData());
+
+                        // tempo
+                        String tempo = mgb.getTempoTotal();
+                        if (tempo.length() > 30) {
+                            tempo = tempo.substring(0, 30);
+                        }
+
+                        if (tempo.length() < 30) {
+                            tempo = StringUtils.leftPad(tempo, 30, " ");
+                        }
+                        conteudo += tempo;
+
+                        // qtde de player total   
+                        conteudo += StringUtils.leftPad(bean.getQtdePlayer().toString(), 3, "0");
+
+                        // data vencimento
+                        conteudo += new SimpleDateFormat("dd/MM/yy").format(bean.getDataVencimento());
+
+                        // data vencimento crossover
+                        conteudo += new SimpleDateFormat("dd/MM/yy").format(bean.getDataVencimentoCrossover());
+
+                        // frame inicial
+                        conteudo += StringUtils.leftPad(bean.getFrameInicio().toString(), 8, "0");
+
+                        // frame final
+                        conteudo += StringUtils.leftPad(bean.getFrameFinal().toString(), 8, "0");
+
+                        // msg
+                        String msg = bean.getMsg();
+                        if (msg.length() > 40) {
+                            msg = msg.substring(0, 40);
+                        }
+
+                        if (msg.length() < 40) {
+                            msg = StringUtils.leftPad(msg, 40, " ");
+                        }
+                        conteudo += msg;
+
+                        // sem som
+                        conteudo += bean.getSemSom() ? "sim" : "nao";
+                    }
+                }
+                quebraLinha = "\r\n";
+            }
+
+            DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", list.get(0).getCliente().getIdcliente()).findOne();
+            String destino = dados.getLocalDestinoExp();
+            SmbFile smb = new SmbFile(destino, Utilities.getAuthSmbDefault());
+            SmbFile smb2 = new SmbFile(destino + "musica.exp", Utilities.getAuthSmbDefault());
+
+            if (!smb.exists()) {
+                smb.mkdirs();
+            }
+
+            SmbFileOutputStream sfous = new SmbFileOutputStream(smb2);
+            sfous.write(conteudo.getBytes());
+            sfous.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 }

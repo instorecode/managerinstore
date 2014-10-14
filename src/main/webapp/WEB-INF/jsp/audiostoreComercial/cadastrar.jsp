@@ -45,7 +45,7 @@
                 <div class="col-md-3"> 
                     <div class="form-group">
                         <label>Cliente</label>
-                        <select class="select2 ${isPageCadastro eq true ? 'select_cliente' : ''} tag_sel_cli" name="audiostoreComercialBean.cliente.idcliente" data-rule-required="true" >
+                        <select class="form-control ${isPageCadastro eq true ? 'select_cliente' : ''} tag_sel_cli" name="audiostoreComercialBean.cliente.idcliente" data-rule-required="true" >
                             <c:forEach items="${clienteBeanList}" var="item">
                                 <option value="${item.idcliente}" ${audiostoreComercialBean.cliente.idcliente eq item.idcliente ? 'selected="selected"':''}>${item.nome}</option> 
                             </c:forEach>
@@ -95,7 +95,7 @@
                     <div class="form-group">
                         <label>Categoria</label> 
                         <br />
-                        <select   class="select2" name="audiostoreComercialBean.audiostoreCategoria.codigo" data-rule-required="true" >
+                        <select   class="form-control" name="audiostoreComercialBean.audiostoreCategoria.codigo" data-rule-required="true" >
                             <c:forEach items="${categoriaBeanList}" var="cat">
                                 <option value="${cat.codigo}" ${audiostoreComercialBean.audiostoreCategoria.codigo eq cat.codigo ? 'selected="selected"':''}>${cat.categoria}</option> 
                             </c:forEach>
@@ -107,7 +107,7 @@
                     <div class="form-group">
                         <label>Tipo interprete</label> 
                         <br />
-                        <select class="select2" name="audiostoreComercialBean.tipoInterprete" data-rule-required="true" >
+                        <select class="form-control" name="audiostoreComercialBean.tipoInterprete" data-rule-required="true" >
                             <option value="1" ${audiostoreComercialBean.tipoInterprete eq 1 ? 'selected="selected"' : ''} >Masculino</option> 
                             <option value="2" ${audiostoreComercialBean.tipoInterprete eq 2 ? 'selected="selected"' : ''} >Feminino</option> 
                             <option value="3" ${audiostoreComercialBean.tipoInterprete eq 3 ? 'selected="selected"' : ''} >Grupo</option> 
@@ -129,7 +129,7 @@
                     <div class="form-group">
                         <label>Primária</label>
                         <br />
-                        <select name="audiostoreComercialBean.dependencia1" class="select2"  data-rule-required="true">
+                        <select name="audiostoreComercialBean.dependencia1" class="form-control"  data-rule-required="true">
                             <option value=" ">Nenhuma</option>
                             <c:forEach items="${arquivoMusicaList}" var="musica">
                                 <option value="${musica.caminho}" ${musica.caminho eq audiostoreComercialBean.dependencia1 ? 'selected="selected"' : ''}>${musica.nome}</option>
@@ -141,7 +141,7 @@
                     <div class="form-group">
                         <label>Secundária</label>
                         <br />
-                        <select name="audiostoreComercialBean.dependencia2" class="select2"  data-rule-required="true">
+                        <select name="audiostoreComercialBean.dependencia2" class="form-control"  data-rule-required="true">
                             <option value=" ">Nenhuma</option>
                             <c:forEach items="${arquivoMusicaList}" var="musica">
                                 <option value="${musica.caminho}" ${musica.caminho eq audiostoreComercialBean.dependencia2 ? 'selected="selected"' : ''}>${musica.nome}</option>
@@ -153,7 +153,7 @@
                     <div class="form-group">
                         <label value=" ">Terciária</label>
                         <br />
-                        <select name="audiostoreComercialBean.dependencia3" class="select2"  data-rule-required="true">
+                        <select name="audiostoreComercialBean.dependencia3" class="form-control"  data-rule-required="true">
                             <option value=" ">Nenhuma</option>
                             <c:forEach items="${arquivoMusicaList}" var="musica">
                                 <option value="${musica.caminho}" ${musica.caminho eq audiostoreComercialBean.dependencia3 ? 'selected="selected"' : ''}>${musica.nome}</option>
@@ -223,7 +223,7 @@
                     <div class="form-group">
                         <label>Tocar em dias alternados</label>
                         <br />
-                        <select name="audiostoreComercialBean.diasAlternados" class="select2"  data-rule-required="true">
+                        <select name="audiostoreComercialBean.diasAlternados" class="form-control"  data-rule-required="true">
                             <option value="${true}" ${audiostoreComercialBean.diasAlternados eq true ? 'selected="selected"' : ''}>Sim</option>
                             <option value="${false}" ${audiostoreComercialBean.diasAlternados eq null or audiostoreComercialBean.diasAlternados eq false ? 'selected="selected"' : ''}>Não</option>
                         </select>
@@ -340,7 +340,7 @@
                 <i class="fa fa-save"></i> Salvar
             </button>
         </form>
-                                        
+
         <style type="text/css">
             .tbl tr { cursor: pointer; }
         </style>
@@ -348,8 +348,35 @@
         <script type="text/javascript">
             jQuery(document).ready(function() {
 
+                function carrega_categorias() {
+                    var idcliente = jQuery('[name="audiostoreComercialBean.cliente.idcliente"]').val();
+                    jQuery.ajax({
+                        type: 'POST',
+                        url: '${url}/audiostore-comercial/vld-categ',
+                        data: {idcliente: idcliente},
+                        success: function(json) {
+                            jQuery('[name="audiostoreComercialBean.audiostoreCategoria.codigo"]').html('');
+                            var option = '';
+                            for(i in json) {
+                                var item = json[i];
+                                option += '<option value="'+item.codigo+'">'+item.categoria+'</option>';
+                            }
+                            
+                            jQuery('[name="audiostoreComercialBean.audiostoreCategoria.codigo"]').html(option);
+                        }
+                    });
+                }
+
+                jQuery('[name="audiostoreComercialBean.audiostoreCategoria.codigo"]').on("form-control-open", function() {
+                    carrega_categorias()
+                });
+                
+                jQuery('[name="audiostoreComercialBean.cliente.idcliente"]').on("change", function() {
+                    carrega_categorias()
+                });
+
                 function load_dep() {
-                    
+
                     valor = jQuery(".tag_sel_cli").select2("val");
                     if (null != valor && undefined != valor && "" != valor) {
                         jQuery.ajax({
@@ -360,41 +387,41 @@
                                 jQuery('[name="audiostoreComercialBean.dependencia2"]').html('');
                                 jQuery('[name="audiostoreComercialBean.dependencia3"]').html('');
                                 var option1 = '<option value=" " selected="selected">Nenhuma</option>';
-                                for(i in json) {
+                                for (i in json) {
                                     var item = json[i];
                                     var dp = '${audiostoreComercialBean.dependencia1}';
-                                    
-                                    if(dp === item.arquivo) {
-                                        option1 += '<option value="'+item.arquivo+'" selected="selected">'+item.titulo+'</option>';
+
+                                    if (dp === item.arquivo) {
+                                        option1 += '<option value="' + item.arquivo + '" selected="selected">' + item.titulo + '</option>';
                                     } else {
-                                        option1 += '<option value="'+item.arquivo+'">'+item.titulo+'</option>';
+                                        option1 += '<option value="' + item.arquivo + '">' + item.titulo + '</option>';
                                     }
-                                }   
-                                
+                                }
+
                                 var option2 = '<option value=" " selected="selected">Nenhuma</option>';
-                                for(i in json) {
+                                for (i in json) {
                                     var item = json[i];
                                     var dp = '${audiostoreComercialBean.dependencia2}';
-                                    
-                                    if(dp === item.arquivo) {
-                                        option2 += '<option value="'+item.arquivo+'" selected="selected">'+item.titulo+'</option>';
+
+                                    if (dp === item.arquivo) {
+                                        option2 += '<option value="' + item.arquivo + '" selected="selected">' + item.titulo + '</option>';
                                     } else {
-                                        option2 += '<option value="'+item.arquivo+'">'+item.titulo+'</option>';
+                                        option2 += '<option value="' + item.arquivo + '">' + item.titulo + '</option>';
                                     }
-                                }   
-                                
+                                }
+
                                 var option3 = '<option value=" " selected="selected">Nenhuma</option>';
-                                for(i in json) {
+                                for (i in json) {
                                     var item = json[i];
                                     var dp = '${audiostoreComercialBean.dependencia3}';
-                                    
-                                    if(dp === item.arquivo) {
-                                        option3 += '<option value="'+item.arquivo+'" selected="selected">'+item.titulo+'</option>';
+
+                                    if (dp === item.arquivo) {
+                                        option3 += '<option value="' + item.arquivo + '" selected="selected">' + item.titulo + '</option>';
                                     } else {
-                                        option3 += '<option value="'+item.arquivo+'">'+item.titulo+'</option>';
+                                        option3 += '<option value="' + item.arquivo + '">' + item.titulo + '</option>';
                                     }
-                                }   
-                                
+                                }
+
                                 jQuery('[name="audiostoreComercialBean.dependencia1"]').html(option1).change();
                                 jQuery('[name="audiostoreComercialBean.dependencia2"]').html(option2).change();
                                 jQuery('[name="audiostoreComercialBean.dependencia3"]').html(option3).change();

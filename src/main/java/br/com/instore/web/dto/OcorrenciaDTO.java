@@ -8,13 +8,16 @@ public class OcorrenciaDTO  extends AbstractDTO {
     private String ocorrenciaSolucao;    
     private String ocorrenciaOrigem;
     private String dataResolucao;
-    private String usuarioCriacao;
+    private String usuario;
+    private String idusuario;
     private String ocorrenciaPrioridade;
     private String cliente;
+    private String idcliente;
     private String statusNome;
     private String statusCor;
-    private String statusUsuarioNome;
+    private String idstatus;
     private String prioridade;
+    private String idprioridade;
 
     public String getId() {
         return id;
@@ -72,12 +75,20 @@ public class OcorrenciaDTO  extends AbstractDTO {
         this.dataResolucao = dataResolucao;
     }
 
-    public String getUsuarioCriacao() {
-        return usuarioCriacao;
+    public String getUsuario() {
+        return usuario;
     }
 
-    public void setUsuarioCriacao(String usuarioCriacao) {
-        this.usuarioCriacao = usuarioCriacao;
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
+    }
+
+    public String getIdusuario() {
+        return idusuario;
+    }
+
+    public void setIdusuario(String idusuario) {
+        this.idusuario = idusuario;
     }
 
     public String getOcorrenciaPrioridade() {
@@ -96,20 +107,20 @@ public class OcorrenciaDTO  extends AbstractDTO {
         this.cliente = cliente;
     }
 
+    public String getIdcliente() {
+        return idcliente;
+    }
+
+    public void setIdcliente(String idcliente) {
+        this.idcliente = idcliente;
+    }
+
     public String getStatusNome() {
         return statusNome;
     }
 
     public void setStatusNome(String statusNome) {
         this.statusNome = statusNome;
-    }
-
-    public String getStatusUsuarioNome() {
-        return statusUsuarioNome;
-    }
-
-    public void setStatusUsuarioNome(String statusUsuarioNome) {
-        this.statusUsuarioNome = statusUsuarioNome;
     }
 
     public String getStatusCor() {
@@ -120,6 +131,14 @@ public class OcorrenciaDTO  extends AbstractDTO {
         this.statusCor = statusCor;
     }
 
+    public String getIdstatus() {
+        return idstatus;
+    }
+
+    public void setIdstatus(String idstatus) {
+        this.idstatus = idstatus;
+    }
+
     public String getPrioridade() {
         return prioridade;
     }
@@ -127,5 +146,12 @@ public class OcorrenciaDTO  extends AbstractDTO {
     public void setPrioridade(String prioridade) {
         this.prioridade = prioridade;
     }
-    
+
+    public String getIdprioridade() {
+        return idprioridade;
+    }
+
+    public void setIdprioridade(String idprioridade) {
+        this.idprioridade = idprioridade;
+    }
 }

@@ -117,6 +117,7 @@ jQuery(document).ready(function() {
 
     xtable_load();
     function xtable_load() {
+        msg_fadeIn();
         jQuery('#table').each(function() {
             var table = jQuery(this);
             var url = table.attr('url');
@@ -124,7 +125,7 @@ jQuery(document).ready(function() {
             url = url + "&page=" + table.attr('page');
             url = url + "&rows=" + table.attr('rows');
 
-            jQuery('.block-xtable .loader').show();
+
 
             jQuery("td.filter").each(function() {
                 var input = jQuery(this).children("input");
@@ -138,27 +139,29 @@ jQuery(document).ready(function() {
                     url = url + "&" + input.attr("name") + "=" + input.val();
                 }
             });
-            
+
             var json = null;
             if (jQuery.storage(url) != null) {
-                json = JSON.parse(jQuery.storage(url));                
+                json = JSON.parse(jQuery.storage(url));
             } else {
                 jQuery.ajax({
                     async: false,
-                    type :'GET',
-                    url : url,
-                    dataType:'json',
-                    success: function(json_interno){
+                    type: 'GET',
+                    url: url,
+                    dataType: 'json',
+                    success: function(json_interno) {
                         json = json_interno;
                     }
                 });
 
-                jQuery.storageAdd(url,JSON.stringify(json));
+                jQuery.storageAdd(url, JSON.stringify(json));
             }
-            
 
-            setInterval(function(){jQuery.storageClear()},180000);
-             
+
+            setInterval(function() {
+                jQuery.storageClear()
+            }, 180000);
+
             table.children("tbody").html("");
             table.attr("size", json["size"]);
             table.attr("page", json["page"]);
@@ -284,8 +287,7 @@ jQuery(document).ready(function() {
             jQuery('.block-xtable .loader').hide();
             jQuery(".select2_filter").select2({width: '100%'});
 
-
-
+            msg_fadeOut();
         });
     }
 

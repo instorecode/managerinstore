@@ -63,7 +63,7 @@
                     <div class="form-group">
                         <label>Cliente</label>
                         <br />
-                        <select  class="select2 sel_cliente select_cliente"  data-rule-required="true" name="audiostoreMusicaBean.cliente.idcliente">
+                        <select  class="form-control sel_cliente select_cliente"  data-rule-required="true" name="audiostoreMusicaBean.cliente.idcliente">
                             <option value="" >Selecione um cliente</option>
                             <c:forEach items="${clienteBeanList}" var="cli">
                                 <option value="${cli.idcliente}" ${audiostoreMusicaBean.cliente.idcliente eq cli.idcliente ? 'selected="selected"':''}>${cli.nome}</option>
@@ -80,7 +80,7 @@
                     <div class="form-group">
                         <label>Categoria Primária</label> 
                         <br />
-                        <select  class="select2 sel_cat1" name="audiostoreMusicaBean.categoria1.codigo" data-rule-required="true" >
+                        <select  class="form-control sel_cat1" name="audiostoreMusicaBean.categoria1.codigo" data-rule-required="true" >
                             <c:if test="${not cadastrar}">
                                 <c:forEach items="${categoriasByCliente2}" var="item">
                                     <option value="${item.codigo}"  ${audiostoreMusicaBean.categoria1.codigo  eq item.codigo ? 'selected="selected"' : ''}>${item.categoria}</option>
@@ -103,7 +103,7 @@
                     <div class="form-group">
                         <label>Categoria Secundário</label> 
                         <br />
-                        <select class="select2 sel_cat2" name="audiostoreMusicaBean.categoria2.codigo" data-rule-required="true" >
+                        <select class="form-control sel_cat2" name="audiostoreMusicaBean.categoria2.codigo" data-rule-required="true" >
                             <c:if test="${not cadastrar}">
                                 <c:forEach items="${categoriasByCliente2}" var="item">
                                     <option value="${item.codigo}"  ${audiostoreMusicaBean.categoria2.codigo  eq item.codigo ? 'selected="selected"' : ''}>${item.categoria}</option>

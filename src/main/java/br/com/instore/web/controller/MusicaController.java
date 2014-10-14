@@ -43,23 +43,21 @@ public class MusicaController implements java.io.Serializable {
         this.requestMusicaGeral = requestMusicaGeral;
     }
 
-
-
     @Get
     @Restrict
     @Path("/musica")
-    public void listar(Boolean datajson , int pagina , int qtd, int order, String titulo, String interprete, String velocidade, String anoGravacao, String letra, String categoria) {
+    public void listar(Boolean datajson, int pagina, int qtd, int order, String titulo, String interprete, String velocidade, String anoGravacao, String letra, String categoria) {
 //        if (null != datajson && datajson) {
 //            result.use(Results.json()).withoutRoot().from(requestMusicaGeral.beanList()).recursive().serialize();
 //        }
-        requestMusicaGeral.list(pagina , qtd, order , titulo, interprete, velocidade, anoGravacao, letra, categoria);
-        result.include("order",order);
-        result.include("titulo",titulo);
-        result.include("interprete",interprete);
-        result.include("velocidade",velocidade);
-        result.include("anoGravacao",anoGravacao);
-        result.include("letra",letra);
-        result.include("categoria",categoria);
+        requestMusicaGeral.list(pagina, qtd, order, titulo, interprete, velocidade, anoGravacao, letra, categoria);
+        result.include("order", order);
+        result.include("titulo", titulo);
+        result.include("interprete", interprete);
+        result.include("velocidade", velocidade);
+        result.include("anoGravacao", anoGravacao);
+        result.include("letra", letra);
+        result.include("categoria", categoria);
         result.include("categorias", requestMusicaGeral.categorias());
     }
 
@@ -75,8 +73,8 @@ public class MusicaController implements java.io.Serializable {
     @Post
     @Restrict
     @Path("/musica/cadastrar")
-    public void cadastrar(MusicaGeralBean musicaGeralBean , String categorias) {
-        requestMusicaGeral.salvar(musicaGeralBean , categorias);
+    public void cadastrar(MusicaGeralBean musicaGeralBean, String categorias) {
+        requestMusicaGeral.salvar(musicaGeralBean, categorias);
     }
 
     @Get
@@ -86,7 +84,7 @@ public class MusicaController implements java.io.Serializable {
         result.include("isPageCadastro", false);
         MusicaGeralBean musicaGeralBean = requestMusicaGeral.bean(id);
         result.include("musicaGeralBean", musicaGeralBean);
-        
+
         result.include("categorias", requestMusicaGeral.categorias());
         result.include("gravadoras", requestMusicaGeral.gravadoras());
 
@@ -97,7 +95,7 @@ public class MusicaController implements java.io.Serializable {
             categoriasDaMusica += virgula + requestMusicaGeral.categoria(item.getCategoria()).getNome();
             virgula = ",";
         }
-        
+
         result.include("categoriasDaMusica", categoriasDaMusica);
     }
 
@@ -105,7 +103,7 @@ public class MusicaController implements java.io.Serializable {
     @Restrict
     @Path("/musica/atualizar/{id}")
     public void cadastrar(Integer id, MusicaGeralBean musicaGeralBean, String categorias) {
-        requestMusicaGeral.salvar(musicaGeralBean , categorias);
+        requestMusicaGeral.salvar(musicaGeralBean, categorias);
     }
 
     @Get
@@ -121,32 +119,38 @@ public class MusicaController implements java.io.Serializable {
     public void remover(Integer id, String param) {
         requestMusicaGeral.remover(id);
     }
-    
+
     @Post
     @Path("/musica/sinc")
-    public void sinc(String dir, String usuario , String senha) {
-        requestMusicaGeral.sinc(dir , usuario , senha);
+    public void sinc(String dir, String usuario, String senha) {
+        requestMusicaGeral.sinc(dir, usuario, senha);
     }
-    
+
     @Get
     @NaoDeslogar
     @Path("/musica/stream/{id}")
     public InputStreamDownload stream(Integer id) {
-        try { 
+        try {
             String caminho = requestMusicaGeral.bean(id).getArquivo();
             SmbFile smbDir = new SmbFile(caminho, Utilities.getAuthSmbDefault());
-            SmbFileInputStream fileInputStream = new SmbFileInputStream(smbDir);    
-            if(smbDir.exists()) {
+            SmbFileInputStream fileInputStream = new SmbFileInputStream(smbDir);
+            if (smbDir.exists()) {
                 return new InputStreamDownload(fileInputStream, smbDir.getContentType(), smbDir.getName());
             } else {
-                return new InputStreamDownload( new ByteArrayInputStream("Arquivo não encontrado".getBytes()), "", "text.txt");
+                return new InputStreamDownload(new ByteArrayInputStream("Arquivo não encontrado".getBytes()), "", "text.txt");
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            return new InputStreamDownload( new ByteArrayInputStream("Arquivo não encontrado".getBytes()), "", "text.txt");
+            return new InputStreamDownload(new ByteArrayInputStream("Arquivo não encontrado".getBytes()), "", "text.txt");
         } catch (IOException e) {
             e.printStackTrace();
-            return new InputStreamDownload( new ByteArrayInputStream("Arquivo não encontrado".getBytes()), "", "text.txt");
+            return new InputStreamDownload(new ByteArrayInputStream("Arquivo não encontrado".getBytes()), "", "text.txt");
         }
+    }
+
+    @Post
+    @Path("/musica/vld-msc")
+    public void validarMsc(Integer[] id_list, Integer idcliente) {
+        requestMusicaGeral.validarMsc(id_list,idcliente); 
     }
 }

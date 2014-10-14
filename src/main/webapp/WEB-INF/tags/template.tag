@@ -128,10 +128,16 @@
                         }
                     };
 
+                    if (null != jQuery.storage("matriz_selecionada_nome")
+                            && undefined != jQuery.storage("matriz_selecionada_nome")) {
+                        jQuery('.cli_nom_red').text(jQuery.storage("matriz_selecionada_nome"));
+                    }
+                    
                     jQuery('.cliente_selecionado').on('click', function() {
                         self = jQuery(this);
                         jQuery.storageAdd("matriz_selecionada", self.data('id'));
-
+                        jQuery.storageAdd("matriz_selecionada_nome", self.data('clienteNome'));
+                        jQuery('.cli_nom_red').text(self.data('clienteNome'));
                         if (self.val() == '0') {
                             jQuery.storageClear();
                         } else {
@@ -432,7 +438,9 @@
                                     <li><a class="btn_sair" href="${url}/sair">Sair</a></li>
 
                                     <li class="button dropdown">
-                                        <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-building"></i><span class="bubble">${atalhoClienteList.size()}</span></a> 
+                                        <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
+                                            <i class="fa fa-building"></i> 
+                                            <span class="bubble cli_nom_red">${atalhoClienteList.size()} Clientes</span></a> 
                                         <ul class="dropdown-menu">
                                             <li>
                                                 <div class="nano nscroller">
@@ -440,7 +448,7 @@
                                                         <ul>
                                                             <c:forEach items="${atalhoClienteList}" var="item">
                                                                 <li> 
-                                                                    <a class="cliente_selecionado" href="#cliente_selecionado=${item.idcliente}" data-id="${item.idcliente}"><i class="fa fa-building info"></i><b>Cliente</b> ${item.nome} <span class="date">${item.matriz ? 'Matriz' : 'Filial'}</span></a>
+                                                                    <a data-cliente-nome="${item.nome}" class="cliente_selecionado" href="#cliente_selecionado=${item.idcliente}" data-id="${item.idcliente}"><i class="fa fa-building info"></i><b>Cliente</b> ${item.nome} <span class="date">${item.matriz ? 'Matriz' : 'Filial'}</span></a>
                                                                 </li>
                                                             </c:forEach>
                                                         </ul>

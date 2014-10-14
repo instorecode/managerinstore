@@ -12,6 +12,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import jcifs.smb.NtlmPasswordAuthentication;
@@ -28,7 +29,30 @@ import org.xml.sax.helpers.DefaultHandler;
 public class Utilities {
 
     public static void main(String[] args) {
-        System.out.println("ola mundo");
+
+    }
+    
+    public static String removeLetrasEspeciais(String text) {
+        String alfStrEsp = "áéíóúãõäëïöüàèìòùâêîôûçåæñøßÿ&¢©µ¶€£®§¥°ºª¨´`^~*#";
+        alfStrEsp += alfStrEsp.toUpperCase();
+        
+        String alfStr = "aeiouaoaeiouaeiouaeioucaanobyeccupefrsy00a";
+        alfStr += alfStr.toUpperCase();
+        
+        List<String> alf = Arrays.asList(alfStr.split(""));
+        List<String> alfEsp = Arrays.asList(alfStrEsp.split(""));
+        
+        for (int i =0; i<alfEsp.size(); i++) {
+            String chr = alfEsp.get(i);
+            if(text.contains(chr)) {
+                if(i < alf.size()) {
+                    text = text.replace(chr, alf.get(i));
+                } else {
+                    text = text.replace(chr, "");
+                }
+            }
+        }
+        return text;
     }
 
     public static String leftPad(Integer s) {
@@ -185,4 +209,7 @@ public class Utilities {
         }
         return "smb://" + url;
     }
+    
+    
+    
 }
