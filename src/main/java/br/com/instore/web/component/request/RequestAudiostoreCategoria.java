@@ -4,6 +4,8 @@ import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.observer.download.InputStreamDownload;
 import br.com.caelum.vraptor.observer.upload.UploadedFile;
 import br.com.caelum.vraptor.view.Results;
+import br.com.instore.core.orm.DataValidator;
+import br.com.instore.core.orm.DataValidatorException;
 import br.com.instore.core.orm.Query;
 import br.com.instore.core.orm.bean.AudiostoreCategoriaBean;
 import br.com.instore.web.component.session.SessionRepository;
@@ -201,10 +203,10 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
 
         return dto;
     }
-
+    
     public void salvar(AudiostoreCategoriaBean audiostoreCategoriaBean, String tempo) {
         try {
-
+           
             if (audiostoreCategoriaBean.getDataInicio().after(audiostoreCategoriaBean.getDataFinal())) {
                 result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "A data de inicio deve ser menor que a data de termino da categoria!")).recursive().serialize();
                 return;
@@ -224,7 +226,9 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
 
             repository.setUsuario(sessionUsuario.getUsuarioBean());
             audiostoreCategoriaBean.setTempo(new SimpleDateFormat("HH:mm:ss").parse(tempo));
-
+            
+            DataValidator.beanValidator(audiostoreCategoriaBean);
+            
             if (null != audiostoreCategoriaBean && null != audiostoreCategoriaBean.getIdaudiostoreCategoria() && audiostoreCategoriaBean.getIdaudiostoreCategoria() > 0) {
                 repository.save(repository.marge(audiostoreCategoriaBean));
             } else {
@@ -233,6 +237,8 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
 
             repository.finalize();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Dados salvos com sucesso!")).recursive().serialize();
+        } catch (DataValidatorException e) {            
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, e.getMessage())).recursive().serialize();
         } catch (Exception e) {
             e.printStackTrace();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel salvar os dados!")).recursive().serialize();

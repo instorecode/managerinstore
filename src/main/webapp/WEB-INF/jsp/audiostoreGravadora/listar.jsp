@@ -160,18 +160,18 @@
                 </ul>
                 <button type="button" class="btn btn-default btn-flat " id="botaoCsv" ><i class="fa fa-file-excel-o"></i></button>
             </div>
-
+           
             <button type="button" class="btn btn-default btn-flat btn_export" style="display: none;"><i class="fa fa-upload"></i> Exportar arquivo </button>
 
-            <div class="btn-group cliente">                
-                <select  class="form-control select_cliente" data-rule-required="true" >
-                    <c:forEach items="${clienteBeanList}" var="cliente">
+            <div class="btn-group cliente" style="display: none;">              
+                <select  class="btn form-control select_cliente " data-rule-required="true" >
+                    <c:forEach  items="${clienteBeanList}" var="cliente">
                         <option value="${cliente.idcliente}" >${cliente.nome}</option>
                     </c:forEach>
                 </select>
             </div>
 
-            <div class="btn-group">
+            <div class="btn-group ">
                 <button class="btn btn-default btn-flat _prev"> <i class="fa fa-angle-double-left"></i> </button>
                 <button class="btn btn-default btn-flat prev"> <i class="fa fa-angle-left"></i> </button>
                 <button class="btn btn-default btn-flat next"> <i class="fa fa-angle-right"></i> </button>
@@ -203,11 +203,13 @@
 
                 jQuery(document).on("selected", ".row_data", function(evt, item) {
                     jQuery('.btn_export').show();
+                    jQuery('.cliente').show();
                 });
 
                 jQuery(document).on("unselected", ".row_data", function(evt, item) {
                     if (countRowsSelected() == 0) {
                         jQuery('.btn_export').hide();
+                        jQuery('.cliente').hide();
                     }
                 });
 
