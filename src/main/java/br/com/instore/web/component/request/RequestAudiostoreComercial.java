@@ -193,6 +193,11 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
         return audiostoreCategoriaBeanList;
     }
 
+    public List<AudiostoreCategoriaBean> categoriaBeanList(Integer id) {
+        List<AudiostoreCategoriaBean> audiostoreCategoriaBeanList = repository.query(AudiostoreCategoriaBean.class).eq("cliente.idcliente", id).findAll();
+        return audiostoreCategoriaBeanList;
+    }
+
     public List<AudiostoreComercialShBean> audiostoreComercialShBeanList() {
         List<AudiostoreComercialShBean> audiostoreComercialShBeanList = repository.query(AudiostoreComercialShBean.class).findAll();
         return audiostoreComercialShBeanList;
@@ -203,12 +208,12 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
     }
 
     public List<AudiostoreComercialShBean> shs(Integer id) {
-        return repository.query(AudiostoreComercialShBean.class).eq(AudiostoreComercialSh.COMERCIAL_ID, id).findAll();
+        return repository.query(AudiostoreComercialShBean.class).eq(AudiostoreComercialSh.COMERCIAL_ID, id).orderAsc("horario").findAll();
     }
 
     public void salvar(AudiostoreComercialBean bean, String tempoTotalString, AudiostoreComercialShBean[] sh, UploadedFile arquivo) {
         DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", bean.getCliente().getIdcliente()).findOne();
-
+        bean.setInterromperMusicaTocada(Boolean.FALSE);
         try {
             Date tempoTotal = new SimpleDateFormat("HH:mm").parse(tempoTotalString);
             bean.setTempoTotal(tempoTotal);
@@ -275,34 +280,51 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
 
     public void salvar2(AudiostoreComercialBean bean, String tempoTotalString, AudiostoreComercialShBean[] sh) {
         try {
-            Date tempoTotal = new SimpleDateFormat("HH:mm:ss").parse(tempoTotalString);
-            bean.setTempoTotal(tempoTotal);
-            bean.setQtdePlayer(bean.getQtde());
-            bean.setData(new Date());
-            bean.setMsg("");
-            bean.setSemSom(Boolean.FALSE);
-            bean.setRandom(10);
+            String query = "UPDATE audiostore_comercial SET categoria = ? , arquivo = ? , titulo = ? , tipo_interprete = ? , periodo_inicial = ? , periodo_final = ? , tipo_horario = ? , dias_semana = ? , dias_alternados = ? , data = ? , ultima_execucao = ?  , tempo_total = ? , random = ? , qtde_player = ? , qtde = ? , data_vencimento = ? , dependencia1 = ? , dependencia2 = ? , dependencia3 = ? , frame_inicio = ? , frame_final = ? , msg = ? , sem_som = ? , cliente = ? where id = " + bean.getId();
+            query = query.replaceFirst("\\?", bean.getAudiostoreCategoria().getCodigo().toString()); // categoria
+            query = query.replaceFirst("\\?", "'" + bean.getArquivo() + "'"); // arquivo
+            query = query.replaceFirst("\\?", "'" + bean.getTitulo() + "'"); // titulo
+            query = query.replaceFirst("\\?", "" + bean.getTipoInterprete()); // tipo_interprete
+            query = query.replaceFirst("\\?", "'" + new SimpleDateFormat("yyyy-MM-dd").format(bean.getPeriodoInicial()) + "'"); // periodo_inicial
+            query = query.replaceFirst("\\?", "'" + new SimpleDateFormat("yyyy-MM-dd").format(bean.getPeriodoFinal()) + "'"); // periodo_final
+            query = query.replaceFirst("\\?", "" + bean.getTipoHorario()); // tipo_horario
+            query = query.replaceFirst("\\?", "" + bean.getDiasSemana()); // dias_semana
+            query = query.replaceFirst("\\?", bean.getDiasAlternados().toString()); // dias_alternados
+            query = query.replaceFirst("\\?", "'" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + "'"); // data
+            query = query.replaceFirst("\\?", "'" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(bean.getUltimaExecucao()) + "'"); // ultima_execucao
+            query = query.replaceFirst("\\?", "'" + tempoTotalString + "'"); // tempo_total
+            query = query.replaceFirst("\\?", "0"); // random
+            query = query.replaceFirst("\\?", bean.getQtde().toString()); // qtde_player
+            query = query.replaceFirst("\\?", bean.getQtde().toString()); // qtde
+            query = query.replaceFirst("\\?", "'" + new SimpleDateFormat("yyyy-MM-dd").format(bean.getDataVencimento()) + "'"); // data_vencimento
+            query = query.replaceFirst("\\?", "'" + bean.getDependencia1() + "'"); // dependencia1
+            query = query.replaceFirst("\\?", "'" + bean.getDependencia2() + "'"); // dependencia2
+            query = query.replaceFirst("\\?", "'" + bean.getDependencia3() + "'"); // dependencia3
+            query = query.replaceFirst("\\?", "'0'"); // frame_inicio
+            query = query.replaceFirst("\\?", "'0'"); // frame_final
+            query = query.replaceFirst("\\?", "''"); // msg
+            query = query.replaceFirst("\\?", "'0'"); // sem_som
+            query = query.replaceFirst("\\?", "'" + bean.getCliente().getIdcliente().toString() + "'"); // cliente
+            System.out.println("-------------------------------------------------------");
+            System.out.println(query);
+            System.out.println("-------------------------------------------------------");
+            repository.query(query).executeSQLCommand2();
 
-            repository.setUsuario(sessionUsuario.getUsuarioBean());
+            query = "DELETE FROM audiostore_comercial_sh WHERE comercial = " + bean.getId();
+            repository.query(query).executeSQLCommand2();
 
-            bean.setFrameInicio(0);
-            bean.setFrameFinal(0);
 
-            if (bean != null && bean.getId() != null && bean.getId() > 0) {
-                repository.save(repository.marge(bean));
-            } else {
-                repository.save(bean);
-            }
-
-            String query = "delete from audiostore_comercial_sh where comercial = " + bean.getId();
-            repository.query(query).executeSQLCommand();
-
-            for (AudiostoreComercialShBean item : sh) {
-                if (item != null) {
-                    item.setComercial(bean);
-                    repository.save(item);
+            for (AudiostoreComercialShBean bbean : sh) {
+                if (null != bbean) {
+                    query = "INSERT INTO audiostore_comercial_sh VALUES(null, ?,?,?,?)";
+                    query = query.replaceFirst("\\?", bean.getId().toString()); // comercial
+                    query = query.replaceFirst("\\?", "'" + bbean.getSemana() + "'"); // semana
+                    query = query.replaceFirst("\\?", "'" + new SimpleDateFormat("HH:mm:ss").format(bbean.getHorario()) + "'"); // horario
+                    query = query.replaceFirst("\\?", bbean.getInterromperMusicaTocada() ? "1" : "0"); // interromper_musica_tocada
+                    repository.query(query).executeSQLCommand2();
                 }
             }
+
 
             repository.finalize();
             result.redirectTo(AudiostoreComercialController.class).listar(null, null, null, null, null, null, null, null, null);
@@ -366,7 +388,7 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
             for (AudiostoreComercialBean bean : list) {
                 if (bean != null) {
                     conteudo += breakLine;
-                    breakLine = "\r\n";
+                    breakLine = Utilities.quebrarLinhaComHexa();
 
                     String arquivo = bean.getArquivo();
                     if (arquivo.length() < 30) {
@@ -440,83 +462,50 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
                     conteudo += new SimpleDateFormat("dd/MM/yy").format(bean.getPeriodoInicial());
                     conteudo += new SimpleDateFormat("dd/MM/yy").format(bean.getPeriodoFinal());
                     int index = 1;
-                    for (AudiostoreComercialShBean item : shs(bean.getId())) {
-                        String semana = item.getSemana();
-                        String hora = new SimpleDateFormat("HH:mm").format(item.getHorario());
-                        if (semana.length() < 7) {
-                            semana = StringUtils.leftPad(semana, 7, " ");
-                        } else {
-                            if (semana.length() > 7) {
-                                semana = semana.substring(0, 7);
-                            }
+
+                    Date horaAux = null;
+                    String composicao = "";
+                    Integer qtdDias = 0;
+
+                    String queryHoraSemana = "";
+                    queryHoraSemana = "select hora, concat(if(dia like '%segunda%' , if(n_ou_x = 0 , 'X','N') , ' '),\n"
+                            + "					if(dia like '%terca%' , if(n_ou_x = 0 , 'X','N') , ' '),\n"
+                            + "					if(dia like '%quarta%' , if(n_ou_x = 0 , 'X','N') , ' '),\n"
+                            + "					if(dia like '%quinta%' , if(n_ou_x = 0 , 'X','N') , ' '),\n"
+                            + "					if(dia like '%sexta%' , if(n_ou_x = 0 , 'X','N') , ' '),\n"
+                            + "					if(dia like '%sabado%' , if(n_ou_x = 0 , 'X','N') , ' '),\n"
+                            + "					if(dia like '%domingo%' , if(n_ou_x = 0 , 'X','N') , ' ')) as dia from (\n"
+                            + "	select \n"
+                            + "		date_format(horario, '%H:%i') as hora,\n"
+                            + "		group_concat(semana separator '') as dia,\n"
+                            + "		group_concat(distinct interromper_musica_tocada separator '') as n_ou_x\n"
+                            + "	from\n"
+                            + "		audiostore_comercial_sh\n"
+                            + "	where comercial = " + bean.getId() + "\n"
+                            + "	\n"
+                            + "	group by hora\n"
+                            + "	order by semana != 'segunda' , semana != 'terca' , semana != 'quarta' , semana != 'quinta' , semana != 'sexta' , semana != 'sabado' , semana != 'domingo'\n"
+                            + ") as t LIMIT 24";
+
+                    final List<String> horasDiasList = new ArrayList<String>();
+
+                    repository.query(queryHoraSemana).executeSQL(new Each() {
+                        public String hora;
+                        public String dia;
+
+                        @Override
+                        public void each() {
+                            horasDiasList.add(hora + dia);
                         }
-                        if (bean.getDiasAlternados()) {
-                            if ("segunda".equals(item.getSemana())) {
-                                semana = "N      ";
-                            }
-
-                            if ("terca".equals(item.getSemana())) {
-                                semana = " N     ";
-                            }
-
-                            if ("quarta".equals(item.getSemana())) {
-                                semana = "  N    ";
-                            }
-
-                            if ("quinta".equals(item.getSemana())) {
-                                semana = "   N   ";
-                            }
-
-                            if ("sexta".equals(item.getSemana())) {
-                                semana = "    N  ";
-                            }
-
-                            if ("sabado".equals(item.getSemana())) {
-                                semana = "     N ";
-                            }
-
-                            if ("domingo".equals(item.getSemana())) {
-                                semana = "      N";
-                            }
-                        } else {
-                            if ("segunda".equals(item.getSemana())) {
-                                semana = "X      ";
-                            }
-
-                            if ("terca".equals(item.getSemana())) {
-                                semana = " X     ";
-                            }
-
-                            if ("quarta".equals(item.getSemana())) {
-                                semana = "  X    ";
-                            }
-
-                            if ("quinta".equals(item.getSemana())) {
-                                semana = "   X   ";
-                            }
-
-                            if ("sexta".equals(item.getSemana())) {
-                                semana = "    X  ";
-                            }
-
-                            if ("sabado".equals(item.getSemana())) {
-                                semana = "     X ";
-                            }
-
-                            if ("domingo".equals(item.getSemana())) {
-                                semana = "      X";
-                            }
-                        }
+                    });;
 
 
-                        conteudo += hora;
-                        conteudo += semana;
-
-                        index++;
+                    for (String str : horasDiasList) {
+                        conteudo += str;
                     }
 
-                    if (index < 24) {
-                        for (int i = index; i <= 24; i++) {
+                    if (horasDiasList.size() < 24) {
+                        for (int i = horasDiasList.size(); i < 24; i++) {
                             conteudo += "00:00";
                             conteudo += "       ";
                         }
@@ -532,11 +521,11 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
                     if ("".equals(dep1.trim())) {
                         dep1 = "                       Nenhuma";
                     }
-                    
+
                     if ("".equals(dep2.trim())) {
                         dep2 = "                       Nenhuma";
                     }
-                    
+
                     if ("".equals(dep3.trim())) {
                         dep3 = "                       Nenhuma";
                     }
@@ -551,9 +540,9 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
 
                 }
             }
-            
-            conteudo = Utilities.removeLetrasEspeciais(conteudo);
-            
+
+            conteudo = Utilities.formatarHexExp(conteudo);
+
             DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", list.get(0).getCliente().getIdcliente()).findOne();
             String destino = dados.getLocalDestinoExp();
             SmbFile smb = new SmbFile(destino, Utilities.getAuthSmbDefault());
@@ -661,8 +650,8 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
 
         result.use(Results.json()).withoutRoot().from(new AjaxResult(ajaxResultBool, ajaxResultStr)).recursive().serialize();
     }
-    
-    public void validarCateg(Integer idcliente) {        
+
+    public void validarCateg(Integer idcliente) {
         result.use(Results.json()).withoutRoot().from(repository.query(AudiostoreCategoriaBean.class).eq("cliente.idcliente", idcliente).eq("tipo", new Short("2")).findAll()).recursive().serialize();
     }
 }

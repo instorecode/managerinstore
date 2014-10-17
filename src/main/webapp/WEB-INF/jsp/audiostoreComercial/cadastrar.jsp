@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="instore" tagdir="/WEB-INF/tags/" %> 
 <%@ taglib prefix="cf" uri="CustomFunctions" %> 
+
 <instore:template isGrid="false">
     <jsp:attribute name="submenu">
         <a href="${url}/audiostore-comercial" class="btn btn-default"> <i class="fa fa-hand-o-left"></i> Comerciais </a>
@@ -252,18 +253,20 @@
                                         <c:forEach items="${shs}" var="sh" varStatus="vs">
                                             <c:if test="${__HORA__ eq sh.horario}">
                                                 ${sh.semana} ,
-                                            <input type="hidden" name="sh[${indx}].semana" value="${sh.semana}" />
-                                            <input type="hidden" name="sh[${indx}].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ${cf:dateFormat(sh.horario, "HH:mm")}" />
+                                            <input class="hidden_input_sh" type="hidden" name="sh[${indx}].semana" value="${sh.semana}" />
+                                            <input class="hidden_input_sh" type="hidden" name="sh[${indx}].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ${cf:dateFormat(sh.horario, "HH:mm")}:00" />
+                                            <input class="hidden_input_sh" type="hidden" name="sh[${indx}].interromperMusicaTocada" value="${sh.interromperMusicaTocada}" />
                                         </c:if>
 
-                                        <c:if test="${__HORA__ ne sh.horario}">
+                                        <c:if test="${__HORA__ ne sh.horario}"> 
                                             </tr>
                                             </td>
                                             <tr>
                                                 <td>${cf:dateFormat(sh.horario, "HH:mm")}</td> 
                                                 <td>${sh.semana} ,
-                                                    <input type="hidden" name="sh[${indx}].semana" value="${sh.semana}" />
-                                                    <input type="hidden" name="sh[${indx}].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ${cf:dateFormat(sh.horario, "HH:mm")}" />
+                                                    <input class="hidden_input_sh" type="hidden" name="sh[${indx}].semana" value="${sh.semana}" />
+                                                    <input class="hidden_input_sh" type="hidden" name="sh[${indx}].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ${cf:dateFormat(sh.horario, "HH:mm")}:00" />
+                                                    <input class="hidden_input_sh" type="hidden" name="sh[${indx}].interromperMusicaTocada" value="${sh.interromperMusicaTocada}" />
                                                     <c:set scope="session"  var="__HORA__" value="${sh.horario}"></c:set>
                                                 </c:if>
 
@@ -290,6 +293,8 @@
                                 <br />
                                 <label> <input type="checkbox" name="domingo" value="7" class="icheck"/>&nbsp;Domingo&nbsp;&nbsp;</label> 
                                 <label> <input type="checkbox" name="todos" value="0" class="icheck"/>&nbsp;Marcar Todos</label> 
+                                <br />
+                                <label> <input type="checkbox" name="interromperMusicaTocada" value="0" class="icheck"/>&nbsp;Interromper música tocada </label> 
                             </div>
                             <div class="col-xs-3">
                                 <div class="col-xs-12">
@@ -346,10 +351,15 @@
         </style>
 
         <script type="text/javascript">
-            jQuery(document).ready(function() {
-
+            jQuery(document).ready(function() { 
+                carrega_categorias();
+                
+                if (null != jQuery.storage("matriz_selecionada") && undefined != jQuery.storage("matriz_selecionada")) {
+                    carrega_categorias();
+                }
+            
                 function carrega_categorias() {
-                    var idcliente = jQuery('[name="audiostoreComercialBean.cliente.idcliente"]').val();
+                    var idcliente = jQuery(".tag_sel_cli").val();
                     jQuery.ajax({
                         type: 'POST',
                         url: '${url}/audiostore-comercial/vld-categ',
@@ -377,7 +387,7 @@
 
                 function load_dep() {
 
-                    valor = jQuery(".tag_sel_cli").select2("val");
+                    valor = jQuery(".tag_sel_cli").val();
                     if (null != valor && undefined != valor && "" != valor) {
                         jQuery.ajax({
                             url: "${url}/audiostore-comercial/dep/" + valor + "/${audiostoreComercialBean.id}",
@@ -427,7 +437,7 @@
                                 jQuery('[name="audiostoreComercialBean.dependencia3"]').html(option3).change();
                             },
                             error: function(err) {
-                                console.err("ERRO AO CONSULTAR AS DEPENDENCIAS DO CLIENTE");
+                                console.log("ERRO AO CONSULTAR AS DEPENDENCIAS DO CLIENTE");
                                 console.log(err);
                             }
                         });
@@ -503,6 +513,7 @@
                     var sabado = jQuery('[name="sabado"]');
                     var domingo = jQuery('[name="domingo"]');
                     var todos = jQuery('[name="todos"]');
+                    var interromperMusicaTocada = jQuery('[name="interromperMusicaTocada"]').is(':checked');
 
                     var hora = jQuery('[name="hora"]');
 
@@ -539,7 +550,9 @@
                         });
 
                         i = i / 2;
-
+                        i = Math.floor( i.toFixed(1) );
+                        i = parseInt(jQuery('.hidden_input_sh').size()) / 3;
+                        
                         inputsHiddens += '<tr> ';
                         inputsHiddens += ' <td>' + hora.val() + '</td>';
                         inputsHiddens += '<td> ';
@@ -548,8 +561,10 @@
                             temDiasSelecionados = true;
                             inputsHiddens += connector + 'Segunda';
                             connector = ', ';
-                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="segunda" />';
-                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + ':00" />';
+                            
+                            inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].interromperMusicaTocada" value="'+interromperMusicaTocada+'" />';
+                            inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].semana" value="segunda" />';
+                            inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + ':00" />';
                             i++;
                         }
 
@@ -559,8 +574,9 @@
                             temDiasSelecionados = true;
                             inputsHiddens += connector + 'Terça';
                             connector = ', ';
-                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="terca" />';
-                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + ':00" />';
+                            inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].interromperMusicaTocada" value="'+interromperMusicaTocada+'" />';
+                            inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].semana" value="terca" />';
+                            inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + ':00" />';
                             i++;
                         }
 
@@ -568,8 +584,9 @@
                             temDiasSelecionados = true;
                             inputsHiddens += connector + 'Quarta';
                             connector = ', ';
-                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="quarta" />';
-                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + ':00" />';
+                            inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].interromperMusicaTocada" value="'+interromperMusicaTocada+'" />';
+                            inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].semana" value="quarta" />';
+                            inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + ':00" />';
                             i++;
                         }
 
@@ -577,8 +594,9 @@
                             temDiasSelecionados = true;
                             inputsHiddens += connector + 'Quinta';
                             connector = ', ';
-                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="quinta" />';
-                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + ':00" />';
+                            inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].interromperMusicaTocada" value="'+interromperMusicaTocada+'" />';
+                            inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].semana" value="quinta" />';
+                            inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + ':00" />';
                             i++;
                         }
 
@@ -586,8 +604,9 @@
                             temDiasSelecionados = true;
                             inputsHiddens += connector + 'Sexta';
                             connector = ', ';
-                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="sexta" />';
-                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + ':00" />';
+                            inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].interromperMusicaTocada" value="'+interromperMusicaTocada+'" />';
+                            inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].semana" value="sexta" />';
+                            inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + ':00" />';
                             i++;
                         }
 
@@ -595,8 +614,9 @@
                             temDiasSelecionados = true;
                             inputsHiddens += connector + 'Sábado';
                             connector = ', ';
-                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="sabado" />';
-                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + ':00" />';
+                            inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].interromperMusicaTocada" value="'+interromperMusicaTocada+'" />';
+                            inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].semana" value="sabado" />';
+                            inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + ':00" />';
                             i++;
                         }
 
@@ -604,8 +624,9 @@
                             temDiasSelecionados = true;
                             inputsHiddens += connector + 'Domingo';
                             connector = ', ';
-                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="domingo" />';
-                            inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + ':00" />';
+                            inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].interromperMusicaTocada" value="'+interromperMusicaTocada+'" />';
+                            inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].semana" value="domingo" />';
+                            inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + hora.val() + ':00" />';
                             i++;
                         }
                         inputsHiddens += '</td> ';
@@ -683,6 +704,7 @@
                     var sabado = jQuery('[name="sabado"]');
                     var domingo = jQuery('[name="domingo"]');
                     var todos = jQuery('[name="todos"]');
+                    var interromperMusicaTocada = jQuery('[name="interromperMusicaTocada"]').is(':checked');
 
                     var hora = jQuery('[name="hora"]');
                     var hora_final = jQuery('[name="hora_final"]');
@@ -754,6 +776,7 @@
                                 });
 
                                 i = i / 2;
+                                i = parseInt(jQuery('.hidden_input_sh').size()) / 3;
 
                                 inputsHiddens += '<tr> ';
                                 inputsHiddens += ' <td>' + horas_strings + '</td>';
@@ -763,8 +786,9 @@
                                     temDiasSelecionados = true;
                                     inputsHiddens += connector + 'Segunda';
                                     connector = ', ';
-                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="segunda" />';
-                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + ':00" />';
+                                    inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].interromperMusicaTocada" value="'+interromperMusicaTocada+'" />';
+                                    inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].semana" value="segunda" />';
+                                    inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + ':00" />';
                                     i++;
                                 }
 
@@ -774,8 +798,9 @@
                                     temDiasSelecionados = true;
                                     inputsHiddens += connector + 'Terça';
                                     connector = ', ';
-                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="terca" />';
-                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + ':00" />';
+                                    inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].interromperMusicaTocada" value="'+interromperMusicaTocada+'" />';
+                                    inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].semana" value="terca" />';
+                                    inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + ':00" />';
                                     i++;
                                 }
 
@@ -783,8 +808,9 @@
                                     temDiasSelecionados = true;
                                     inputsHiddens += connector + 'Quarta';
                                     connector = ', ';
-                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="quarta" />';
-                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + ':00" />';
+                                    inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].interromperMusicaTocada" value="'+interromperMusicaTocada+'" />';
+                                    inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].semana" value="quarta" />';
+                                    inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + ':00" />';
                                     i++;
                                 }
 
@@ -792,8 +818,9 @@
                                     temDiasSelecionados = true;
                                     inputsHiddens += connector + 'Quinta';
                                     connector = ', ';
-                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="quinta" />';
-                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + ':00" />';
+                                    inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].interromperMusicaTocada" value="'+interromperMusicaTocada+'" />';
+                                    inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].semana" value="quinta" />';
+                                    inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + ':00" />';
                                     i++;
                                 }
 
@@ -801,8 +828,9 @@
                                     temDiasSelecionados = true;
                                     inputsHiddens += connector + 'Sexta';
                                     connector = ', ';
-                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="sexta" />';
-                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + ':00" />';
+                                    inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].interromperMusicaTocada" value="'+interromperMusicaTocada+'" />';
+                                    inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].semana" value="sexta" />';
+                                    inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + ':00" />';
                                     i++;
                                 }
 
@@ -810,8 +838,9 @@
                                     temDiasSelecionados = true;
                                     inputsHiddens += connector + 'Sábado';
                                     connector = ', ';
-                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="sabado" />';
-                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + ':00" />';
+                                    inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].interromperMusicaTocada" value="'+interromperMusicaTocada+'" />';
+                                    inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].semana" value="sabado" />';
+                                    inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + ':00" />';
                                     i++;
                                 }
 
@@ -819,8 +848,9 @@
                                     temDiasSelecionados = true;
                                     inputsHiddens += connector + 'Domingo';
                                     connector = ', ';
-                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].semana" value="domingo" />';
-                                    inputsHiddens += '<input type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + ':00" />';
+                                    inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].interromperMusicaTocada" value="'+interromperMusicaTocada+'" />';
+                                    inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].semana" value="domingo" />';
+                                    inputsHiddens += '<input class="hidden_input_sh" type="hidden" name="sh[' + i + '].horario" value="${cf:dateCurrent("dd/MM/yyyy")} ' + horas_strings + ':00" />';
                                     i++;
                                 }
                                 inputsHiddens += '</td> ';

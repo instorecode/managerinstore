@@ -90,7 +90,7 @@ public class OcorrenciaController implements java.io.Serializable {
         result.include("ocorrenciaSolucaoList", requestOcorrencia.ocorrenciaSolucaoList());
         result.include("ocorrenciaUsuario", requestOcorrencia.ocorrenciaUsuario(id));
         result.include("usuarioList", requestOcorrencia.usuarioList());
-        result.include("ocorrenciaBean", requestOcorrencia.dto(id));
+        result.include("ocorrenciaBean", requestOcorrencia.bean(id));
     }
 
     @Post
@@ -181,5 +181,12 @@ public class OcorrenciaController implements java.io.Serializable {
     @Path("/minha-ocorrencia/remover/{id}")
     public void remover2(Integer id, String param) {
         requestOcorrencia.remover(id);
+    }
+    
+    
+    @Post
+    @Path("/ocorrencia/load-cliente")
+    public void loadCliente(Integer idcliente) {
+        requestOcorrencia.loadCliente(idcliente);
     }
 }

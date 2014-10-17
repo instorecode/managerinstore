@@ -7,6 +7,7 @@ import br.com.caelum.vraptor.Post;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.bean.ConfigAppBean;
+import br.com.instore.core.orm.bean.UsuarioBean;
 import br.com.instore.web.annotation.NotRestrict;
 import br.com.instore.web.annotation.Restrict;
 import br.com.instore.web.component.request.RequestUsuario;
@@ -112,5 +113,32 @@ public class HomeController implements java.io.Serializable {
         }
     }
     
- 
+    @Get
+    @Path("/meus-dados")
+    @Restrict
+    public void meusDados() {
+        result.include("estadoBeanList", requestUsuario.estadoBeanList());
+        result.include("usuarioBean", sessionUsuario.getUsuarioBean());
+    }
+   
+    @Post
+    @Path("/meus-dados")
+    @Restrict
+    public void meusDados(UsuarioBean usuarioBean) {
+        requestUsuario.meusDados(usuarioBean);
+    }
+    
+    @Get
+    @Path("/minha-senha")
+    @Restrict
+    public void minhaSenha() {
+        
+    }
+   
+    @Post
+    @Path("/minha-senha")
+    @Restrict
+    public void minhaSenha(String senha_atual , String nova_senha, String conf_senha) {
+        requestUsuario.minhaSenha(senha_atual , nova_senha , conf_senha);
+    }
 }

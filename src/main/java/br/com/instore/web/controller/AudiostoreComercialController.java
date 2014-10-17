@@ -78,12 +78,14 @@ public class AudiostoreComercialController implements java.io.Serializable {
     @Restrict
     @Path("/audiostore-comercial/atualizar/{id}")
     public void cadastrar(Integer id) {
+        AudiostoreComercialBean bean = requestAudiostoreComercial.bean(id);
+        result.include("audiostoreComercialBean", bean);
         result.include("isPageCadastro", false);
         result.include("shs", requestAudiostoreComercial.shs(id));
-        result.include("categoriaBeanList", requestAudiostoreComercial.categoriaBeanList());
+        result.include("categoriaBeanList", requestAudiostoreComercial.categoriaBeanList(bean.getId()));
         result.include("clienteBeanList", requestAudiostoreComercial.clienteBeanList());
         result.include("audiostoreComercialShBeanList", requestAudiostoreComercial.audiostoreComercialShBeanList());
-        result.include("audiostoreComercialBean", requestAudiostoreComercial.bean(id));
+        
     }
 
     @Post

@@ -113,7 +113,7 @@
                 <h2>Deseja remover  ?</h2>
                 <hr />
 
-                <form name="FORM_DELETAR_[[__PK__]]" method="POST" data-formtable="true" action="${url}/ocorrencia-origem/remover/[[__PK__]]">
+                <form name="FORM_DELETAR_[[__PK__]]" method="POST" data-formtable="true" action="${url}/ocorrencia/remover/[[__PK__]]">
                     <input type="hidden" name="ocorrenciaOrigemBean.id" value="[[__PK__]]" />
                     <button type="submit" class="btn btn-danger">
                         <i class="fa fa-thumbs-o-down"></i> Remover

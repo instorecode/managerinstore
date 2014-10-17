@@ -143,7 +143,7 @@
                         } else {
                             if (null != self.data('id') && '' != self.data('id') && self.data('id') != '0') {
                                 jQuery('.select_cliente').val(self.data('id'));
-                                jQuery('.select_cliente').change();
+                                jQuery('.select_cliente').trigger('change');
                             }
                         }
                     });
@@ -433,7 +433,8 @@
                                     <li><a href="#menu" class="link_menu">Menu</a></li>
                                     <li class="active"><a href="${url}">Dashboard</a></li>
                                     <li><a href="#ajuda">Ajuda</a></li>
-                                    <li><a href="#contato">Contato</a></li>
+                                    <li><a href="${url}/meus-dados">Meus Dados</a></li>
+                                    <li><a href="${url}/minha-senha">Minha senha</a></li>
                                     <li><a class="btn_up_cache" href="#"> <i class="fa fa-refresh"></i>&nbsp;&nbsp;Atualizar Cache da aplicação</a></li>
                                     <li><a class="btn_sair" href="${url}/sair">Sair</a></li>
 

@@ -36,10 +36,10 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Cliente</label>
-                        <select class="form-control select_cliente" name="ocorrenciaBean.cliente.idcliente"  data-rule-required="true">
-                            <c:forEach items="${clienteList}" var="item">
-                                <option value="${item.idcliente}" ${ocorrenciaBean.cliente.idcliente eq item.idcliente ? 'selected="selected"' :''}>${item.nome}</option>
-                            </c:forEach>
+                        <select class="select2 select_cliente" name="ocorrenciaBean.cliente.idcliente"  data-rule-required="true">
+                            <c:if test="${ocorrenciaBean.cliente.idcliente ne null}">
+                                <option value="${ocorrenciaBean.cliente.idcliente}">${ocorrenciaBean.cliente.nome}</option>
+                            </c:if>
                         </select>
                     </div>
                 </div>
@@ -105,5 +105,48 @@
                 <i class="fa fa-save"></i> Salvar
             </button>
         </form>
+
+        <script  type="text/javascript">
+            jQuery(document).ready(function() {
+                function load_cliente() {
+                    var idcliente = jQuery.storage("matriz_selecionada");
+                    jQuery.ajax({
+                        type: 'POST',
+                        url: '${url}/ocorrencia/load-cliente',
+                        data: {idcliente: idcliente},
+                        success: function(json) {
+                            var options = '';
+                            jQuery('.select_cliente').html('');
+                            for (i in json) {
+                                var item = json[i];
+                                
+                                if(parseInt(jQuery.trim('${ocorrenciaBean.cliente.idcliente}')) == item.id) {
+                                    options += '<option selected="selected" value="' + item.idcliente + '">' + item.nome + ' - '+item.codigoInterno+'</option>';
+                                } else {
+                                    options += '<option value="' + item.idcliente + '">' + item.nome + ' - '+item.codigoInterno+'</option>';
+                                }
+                                
+                            }
+                            jQuery('.select_cliente').html(options);
+                            jQuery('.select_cliente').change();
+                            jQuery('.select_cliente').select2('destroy');
+                            jQuery('.select_cliente').select2({
+                                width: '100%'
+                            });
+                        }
+                    });
+                }
+
+                jQuery('.cliente_selecionado').on('click', function() {
+                    load_cliente();
+                });
+                
+                if('' == jQuery.trim('${ocorrenciaBean.cliente.idcliente}')) {
+                    if (null != jQuery.storage("matriz_selecionada") && undefined != jQuery.storage("matriz_selecionada")) {
+                        load_cliente();
+                    }
+                }
+            });
+        </script> 
     </jsp:body>
 </instore:template> 

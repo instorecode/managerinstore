@@ -224,6 +224,7 @@ public class RequestOcorrencia implements java.io.Serializable {
 
     public void salvar(OcorrenciaBean bean, Integer idstatus) {
         try {
+            
 
             repository.setUsuario(sessionUsuario.getUsuarioBean());
 
@@ -231,19 +232,15 @@ public class RequestOcorrencia implements java.io.Serializable {
                 bean.setOcorrenciaProblema(0);
             }
             if (null == bean.getOcorrenciaSolucao()) {
-                bean.setOcorrenciaSolucao(0);
+                bean.setOcorrenciaSolucao(0);   
             }
 
             if (bean != null && bean.getId() != null && bean.getId() > 0) {
                 repository.save(repository.marge(bean));
+                repository.query("delete from ocorrencia_usuario where ocorrencia = " + bean.getId()).executeSQLCommand2();
             } else {
                 bean.setDataCadastro(new Date());
                 repository.save(bean);
-            }
-
-            List<OcorrenciaUsuarioBean> listaDeletar = repository.query(OcorrenciaUsuarioBean.class).eq("ocorrenciaBean.id", bean.getId()).findAll();
-            for (OcorrenciaUsuarioBean item : listaDeletar) {
-                repository.delete(item);
             }
 
             OcorrenciaUsuarioBean bean2 = new OcorrenciaUsuarioBean();
@@ -390,5 +387,10 @@ public class RequestOcorrencia implements java.io.Serializable {
     public List<UsuarioBean> usuarioBeanList() {
         List<UsuarioBean> usuarioBeanList = repository.query(UsuarioBean.class).findAll();
         return usuarioBeanList;
+    }
+    
+    public void loadCliente(Integer idcliente) {
+        List<ClienteBean> clienteBeanList =  repository.query(ClienteBean.class).eq("id", idcliente).or().eq("parente", idcliente).findAll();
+        result.use(Results.json()).withoutRoot().from(clienteBeanList).recursive().serialize();
     }
 }

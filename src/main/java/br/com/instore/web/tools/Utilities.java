@@ -9,13 +9,18 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import jcifs.smb.NtlmPasswordAuthentication;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang.StringUtils;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
@@ -29,23 +34,135 @@ import org.xml.sax.helpers.DefaultHandler;
 public class Utilities {
 
     public static void main(String[] args) {
+        try {
+            String txt = "aaáá" + quebrarLinhaComHexa() + "ão" + quebrarLinhaComHexa() + "cçc";
+            System.out.println(formatarHexExp(txt));
+        } catch (DecoderException ex) {
+            Logger.getLogger(Utilities.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
+    public static String quebrarLinhaComHexa() throws DecoderException {
+        return new String(Hex.decodeHex("0d0a".toCharArray()));   
     }
     
+    public static String formatarHexExp(String text) throws DecoderException {
+        text = removeLetrasEspeciais(text);
+        
+        List<String> hexaList = new ArrayList<String>();
+        hexaList.add("5C");
+        hexaList.add("2F");
+        hexaList.add("0D");
+        hexaList.add("0A");
+        hexaList.add("2E");
+        hexaList.add("2d");
+        hexaList.add("5D");
+        hexaList.add("3A");
+        hexaList.add("3B");
+        hexaList.add("30");
+        hexaList.add("31");
+        hexaList.add("32");
+        hexaList.add("33");
+        hexaList.add("34");
+        hexaList.add("35");
+        hexaList.add("36");
+        hexaList.add("37");
+        hexaList.add("38");
+        hexaList.add("39");
+        hexaList.add("41");
+        hexaList.add("42");
+        hexaList.add("43");
+        hexaList.add("44");
+        hexaList.add("45");
+        hexaList.add("46");
+        hexaList.add("47");
+        hexaList.add("48");
+        hexaList.add("49");
+        hexaList.add("4A");
+        hexaList.add("4B");
+        hexaList.add("4C");
+        hexaList.add("4D");
+        hexaList.add("4E");
+        hexaList.add("4F");
+        hexaList.add("50");
+        hexaList.add("51");
+        hexaList.add("52");
+        hexaList.add("53");
+        hexaList.add("54");
+        hexaList.add("55");
+        hexaList.add("56");
+        hexaList.add("57");
+        hexaList.add("58");
+        hexaList.add("59");
+        hexaList.add("5A");
+        hexaList.add("61");
+        hexaList.add("62");
+        hexaList.add("63");
+        hexaList.add("64");
+        hexaList.add("65");
+        hexaList.add("66");
+        hexaList.add("67");
+        hexaList.add("68");
+        hexaList.add("69");
+        hexaList.add("6A");
+        hexaList.add("6B");
+        hexaList.add("6C");
+        hexaList.add("6D");
+        hexaList.add("6E");
+        hexaList.add("6F");
+        hexaList.add("70");
+        hexaList.add("71");
+        hexaList.add("72");
+        hexaList.add("73");
+        hexaList.add("74");
+        hexaList.add("75");
+        hexaList.add("76");
+        hexaList.add("77");
+        hexaList.add("78");
+        hexaList.add("79");
+        hexaList.add("7A");
+        
+        List<String> hexaList2 = new ArrayList<String>();
+        
+        for (String str : hexaList) {
+            hexaList2.add(str.toLowerCase());
+        }
+        
+        for (String str : hexaList2) {
+            hexaList.add(str);
+        }
+        
+        String finalText = "";
+        for (char ch : text.toCharArray()) {
+            String hexaCode = Integer.toHexString(ch).toString();
+            
+            if(hexaCode.length() < 2) {
+                hexaCode = "0".concat(hexaCode);
+            }
+            
+            if(!hexaList.contains(hexaCode)) {
+                 finalText += new String(Hex.decodeHex("20".toCharArray()));   
+            } else {
+                finalText += new String(Hex.decodeHex(hexaCode.toCharArray()));   
+            }
+        }
+        return finalText;
+    }
+
     public static String removeLetrasEspeciais(String text) {
         String alfStrEsp = "áéíóúãõäëïöüàèìòùâêîôûçåæñøßÿ&¢©µ¶€£®§¥°ºª¨´`^~*#";
         alfStrEsp += alfStrEsp.toUpperCase();
-        
+
         String alfStr = "aeiouaoaeiouaeiouaeioucaanobyeccupefrsy00a";
         alfStr += alfStr.toUpperCase();
-        
+
         List<String> alf = Arrays.asList(alfStr.split(""));
         List<String> alfEsp = Arrays.asList(alfStrEsp.split(""));
-        
-        for (int i =0; i<alfEsp.size(); i++) {
+
+        for (int i = 0; i < alfEsp.size(); i++) {
             String chr = alfEsp.get(i);
-            if(text.contains(chr)) {
-                if(i < alf.size()) {
+            if (text.contains(chr)) {
+                if (i < alf.size()) {
                     text = text.replace(chr, alf.get(i));
                 } else {
                     text = text.replace(chr, "");
@@ -176,40 +293,37 @@ public class Utilities {
         String pass = "q1a2s3";
         return new NtlmPasswordAuthentication("", user, pass);
     }
-    
-    public static NtlmPasswordAuthentication getAuthSmb(String usuario , String senha) {
+
+    public static NtlmPasswordAuthentication getAuthSmb(String usuario, String senha) {
         if (null == usuario || usuario.isEmpty() || null == senha || senha.isEmpty()) {
             return getAuthSmbDefault();
         } else {
             return new NtlmPasswordAuthentication("", usuario, senha);
         }
     }
-    
+
     public static String formatarURLConfigCliente(String url) {
-        if(!url.endsWith("/")) {
+        if (!url.endsWith("/")) {
             url += "/";
         }
-        
+
         url = url.replace("smb://", "$$");
         url = url.replace("\\", "/");
         url = url.replace("//", "/");
         url = url.replace("$$", "smb://");
-        
-        if(url.startsWith("/")) {
-            url  = url.substring(1, url.length());
+
+        if (url.startsWith("/")) {
+            url = url.substring(1, url.length());
         }
-        
-        if(!url.startsWith("smb://")) {
+
+        if (!url.startsWith("smb://")) {
             url = "smb://" + url;
         }
-        
+
         if (StringUtils.countMatches(url, "smb://") > 1) {
-            url  = url.substring(6, url.length());
+            url = url.substring(6, url.length());
             url = url.replace("smb://", "");
         }
         return "smb://" + url;
     }
-    
-    
-    
 }

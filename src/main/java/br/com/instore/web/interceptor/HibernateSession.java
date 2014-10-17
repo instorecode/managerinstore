@@ -26,54 +26,55 @@ public class HibernateSession {
 
     @AroundCall
     public void intercept(SimpleInterceptorStack stack, ControllerMethod method) {
-        Session session = null;
-        try {
-            session = SessionFactoryUtils.getInstance().session();
-            stack.next();
-        } catch (Exception e) {
-            e.printStackTrace();
-            if (null != session) {
-                if (session.isOpen()) {
-                    if (session.getTransaction().isActive()) {
-                        if (!session.getTransaction().wasCommitted() && !session.getTransaction().wasRolledBack()) {
-                            session.getTransaction().rollback();
-                        }
-                    }
-
-                    try {
-                        ((SessionImpl) session).connection().close();
-                    } catch (SQLException e2) {
-                        e2.printStackTrace();
-                    }
-
-                    session.clear();
-                    session.close();
-                }
-            }
-            if (!method.getMethod().isAnnotationPresent(NaoDeslogar.class)) {
-//                httpSession.invalidate();
-                result.redirectTo(HomeController.class).index();
-            }
-        } finally {
-            if (null != session) {
-
-                if (session.isOpen()) {
-                    if (session.getTransaction().isActive()) {
-                        if (!session.getTransaction().wasCommitted() && !session.getTransaction().wasRolledBack()) {
-                            session.getTransaction().rollback();
-                        }
-                    }
-
-                    try {
-                        ((SessionImpl) session).connection().close();
-                        
-                        session.clear();
-                        session.close();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
+        stack.next();
+//        Session session = null;
+//        try {
+//            session = SessionFactoryUtils.getInstance().session();
+//            stack.next();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            if (null != session) {
+//                if (session.isOpen()) {
+//                    if (session.getTransaction().isActive()) {
+//                        if (!session.getTransaction().wasCommitted() && !session.getTransaction().wasRolledBack()) {
+//                            session.getTransaction().rollback();
+//                        }
+//                    }
+//
+//                    try {
+//                        ((SessionImpl) session).connection().close();
+//                    } catch (SQLException e2) {
+//                        e2.printStackTrace();
+//                    }
+//
+//                    session.clear();
+//                    session.close();
+//                }
+//            }
+//            if (!method.getMethod().isAnnotationPresent(NaoDeslogar.class)) {
+////                httpSession.invalidate();
+//                result.redirectTo(HomeController.class).index();
+//            }
+//        } finally {
+//            if (null != session) {
+//
+//                if (session.isOpen()) {
+//                    if (session.getTransaction().isActive()) {
+//                        if (!session.getTransaction().wasCommitted() && !session.getTransaction().wasRolledBack()) {
+//                            session.getTransaction().rollback();
+//                        }
+//                    }
+//
+//                    try {
+//                        ((SessionImpl) session).connection().close();
+//                        
+//                        session.clear();
+//                        session.close();
+//                    } catch (SQLException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        }
     }
 }

@@ -160,10 +160,7 @@ public class RequestVoz implements java.io.Serializable {
     public void remover(Integer id) {
         try {
             repository.setUsuario(sessionUsuario.getUsuarioBean());
-
-            VozBean bean = repository.marge((VozBean) repository.find(VozBean.class, id));
-            repository.delete(bean);
-
+            repository.query("delete from voz where idvoz = " + id).executeSQLCommand();
             repository.finalize();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Voz removida com sucesso!")).recursive().serialize();
         } catch (Exception e) {

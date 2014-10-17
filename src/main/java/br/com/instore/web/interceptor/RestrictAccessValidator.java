@@ -47,12 +47,18 @@ public class RestrictAccessValidator {
 
     @AroundCall
     public void intercept(SimpleInterceptorStack stack) {
+
         Path path = controllerMethod.getMethod().getAnnotation(Path.class);
         if (null != path && sessionUsuario.isLogado()) {
+
+            if (sessionUsuario.getUsuarioBean().getSenha().equals("202cb962ac59075b964b07152d234b70") && !"/minha-senha".equals(path.value()[0]) )  {
+                result.redirectTo(HomeController.class).minhaSenha();
+            }
+
             result.include("machine_id", request.getRemoteAddr().replace(".", "").replace(":", "") + new SimpleDateFormat("ddMMyyyy").format(new Date()));
             FuncionalidadeBean f = current(path.value()[0]);
 
-            if ("/dashboard".equals(path.value()[0])) {
+            if ("/dashboard".equals(path.value()[0]) || "/meus-dados".equals(path.value()[0]) || "/minha-senha".equals(path.value()[0])) {
                 result.include("currentFuncionalidadeBean", f);
                 result.include("menu", constructMenu(null, path.value()[0]));
                 result.include("funcionalidadeBeanList", constructMenuChild(f));
@@ -199,9 +205,9 @@ public class RestrictAccessValidator {
 //        List<PerfilUsuarioBean> listaDePerfil = requestRepository.query(PerfilUsuarioBean.class).eq("usuario.idusuario", sessionUsuario.getUsuarioBean().getIdusuario()).findAll();
 //        result.include("listaDePerfil", listaDePerfil);
     }
-    
-    public void clientesMatriz(){
-        List<ClienteBean> lista =  requestRepository.query(ClienteBean.class).eq("parente", 0).eq("matriz",true).findAll();
+
+    public void clientesMatriz() {
+        List<ClienteBean> lista = requestRepository.query(ClienteBean.class).eq("parente", 0).eq("matriz", true).findAll();
         result.include("listaClientesMatriz", lista);
     }
 

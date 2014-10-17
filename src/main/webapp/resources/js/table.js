@@ -141,7 +141,8 @@ jQuery(document).ready(function() {
             });
 
             var json = null;
-            if (jQuery.storage(url) != null) {
+//            if (jQuery.storage(url) != null) {
+            if (false) {
                 json = JSON.parse(jQuery.storage(url));
             } else {
                 jQuery.ajax({
