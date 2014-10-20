@@ -305,6 +305,7 @@ public class Utilities {
     public static String formatarURLConfigCliente(String url) {
         if (!url.endsWith("/")) {
             url += "/";
+            
         }
 
         url = url.replace("smb://", "$$");
@@ -319,11 +320,16 @@ public class Utilities {
         if (!url.startsWith("smb://")) {
             url = "smb://" + url;
         }
-
-        if (StringUtils.countMatches(url, "smb://") > 1) {
-            url = url.substring(6, url.length());
+        
+        if (StringUtils.countMatches(url, "smb://") > 1) {            
             url = url.replace("smb://", "");
+            url = "smb://" + url;
         }
-        return "smb://" + url;
+        
+        if(url.equals("smb://")){
+            url = "";
+        }
+        
+        return  url;
     }
 }

@@ -19,12 +19,14 @@ import br.com.instore.web.dto.ClienteDTO;
 import br.com.instore.web.dto.ClienteDTO2;
 import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
+import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
 @RequestScoped
@@ -58,7 +60,7 @@ public class RequestCliente implements java.io.Serializable {
                 dto.setMatriz(clienteBean.getMatriz() ? "Sim" : "Não");
                 dto.setNome(clienteBean.getNome());
                 dto.setParente(clienteBean.getParente().toString());
-                
+
                 dto.setCodigoInterno(clienteBean.getCodigoInterno());
                 dto.setCodigoExterno(clienteBean.getCodigoExterno());
                 for (ClienteBean c : clienteBeanList) {
@@ -212,7 +214,7 @@ public class RequestCliente implements java.io.Serializable {
         List<EstadoBean> estadoBeanList = repository.query(EstadoBean.class).findAll();
         return estadoBeanList;
     }
-    
+
     public List<IndiceReajusteBean> indiceReajusteList() {
         List<IndiceReajusteBean> indiceReajusteList = repository.query(IndiceReajusteBean.class).findAll();
         return indiceReajusteList;
@@ -285,40 +287,40 @@ public class RequestCliente implements java.io.Serializable {
             repository.save(cliente);
 
 
-            if(null==dadosCliente.getLocalOrigemMusica() || dadosCliente.getLocalOrigemMusica().isEmpty()) {
+            if (null == dadosCliente.getLocalOrigemMusica() || dadosCliente.getLocalOrigemMusica().isEmpty()) {
                 dadosCliente.setLocalOrigemMusica("");
             }
-            
-            if(null==dadosCliente.getLocalDestinoMusica() || dadosCliente.getLocalDestinoMusica().isEmpty()) {
+
+            if (null == dadosCliente.getLocalDestinoMusica() || dadosCliente.getLocalDestinoMusica().isEmpty()) {
                 dadosCliente.setLocalDestinoMusica("");
             }
-            
-            if(null==dadosCliente.getLocalOrigemSpot()|| dadosCliente.getLocalOrigemSpot().isEmpty()) {
+
+            if (null == dadosCliente.getLocalOrigemSpot() || dadosCliente.getLocalOrigemSpot().isEmpty()) {
                 dadosCliente.setLocalOrigemSpot("");
             }
-            
-            if(null==dadosCliente.getLocalDestinoSpot() || dadosCliente.getLocalDestinoSpot().isEmpty()) {
+
+            if (null == dadosCliente.getLocalDestinoSpot() || dadosCliente.getLocalDestinoSpot().isEmpty()) {
                 dadosCliente.setLocalDestinoSpot("");
             }
-            
-            if(null==dadosCliente.getLocalDestinoExp()|| dadosCliente.getLocalDestinoExp().isEmpty()) {
+
+            if (null == dadosCliente.getLocalDestinoExp() || dadosCliente.getLocalDestinoExp().isEmpty()) {
                 dadosCliente.setLocalDestinoExp("");
             }
-            
+
             if (dadosCliente.getIddadosCliente() != null && dadosCliente.getIddadosCliente() > 0) {
                 dadosCliente = repository.marge(dadosCliente);
             }
-            
+
             if (dadosCliente.getIndiceReajusteContrato() == null) {
                 dadosCliente.setIndiceReajusteContrato(0.0);
             }
-            
+
             dadosCliente.setCliente(cliente);
             repository.save(dadosCliente);
-            
+
             String sql = "update cliente set parente = 0 where parente = " + cliente.getIdcliente();
             repository.query(sql).executeSQLCommand();
-            
+
             if (null != filialList && filialList.length > 0) {
                 for (Integer id : filialList) {
                     ClienteBean item = repository.find(ClienteBean.class, id);
@@ -440,7 +442,7 @@ public class RequestCliente implements java.io.Serializable {
         }
     }
 
-    public List<ClienteDTO> filialDTOListAux(Integer id, Boolean cadastrando , Boolean lista1) {
+    public List<ClienteDTO> filialDTOListAux(Integer id, Boolean cadastrando, Boolean lista1) {
         List<ClienteDTO> clienteDTOList = new ArrayList<ClienteDTO>();
         List<ClienteBean> clienteBeanList;
 
@@ -465,11 +467,11 @@ public class RequestCliente implements java.io.Serializable {
                 dto.setMatriz(clienteBean.getMatriz() ? "Sim" : "Não");
                 dto.setNome(clienteBean.getNome());
                 dto.setParente(clienteBean.getParente().toString());
-                if(null!=clienteBean.getParente() && clienteBean.getParente() > 0) {
+                if (null != clienteBean.getParente() && clienteBean.getParente() > 0) {
                     ClienteBean clienteAux = repository.find(ClienteBean.class, clienteBean.getParente());
                     dto.setNomeParente(clienteAux.getNome());
                 }
-                
+
                 for (ClienteBean c : clienteBeanList) {
                     if (c.getIdcliente() == clienteBean.getParente()) {
                         dto.setParente(c.getNome());
@@ -504,102 +506,113 @@ public class RequestCliente implements java.io.Serializable {
         }
         return clienteDTOList;
     }
-    
-    public void salvar3(Integer id, String p1,String p2,String p3,String p4,String p5) {
-        try {            
-                    
-            if(null==p1 || p1.isEmpty()) {
-                p1 ="";
+
+    public void salvar3(Integer id, String p1, String p2, String p3, String p4, String p5) {
+        try {
+
+            if (null == p1 || p1.isEmpty()) {
+                p1 = "";
             }
-            
-            if(null==p2 || p2.isEmpty()) {
-                p2 ="";
+
+            if (null == p2 || p2.isEmpty()) {
+                p2 = "";
             }
-            if(null==p3 || p3.isEmpty()) {
-                p3 ="";
+            if (null == p3 || p3.isEmpty()) {
+                p3 = "";
             }
-            if(null==p4 || p4.isEmpty()) {
-                p4 ="";
+            if (null == p4 || p4.isEmpty()) {
+                p4 = "";
             }
-            if(null==p5 || p5.isEmpty()) {
-                p5 ="";
+            if (null == p5 || p5.isEmpty()) {
+                p5 = "";
             }
-           
+
             p1 = Utilities.formatarURLConfigCliente(p1);
             p2 = Utilities.formatarURLConfigCliente(p2);
             p3 = Utilities.formatarURLConfigCliente(p3);
             p4 = Utilities.formatarURLConfigCliente(p4);
             p5 = Utilities.formatarURLConfigCliente(p5);
-            
+
             DadosClienteBean dcb = repository.query(DadosClienteBean.class).eq("cliente.idcliente", clienteBean(id).getIdcliente()).findOne();
             dcb.setLocalOrigemMusica(p1);
             dcb.setLocalDestinoMusica(p2);
             dcb.setLocalOrigemSpot(p3);
             dcb.setLocalDestinoSpot(p4);
             dcb.setLocalDestinoExp(p5);
-            
+
             SmbFile smbP1 = new SmbFile(p1, Utilities.getAuthSmbDefault());
-            if (!smbP1.exists()) {
-                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel encontrar o diretório "+p1+"!")).recursive().serialize();
+
+
+
+            if (!smbP1.exists() || smbP1.isFile()) {
+                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel encontrar o diretório " + p1 + " ou caminho do diretório não pode ter o nome de um arquivo!")).recursive().serialize();
                 return;
-            }
+            } 
             
             SmbFile smbP2 = new SmbFile(p2, Utilities.getAuthSmbDefault());
-            if (!smbP2.exists()) {
-                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel encontrar o diretório "+p2+"!")).recursive().serialize();
+            if (!smbP2.exists() || smbP2.isFile()) {
+                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel encontrar o diretório " + p2 + " ou caminho do diretório não pode ter o nome de um arquivo!")).recursive().serialize();
                 return;
             }
-            
+
             SmbFile smbP3 = new SmbFile(p3, Utilities.getAuthSmbDefault());
-            if (!smbP3.exists()) {
-                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel encontrar o diretório "+p3+"!")).recursive().serialize();
+            if (!smbP3.exists()|| smbP3.isFile()) {
+                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel encontrar o diretório " + p3 + " ou caminho do diretório não pode ter o nome de um arquivo!")).recursive().serialize();
                 return;
             }
-            
+
             SmbFile smbP4 = new SmbFile(p4, Utilities.getAuthSmbDefault());
-            if (!smbP4.exists()) {
-                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel encontrar o diretório "+p4+"!")).recursive().serialize();
+            smbP4.isDirectory();
+            if (!smbP4.exists() || smbP4.isFile()) {
+                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel encontrar o diretório " + p4 + " ou caminho do diretório não pode ter o nome de um arquivo!")).recursive().serialize();
                 return;
             }
-            
+
             SmbFile smbP5 = new SmbFile(p5, Utilities.getAuthSmbDefault());
-            if (!smbP5.exists()) {
-                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel encontrar o diretório "+p5+"!")).recursive().serialize();
+            if (!smbP5.exists() || smbP5.isFile()) {
+                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel encontrar o diretório " + p5 + " ou caminho do diretório não pode ter o nome de um arquivo!")).recursive().serialize();
                 return;
-            }            
-            
+            }
+
             repository.save(dcb);
             repository.finalize();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Dados salvos com sucesso!")).recursive().serialize();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Diretório Inválido")).recursive().serialize();
+        } catch (SmbException e) {
+            System.out.println("aqui o erro samba");
+            e.printStackTrace();
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Diretório Inválido")).recursive().serialize();
         } catch (Exception e) {
             e.printStackTrace();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel salvar os dados!")).recursive().serialize();
         }
     }
-    
+
     public List<ClienteSuspensoBean> suspenderList(Integer id) {
         return repository.query(ClienteSuspensoBean.class).eq("cliente.idcliente", id).orderDesc("data").findAll();
     }
-    
+
     public void suspender(ClienteSuspensoBean clienteSuspensoBean) {
         try {
             repository.setUsuario(sessionUsuario.getUsuarioBean());
 
             clienteSuspensoBean.setUsuario(sessionUsuario.getUsuarioBean());
             clienteSuspensoBean.setData(new Date());
-            
-            if(clienteSuspensoBean.getSuspenso()) {
-                if(clienteSuspensoBean.getDataInicio() == null) {
+
+            if (clienteSuspensoBean.getSuspenso()) {
+                if (clienteSuspensoBean.getDataInicio() == null) {
                     result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Informe a data de inicio!")).recursive().serialize();
                     return;
                 }
-                
-                if(clienteSuspensoBean.getDataFim()== null) {
+
+                if (clienteSuspensoBean.getDataFim() == null) {
                     result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Informe a data final!")).recursive().serialize();
                     return;
                 }
             }
-            
+
             repository.save(clienteSuspensoBean);
 
             repository.finalize();
@@ -609,20 +622,19 @@ public class RequestCliente implements java.io.Serializable {
             result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel salvar os dados!")).recursive().serialize();
         }
     }
-    
+
     public List<ClienteDTO2> paginaCadastroListaFilial() {
         List<ClienteDTO2> lista = repository.query("select idcliente , parente , nome  from cliente where matriz = 0").executeSQL(ClienteDTO2.class);
         return lista;
     }
-    
+
     public List<ClienteDTO2> paginaCadastroListaFilial2(Integer id) {
         List<ClienteDTO2> lista = repository.query("select idcliente , parente , nome  from cliente where matriz = 0 and parente = " + id).executeSQL(ClienteDTO2.class);
         return lista;
     }
-    
+
     public List<ClienteDTO2> paginaCadastroListaFilial3(Integer id) {
         List<ClienteDTO2> lista = repository.query("select idcliente , parente , nome  from cliente where matriz = 0 and parente != " + id).executeSQL(ClienteDTO2.class);
         return lista;
     }
 }
-
