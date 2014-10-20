@@ -5,9 +5,10 @@ public class AjudaDTO extends AbstractDTO{
     
     private Integer id;
     private String titulo;
-    private String idfuncionalidade;
+    private Integer idfuncionalidade;
     private String texto;
-
+    private String nome;
+    
     public AjudaDTO() {
     }
 
@@ -27,21 +28,28 @@ public class AjudaDTO extends AbstractDTO{
         this.titulo = titulo;
     }
 
-
-    public String getIdfuncionalidade() {
-        return idfuncionalidade;
-    }
-
-    public void setIdfuncionalidade(String idfuncionalidade) {
-        this.idfuncionalidade = idfuncionalidade;
-    }
-
     public String getTexto() {
         return texto;
     }
 
     public void setTexto(String texto) {
         this.texto = texto;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public Integer getIdfuncionalidade() {
+        return idfuncionalidade;
+    }
+
+    public void setIdfuncionalidade(Integer idfuncionalidade) {
+        this.idfuncionalidade = idfuncionalidade;
     }
     
     

@@ -4,6 +4,7 @@ import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.DataValidator;
 import br.com.instore.core.orm.DataValidatorException;
+import br.com.instore.core.orm.Each;
 import br.com.instore.core.orm.Query;
 import br.com.instore.core.orm.bean.AjudaBean;
 import br.com.instore.core.orm.bean.FuncionalidadeBean;
@@ -12,6 +13,7 @@ import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.dto.AjudaDTO;
 import br.com.instore.web.dto.AjudaJSON;
 import br.com.instore.web.tools.AjaxResult;
+import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -91,8 +93,21 @@ public class RequestAjuda implements Serializable {
 
     }
 
-    public List<FuncionalidadeBean> ajudaBeanList(){
-        List<FuncionalidadeBean> funcionalidadesBeanList = repository.query(FuncionalidadeBean.class).findAll();
+    public List<FuncionalidadeBean> funcionalidadeBeanList(){
+        final List<FuncionalidadeBean> funcionalidadesBeanList = new ArrayList<FuncionalidadeBean>();
+        repository.query("select idfuncionalidade , nome from funcionalidade ").executeSQL(new Each() {
+            public Integer idfuncionalidade;
+            public String nome;
+            @Override
+            public void each() {
+                FuncionalidadeBean f = new FuncionalidadeBean();
+                f.setIdfuncionalidade(idfuncionalidade);
+                f.setNome(nome);
+                
+                funcionalidadesBeanList.add(f);
+            }
+        });
+        
         return  funcionalidadesBeanList;           
     }
     
@@ -101,7 +116,7 @@ public class RequestAjuda implements Serializable {
         return listaFuncionalidades();
     }
    
-    public void beanList(Integer page, Integer rows, Integer id, String titulo, String idfuncionalidade) {
+    public void beanList(Integer page, Integer rows, Integer id, String titulo, Integer idfuncionalidade) {
         AjudaJSON json = new AjudaJSON();
         page = (null == page || 0 == page ? 1 : page);
         rows = (null == rows || 0 == rows ? 10 : rows);
@@ -123,6 +138,12 @@ public class RequestAjuda implements Serializable {
             q2.ilikeAnyWhere("titulo", titulo);
             json.setTitulo(titulo);
         }
+        
+        if (null != idfuncionalidade && idfuncionalidade > 0) {
+            q1.eq("funcionalidade.idfuncionalidade", idfuncionalidade);
+            q2.eq("funcionalidade.idfuncionalidade", idfuncionalidade);
+            json.setIdfuncionalidade(idfuncionalidade.toString());
+        }
 
         int size = q1.count().intValue() / rows + ((q1.count().intValue() % rows == 0) ? 0 : 1);
         lista = q2.limit(offset, rows).findAll();
@@ -136,7 +157,8 @@ public class RequestAjuda implements Serializable {
             dto.setId(bean.getId());
             dto.setTitulo(bean.getTitulo());
             dto.setTexto(bean.getTexto());
-            dto.setIdfuncionalidade(bean.getFuncionalidade().getNome());            
+            dto.setNome(bean.getFuncionalidade().getNome());
+            dto.setIdfuncionalidade(bean.getFuncionalidade().getIdfuncionalidade());            
             rowsList.add(dto);
         }
         
@@ -150,14 +172,14 @@ public class RequestAjuda implements Serializable {
     
     public AjudaDTO ajudaDTO(Integer id){        
         AjudaDTO dto = new AjudaDTO();
-        AjudaBean bean = repository.find(AjudaBean.class, id);
-        
-        
-        dto.setId(bean.getId());
-        dto.setIdfuncionalidade(bean.getFuncionalidade().getNome());
-        dto.setTexto(bean.getTexto());
-        dto.setTitulo(bean.getTitulo());               
-        
+        AjudaBean bean = repository.find(AjudaBean.class, id);       
+        if(null != bean) { 
+            dto.setId(bean.getId());
+            dto.setNome(bean.getFuncionalidade().getNome());
+            dto.setIdfuncionalidade(bean.getFuncionalidade().getIdfuncionalidade());
+            dto.setTexto(bean.getTexto());
+            dto.setTitulo(bean.getTitulo());               
+        }
         return dto;
     }
         

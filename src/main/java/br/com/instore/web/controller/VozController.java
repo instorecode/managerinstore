@@ -38,8 +38,7 @@ public class VozController implements java.io.Serializable {
     public void listar (Boolean datajson , Boolean view, Integer page, Integer rows, Integer idvoz, String clienteNome, String genero, String tipo, String nome, String email, String tel, Integer pk) {
         
         if (null != datajson && datajson) {
-            requestVoz.beanList(page, rows, idvoz, clienteNome, genero, tipo, nome, email, tel);
-            //result.use(Results.json()).withoutRoot().from(requestVoz.beanList()).recursive().serialize();
+            requestVoz.beanList(page, rows, idvoz, clienteNome, genero, tipo, nome, email, tel);            
         }else{            
             result.include("clienteBeanList", requestVoz.clienteBeanList());
         }

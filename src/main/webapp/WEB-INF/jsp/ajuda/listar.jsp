@@ -110,7 +110,16 @@
                     <br />
                     <small field="titulo"></small>
                 </li>
-                
+                <li>
+                    <strong>Funcionalidade</strong>
+                    <br />
+                    <small field="nome"></small>
+                </li>
+                <li>
+                    <strong>Descrição</strong>
+                    <br />
+                    <small field="texto"></small>
+                </li>
             </ol>
         </div>
 
@@ -193,7 +202,6 @@
         </div>
 
         <!--DELETE-->
-
         <div class="delete">
             <c:if test="${delete_access}">
                 <br />
@@ -265,7 +273,7 @@
                         <tr>
                             <th options="true" class="options">#</th>
                             <th field="titulo" options="false" >Titulo</th>
-                            <th field="funcionalidade" isfk="true" fk="" ></th>
+                            <th field="nome" isfk="true" fk="idfuncionalidade" fklabel="nome" fklabelselect="Todos" fkurl="${url}/ajuda?funcionalidades=true"  options="false">Funcionalidades</th>
                         </tr>
                     </thead>                     
                 </table>

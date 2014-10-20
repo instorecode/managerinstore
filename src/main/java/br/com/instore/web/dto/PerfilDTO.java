@@ -1,7 +1,7 @@
 package br.com.instore.web.dto;
 
-
 public class PerfilDTO extends AbstractDTO {
+
     private String id;
     private String nome;
     private String Funcionalidade;

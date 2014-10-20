@@ -141,8 +141,7 @@ jQuery(document).ready(function() {
             });
 
             var json = null;
-//            if (jQuery.storage(url) != null) {
-            if (false) {
+            if (jQuery.storage(url) != null) {
                 json = JSON.parse(jQuery.storage(url));
             } else {
                 jQuery.ajax({
@@ -332,6 +331,7 @@ jQuery(document).ready(function() {
         {
             var url = window.location.href + "?view=true&pk=" + jQuery(this).attr("pk");
             jQuery.get(url, function(json) {
+                console.log(json);
                 jQuery('.view_itens li').each(function() {
                     var f = jQuery(this).children("small").attr("field");
                     jQuery(this).children("small").text(json[f]);

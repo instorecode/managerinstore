@@ -32,7 +32,7 @@ public class AjudaController implements java.io.Serializable{
     @Get
     @Restrict
     @Path("/ajuda")
-    public void listar (Boolean datajson, Boolean view ,Boolean funcionalidades, Integer page, Integer rows, Integer id, String titulo , String idfuncionalidade, Integer pk){
+    public void listar (Boolean datajson, Boolean view ,Boolean funcionalidades, Integer page, Integer rows, Integer id, String titulo , Integer idfuncionalidade, Integer pk){
      
       if(null != datajson && datajson){
           requestAjuda.beanList(page, rows, id, titulo,idfuncionalidade);
@@ -43,7 +43,7 @@ public class AjudaController implements java.io.Serializable{
       }    
     
       if(null != funcionalidades && funcionalidades){
-         result.use(Results.json()).withoutRoot().from(requestAjuda.ajudaBeanList()).recursive().serialize();
+         result.use(Results.json()).withoutRoot().from(requestAjuda.funcionalidadeBeanList()).recursive().serialize();      
       }
     }
     
