@@ -22,7 +22,7 @@ import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
 import jcifs.smb.SmbException;
-import jcifs.smb.SmbFile;
+import jcifs.smb.SmbFile; 
 
 @Controller
 public class AudiostoreComercialController implements java.io.Serializable {
@@ -48,6 +48,10 @@ public class AudiostoreComercialController implements java.io.Serializable {
     public void listar(Boolean datajson, Boolean view, Boolean clientes, Integer page, Integer rows, Integer id, String titulo, String arquivo, Integer pk) {
         if (null != datajson && datajson) {
             requestAudiostoreComercial.beanList(page, rows, id, titulo, arquivo);
+        }
+        
+        if (null != view && view) {
+            result.use(Results.json()).withoutRoot().from(requestAudiostoreComercial.bean2(pk)).recursive().serialize();
         }
     }
 
@@ -132,8 +136,8 @@ public class AudiostoreComercialController implements java.io.Serializable {
     
     @Post
     @Path("/audiostore-comercial/vld-comm")
-    public void validarComercial(Integer[] id_list) {
-        requestAudiostoreComercial.validarComercial(id_list);
+    public void validarComercial(Integer[] id_list  , Boolean exp_arquivo_audio) {
+        requestAudiostoreComercial.validarComercial(id_list , exp_arquivo_audio);
     }
     
     @Post

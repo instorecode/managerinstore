@@ -13,7 +13,6 @@ import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.dto.AjudaDTO;
 import br.com.instore.web.dto.AjudaJSON;
 import br.com.instore.web.tools.AjaxResult;
-import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
