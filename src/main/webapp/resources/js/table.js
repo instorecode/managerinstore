@@ -121,6 +121,7 @@ jQuery(document).ready(function() {
         jQuery('#table').each(function() {
             var table = jQuery(this);
             var url = table.attr('url');
+            var rowSelectable = table.attr('rowSelectable') == 'false' || table.attr('rowSelectable') == false ? false  : true;
             url = url + "?datajson=true";
             url = url + "&page=" + table.attr('page');
             url = url + "&rows=" + table.attr('rows');
@@ -221,7 +222,23 @@ jQuery(document).ready(function() {
 
                 table.children("thead").children("tr").children("th").each(function() {
                     var td = jQuery(this);
-                    tr += "<td class=\"" + (i % 2 == 0 ? "zz1" : "zz2") + "\"   onclick=\"javascript:tr_row_click(this)\">";
+                    var onColumnRender = td.attr("onColumnRender");
+                    if (null != onColumnRender && undefined != onColumnRender && '' != onColumnRender) {
+                        onColumnRender = 'onColumnRender="' + onColumnRender + '"';
+                    } else {
+                        onColumnRender = "";
+                    }
+                    var data_column = "";
+                    if (td.attr("options") == "false")
+                    {
+                        data_column = "data_column";
+                    }
+                    if(rowSelectable) {
+                        rowSelectable = "javascript:tr_row_click(this)";
+                    } else {
+                        rowSelectable = "";
+                    }
+                    tr += "<td class=\"" + (i % 2 == 0 ? "zz1" : "zz2") + " " + data_column + "\"   onclick=\""+rowSelectable+"\" " + onColumnRender + ">";
                     if (td.attr("options") == "false")
                     {
                         tr += item[td.attr("field")];
@@ -287,6 +304,16 @@ jQuery(document).ready(function() {
             jQuery('.block-xtable .loader').hide();
             jQuery(".select2_filter").select2({width: '100%'});
 
+
+
+            table.children('tbody').children('tr.row_data').children('td').each(function() {
+                var onColumnRender = jQuery(this).attr("onColumnRender");
+                if (null != onColumnRender && undefined != onColumnRender && '' != onColumnRender) {
+                    onColumnRender = window[onColumnRender];
+                    onColumnRender.call(this, jQuery(this).parent().data("jsonItem"), jQuery(this));
+                }
+            });
+
             msg_fadeOut();
         });
     }
@@ -334,7 +361,8 @@ jQuery(document).ready(function() {
                 console.log(json);
                 jQuery('.view_itens li').each(function() {
                     var f = jQuery(this).children("small").attr("field");
-                    jQuery(this).children("small").text(json[f]);
+                    console.log(json);
+                    jQuery(this).children("small").html(json[f]);
                 });
             });
         }
@@ -374,10 +402,20 @@ jQuery(document).ready(function() {
             jQuery(this).parent().parent().parent().next().show();
             jQuery(this).parent().parent().parent().children('td').each(function() {
                 jQuery(this).css({
-                    "background-color": "#fffbd3"
+                    "background-color": "#fffbd3",
                 });
             });
         }
+
+
+        jQuery('#table').children('tbody').children('tr.row_data').children('td').each(function() {
+            var onColumnRender = jQuery(this).attr("onColumnRender");
+            if (null != onColumnRender && undefined != onColumnRender && '' != onColumnRender) {
+                onColumnRender = window[onColumnRender];
+                onColumnRender.call(this, jQuery(this).parent().data("jsonItem"), jQuery(this));
+            }
+        });
+
         jQuery('.block-xtable .loader').hide();
         return false;
     });
@@ -468,6 +506,15 @@ jQuery(document).ready(function() {
                 });
             });
         }
+
+        jQuery('#table').children('tbody').children('tr.row_data').children('td').each(function() {
+            var onColumnRender = jQuery(this).attr("onColumnRender");
+            if (null != onColumnRender && undefined != onColumnRender && '' != onColumnRender) {
+                onColumnRender = window[onColumnRender];
+                onColumnRender.call(this, jQuery(this).parent().data("jsonItem"), jQuery(this));
+            }
+        });
+
         return false;
     });
 
@@ -512,6 +559,14 @@ jQuery(document).ready(function() {
                 });
             });
         }
+
+        jQuery('#table').children('tbody').children('tr.row_data').children('td').each(function() {
+            var onColumnRender = jQuery(this).attr("onColumnRender");
+            if (null != onColumnRender && undefined != onColumnRender && '' != onColumnRender) {
+                onColumnRender = window[onColumnRender];
+                onColumnRender.call(this, jQuery(this).parent().data("jsonItem"), jQuery(this));
+            }
+        });
         return false;
     });
 
