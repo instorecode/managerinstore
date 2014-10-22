@@ -1,5 +1,4 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
 <%@tag description="Template instore" pageEncoding="UTF-8"%>
 <%@attribute fragment="true" name="gridColumn" %>
 <%@attribute fragment="false" name="isGrid" %>
@@ -16,20 +15,19 @@
 <c:set scope="session" var="url_cz" value="http://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/resources/cz/"></c:set>
 
 
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="shortcut icon" href="images/favicon.png">
 
-    <!DOCTYPE html>
-    <html lang="en">
-        <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <meta name="description" content="">
-            <meta name="author" content="">
-            <link rel="shortcut icon" href="images/favicon.png">
-
-            <title>Instore</title>
-            <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,400italic,700,800' rel='stylesheet' type='text/css'>
-            <link href='http://fonts.googleapis.com/css?family=Raleway:300,200,100' rel='stylesheet' type='text/css'>
-            <link href="${url_cz}js/bootstrap/dist/css/bootstrap.css?v=${machine_id}" rel="stylesheet">
+        <title>Instore</title>
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,400italic,700,800' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Raleway:300,200,100' rel='stylesheet' type='text/css'>
+        <link href="${url_cz}js/bootstrap/dist/css/bootstrap.css?v=${machine_id}" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="${url_cz}js/jquery.gritter/css/jquery.gritter.css?v=${machine_id}" />
         <link rel="stylesheet" href="${url_cz}fonts/font-awesome-4/css/font-awesome.min.css?v=${machine_id}">
         <link rel="stylesheet" type="text/css" media="all" href="${url_css}bbGrid.css?v=${machine_id}"/>
@@ -126,21 +124,12 @@
                     if (typeof(Storage) !== "undefined") {
                         window.localStorage.clear();
                     }
-                    
-                    jQuery('.cliente_selecionado').on('click', function() {
-                        self = jQuery(this);
-                        jQuery.storageAdd("matriz_selecionada", self.data('id'));
-                        jQuery.storageAdd("matriz_selecionada_nome", self.data('clienteNome'));
-                        jQuery('.cli_nom_red').text(self.data('clienteNome'));
-                        if (self.val() == '0') {
-                            jQuery.storageClear();
-                        } else {
-                            if (null != self.data('id') && '' != self.data('id') && self.data('id') != '0') {
-                                jQuery('.select_cliente').val(self.data('id'));
-                                jQuery('.select_cliente').change();
-                            }
-                        }
-                    });
+                };
+
+                if (null != jQuery.storage("matriz_selecionada_nome")
+                        && undefined != jQuery.storage("matriz_selecionada_nome")) {
+                    jQuery('.cli_nom_red').text(jQuery.storage("matriz_selecionada_nome"));
+                }
 
                 jQuery('.cliente_selecionado').on('click', function() {
                     self = jQuery(this);
@@ -438,14 +427,14 @@
                     </div>
                     <div class="navbar-collapse collapse">
                         <div class="navbar-collapse collapse">
-                            <div class="navbar-collapse collapse">
-                                <ul class="nav navbar-nav">
-                                    <li><a href="#menu" class="link_menu">Menu</a></li>
-                                    <li class="active"><a href="${url}">Dashboard</a></li>
-                                    
-                                    <li><a href="#contato">Contato</a></li>
-                                    <li><a class="btn_up_cache" href="#"> <i class="fa fa-refresh"></i>&nbsp;&nbsp;Atualizar Cache da aplicação</a></li>
-                                    <li><a class="btn_sair" href="${url}/sair">Sair</a></li>
+                            <ul class="nav navbar-nav">
+                                <li><a href="#menu" class="link_menu">Menu</a></li>
+                                <li class="active"><a href="${url}">Dashboard</a></li>
+                                <li><a href="#ajuda">Ajuda</a></li>
+                                <li><a href="${url}/meus-dados">Meus Dados</a></li>
+                                <li><a href="${url}/minha-senha">Minha senha</a></li>
+                                <li><a class="btn_up_cache" href="#"> <i class="fa fa-refresh"></i>&nbsp;&nbsp;Atualizar Cache da aplicação</a></li>
+                                <li><a class="btn_sair" href="${url}/sair">Sair</a></li>
 
                                 <li class="button dropdown">
                                     <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
@@ -526,22 +515,19 @@
                     <div class="page-head">
                         <h2><i class="fa ${currentFuncionalidadeBean.icone}"></i> Instore ${currentFuncionalidadeBean.nome}</h2>
 
-                            <div style="float: right; margin-top: -40px; margin-right: 7px;">
-                                <jsp:invoke fragment="submenu" /> 
-                            </div>
-                        </div>		
-                        <style type="text/css">
-                            .show-case{margin-bottom:50px;}
-                            .show-case img{max-width:362px;width:100%;}
-                        </style>
-                        <div class="cl-mcont">                              
-                            <jsp:doBody />
-                            
+                        <div style="float: right; margin-top: -40px; margin-right: 7px;">
+                            <jsp:invoke fragment="submenu" /> 
                         </div>
-                              
-                    </div> 
-                           
-                      
+                    </div>		
+                    <style type="text/css">
+                        .show-case{margin-bottom:50px;}
+                        .show-case img{max-width:362px;width:100%;}
+                    </style>
+                    <div class="cl-mcont"> 
+                        <jsp:doBody />
+                    </div>
+                </div> 
+
             </div>
         </div>
 
@@ -561,19 +547,17 @@
             <div class="clearfix"></div>
             <br /><br /><br />
 
-                <ul class="navv">
-                    ${menu}
-                </ul>
-            </div>
-                
-                
-            <style>
-                .desfoc {
-                    -webkit-filter: blur(5px);
-                    -moz-filter: blur(5px);
-                    -ms-filter: blur(5px);
-                    -o-filter: blur(5px);
-                    filter: blur(5px);
+            <ul class="navv">
+                ${menu}
+            </ul>
+        </div>
+        <style>
+            .desfoc {
+                -webkit-filter: blur(5px);
+                -moz-filter: blur(5px);
+                -ms-filter: blur(5px);
+                -o-filter: blur(5px);
+                filter: blur(5px);
 
                 opacity: 0.7;
             }
@@ -741,8 +725,14 @@
                         jQuery('body').css('overflow', 'auto');
                     }
                 });
-            </script>
-          
-        </body>
-    </html>
-</compress:html>
+                jQuery('.mask__menu ._close').on('click', function(e) {
+                    jQuery('.enfoc').removeClass('desfoc');
+                    jQuery('.mask__menu').hide();
+                    jQuery('body').css('overflow', 'auto');
+                });
+            });
+        </script>
+    </body>
+</html>
+
+
