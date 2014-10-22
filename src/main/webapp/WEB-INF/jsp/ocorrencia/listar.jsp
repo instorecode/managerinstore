@@ -3,7 +3,7 @@
 
 <instore:template isGrid="false">
     <jsp:body> 
-       
+
         <c:set scope="session" var="form_access" value="${false}"></c:set>
         <c:set scope="session" var="update_access" value="${false}"></c:set>
         <c:set scope="session" var="delete_access" value="${false}"></c:set>
@@ -101,7 +101,7 @@
 
         <!--ATUALIZAR-->
         <div class="edit">
-            
+
 
         </div>
 
@@ -136,15 +136,15 @@
                     &nbsp; Aguarde, processando dados...
                 </div>
             </div>
-           
+
             <a href="${url}/ocorrencia/cadastrar" class="btn btn-default btn-flat " style="margin-left: 0px;"><i class="fa fa-save"></i> Cadastrar</a>
 
             <div class="btn-group">
                 <button type="button" class="btn btn-default dropdown-toggle btn-flat" data-toggle="dropdown">
                     Qtd.<span class="caret"></span>
                 </button> 
-                
-                
+
+
                 <ul class="dropdown-menu qtd" role="menu">
                     <li><a href="10">10</a></li>
                     <li><a href="20">20</a></li>
@@ -171,19 +171,31 @@
                         size="0"
                         rows="10"
                         pk="id"
-                        btn-edit-onclick="javascript:window.location.href='${url}/ocorrencia/atualizar/[[__PK__]]'"> 
+                        btn-edit-onclick="javascript:window.location.href='${url}/ocorrencia/atualizar/[[__PK__]]'"
+                        rowSelectable="false"> 
+                    
                     <thead>
                         <tr>
                             <th options="true" class="options">#</th>
-                            <th field="descricao" options="false">Descrição</th>
-                            <th field="usuario" options="false" isfk="true" fk="idusuario" fklabel="nome" fklabelselect="Todos" fkurl="${url}/ocorrencia?usuario=true">Usuário</th>
                             <th field="cliente" options="false" isfk="true" fk="idcliente" fklabel="nome" fklabelselect="Todos" fkurl="${url}/ocorrencia?clientes=true">Cliente</th>
-                            <th field="statusNome" options="false" isfk="true" fk="idstatus" fklabel="descricao" fklabelselect="Todos" fkurl="${url}/ocorrencia?status=true">Situação</th>
+                            <th field="usuario" options="false" isfk="true" fk="idusuario" fklabel="nome" fklabelselect="Todos" fkurl="${url}/ocorrencia?usuario=true">Usuário</th>
+                            <th onColumnRender="onColumnRender" field="statusNome" options="false" isfk="true" fk="idstatus" fklabel="descricao" fklabelselect="Todos" fkurl="${url}/ocorrencia?status=true">Situação</th>
                             <th field="prioridade" options="false" isfk="true" fk="idprioridade" fklabel="descricao" fklabelselect="Todos" fkurl="${url}/ocorrencia?prioridade=true">Prioridade</th>
                         </tr>
                     </thead>
                 </table>
             </div>
         </div>
+
+        <script type="text/javascript">
+            function onColumnRender(item, self){
+                self.css({
+                    'background-color' : item.statusCor + ' !important',
+                    'background' : item.statusCor + ' !important',
+                    'color': '#FFF',
+                    'font-weight':'bold'
+                });
+            }
+        </script>
     </jsp:body>
 </instore:template>

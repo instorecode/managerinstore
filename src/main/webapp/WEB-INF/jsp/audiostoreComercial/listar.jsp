@@ -8,7 +8,7 @@
         <c:set scope="session" var="form_access" value="${false}"></c:set>
         <c:set scope="session" var="update_access" value="${false}"></c:set>
         <c:set scope="session" var="delete_access" value="${false}"></c:set>
- 
+
         <c:forEach items="${funcionalidadeBeanList}" var="func">
             <c:if test="${func.mappingId eq '/audiostore-comercial/cadastrar'}">
                 <c:set scope="session" var="form_access" value="${true}"></c:set>
@@ -24,10 +24,7 @@
         </c:forEach>
 
         <!--FORM-->
-        <div class="form">
-            
-        </div>
-
+        <div class="form"></div>
 
         <!--VIEW-->
         <div class="view"> 
@@ -36,11 +33,6 @@
             <hr />
             <ol class="view_itens" type="i">
                 <li>
-                    <strong>Identificador</strong>
-                    <br />
-                    <small field="codigo"></small>
-                </li>
-                <li>
                     <strong>Cliente</strong>
                     <br />
                     <small field="clienteNome"></small>
@@ -48,27 +40,27 @@
                 <li>
                     <strong>Categoria</strong>
                     <br />
-                    <small field="programacao"></small>
+                    <small field="categoriaNome"></small>
                 </li>
                 <li>
-                    <strong>Data inicial</strong>
+                    <strong>1º Dependencia</strong>
                     <br />
-                    <small field="dataInicio"></small>
+                    <small field="dependencia1"></small>
                 </li>
                 <li>
-                    <strong>Data final</strong>
+                    <strong>2º Dependencia</strong>
                     <br />
-                    <small field="dataFinal"></small>
+                    <small field="dependencia3"></small>
                 </li>
                 <li>
-                    <strong>Duração</strong>
+                    <strong>3º Dependencia</strong>
                     <br />
-                    <small field="tempo"></small>
+                    <small field="dependencia3"></small>
                 </li>
                 <li>
-                    <strong>Tipo</strong>
+                    <strong>Dias alternados</strong>
                     <br />
-                    <small field="tipo"></small>
+                    <small field="diasAlternados"></small>
                 </li>
             </ol>
         </div>
@@ -76,8 +68,9 @@
 
         <!--ATUALIZAR-->
         <div class="edit">
-           
 
+            <form name="FORM_ATUALIZAR_[[__PK__]]" method="POST" data-formtable="true" action="${url}/audiostore-comercial/atualizar/[[__PK__]]">
+        </form>
         </div>
 
         <!--DELETE-->
@@ -127,12 +120,15 @@
                     <li><a href="100">100</a></li>
                 </ul>
             </div>
-            <button type="button" class="btn btn-default btn-flat btn_export" style="display: none;"><i class="fa fa-upload"></i> Exportar arquivo </button>
-            <div class="addon" style="display: none;">
+            <button type="button" class="btn btn-default btn-flat btn_export btn_export1" style="display: none;"><i class="fa fa-upload"></i> Exportar arquivo </button>
+            <button type="button" class="btn btn-default btn-flat btn_export btn_export2" style="display: none;"><i class="fa fa-upload"></i> Exportar arquivo com audio</button>
+<!--            <div class="addon" style="display: none;">
                 <a href="${url}/audiostore-comercial/cadastrar?clonar=[[__PK__]]" class="btn btn-default btn-flat btn-xs" id="clonar" ><i class="fa fa-repeat"></i></a>
-            </div>
+            </div>-->
+            
             &nbsp;
             &nbsp;
+            
             <div class="btn-group">
                 <button class="btn btn-default btn-flat _prev"> <i class="fa fa-angle-double-left"></i> </button>
                 <button class="btn btn-default btn-flat prev"> <i class="fa fa-angle-left"></i> </button>
@@ -141,6 +137,7 @@
                 <button type="button" class="btn btn-default btn-flat btn_refresh"><i class="fa fa-refresh"></i></button>
                 <span class="pag_info">Página 0 de 0</span>
             </div>
+            
             <div class="content">
                 <table  id="table" 
                         class="xtable" 
@@ -156,7 +153,7 @@
                             <th options="true" class="options">#</th>
                             <th field="titulo" options="false">Título</th>
                             <th field="arquivo" options="false">Arquivo</th>
-                           
+
                             <!--<th field="tempo" options="false">Duração</th>-->
                         </tr>
                     </thead>
@@ -178,7 +175,7 @@
 
         <script type="text/javascript">
             jQuery(document).ready(function() {
-                
+
                 jQuery(document).on("selected", ".row_data", function(evt, item) {
                     jQuery('.btn_export').show();
                 }).on("unselected", ".row_data", function(evt, item) {
@@ -187,35 +184,78 @@
                     }
                 });
 
-                jQuery('.btn_export').on("click", function() {
+                jQuery('.btn_export1').on("click", function() {
                     msg_fadeIn();
                     if (countRowsSelected() <= 0) {
                         bootbox.alert("Selecione no minimo um registro na tabela.", function() {
                         });
                     } else {
-                        
+
                         var arr = rowsSelected();
                         var id_list = new Array();
                         for (i in arr) {
                             var item = arr[i];
                             id_list[i] = item.id;
                         }
+
                         jQuery.ajax({
+                            async: false,
                             type: 'POST',
-                            url : '${url}/audiostore-comercial/vld-comm',
-                            data:{ id_list : id_list },
-                            success : function(json){
-                                if(!json.success) {
+                            url: '${url}/audiostore-comercial/vld-comm',
+                            data: {id_list: id_list, exp_arquivo_audio: false},
+                            success: function(json) {
+                                if (!json.success) {
                                     dialogAjax(json.response);
-                                } else {
-                                    
+                                    window.location.reload();
                                 }
+                            },
+                            error: function(error) {
+                                console.log(error);
+                                window.location.reload();
                             }
                         });
                     }
-                    msg_fadeOut();
+                    setTimeout(function() {
+                        msg_fadeOut();
+                    }, 2000);
                 });
-                
+
+                jQuery('.btn_export2').on("click", function() {
+                    msg_fadeIn();
+                    if (countRowsSelected() <= 0) {
+                        bootbox.alert("Selecione no minimo um registro na tabela.", function() {
+                        });
+                    } else {
+
+                        var arr = rowsSelected();
+                        var id_list = new Array();
+                        for (i in arr) {
+                            var item = arr[i];
+                            id_list[i] = item.id;
+                        }
+
+                        jQuery.ajax({
+                            async: false,
+                            type: 'POST',
+                            url: '${url}/audiostore-comercial/vld-comm',
+                            data: {id_list: id_list, exp_arquivo_audio: true},
+                            success: function(json) {
+                                if (!json.success) {
+                                    dialogAjax(json.response);
+                                    window.location.reload();
+                                }
+                            },
+                            error: function(error) {
+                                console.log(error);
+                                window.location.reload();
+                            }
+                        });
+                    }
+                    setTimeout(function() {
+                        msg_fadeOut();
+                    }, 2000);
+                });
+
             });
         </script>
     </jsp:body>

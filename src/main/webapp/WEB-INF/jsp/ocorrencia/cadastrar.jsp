@@ -18,7 +18,17 @@
                 <div class="col-md-12">
                     <div class="form-group">
                         <label>Descrição</label>
-                        <textarea class="form-control" name="ocorrenciaBean.descricao" rows="10" data-rule-required="true">${ocorrenciaBean.descricao}</textarea>
+                        
+                        <div class="block-flat">
+                            <div class="header">							
+                                <h3>Letra</h3>
+                            </div>
+                            <div class="content">
+                                <!--<textarea class="ckeditor form-control"  name="musicaGeralBean.letra" class="form-control" style="height: 150px;">${musicaGeralBean.letra}</textarea>-->
+                                <textarea class="ckeditor form-control" name="ocorrenciaBean.descricao" rows="10" data-rule-required="true">${ocorrenciaBean.descricao}</textarea>
+                            </div>
+                        </div>
+                        
                     </div>
                 </div>
                 <div class="col-md-4">

@@ -663,7 +663,7 @@ function formProccess() {
                             if (notify == 0) {
 
                             } else {
-                                jQuery.avisar();
+//                                jQuery.avisar();
                             }
 
                             if (data_success_url != null && data_success_url != undefined && data_success_url != '') {
