@@ -4,7 +4,6 @@
 <instore:template  menucolapse="false" isGrid="false">
     <jsp:attribute name="submenu">
         <div class="btn-group">
-            <a href="${url}/musica/cadastrar" class="btn btn-default btn-flat btn_exp_arquivo" style="display: none;"> <i class="fa fa-upload"></i> Exportar arquivo</a>
             <a href="${url}/musica/cadastrar" class="btn btn-default btn-flat"> <i class="fa fa-save"></i></a>
             <a href="#" class="btn btn-default btn-flat" data-toggle="modal" data-target="#modal_sincronizacao" > <i class="fa fa-download"></i></a>
         </div>
@@ -452,6 +451,7 @@
 
                 <button type="submit" class="btn btn-default btn-flat"> Filtrar </button>
                 <a href="${url}/musica" class="btn btn-default btn-flat"> Limpar Filtro </a>
+                <a href="${url}/musica/cadastrar" class="btn btn-default btn-flat btn_exp_arquivo" style="display: none;">Criar musicas audiostore</a>
 
                 <div class="table-responsive">
                     <table class="no-border __tabela">
@@ -640,25 +640,30 @@
                 jQuery('.btn_exp_arquivo').on("click", function() {
                     var selected_line = tabela.children('tbody').children('tr.tr__selected').size();
                     var selected_cliente = jQuery.storage('matriz_selecionada');
-                    if ( null != selected_line && undefined != selected_line && selected_line > 0
-                         && null != selected_cliente && undefined != selected_cliente && '' != selected_cliente ) {
-                        var id_list = [];
-                        var i = 0;
+                    if ( !(null != selected_line && undefined != selected_line && selected_line > 0) ) {
+                        bootbox.alert("Selecione uma  ou mais músicas!", function(){});
+                    }
 
-                        tabela.children('tbody').children('tr.tr__selected').each(function() {
-                            var tr = jQuery(this);
-                            id_list[i] = tr.data('itemId');
-                            i++;
-                        });
-                        
-                        jQuery.ajax({
-                            type: 'POST',
-                            url : '${url}/musica/vld-msc',
-                            data:{ id_list : id_list, idcliente : selected_cliente },
-                            success : function(json){
-                                dialogAjax(json.response);
-                            }
-                        });
+                    if ( !(null != selected_cliente && undefined != selected_cliente && selected_cliente > 0) ) {
+                        bootbox.alert("Selecione um cliente!", function(){});
+                    }
+                    
+                    
+                    var id_list = '';
+                    var comma = '';
+
+                    tabela.children('tbody').children('tr.tr__selected').each(function() {
+                        var tr = jQuery(this);
+                        id_list += comma + tr.data('itemId');
+                        comma = ',';
+                    });
+                    
+                    id_list += comma + selected_cliente;
+                    
+                    if ((null != selected_line && undefined != selected_line && selected_line > 0) && (null != selected_cliente && undefined != selected_cliente && selected_cliente > 0)) {
+                        var ____url = '${url}/musica/programacao-audiostore/cadastrar/';
+                        ____url += id_list;
+                        window.location.href = ____url;
                     }
                     return false;
                 });

@@ -179,8 +179,8 @@
                             <th options="true" class="options">#</th>
                             <th field="cliente" options="false" isfk="true" fk="idcliente" fklabel="nome" fklabelselect="Todos" fkurl="${url}/ocorrencia?clientes=true">Cliente</th>
                             <th field="usuario" options="false" isfk="true" fk="idusuario" fklabel="nome" fklabelselect="Todos" fkurl="${url}/ocorrencia?usuario=true">Usuário</th>
-                            <th onColumnRender="onColumnRender" field="statusNome" options="false" isfk="true" fk="idstatus" fklabel="descricao" fklabelselect="Todos" fkurl="${url}/ocorrencia?status=true">Situação</th>
-                            <th field="prioridade" options="false" isfk="true" fk="idprioridade" fklabel="descricao" fklabelselect="Todos" fkurl="${url}/ocorrencia?prioridade=true">Prioridade</th>
+                            <th onColumnRender="onColumnRender" field="statusNome" options="false" isfk="true" fk="id" fkfilter="idstatus" fklabel="descricao" fklabelselect="Todos" fkurl="${url}/ocorrencia?status=true">Situação</th>
+                            <th field="prioridade" options="false" isfk="true" fk="id" fkfilter="idprioridade" fklabel="descricao" fklabelselect="Todos" fkurl="${url}/ocorrencia?prioridade=true">Prioridade</th>
                         </tr>
                     </thead>
                 </table>

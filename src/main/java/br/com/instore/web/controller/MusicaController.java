@@ -150,7 +150,7 @@ public class MusicaController implements java.io.Serializable {
 
     @Post
     @Path("/musica/vld-msc")
-    public void validarMsc(Integer[] id_list, Integer idcliente) {
-        requestMusicaGeral.validarMsc(id_list,idcliente); 
+    public void validarMsc(Integer[] id_list  , Boolean exp_arquivo_audio) {
+        requestMusicaGeral.validarMsc(id_list,exp_arquivo_audio); 
     }
 }

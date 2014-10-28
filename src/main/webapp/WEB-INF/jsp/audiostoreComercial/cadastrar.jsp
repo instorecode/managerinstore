@@ -43,21 +43,7 @@
             </script>
 
             <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label>Descrição</label>
-                        
-                        <div class="block-flat">
-                            <div class="header">							
-                                <h3>Letra</h3>
-                            </div>
-                            <div class="content"> 
-                                <textarea class="ckeditor form-control" name="audiostoreComercialBean.texto" rows="10" data-rule-required="true">${audiostoreComercialBean.texto}</textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                            
+
                 <div class="col-md-3"> 
                     <div class="form-group">
                         <label>Cliente</label>
@@ -111,7 +97,7 @@
                     <div class="form-group">
                         <label>Categoria</label> 
                         <br />
-                        <select   class="form-control" name="audiostoreComercialBean.audiostoreCategoria.codigo" data-rule-required="true" >
+                        <select class="form-control" name="audiostoreComercialBean.audiostoreCategoria.codigo" data-rule-required="true" >
                             <c:forEach items="${categoriaBeanList}" var="cat">
                                 <option value="${cat.codigo}" ${audiostoreComercialBean.audiostoreCategoria.codigo eq cat.codigo ? 'selected="selected"':''}>${cat.categoria}</option> 
                             </c:forEach>
@@ -243,6 +229,43 @@
                             <option value="${true}" ${audiostoreComercialBean.diasAlternados eq true ? 'selected="selected"' : ''}>Sim</option>
                             <option value="${false}" ${audiostoreComercialBean.diasAlternados eq null or audiostoreComercialBean.diasAlternados eq false ? 'selected="selected"' : ''}>Não</option>
                         </select>
+                    </div>
+                </div>
+                
+                        <div class="col-md-2">
+                    <div class="form-group">
+                        <label>Sem som?</label>
+                        <br />
+                        <select name="audiostoreComercialBean.semSom" class="form-control"  data-rule-required="true">
+                            <option value="${true}" ${audiostoreComercialBean.semSom eq true ? 'selected="selected"' : ''}>Sim</option>
+                            <option value="${false}" ${audiostoreComercialBean.semSom eq null or audiostoreComercialBean.semSom eq false ? 'selected="selected"' : ''}>Não</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <div class="block-flat">
+                            <div class="header">							
+                                <h3>Letra</h3>
+                            </div>
+                            <div class="content"> 
+                                <textarea class="ckeditor form-control" name="audiostoreComercialBean.texto" rows="10" data-rule-required="true">${audiostoreComercialBean.texto}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <div class="block-flat">
+                            <div class="header">							
+                                <h3>Mensagem</h3>
+                            </div>
+                            <div class="content"> 
+                                <textarea class="ckeditor form-control" name="audiostoreComercialBean.msg" rows="10" data-rule-required="true">${audiostoreComercialBean.msg}</textarea>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

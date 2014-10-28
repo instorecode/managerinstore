@@ -1,18 +1,5 @@
 package br.com.instore.web.dto;
 
-import br.com.instore.core.orm.bean.AudiostoreCategoriaBean;
-import br.com.instore.core.orm.bean.AudiostoreComercialShBean;
-import br.com.instore.core.orm.bean.ClienteBean;
-import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
 public class AudiostoreMusicaDTO extends AbstractDTO {
     private String id;
     private String gravadora;
@@ -47,13 +34,14 @@ public class AudiostoreMusicaDTO extends AbstractDTO {
     private String msg;
     private String semSom;
     private String superCrossover;
-
-    public AudiostoreMusicaDTO() {
-    }
-
-    public AudiostoreMusicaDTO(String id) {
-        this.id = id;
-    }
+    private Integer idcliente;
+    private String nomeCliente;
+    private String nome;
+    private String idcategoria;
+    private String nomeCategoria;
+    private String idCategoriaArquivo;
+    private String nomeCategoriaArquivo;
+    private String letra;
 
     public String getId() {
         return id;
@@ -317,5 +305,69 @@ public class AudiostoreMusicaDTO extends AbstractDTO {
 
     public void setSuperCrossover(String superCrossover) {
         this.superCrossover = superCrossover;
+    }
+
+    public Integer getIdcliente() {
+        return idcliente;
+    }
+
+    public void setIdcliente(Integer idcliente) {
+        this.idcliente = idcliente;
+    }
+
+    public String getNomeCliente() {
+        return nomeCliente;
+    }
+
+    public void setNomeCliente(String nomeCliente) {
+        this.nomeCliente = nomeCliente;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getIdcategoria() {
+        return idcategoria;
+    }
+
+    public void setIdcategoria(String idcategoria) {
+        this.idcategoria = idcategoria;
+    }
+
+    public String getNomeCategoria() {
+        return nomeCategoria;
+    }
+
+    public void setNomeCategoria(String nomeCategoria) {
+        this.nomeCategoria = nomeCategoria;
+    }
+
+    public String getIdCategoriaArquivo() {
+        return idCategoriaArquivo;
+    }
+
+    public void setIdCategoriaArquivo(String idCategoriaArquivo) {
+        this.idCategoriaArquivo = idCategoriaArquivo;
+    }
+
+    public String getNomeCategoriaArquivo() {
+        return nomeCategoriaArquivo;
+    }
+
+    public void setNomeCategoriaArquivo(String nomeCategoriaArquivo) {
+        this.nomeCategoriaArquivo = nomeCategoriaArquivo;
+    }
+
+    public String getLetra() {
+        return letra;
+    }
+
+    public void setLetra(String letra) {
+        this.letra = letra;
     }
 }
