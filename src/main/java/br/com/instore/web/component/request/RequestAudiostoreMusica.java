@@ -3,6 +3,7 @@ package br.com.instore.web.component.request;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.observer.download.InputStreamDownload;
 import br.com.caelum.vraptor.view.Results;
+import br.com.instore.core.orm.Each;
 import br.com.instore.core.orm.Query;
 import br.com.instore.core.orm.bean.AudiostoreCategoriaBean;
 import br.com.instore.core.orm.bean.AudiostoreGravadoraBean;
@@ -13,6 +14,8 @@ import br.com.instore.core.orm.bean.MusicaGeralBean;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.dto.AudiostoreCategoriaDTO;
+import br.com.instore.web.dto.AudiostoreMusicaDTO;
+import br.com.instore.web.dto.AudiostoreMusicaJSON;
 import br.com.instore.web.dto.CadastroMusicaDTO;
 import br.com.instore.web.dto.Mdto;
 import br.com.instore.web.dto.MusicaDTO;
@@ -20,8 +23,11 @@ import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +56,97 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         this.result = result;
         this.sessionUsuario = sessionUsuario;
     }
+
+    public void cadastrar(String idmusicaGeral) {
+        if (null != idmusicaGeral) {
+            if ("#".equals(idmusicaGeral.trim())) {
+            }
+
+            if (!"#".equals(idmusicaGeral.trim())) {
+                List<String> idStrList = Arrays.asList(idmusicaGeral.trim().split(","));
+                List<Integer> idList = new ArrayList<Integer>();
+                for (String id : idStrList) {
+                    if (null != id && !id.trim().isEmpty()) {
+                        idList.add(Integer.parseInt(id.trim()));
+                    }
+                }
+
+                Integer idcliente = idList.get(idList.size() - 1);
+                ClienteBean clienteBean = repository.find(ClienteBean.class, idcliente);
+                result.include("categoriaList", categoriasByCliente2(idcliente));
+                result.include("clienteBean", clienteBean);
+                result.include("mgIdList", idList);
+                List<MusicaGeralBean> lista = loadMusicaGeralList(idList);
+                List<MusicaGeralItem> listaFinal = new ArrayList<MusicaGeralItem>();
+                List<AudiostoreMusicaBean> audiostoreMusicaBeanList = repository.query(AudiostoreMusicaBean.class).in("musicaGeral", idList.toArray(new Integer[idList.size()])).findAll();
+                
+                
+                for(MusicaGeralBean bean: lista) {
+                    MusicaGeralItem item = new MusicaGeralItem();
+                    item.setExiste(false);
+                    for (AudiostoreMusicaBean bean2 : audiostoreMusicaBeanList) {
+                        if (bean2.getMusicaGeral().equals(bean.getId())) {
+                            item.setExiste(true);
+                            break;
+                        }
+                    }
+                    item.setter(bean.getId(), 
+                                bean.getCategoriaGeral(), 
+                                bean.getUsuario(), 
+                                bean.getGravadora(), 
+                                bean.getTitulo(), 
+                                bean.getInterprete(), 
+                                bean.getTipoInterprete(), 
+                                bean.getLetra(), 
+                                bean.getTempoTotal(), 
+                                bean.getAnoGravacao(), 
+                                bean.getAfinidade1(), 
+                                bean.getAfinidade2(), 
+                                bean.getAfinidade3(), 
+                                bean.getAfinidade4(), 
+                                bean.getArquivo());
+                    listaFinal.add(item);
+                }
+                result.include("musicaGeralList", listaFinal);
+            }
+        }
+    }
     
+    
+    public class MusicaGeralItem extends MusicaGeralBean {
+        private Boolean existe;
+
+        public Boolean getExiste() {
+            return existe;
+        }
+
+        public void setExiste(Boolean existe) {
+            this.existe = existe;
+        }
+        
+        public void setter(Object ... values) {
+            setId(Integer.parseInt(values[0].toString()));
+            setCategoriaGeral(Integer.parseInt(values[1].toString()));
+            setUsuario(Integer.parseInt(values[2].toString()));
+            setGravadora(Integer.parseInt(values[3].toString()));
+            setTitulo(values[4].toString());
+            setInterprete(values[5].toString());
+            setTipoInterprete(Short.parseShort(values[6].toString()));
+            setLetra(values[7].toString());
+            setTempoTotal(values[8].toString());
+            setAnoGravacao(Integer.parseInt(values[9].toString()));
+            setAfinidade1(values[10].toString());
+            setAfinidade2(values[11].toString());
+            setAfinidade3(values[12].toString());
+            setAfinidade4(values[13].toString());
+            setArquivo(values[14].toString());
+        }
+    }
+    
+    public List<MusicaGeralBean> loadMusicaGeralList(List<Integer> idList) {
+        return repository.query(MusicaGeralBean.class).in("id", idList.toArray(new Integer[idList.size()])).findAll();
+    }
+
     public long totalRegistros() {
         return repository.query(MusicaGeralBean.class).count();
     }
@@ -62,59 +158,155 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
     public long totalPaginas(long totalRegistros, long totalRegistrosPorPagina) {
         return (long) Math.ceil((double) totalRegistros / totalRegistrosPorPagina);
     }
-    
-    public void beanList(Integer id,  int pagina , int qtd, int order ,  AudiostoreMusicaBean filtro ) {
-        
-         if (pagina == 0) {
-            pagina = 1;
-        }
 
-        if (qtd == 0) {
-            qtd = 10;
-        }
+    public void beanList(Boolean datajson, Boolean view, Integer page, Integer rows, Integer id, Integer idcliente, String nome, Integer codigo, Integer idCategoriaArquivo, String letra) {
+        System.out.println("FILTROS");
+        System.out.println("================================================");
+        System.out.println("DATAJSON: " + datajson);
+        System.out.println("VIEW: " + view);
+        System.out.println("PAGE: " + page);
+        System.out.println("ROWS: " + rows);
+        System.out.println("ID: " + id);
+        System.out.println("IDCLIENTE: " + idcliente);
+        System.out.println("NOME: " + nome);
+        System.out.println("CODIGO: " + codigo);
+        System.out.println("ID CATEGORIA ARQUIVO: " + idCategoriaArquivo);
+        System.out.println("LETRA: " + letra);
+        System.out.println("================================================");
 
-        if (order == 0) {
-            order = 10;
-        }
-        
-        long totalRegistrosPorPagina = Long.parseLong("" + qtd);
-        
-        Integer end = pagina * (int) totalRegistrosPorPagina;
-        Integer begin = end - (int) totalRegistrosPorPagina;
-        
+        AudiostoreMusicaJSON json = new AudiostoreMusicaJSON();
         List<AudiostoreMusicaBean> lista = new ArrayList<AudiostoreMusicaBean>();
-        
-        Query query = repository.query(AudiostoreMusicaBean.class).eq("musicaGeral", id);
-        Query query2 = repository.query(AudiostoreMusicaBean.class).eq("musicaGeral", id);
-        
-        if(null != filtro) {
-            if(null != filtro.getCliente() && null != filtro.getCliente().getIdcliente() && filtro.getCliente().getIdcliente() > 0) {
-                query.eq("cliente.idcliente", filtro.getCliente().getIdcliente());
-                query2.eq("cliente.idcliente", filtro.getCliente().getIdcliente());
-            }
-            
-            if(null != filtro.getCategoria1()&& null != filtro.getCategoria1().getCodigo() && filtro.getCategoria1().getCodigo() > 0) {
-                query.eq("categoria1.codigo", filtro.getCategoria1().getCodigo())
-                     .or()
-                     .eq("categoria2.codigo", filtro.getCategoria1().getCodigo());
-                query2.eq("categoria1.codigo", filtro.getCategoria1().getCodigo())
-                     .or()
-                     .eq("categoria2.codigo", filtro.getCategoria1().getCodigo());
-            }
-        
-        }
-        query.limit(begin, qtd);
-        lista = query.findAll();
-        long totalRegistros = query2.count();
-        long totalPaginas = totalPaginas(totalRegistros, totalRegistrosPorPagina);
-        
-        result.include("totalRegistros", totalRegistros);
-        result.include("totalRegistrosPorPagina", totalRegistrosPorPagina);
-        result.include("totalPaginas", totalPaginas);
-        result.include("paginaAtual", pagina);
-        
-        result.include("audiostoreMusicaBeanList", lista);
 
+        page = (null == page || 0 == page ? 1 : page);
+        rows = (null == rows || 0 == rows ? 10 : rows);
+        Integer offset = (page - 1) * rows;
+
+        Query q1 = repository.query(AudiostoreMusicaBean.class);
+        Query q2 = repository.query(AudiostoreMusicaBean.class);
+
+
+        String querySQL1 = "";
+        String querySQL2 = "";
+        querySQL1 = " select \n"
+                + "     audiostore_musica.id as id_musica,\n"
+                + "	 '' as param\n"
+                + " from\n"
+                + "     audiostore_musica\n"
+                + " inner join musica_geral on musica_geral.id = audiostore_musica.musica_geral\n"
+                + " inner join cliente on cliente.idcliente = audiostore_musica.cliente\n"
+                + " left join categoria_musica_geral on categoria_musica_geral.musica = musica_geral.id\n"
+                + " left join categoria_geral on categoria_geral.id = categoria_musica_geral.categoria\n"
+                + " where audiostore_musica.id is not null";
+
+        querySQL2 = " select sum(__count) as count , '' as param from ( \n"
+                + " 	 select \n"
+                + "		 count(distinct audiostore_musica.id) as __count\n"
+                + "	 from\n"
+                + "		 audiostore_musica\n"
+                + "	 inner join musica_geral on musica_geral.id = audiostore_musica.musica_geral\n"
+                + "	 inner join cliente on cliente.idcliente = audiostore_musica.cliente\n"
+                + "	 left join categoria_musica_geral on categoria_musica_geral.musica = musica_geral.id\n"
+                + "	 left join categoria_geral on categoria_geral.id = categoria_musica_geral.categoria\n"
+                + "	 where audiostore_musica.id is not null [[MAIS_WHERE]]\n"
+                + "	 group by audiostore_musica.id\n"
+                + " ) as t";
+
+
+        if (null != idcliente && idcliente > 0) {
+            querySQL1 += " and audiostore_musica.cliente = " + idcliente + " \n";
+            querySQL2 = querySQL2.replace("[[MAIS_WHERE]]", " and audiostore_musica.cliente = " + idcliente + " [[MAIS_WHERE]] \n");
+            json.setIdcliente(idcliente);
+        }
+
+        if (null != nome && !nome.trim().isEmpty()) {
+            querySQL1 += " and musica_geral.titulo like '%" + nome + "%' \n";
+            querySQL2 = querySQL2.replace("[[MAIS_WHERE]]", " and musica_geral.titulo like '%" + nome + "%' [[MAIS_WHERE]] \n");
+            json.setNome(nome);
+        }
+
+        if (null != codigo && codigo > 0) {
+            querySQL1 += " and (audiostore_musica.categoria1 = " + codigo + "";
+            querySQL1 += " or audiostore_musica.categoria2 = " + codigo + ") \n";
+            querySQL2 = querySQL2.replace("[[MAIS_WHERE]]", " and (audiostore_musica.categoria1 = " + codigo + " [[MAIS_WHERE]]");
+            querySQL2 = querySQL2.replace("[[MAIS_WHERE]]", " or audiostore_musica.categoria2 = " + codigo + ") [[MAIS_WHERE]] \n");
+            json.setIdcategoria(codigo);
+        }
+
+        if (null != idCategoriaArquivo && idCategoriaArquivo > 0) {
+            querySQL1 += " and categoria_geral.id = " + idCategoriaArquivo + " \n";
+            querySQL2 = querySQL2.replace("[[MAIS_WHERE]]", " and categoria_geral.id = " + idCategoriaArquivo + " [[MAIS_WHERE]] \n");
+            json.setIdCategoriaArquivo(idCategoriaArquivo);
+        }
+
+        if (null != letra && !letra.trim().isEmpty()) {
+            querySQL1 += " and musica_geral.letra like '%" + letra + "%' \n";
+            querySQL2 = querySQL2.replace("[[MAIS_WHERE]]", " and musica_geral.letra like '%" + letra + "%' \"[[MAIS_WHERE]]\" \n");
+            json.setLetra(letra);
+        }
+        querySQL2 = querySQL2.replace("[[MAIS_WHERE]]", "");
+        querySQL1 += " group by audiostore_musica.id \n limit " + offset + "," + rows;
+
+        System.out.println("SQL_DUMP1 " + querySQL1);
+        System.out.println("SQL_DUMP2 " + querySQL2);
+
+        final List<BigDecimal> countBD = new ArrayList<BigDecimal>();
+        final List<Integer> idList = new ArrayList<Integer>();
+
+        repository.query(querySQL1).executeSQL(new Each() {
+            public Integer id_musica;
+            public String param;
+
+            @Override
+            public void each() {
+                idList.add(id_musica);
+            }
+        });
+
+        repository.query(querySQL2).executeSQL(new Each() {
+            public BigDecimal count;
+            public String param;
+
+            @Override
+            public void each() {
+                countBD.add(count);
+            }
+        });
+
+        Integer iniValue = 0;
+        if (null != countBD && !countBD.isEmpty()) {
+            if (null != countBD.get(0)) {
+                iniValue = countBD.get(0).intValue();
+            }
+        }
+
+        int size = iniValue / rows + ((q1.count().intValue() % rows == 0) ? 0 : 1);
+        json.setPage(page);
+        json.setSize(size);
+
+
+        if (null != idList && !idList.isEmpty()) {
+            lista = repository.query(AudiostoreMusicaBean.class).in("id", idList.toArray(new Integer[idList.size()])).findAll();
+        }
+
+        List<AudiostoreMusicaDTO> rowsList = new ArrayList<AudiostoreMusicaDTO>();
+
+        for (AudiostoreMusicaBean bean : lista) {
+            if (null != bean) {
+                MusicaGeralBean mgb = repository.find(MusicaGeralBean.class, bean.getMusicaGeral());
+                AudiostoreMusicaDTO dto = new AudiostoreMusicaDTO();
+
+                dto.setId(bean.getId().toString());
+                dto.setNome(mgb.getTitulo());
+                dto.setIdcliente(bean.getCliente().getIdcliente());
+                dto.setNomeCliente(bean.getCliente().getNome());
+                dto.setCategoria1(null != bean.getCategoria1() ? bean.getCategoria1().getCategoria() : "");
+                dto.setCategoria2(null != bean.getCategoria2() ? bean.getCategoria2().getCategoria() : "");
+                dto.setCategoria3(null != bean.getCategoria3() ? bean.getCategoria3().getCategoria() : "");
+                rowsList.add(dto);
+            }
+        }
+        json.setRows(rowsList);
+        result.use(Results.json()).withoutRoot().from(json).recursive().serialize();
     }
 
     public List<ClienteBean> clienteBeanList() {
@@ -122,17 +314,22 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         return clienteBeanList;
     }
 
+    public MusicaGeralBean musicaGeralBean(Integer id) {
+        MusicaGeralBean b = repository.find(MusicaGeralBean.class, id);
+        return b;
+    }
+
     public void categoriasByCliente(Integer id) {
         List<AudiostoreCategoriaBean> audiostoreCategoriaBeanList = repository.query(AudiostoreCategoriaBean.class).eq("cliente.idcliente", id).eq("tipo", new Short("1")).findAll();
         result.use(Results.json()).withoutRoot().from(audiostoreCategoriaBeanList).recursive().serialize();
     }
-    
+
     public List<AudiostoreCategoriaBean> categoriasByCliente2(Integer id) {
-        return repository.query(AudiostoreCategoriaBean.class).eq("cliente.idcliente", id).findAll();
+        return repository.query(AudiostoreCategoriaBean.class).eq("cliente.idcliente", id).eq("tipo", new Short("1")).findAll();
     }
-    
+
     public List<AudiostoreCategoriaBean> categorias() {
-        return repository.query(AudiostoreCategoriaBean.class).findAll();
+        return repository.query(AudiostoreCategoriaBean.class).eq("tipo", new Short("1")).findAll();
     }
 
     public List<AudiostoreGravadoraBean> gravadoraBeanList() {
@@ -144,55 +341,149 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         return repository.find(AudiostoreMusicaBean.class, id);
     }
 
-    public MusicaGeralBean musicaGeralBean(Integer id) {
+    public AudiostoreMusicaDTO bean2(Integer id) {
+        AudiostoreMusicaBean bean = repository.find(AudiostoreMusicaBean.class, id);
+        AudiostoreMusicaDTO dto = new AudiostoreMusicaDTO();
+
+        if (null != bean) {
+            MusicaGeralBean mgb = repository.find(MusicaGeralBean.class, bean.getMusicaGeral());
+            dto.setId(bean.getId().toString());
+            dto.setNome(mgb.getTitulo());
+            dto.setIdcliente(bean.getCliente().getIdcliente());
+            dto.setNomeCliente(bean.getCliente().getNome());
+            dto.setCategoria1(null != bean.getCategoria1() ? bean.getCategoria1().getCategoria() : "");
+            dto.setCategoria2(null != bean.getCategoria2() ? bean.getCategoria2().getCategoria() : "");
+            dto.setCategoria3(null != bean.getCategoria3() ? bean.getCategoria3().getCategoria() : "");
+            dto.setLetra(mgb.getLetra());
+        }
+
+        return dto;
+    }
+
+    public MusicaGeralBean mgBean(Integer id) {
         return repository.find(MusicaGeralBean.class, id);
     }
 
-    public void salvar(AudiostoreMusicaBean bean) {
+    public void salvar(AudiostoreMusicaBean[] beans) {
         try {
-            if (bean.getCrossover()) {
-                if (null == bean.getDataVencimentoCrossover()) {
-                    result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Se estiver usando crossover, é obrigatório informar a data de vencimento!")).recursive().serialize();
-                    return;
+            for (AudiostoreMusicaBean bean : beans) {
+                if (null == bean) {
+                    continue;
                 }
-            } else {
-                bean.setDataVencimentoCrossover(new Date());
-            }
 
-            if (null == bean.getCliente() || null == bean.getCliente().getIdcliente() || bean.getCliente().getIdcliente() <= 0) {
-                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Selecione um cliente!")).recursive().serialize();
-                return;
-            } else {
-                if (   (null == bean.getCategoria1() || null == bean.getCategoria1().getCodigo() || bean.getCategoria1().getCodigo() <= 0)
-                    && (null == bean.getCategoria2() || null == bean.getCategoria2().getCodigo() || bean.getCategoria2().getCodigo() <= 0) ) {
-                    result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Selecione uma categoria!")).recursive().serialize();
-                    return;
+                if (null == bean.getDiasExecucao1()) {
+                    bean.setDiasExecucao1(1);
                 }
-            }
-            
-            bean.setFrameInicio(0);
-            bean.setFrameFinal(0);
 
-            bean.setSemSom(Boolean.FALSE);
-            bean.setMsg("");
-            bean.setUltimaExecucaoData(bean.getUltimaExecucao());
-            bean.setQtde(bean.getQtdePlayer());
-            bean.setSuperCrossover(Boolean.FALSE);
-            bean.setRandom(new Random().nextInt());
+                if (null == bean.getDiasExecucao2()) {
+                    bean.setDiasExecucao2(1);
+                }
 
-            repository.setUsuario(sessionUsuario.getUsuarioBean());
-            
-            if (bean != null && bean.getId() != null && bean.getId() > 0) {    
-                repository.save(repository.marge(bean));
-            } else {
-                repository.save(bean);
+                if (null == bean.getCrossover()) {
+                    bean.setCrossover(Boolean.FALSE);
+                    bean.setDataVencimentoCrossover(new Date());
+                }
+
+                if (null == bean.getQtde()) {
+                    bean.setQtde(1);
+                }
+
+                if (null == bean.getQtdePlayer()) {
+                    bean.setQtdePlayer(1);
+                }
+
+                if (null == bean.getUltimaExecucao()) {
+                    bean.setUltimaExecucao(new Date());
+                }
+
+                if (null == bean.getUltimaExecucaoData()) {
+                    bean.setUltimaExecucaoData(new Date());
+                }
+
+                if (null == bean.getDataVencimento()) {
+                    bean.setDataVencimento(new SimpleDateFormat("yyyy-MM-dd").parse("2050-12-31"));
+                }
+
+                if (null == bean.getData()) {
+                    bean.setData(new Date());
+                }
+
+                if (bean.getCrossover()) {
+                    if (null == bean.getDataVencimentoCrossover()) {
+                        result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Se estiver usando crossover, é obrigatório informar a data de vencimento!")).recursive().serialize();
+                        return;
+                    }
+                } else {
+                    bean.setDataVencimentoCrossover(new Date());
+                }
+
+                if (null == bean.getCliente() || null == bean.getCliente().getIdcliente() || bean.getCliente().getIdcliente() <= 0) {
+                    result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Selecione um cliente!")).recursive().serialize();
+                    return;
+                } else {
+                    if ((null == bean.getCategoria1() || null == bean.getCategoria1().getCodigo() || bean.getCategoria1().getCodigo() <= 0)) {
+                        result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Catégoria primária é obrigatório!")).recursive().serialize();
+                        return;
+                    }
+                }
+
+                bean.setFrameInicio(0);
+                bean.setFrameFinal(0);
+
+                if (null == bean.getMsg()) {
+                    bean.setMsg("");
+                }
+
+                if (null == bean.getSemSom()) {
+                    bean.setSemSom(Boolean.FALSE);
+                }
+
+                bean.setUltimaExecucaoData(bean.getUltimaExecucao());
+                bean.setQtde(bean.getQtdePlayer());
+                bean.setSuperCrossover(Boolean.FALSE);
+                bean.setRandom(new Random().nextInt());
+
+                // SCRIP SQL
+                repository.setUsuario(sessionUsuario.getUsuarioBean());
+                String sql = "";
+
+                if (null != bean.getId() && bean.getId() > 0) {
+                    sql = "DELETE FROM audiostore_musica WHERE id = " + bean.getId();
+                    repository.query(sql).executeSQLCommand2();
+                }
+
+                sql = "";
+                sql = "INSERT INTO audiostore_musica VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                sql = sql.replaceFirst("\\?", "null"); // id
+                sql = sql.replaceFirst("\\?", bean.getMusicaGeral().toString()); // musica_geral
+                sql = sql.replaceFirst("\\?", bean.getCategoria1().getCodigo().toString()); // categoria1
+                sql = sql.replaceFirst("\\?", (null != bean.getCategoria2() && null != bean.getCategoria2().getCodigo() && bean.getCategoria2().getCodigo() > 0 ? bean.getCategoria2().getCodigo().toString() : "null")); // categoria2
+                sql = sql.replaceFirst("\\?", (null != bean.getCategoria3() && null != bean.getCategoria3().getCodigo() && bean.getCategoria3().getCodigo() > 0 ? bean.getCategoria3().getCodigo().toString() : "null")); // categoria3
+                sql = sql.replaceFirst("\\?", (bean.getCut() ? "1" : "0")); // cut
+                sql = sql.replaceFirst("\\?", (bean.getCrossover() ? "1" : "0")); // crossover
+                sql = sql.replaceFirst("\\?", "'" + new SimpleDateFormat("yyyy-MM-dd").format(bean.getDataVencimentoCrossover()) + "'"); // data_vencimento_crossover
+                sql = sql.replaceFirst("\\?", bean.getDiasExecucao1().toString()); // dias_execucao1
+                sql = sql.replaceFirst("\\?", bean.getDiasExecucao2().toString()); // dias_execucao2
+                sql = sql.replaceFirst("\\?", "'" + new SimpleDateFormat("yyyy-MM-dd").format(bean.getData()) + "'"); // data
+                sql = sql.replaceFirst("\\?", "'" + new SimpleDateFormat("yyyy-MM-dd HH:m:ss").format(bean.getUltimaExecucao()) + "'"); // ultima_execucao
+                sql = sql.replaceFirst("\\?", "'" + new SimpleDateFormat("yyyy-MM-dd").format(bean.getUltimaExecucaoData()) + "'"); // ultima_execucao
+                sql = sql.replaceFirst("\\?", bean.getRandom().toString()); // random
+                sql = sql.replaceFirst("\\?", bean.getQtdePlayer().toString()); // qtde_player
+                sql = sql.replaceFirst("\\?", bean.getQtde().toString()); // qtde
+                sql = sql.replaceFirst("\\?", "'" + new SimpleDateFormat("yyyy-MM-dd").format(bean.getDataVencimento()) + "'"); // data_vencimento
+                sql = sql.replaceFirst("\\?", "0"); // frame_inicio
+                sql = sql.replaceFirst("\\?", "0"); // frame_final
+                sql = sql.replaceFirst("\\?", "'" + bean.getMsg() + "'"); // msg
+                sql = sql.replaceFirst("\\?", bean.getSemSom() ? "1" : "0"); // sem_som
+                sql = sql.replaceFirst("\\?", bean.getSuperCrossover() ? "1" : "0"); // super_crossover
+                sql = sql.replaceFirst("\\?", bean.getCliente().getIdcliente().toString()); // cliente
+                repository.query(sql).executeSQLCommand2();
             }
 
             repository.finalize();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Dados salvos com sucesso!")).recursive().serialize();
         } catch (Exception e) {
             e.printStackTrace();
-            repository.finalize();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel salvar os dados!")).recursive().serialize();
         }
     }

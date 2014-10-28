@@ -294,8 +294,15 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
 
             bean.setQtdePlayer(bean.getQtde());
             bean.setData(new Date());
-            bean.setMsg("");
-            bean.setSemSom(Boolean.FALSE);
+            
+            if(null == bean.getMsg()) {
+                bean.setMsg("");
+            }
+            
+            if(null == bean.getSemSom()) {
+                bean.setSemSom(Boolean.FALSE);
+            }
+            
             bean.setRandom(10);
 
             repository.setUsuario(sessionUsuario.getUsuarioBean());
@@ -353,6 +360,14 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
             if (null != bean && bean.getArquivo().length() > 28) {
                 result.redirectTo(AudiostoreComercialController.class).cadastrar();
             }
+            
+            if(null == bean.getMsg()) {
+                bean.setMsg("");
+            }
+            
+            if(null == bean.getSemSom()) {
+                bean.setSemSom(Boolean.FALSE);
+            }
 
             String query = "UPDATE audiostore_comercial SET categoria = ? , arquivo = ? , titulo = ? , tipo_interprete = ? , periodo_inicial = ? , periodo_final = ? , tipo_horario = ? , dias_semana = ? , dias_alternados = ? , data = ? , ultima_execucao = ?  , tempo_total = ? , random = ? , qtde_player = ? , qtde = ? , data_vencimento = ? , dependencia1 = ? , dependencia2 = ? , dependencia3 = ? , frame_inicio = ? , frame_final = ? , msg = ? , sem_som = ? , cliente = ? , texto = ? where id = " + bean.getId();
             query = query.replaceFirst("\\?", bean.getAudiostoreCategoria().getCodigo().toString()); // categoria
@@ -376,8 +391,8 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
             query = query.replaceFirst("\\?", "'" + bean.getDependencia3() + "'"); // dependencia3
             query = query.replaceFirst("\\?", "'0'"); // frame_inicio
             query = query.replaceFirst("\\?", "'0'"); // frame_final
-            query = query.replaceFirst("\\?", "''"); // msg
-            query = query.replaceFirst("\\?", "'0'"); // sem_som
+            query = query.replaceFirst("\\?", "'"+bean.getMsg()+"'"); // msg
+            query = query.replaceFirst("\\?", "'"+(bean.getSemSom() ? 1 : 0)+"'"); // sem_som
             query = query.replaceFirst("\\?", "'" + bean.getCliente().getIdcliente().toString() + "'"); // cliente
             query = query.replaceFirst("\\?", "'" + bean.getTexto() + "'"); // texto
             System.out.println("-------------------------------------------------------");

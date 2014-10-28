@@ -48,7 +48,7 @@ public class RequestOcorrencia implements java.io.Serializable {
     }
 
     public void beanList(Integer page, Integer rows, Integer id, String descricao, Integer idcliente, Integer idusuario, Integer idprioridade, Integer idstatus) {
-            System.out.println("identificador status " + idstatus);
+        System.out.println("identificador status " + idstatus);
         OcorrenciaJSON json = new OcorrenciaJSON();
         page = (null == page || 0 == page ? 1 : page);
         rows = (null == rows || 0 == rows ? 10 : rows);
@@ -101,9 +101,14 @@ public class RequestOcorrencia implements java.io.Serializable {
                     id_list.add(id);
                 }
             });
-
-            q1.in("id", id_list.toArray(new Integer[id_list.size()]));
-            q2.in("id", id_list.toArray(new Integer[id_list.size()]));
+            
+            if(null != id_list && !id_list.isEmpty()) {
+                q1.in("id", id_list.toArray(new Integer[id_list.size()]));
+                q2.in("id", id_list.toArray(new Integer[id_list.size()]));
+            } else {
+                q2.eq("id", 0);
+            }
+            
             json.setIdstatus(idstatus.toString());
         }
 
@@ -191,6 +196,7 @@ public class RequestOcorrencia implements java.io.Serializable {
         dto.setIdprioridade(bean.getOcorrenciaPrioridade().getId().toString());
         return dto;
     }
+
     public OcorrenciaBean bean(Integer id) {
         return repository.find(OcorrenciaBean.class, id);
     }
@@ -224,16 +230,24 @@ public class RequestOcorrencia implements java.io.Serializable {
     }
 
     public void salvar(OcorrenciaBean bean, Integer idstatus) {
-        try {
-            
+        if (null == bean) {
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Os dados não podem ser nulos!")).recursive().serialize();
+            return;
+        }
+        
+        if (null == bean.getCliente() || null == bean.getCliente().getIdcliente() || bean.getCliente().getIdcliente() <= 0 ) {
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Selecione um cliente!")).recursive().serialize();
+            return;
+        }
 
+        try {
             repository.setUsuario(sessionUsuario.getUsuarioBean());
 
             if (null == bean.getOcorrenciaProblema()) {
                 bean.setOcorrenciaProblema(0);
             }
             if (null == bean.getOcorrenciaSolucao()) {
-                bean.setOcorrenciaSolucao(0);   
+                bean.setOcorrenciaSolucao(0);
             }
 
             if (bean != null && bean.getId() != null && bean.getId() > 0) {
@@ -389,9 +403,9 @@ public class RequestOcorrencia implements java.io.Serializable {
         List<UsuarioBean> usuarioBeanList = repository.query(UsuarioBean.class).findAll();
         return usuarioBeanList;
     }
-    
+
     public void loadCliente(Integer idcliente) {
-        List<ClienteBean> clienteBeanList =  repository.query(ClienteBean.class).eq("id", idcliente).or().eq("parente", idcliente).findAll();
+        List<ClienteBean> clienteBeanList = repository.query(ClienteBean.class).eq("id", idcliente).or().eq("parente", idcliente).findAll();
         result.use(Results.json()).withoutRoot().from(clienteBeanList).recursive().serialize();
     }
 }

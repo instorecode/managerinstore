@@ -9,16 +9,17 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Set;
+import javax.persistence.Table;
 import jcifs.smb.NtlmPasswordAuthentication;
+import net.sf.corn.cps.CPScanner;
+import net.sf.corn.cps.ClassFilter;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang.StringUtils;
@@ -27,28 +28,22 @@ import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
 import org.apache.tika.parser.mp3.Mp3Parser;
+import org.reflections.Reflections;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 public class Utilities {
 
-    public static void main(String[] args) {
-        try {
-            String txt = "aaáá" + quebrarLinhaComHexa() + "ão" + quebrarLinhaComHexa() + "cçc";
-            System.out.println(formatarHexExp(txt));
-        } catch (DecoderException ex) {
-            Logger.getLogger(Utilities.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public static String quebrarLinhaComHexa() throws DecoderException {
+        return new String(Hex.decodeHex("0d0a".toCharArray()));
     }
 
-    public static String quebrarLinhaComHexa() throws DecoderException {
-        return new String(Hex.decodeHex("0d0a".toCharArray()));   
-    }
-    
     public static String formatarHexExp(String text) throws DecoderException {
         text = removeLetrasEspeciais(text);
-        
+
         List<String> hexaList = new ArrayList<String>();
         hexaList.add("5C");
         hexaList.add("2F");
@@ -121,29 +116,29 @@ public class Utilities {
         hexaList.add("78");
         hexaList.add("79");
         hexaList.add("7A");
-        
+
         List<String> hexaList2 = new ArrayList<String>();
-        
+
         for (String str : hexaList) {
             hexaList2.add(str.toLowerCase());
         }
-        
+
         for (String str : hexaList2) {
             hexaList.add(str);
         }
-        
+
         String finalText = "";
         for (char ch : text.toCharArray()) {
             String hexaCode = Integer.toHexString(ch).toString();
-            
-            if(hexaCode.length() < 2) {
+
+            if (hexaCode.length() < 2) {
                 hexaCode = "0".concat(hexaCode);
             }
-            
-            if(!hexaList.contains(hexaCode)) {
-                 finalText += new String(Hex.decodeHex("20".toCharArray()));   
+
+            if (!hexaList.contains(hexaCode)) {
+                finalText += new String(Hex.decodeHex("20".toCharArray()));
             } else {
-                finalText += new String(Hex.decodeHex(hexaCode.toCharArray()));   
+                finalText += new String(Hex.decodeHex(hexaCode.toCharArray()));
             }
         }
         return finalText;
@@ -305,7 +300,7 @@ public class Utilities {
     public static String formatarURLConfigCliente(String url) {
         if (!url.endsWith("/")) {
             url += "/";
-            
+
         }
 
         url = url.replace("smb://", "$$");
@@ -320,16 +315,16 @@ public class Utilities {
         if (!url.startsWith("smb://")) {
             url = "smb://" + url;
         }
-        
-        if (StringUtils.countMatches(url, "smb://") > 1) {            
+
+        if (StringUtils.countMatches(url, "smb://") > 1) {
             url = url.replace("smb://", "");
             url = "smb://" + url;
         }
-        
-        if(url.equals("smb://")){
+
+        if (url.equals("smb://")) {
             url = "";
         }
-        
-        return  url;
+
+        return url;
     }
 }

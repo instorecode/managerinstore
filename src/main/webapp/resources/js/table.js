@@ -126,8 +126,6 @@ jQuery(document).ready(function() {
             url = url + "&page=" + table.attr('page');
             url = url + "&rows=" + table.attr('rows');
 
-
-
             jQuery("td.filter").each(function() {
                 var input = jQuery(this).children("input");
 
@@ -142,7 +140,8 @@ jQuery(document).ready(function() {
             });
 
             var json = null;
-            if (jQuery.storage(url) != null) {
+//            if (jQuery.storage(url) != null) {
+            if (false) {
                 json = JSON.parse(jQuery.storage(url));
             } else {
                 jQuery.ajax({
@@ -175,7 +174,7 @@ jQuery(document).ready(function() {
                 if (td.attr("options") == "false")
                 {
                     if ("true" == td.attr("isfk")) {
-                        tr += "<select class=\"select2_filter\" name=\"" + td.attr("fk") + "\">";
+                        tr += "<select class=\"select2_filter\" name=\"" + ( null != td.attr("fkfilter") && undefined != td.attr("fkfilter") && '' != td.attr("fkfilter") ? td.attr("fkfilter") : td.attr("fk")) + "\">";
                         tr += "<option value=\"\">" + td.attr("fklabelselect") + "</option>";
                         jQuery.ajax({
                             async: false,
@@ -238,12 +237,14 @@ jQuery(document).ready(function() {
                     } else {
                         rowSelectable = "";
                     }
+                    
                     tr += "<td class=\"" + (i % 2 == 0 ? "zz1" : "zz2") + " " + data_column + "\"   onclick=\""+rowSelectable+"\" " + onColumnRender + ">";
                     if (td.attr("options") == "false")
                     {
                         tr += item[td.attr("field")];
                     } else
                     {
+                        
                         var btn_view_onclick = table.attr("btn-view-onclick");
                         if (null != btn_view_onclick && undefined != btn_view_onclick && "" != btn_view_onclick) {
                             btn_view_onclick = 'onclick="' + btn_view_onclick.split("[[__PK__]]").join(item[table.attr("pk")]) + '"';
@@ -357,11 +358,10 @@ jQuery(document).ready(function() {
         if (!jQuery(this).parent().parent().parent().next().is(":visible"))
         {
             var url = window.location.href + "?view=true&pk=" + jQuery(this).attr("pk");
+            console.log(url);
             jQuery.get(url, function(json) {
-                console.log(json);
                 jQuery('.view_itens li').each(function() {
                     var f = jQuery(this).children("small").attr("field");
-                    console.log(json);
                     jQuery(this).children("small").html(json[f]);
                 });
             });
