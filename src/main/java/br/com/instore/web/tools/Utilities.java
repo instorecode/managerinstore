@@ -1,24 +1,32 @@
 package br.com.instore.web.tools;
 
+import br.com.instore.core.orm.XmlAnnotation;
 import br.com.instore.core.orm.bean.HistoricoUsuarioBean;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.dto.MusicaDTO;
+import com.google.common.reflect.ClassPath;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.math.BigInteger;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Set;
-import javax.persistence.Table;
+import javax.persistence.Entity;
 import jcifs.smb.NtlmPasswordAuthentication;
-import net.sf.corn.cps.CPScanner;
 import net.sf.corn.cps.ClassFilter;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
@@ -28,7 +36,10 @@ import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
 import org.apache.tika.parser.mp3.Mp3Parser;
+import org.reflections.Configuration;
 import org.reflections.Reflections;
+import org.reflections.scanners.ResourcesScanner;
+import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.xml.sax.ContentHandler;
@@ -326,5 +337,63 @@ public class Utilities {
         }
 
         return url;
+    }
+
+    private static Set<Class<?>> listaClasses() {
+        Reflections reflections = new Reflections(new ConfigurationBuilder().addUrls(ClasspathHelper.forJavaClassPath()));
+        Set<Class<?>> classes = reflections.getTypesAnnotatedWith(XmlAnnotation.class);
+               
+        return classes;
+    }
+
+    
+    
+    public static Class<?> findAnnotation() {
+
+        for (Class<?> classe : listaClasses()) {
+            for (Annotation annotation : classe.getAnnotations()) {
+                if (annotation.annotationType().getName().contains("XmlAnnotation")) {                  
+                    return classe;
+                }
+            }
+        }
+        return null;
+    }
+
+    public <T> T xmlParaObjeto (String url){
+       return xmlParaObjetoPrivate(url, findAnnotation());
+    }
+        
+    public <T> T xmlParaObjeto (String url, Class<?> type ){
+        return  xmlParaObjetoPrivate(url, type);
+    }
+    
+    private static <T> T xmlParaObjetoPrivate(String url, Class <?> type) {
+        T t = null;
+        if (type != null) {            
+            try {
+                URL pagina = new URL(url);
+                XStream xstream = new XStream(new DomDriver());
+                xstream.processAnnotations(type);
+                t = (T) type.cast(xstream.fromXML(pagina));
+
+            } catch (MalformedURLException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        return t;
+    }
+
+    public static String objetoParaXml(Object obj) {
+        String xml = "";
+        if (obj != null) {
+            XStream xstream = new XStream(new DomDriver());
+            xstream.processAnnotations(obj.getClass());
+            xml = xstream.toXML(obj);
+            return xml;
+        }
+        return null;       
+
     }
 }
