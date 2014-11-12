@@ -77,7 +77,7 @@
                     <div class="form-group">
                         <label>Possivel Problema</label>
                         <select class="select2" name="ocorrenciaBean.ocorrenciaProblema">
-                            <option>&nbsp;</option>
+                            <option>Nenhum</option>
                             <c:forEach items="${ocorrenciaProblemaList}" var="item">
                                 <option value="${item.id}" ${ocorrenciaBean.ocorrenciaProblema eq item.id ? 'selected="selected"' :''}>${item.descricao}</option>
                             </c:forEach>
@@ -88,7 +88,7 @@
                     <div class="form-group">
                         <label>Possivel Solução</label>
                         <select class="select2" name="ocorrenciaBean.ocorrenciaSolucao">
-                            <option>&nbsp;</option>
+                            <option>Nenhum</option>
                             <c:forEach items="${ocorrenciaSolucaoList}" var="item">
                                 <option value="${item.id}" ${ocorrenciaBean.ocorrenciaSolucao eq item.id ? 'selected="selected"' :''}>${item.descricao}</option>
                             </c:forEach>
@@ -99,7 +99,6 @@
                     <div class="form-group">
                         <label>Situação</label>
                         <select class="select2" name="idstatus">
-                            <option>&nbsp;</option>
                             <c:forEach items="${ocorrenciaStatusList}" var="item">
                                 <option value="${item.id}" ${ocorrenciaUsuario.ocorrenciaStatus.id eq item.id ? 'selected="selected"' :''}>${item.descricao}</option>
                             </c:forEach>

@@ -45,13 +45,17 @@ public class AudiostoreComercialController implements java.io.Serializable {
     @Get
     @Restrict
     @Path("/audiostore-comercial")
-    public void listar(Boolean datajson, Boolean view, Boolean clientes, Integer page, Integer rows, Integer id, String titulo, String arquivo, Integer pk) {
+    public void listar(Boolean datajson, Boolean view, Boolean clientes, Integer page, Boolean categorias,  Integer rows, Integer id, String titulo, String arquivo, Integer codigo, Integer pk) {
         if (null != datajson && datajson) {
-            requestAudiostoreComercial.beanList(page, rows, id, titulo, arquivo);
+            requestAudiostoreComercial.beanList(page, rows, id, titulo, arquivo , codigo);
         }
         
         if (null != view && view) {
             result.use(Results.json()).withoutRoot().from(requestAudiostoreComercial.bean2(pk)).recursive().serialize();
+        }
+        
+        if (null != categorias && categorias) {
+            result.use(Results.json()).withoutRoot().from(requestAudiostoreComercial.categoriaBeanList()).recursive().serialize();
         }
     }
 

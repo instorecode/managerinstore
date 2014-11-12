@@ -78,43 +78,52 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                 result.include("mgIdList", idList);
                 List<MusicaGeralBean> lista = loadMusicaGeralList(idList);
                 List<MusicaGeralItem> listaFinal = new ArrayList<MusicaGeralItem>();
-                List<AudiostoreMusicaBean> audiostoreMusicaBeanList = repository.query(AudiostoreMusicaBean.class).in("musicaGeral", idList.toArray(new Integer[idList.size()])).findAll();
-                
-                
-                for(MusicaGeralBean bean: lista) {
+                List<AudiostoreMusicaBean> audiostoreMusicaBeanList = repository.query(AudiostoreMusicaBean.class).eq("cliente.idcliente", idcliente).in("musicaGeral", idList.toArray(new Integer[idList.size()])).findAll();
+
+
+                for (MusicaGeralBean bean : lista) {
                     MusicaGeralItem item = new MusicaGeralItem();
                     item.setExiste(false);
                     for (AudiostoreMusicaBean bean2 : audiostoreMusicaBeanList) {
                         if (bean2.getMusicaGeral().equals(bean.getId())) {
                             item.setExiste(true);
+                            item.setMsgErro("A música já existe para o cliente selecionado.");
                             break;
                         }
                     }
-                    item.setter(bean.getId(), 
-                                bean.getCategoriaGeral(), 
-                                bean.getUsuario(), 
-                                bean.getGravadora(), 
-                                bean.getTitulo(), 
-                                bean.getInterprete(), 
-                                bean.getTipoInterprete(), 
-                                bean.getLetra(), 
-                                bean.getTempoTotal(), 
-                                bean.getAnoGravacao(), 
-                                bean.getAfinidade1(), 
-                                bean.getAfinidade2(), 
-                                bean.getAfinidade3(), 
-                                bean.getAfinidade4(), 
-                                bean.getArquivo());
+
+                    String arq = "";
+                    List<String> partss = Arrays.asList(bean.getArquivo().split("/"));
+                    if (null != partss && !partss.isEmpty()) {
+                        arq = partss.get(partss.size() - 1);
+                    }
+
+                    item.setter(bean.getId(),
+                            bean.getCategoriaGeral(),
+                            bean.getUsuario(),
+                            bean.getGravadora(),
+                            bean.getTitulo(),
+                            bean.getInterprete(),
+                            bean.getTipoInterprete(),
+                            bean.getLetra(),
+                            bean.getTempoTotal(),
+                            bean.getAnoGravacao(),
+                            bean.getAfinidade1(),
+                            bean.getAfinidade2(),
+                            bean.getAfinidade3(),
+                            bean.getAfinidade4(),
+                            arq);
                     listaFinal.add(item);
                 }
                 result.include("musicaGeralList", listaFinal);
             }
         }
     }
-    
-    
+
     public class MusicaGeralItem extends MusicaGeralBean {
+
         private Boolean existe;
+        private String msgErro;
 
         public Boolean getExiste() {
             return existe;
@@ -123,8 +132,16 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         public void setExiste(Boolean existe) {
             this.existe = existe;
         }
-        
-        public void setter(Object ... values) {
+
+        public String getMsgErro() {
+            return msgErro;
+        }
+
+        public void setMsgErro(String msgErro) {
+            this.msgErro = msgErro;
+        }
+
+        public void setter(Object... values) {
             setId(Integer.parseInt(values[0].toString()));
             setCategoriaGeral(Integer.parseInt(values[1].toString()));
             setUsuario(Integer.parseInt(values[2].toString()));
@@ -142,7 +159,7 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
             setArquivo(values[14].toString());
         }
     }
-    
+
     public List<MusicaGeralBean> loadMusicaGeralList(List<Integer> idList) {
         return repository.query(MusicaGeralBean.class).in("id", idList.toArray(new Integer[idList.size()])).findAll();
     }
@@ -159,7 +176,7 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         return (long) Math.ceil((double) totalRegistros / totalRegistrosPorPagina);
     }
 
-    public void beanList(Boolean datajson, Boolean view, Integer page, Integer rows, Integer id, Integer idcliente, String nome, Integer codigo, Integer idCategoriaArquivo, String letra) {
+    public void beanList(Boolean datajson, Boolean view, Integer page, Integer rows, Integer id, Integer idcliente, String arquivo,  String nome, Integer codigo, String letra) {
         System.out.println("FILTROS");
         System.out.println("================================================");
         System.out.println("DATAJSON: " + datajson);
@@ -170,7 +187,6 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         System.out.println("IDCLIENTE: " + idcliente);
         System.out.println("NOME: " + nome);
         System.out.println("CODIGO: " + codigo);
-        System.out.println("ID CATEGORIA ARQUIVO: " + idCategoriaArquivo);
         System.out.println("LETRA: " + letra);
         System.out.println("================================================");
 
@@ -229,25 +245,24 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
             querySQL1 += " or audiostore_musica.categoria2 = " + codigo + ") \n";
             querySQL2 = querySQL2.replace("[[MAIS_WHERE]]", " and (audiostore_musica.categoria1 = " + codigo + " [[MAIS_WHERE]]");
             querySQL2 = querySQL2.replace("[[MAIS_WHERE]]", " or audiostore_musica.categoria2 = " + codigo + ") [[MAIS_WHERE]] \n");
-            json.setIdcategoria(codigo);
+            json.setCodigo(codigo);
         }
 
-        if (null != idCategoriaArquivo && idCategoriaArquivo > 0) {
-            querySQL1 += " and categoria_geral.id = " + idCategoriaArquivo + " \n";
-            querySQL2 = querySQL2.replace("[[MAIS_WHERE]]", " and categoria_geral.id = " + idCategoriaArquivo + " [[MAIS_WHERE]] \n");
-            json.setIdCategoriaArquivo(idCategoriaArquivo);
-        }
 
         if (null != letra && !letra.trim().isEmpty()) {
             querySQL1 += " and musica_geral.letra like '%" + letra + "%' \n";
             querySQL2 = querySQL2.replace("[[MAIS_WHERE]]", " and musica_geral.letra like '%" + letra + "%' \"[[MAIS_WHERE]]\" \n");
             json.setLetra(letra);
         }
+
+        if (null != arquivo && !arquivo.trim().isEmpty()) {
+            querySQL1 += " and musica_geral.arquivo like '%" + arquivo + "%' \n";
+            querySQL2 = querySQL2.replace("[[MAIS_WHERE]]", " and musica_geral.arquivo like '%" + arquivo + "%' \"[[MAIS_WHERE]]\" \n");
+            json.setLetra(letra);
+        }
+        
         querySQL2 = querySQL2.replace("[[MAIS_WHERE]]", "");
         querySQL1 += " group by audiostore_musica.id \n limit " + offset + "," + rows;
-
-        System.out.println("SQL_DUMP1 " + querySQL1);
-        System.out.println("SQL_DUMP2 " + querySQL2);
 
         final List<BigDecimal> countBD = new ArrayList<BigDecimal>();
         final List<Integer> idList = new ArrayList<Integer>();
@@ -302,6 +317,13 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                 dto.setCategoria1(null != bean.getCategoria1() ? bean.getCategoria1().getCategoria() : "");
                 dto.setCategoria2(null != bean.getCategoria2() ? bean.getCategoria2().getCategoria() : "");
                 dto.setCategoria3(null != bean.getCategoria3() ? bean.getCategoria3().getCategoria() : "");
+                String arq = "";
+                List<String> partss = Arrays.asList(mgb.getArquivo().split("/"));
+                if (null != partss && !partss.isEmpty()) {
+                    arq = partss.get(partss.size() - 1);
+                }
+                dto.setArquivo(arq);
+                
                 rowsList.add(dto);
             }
         }
@@ -365,119 +387,140 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
     }
 
     public void salvar(AudiostoreMusicaBean[] beans) {
+        for (AudiostoreMusicaBean i : beans) {
+            if (null != i) {
+                System.out.println(i);
+            }
+        }
         try {
             for (AudiostoreMusicaBean bean : beans) {
-                if (null == bean) {
-                    continue;
-                }
-
-                if (null == bean.getDiasExecucao1()) {
-                    bean.setDiasExecucao1(1);
-                }
-
-                if (null == bean.getDiasExecucao2()) {
-                    bean.setDiasExecucao2(1);
-                }
-
-                if (null == bean.getCrossover()) {
-                    bean.setCrossover(Boolean.FALSE);
-                    bean.setDataVencimentoCrossover(new Date());
-                }
-
-                if (null == bean.getQtde()) {
-                    bean.setQtde(1);
-                }
-
-                if (null == bean.getQtdePlayer()) {
-                    bean.setQtdePlayer(1);
-                }
-
-                if (null == bean.getUltimaExecucao()) {
-                    bean.setUltimaExecucao(new Date());
-                }
-
-                if (null == bean.getUltimaExecucaoData()) {
-                    bean.setUltimaExecucaoData(new Date());
-                }
-
-                if (null == bean.getDataVencimento()) {
-                    bean.setDataVencimento(new SimpleDateFormat("yyyy-MM-dd").parse("2050-12-31"));
-                }
-
-                if (null == bean.getData()) {
-                    bean.setData(new Date());
-                }
-
-                if (bean.getCrossover()) {
-                    if (null == bean.getDataVencimentoCrossover()) {
-                        result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Se estiver usando crossover, é obrigatório informar a data de vencimento!")).recursive().serialize();
-                        return;
+                if (null != bean) {
+                    // verifica se ja existe
+                    if (null == bean.getId() || bean.getId() <= 0) {
+                        if (repository.query(AudiostoreMusicaBean.class).eq("cliente.idcliente", bean.getCliente().getIdcliente()).eq("musicaGeral", bean.getMusicaGeral()).count() > 0) {
+                            continue;
+                        }
                     }
-                } else {
-                    bean.setDataVencimentoCrossover(new Date());
-                }
 
-                if (null == bean.getCliente() || null == bean.getCliente().getIdcliente() || bean.getCliente().getIdcliente() <= 0) {
-                    result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Selecione um cliente!")).recursive().serialize();
-                    return;
-                } else {
-                    if ((null == bean.getCategoria1() || null == bean.getCategoria1().getCodigo() || bean.getCategoria1().getCodigo() <= 0)) {
-                        result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Catégoria primária é obrigatório!")).recursive().serialize();
-                        return;
+                    if (null == bean) {
+                        continue;
                     }
-                }
 
-                bean.setFrameInicio(0);
-                bean.setFrameFinal(0);
+                    if (null == bean.getDiasExecucao1()) {
+                        bean.setDiasExecucao1(1);
+                    }
 
-                if (null == bean.getMsg()) {
-                    bean.setMsg("");
-                }
+                    if (null == bean.getDiasExecucao2()) {
+                        bean.setDiasExecucao2(1);
+                    }
 
-                if (null == bean.getSemSom()) {
-                    bean.setSemSom(Boolean.FALSE);
-                }
+                    if (null == bean.getCrossover()) {
+                        bean.setCrossover(Boolean.FALSE);
+                        bean.setDataVencimentoCrossover(new Date());
+                    }
 
-                bean.setUltimaExecucaoData(bean.getUltimaExecucao());
-                bean.setQtde(bean.getQtdePlayer());
-                bean.setSuperCrossover(Boolean.FALSE);
-                bean.setRandom(new Random().nextInt());
+                    if (null == bean.getQtde()) {
+                        bean.setQtde(999);
+                    }
 
-                // SCRIP SQL
-                repository.setUsuario(sessionUsuario.getUsuarioBean());
-                String sql = "";
+                    if (null == bean.getQtdePlayer()) {
+                        bean.setQtdePlayer(999);
+                    }
 
-                if (null != bean.getId() && bean.getId() > 0) {
-                    sql = "DELETE FROM audiostore_musica WHERE id = " + bean.getId();
+                    if (null == bean.getUltimaExecucao()) {
+                        bean.setUltimaExecucao(new Date());
+                    }
+
+                    if (null == bean.getUltimaExecucaoData()) {
+                        bean.setUltimaExecucaoData(new Date());
+                    }
+
+                    if (null == bean.getDataVencimento()) {
+                        bean.setDataVencimento(new SimpleDateFormat("yyyy-MM-dd").parse("2050-12-31"));
+                    }
+
+                    if (null == bean.getData()) {
+                        bean.setData(new Date());
+                    }
+
+                    if (bean.getCrossover()) {
+                        if (null == bean.getDataVencimentoCrossover()) {
+                            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Se estiver usando crossover, é obrigatório informar a data de vencimento!")).recursive().serialize();
+                            return;
+                        }
+                    } else {
+                        bean.setDataVencimentoCrossover(new Date());
+                    }
+
+                    if (null == bean.getCliente() || null == bean.getCliente().getIdcliente() || bean.getCliente().getIdcliente() <= 0) {
+                        result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Selecione um cliente!")).recursive().serialize();
+                        return;
+                    } else {
+                        if ((null == bean.getCategoria1() || null == bean.getCategoria1().getCodigo() || bean.getCategoria1().getCodigo() <= 0)) {
+                            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Catégoria primária é obrigatório!")).recursive().serialize();
+                            return;
+                        }
+                    }
+
+                    bean.setFrameInicio(0);
+                    bean.setFrameFinal(0);
+
+                    if (null == bean.getMsg()) {
+                        bean.setMsg("");
+                    }
+
+                    if (bean.getMsg().length() > 40) {
+                        bean.setMsg(bean.getMsg().substring(0, 40));
+                    }
+
+                    if (null == bean.getSemSom()) {
+                        bean.setSemSom(Boolean.FALSE);
+                    }
+
+                    bean.setUltimaExecucaoData(bean.getUltimaExecucao());
+                    bean.setQtde(bean.getQtdePlayer());
+                    bean.setSuperCrossover(Boolean.FALSE);
+                    bean.setRandom(new Random().nextInt());
+
+                    // SCRIP SQL
+                    repository.setUsuario(sessionUsuario.getUsuarioBean());
+                    String sql = "";
+
+                    if (null != bean.getId() && bean.getId() > 0) {
+                        sql = "DELETE FROM audiostore_musica WHERE id = " + bean.getId();
+                        repository.query(sql).executeSQLCommand2();
+                    }
+
+                    sql = "";
+                    sql = "INSERT INTO audiostore_musica VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                    sql = sql.replaceFirst("\\?", "null"); // id
+                    sql = sql.replaceFirst("\\?", bean.getMusicaGeral().toString()); // musica_geral
+                    sql = sql.replaceFirst("\\?", bean.getCategoria1().getCodigo().toString()); // categoria1
+                    sql = sql.replaceFirst("\\?", (null != bean.getCategoria2() && null != bean.getCategoria2().getCodigo() && bean.getCategoria2().getCodigo() > 0 ? bean.getCategoria2().getCodigo().toString() : "null")); // categoria2
+                    sql = sql.replaceFirst("\\?", (null != bean.getCategoria3() && null != bean.getCategoria3().getCodigo() && bean.getCategoria3().getCodigo() > 0 ? bean.getCategoria3().getCodigo().toString() : "null")); // categoria3
+                    sql = sql.replaceFirst("\\?", (bean.getCut() ? "1" : "0")); // cut
+                    sql = sql.replaceFirst("\\?", (bean.getCrossover() ? "1" : "0")); // crossover
+                    sql = sql.replaceFirst("\\?", "'" + new SimpleDateFormat("yyyy-MM-dd").format(bean.getDataVencimentoCrossover()) + "'"); // data_vencimento_crossover
+                    sql = sql.replaceFirst("\\?", bean.getDiasExecucao1().toString()); // dias_execucao1
+                    sql = sql.replaceFirst("\\?", bean.getDiasExecucao2().toString()); // dias_execucao2
+                    sql = sql.replaceFirst("\\?", "'" + new SimpleDateFormat("yyyy-MM-dd").format(bean.getData()) + "'"); // data
+                    sql = sql.replaceFirst("\\?", "'" + new SimpleDateFormat("yyyy-MM-dd HH:m:ss").format(bean.getUltimaExecucao()) + "'"); // ultima_execucao
+                    sql = sql.replaceFirst("\\?", "'" + new SimpleDateFormat("yyyy-MM-dd").format(bean.getUltimaExecucaoData()) + "'"); // ultima_execucao
+                    sql = sql.replaceFirst("\\?", bean.getRandom().toString()); // random
+                    sql = sql.replaceFirst("\\?", bean.getQtdePlayer().toString()); // qtde_player
+                    sql = sql.replaceFirst("\\?", bean.getQtde().toString()); // qtde
+                    sql = sql.replaceFirst("\\?", "'" + new SimpleDateFormat("yyyy-MM-dd").format(bean.getDataVencimento()) + "'"); // data_vencimento
+                    sql = sql.replaceFirst("\\?", "0"); // frame_inicio
+                    sql = sql.replaceFirst("\\?", "0"); // frame_final
+                    sql = sql.replaceFirst("\\?", "'" + bean.getMsg() + "'"); // msg
+                    sql = sql.replaceFirst("\\?", bean.getSemSom() ? "1" : "0"); // sem_som
+                    sql = sql.replaceFirst("\\?", bean.getSuperCrossover() ? "1" : "0"); // super_crossover
+                    sql = sql.replaceFirst("\\?", bean.getCliente().getIdcliente().toString()); // cliente
+
+                    System.out.println("SCRIPT");
+                    System.out.println(sql);
                     repository.query(sql).executeSQLCommand2();
                 }
-
-                sql = "";
-                sql = "INSERT INTO audiostore_musica VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-                sql = sql.replaceFirst("\\?", "null"); // id
-                sql = sql.replaceFirst("\\?", bean.getMusicaGeral().toString()); // musica_geral
-                sql = sql.replaceFirst("\\?", bean.getCategoria1().getCodigo().toString()); // categoria1
-                sql = sql.replaceFirst("\\?", (null != bean.getCategoria2() && null != bean.getCategoria2().getCodigo() && bean.getCategoria2().getCodigo() > 0 ? bean.getCategoria2().getCodigo().toString() : "null")); // categoria2
-                sql = sql.replaceFirst("\\?", (null != bean.getCategoria3() && null != bean.getCategoria3().getCodigo() && bean.getCategoria3().getCodigo() > 0 ? bean.getCategoria3().getCodigo().toString() : "null")); // categoria3
-                sql = sql.replaceFirst("\\?", (bean.getCut() ? "1" : "0")); // cut
-                sql = sql.replaceFirst("\\?", (bean.getCrossover() ? "1" : "0")); // crossover
-                sql = sql.replaceFirst("\\?", "'" + new SimpleDateFormat("yyyy-MM-dd").format(bean.getDataVencimentoCrossover()) + "'"); // data_vencimento_crossover
-                sql = sql.replaceFirst("\\?", bean.getDiasExecucao1().toString()); // dias_execucao1
-                sql = sql.replaceFirst("\\?", bean.getDiasExecucao2().toString()); // dias_execucao2
-                sql = sql.replaceFirst("\\?", "'" + new SimpleDateFormat("yyyy-MM-dd").format(bean.getData()) + "'"); // data
-                sql = sql.replaceFirst("\\?", "'" + new SimpleDateFormat("yyyy-MM-dd HH:m:ss").format(bean.getUltimaExecucao()) + "'"); // ultima_execucao
-                sql = sql.replaceFirst("\\?", "'" + new SimpleDateFormat("yyyy-MM-dd").format(bean.getUltimaExecucaoData()) + "'"); // ultima_execucao
-                sql = sql.replaceFirst("\\?", bean.getRandom().toString()); // random
-                sql = sql.replaceFirst("\\?", bean.getQtdePlayer().toString()); // qtde_player
-                sql = sql.replaceFirst("\\?", bean.getQtde().toString()); // qtde
-                sql = sql.replaceFirst("\\?", "'" + new SimpleDateFormat("yyyy-MM-dd").format(bean.getDataVencimento()) + "'"); // data_vencimento
-                sql = sql.replaceFirst("\\?", "0"); // frame_inicio
-                sql = sql.replaceFirst("\\?", "0"); // frame_final
-                sql = sql.replaceFirst("\\?", "'" + bean.getMsg() + "'"); // msg
-                sql = sql.replaceFirst("\\?", bean.getSemSom() ? "1" : "0"); // sem_som
-                sql = sql.replaceFirst("\\?", bean.getSuperCrossover() ? "1" : "0"); // super_crossover
-                sql = sql.replaceFirst("\\?", bean.getCliente().getIdcliente().toString()); // cliente
-                repository.query(sql).executeSQLCommand2();
             }
 
             repository.finalize();
@@ -491,10 +534,7 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
     public void remover(Integer id) {
         try {
             repository.setUsuario(sessionUsuario.getUsuarioBean());
-
-            AudiostoreMusicaBean bean = repository.marge((AudiostoreMusicaBean) repository.find(AudiostoreMusicaBean.class, id));
-            repository.delete(bean);
-
+            repository.query("DELETE FROM audiostore_musica WHERE id = " + id).executeSQLCommand2();
             repository.finalize();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Música removida com sucesso!")).recursive().serialize();
         } catch (Exception e) {

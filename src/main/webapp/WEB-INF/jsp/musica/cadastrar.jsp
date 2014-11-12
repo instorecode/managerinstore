@@ -70,11 +70,10 @@
                     <div class="form-group">
                         <label>Tipo de interprete</label>
                         <select name="musicaGeralBean.tipoInterprete" class="select2" dara-rule-required="true">
-                            <option value="1" ${musicaGeralBean.tipoInterprete eq 1 ? 'selected="selected"':''}>Masculino</option> 
-                            <option value="2" ${musicaGeralBean.tipoInterprete eq 2 ? 'selected="selected"':''}>Feminino</option> 
-                            <option value="3" ${musicaGeralBean.tipoInterprete eq 3 ? 'selected="selected"':''}>Grupo</option> 
-                            <option value="4" ${musicaGeralBean.tipoInterprete eq 4 ? 'selected="selected"':''}>Instrumental</option> 
-                            <option value="5" ${musicaGeralBean.tipoInterprete eq 5 ? 'selected="selected"':''}>Jingle</option>
+                            <option value="0" ${musicaGeralBean.tipoInterprete eq 0 ? 'selected="selected"':''}>Masculino</option> 
+                            <option value="1" ${musicaGeralBean.tipoInterprete eq 1 ? 'selected="selected"':''}>Feminino</option> 
+                            <option value="2" ${musicaGeralBean.tipoInterprete eq 2 ? 'selected="selected"':''}>Grupo</option> 
+                            <option value="3" ${musicaGeralBean.tipoInterprete eq 3 ? 'selected="selected"':''}>Instrumental</option> 
                         </select>
                     </div>
                 </div>
@@ -105,7 +104,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Tempo total</label>
-                        <input type="text" name="musicaGeralBean.tempoTotal" class="form-control" placeholder="Tempo total" value="${musicaGeralBean.tempoTotal}" data-rule-required="true" data-mask="00:00">
+                        <input type="text" name="musicaGeralBean.tempoTotal" class="form-control" placeholder="Tempo total" value="${musicaGeralBean.tempoTotal}" data-rule-required="true" data-mask="00:00:00">
                     </div>
                 </div>
 

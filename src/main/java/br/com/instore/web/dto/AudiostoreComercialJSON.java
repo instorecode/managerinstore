@@ -32,6 +32,15 @@ public class AudiostoreComercialJSON extends AbstractDTO {
     private String frameFinal;
     private String semSom;
     private String msg;
+    private Integer codigo;
+
+    public Integer getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(Integer codigo) {
+        this.codigo = codigo;
+    }
 
     public Integer getPage() {
         return page;

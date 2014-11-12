@@ -4,8 +4,8 @@
 <instore:template  menucolapse="false" isGrid="false">
     <jsp:attribute name="submenu">
         <div class="btn-group">
-            <a href="${url}/musica/cadastrar" class="btn btn-default btn-flat"> <i class="fa fa-save"></i></a>
-            <a href="#" class="btn btn-default btn-flat" data-toggle="modal" data-target="#modal_sincronizacao" > <i class="fa fa-download"></i></a>
+            <a href="${url}/musica/cadastrar" class="btn btn-default btn-flat"> <i class="fa fa-save"></i> Cadastrar </a>
+            <!--<a href="#" class="btn btn-default btn-flat" data-toggle="modal" data-target="#modal_sincronizacao" > <i class="fa fa-download"></i></a>-->
         </div>
     </jsp:attribute>
 
@@ -458,6 +458,7 @@
                         <thead class="no-border">
                             <tr>
                                 <th></th>
+                                <th><strong>Arquivo</strong></th>
                                 <th><strong>Categorias</strong></th>
                                 <th ><strong>Título</strong></th>
                                 <th><strong>Interprete</strong></th>
@@ -592,6 +593,7 @@
                                         </div>
                                         </div>
                                     </td>
+                                    <td>${item.nomeArquivoFormatado}</td>
                                     <td>${item.categoriaGeral}</td>
                                     <td>${item.titulo}</td>
                                     <td>${item.interprete}</td>

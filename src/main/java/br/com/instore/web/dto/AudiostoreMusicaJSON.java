@@ -12,7 +12,7 @@ public class AudiostoreMusicaJSON {
     private Integer idcliente;
     private String nomeCliente;
     private String nome;
-    private Integer idcategoria;
+    private Integer codigo;
     private String nomeCategoria;
     private Integer idCategoriaArquivo;
     private String nomeCategoriaArquivo;
@@ -74,12 +74,12 @@ public class AudiostoreMusicaJSON {
         this.nome = nome;
     }
 
-    public Integer getIdcategoria() {
-        return idcategoria;
+    public Integer getCodigo() {
+        return codigo;
     }
 
-    public void setIdcategoria(Integer idcategoria) {
-        this.idcategoria = idcategoria;
+    public void setCodigo(Integer codigo) {
+        this.codigo = codigo;
     }
 
     public String getNomeCategoria() {

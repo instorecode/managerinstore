@@ -35,9 +35,9 @@ public class AudiostoreMusicaController implements java.io.Serializable {
     @Get
     @Restrict
     @Path("/musica/programacao-audiostore")
-    public void listar(Integer idmusicaGeral, Boolean clientes, Boolean categorias, Boolean datajson, Boolean view, Integer page, Integer rows, Integer id, Integer idcliente, String nome, Integer codigo, Integer idCategoriaArquivo, String letra , Integer pk) {
+    public void listar(Integer idmusicaGeral, Boolean clientes, Boolean categorias, Boolean datajson, Boolean view, Integer page, Integer rows, Integer id, Integer idcliente,  String arquivo,  String nome, Integer codigo, String letra , Integer pk) {
         if (null != datajson && datajson) {
-            requestAudiostoreMusica.beanList(datajson, view, page, rows, id, idcliente, nome, codigo, idCategoriaArquivo, letra);
+            requestAudiostoreMusica.beanList(datajson, view, page, rows, id, idcliente, arquivo , nome, codigo, letra);
         }
         
         if (null != view && view) {

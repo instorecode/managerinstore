@@ -13,10 +13,12 @@
                 {title: 'Nome', name: 'nome', index: true, filter: true, filterType: 'input'},
                 {title: 'Nome Fantasia', name: 'nomeFantasia', index: true, filter: true, filterType: 'input'},
                 {title: 'CNPJ', name: 'cnpj', index: true, filter: true, filterType: 'input'},
+                {title: 'Qtd. unidades ativas', name: 'totalFiliaisAtivas', index: true, filter: true, filterType: 'input'},
+                {title: 'Qtd. unidades inativas', name: 'totalFiliaisInativas', index: true, filter: true, filterType: 'input'},
             ];
 
             function onRowDblClick(data) {
-
+                
             }
             
             function onRowClick(data) {

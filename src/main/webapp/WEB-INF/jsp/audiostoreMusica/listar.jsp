@@ -137,11 +137,11 @@
                 <button type="button" class="btn btn-default btn-flat btn_export btn_export1" style="display: none;"><i class="fa fa-upload"></i> Exportar arquivo </button>
                 <button type="button" class="btn btn-default btn-flat btn_export btn_export2" style="display: none;"><i class="fa fa-upload"></i> Exportar arquivo com audio</button>
             </div>
-            
+
             <div class="addon" style="display: none;">
                 <a href="${url}/musica/programacao-audiostore/cadastrar/nulo?clonar=[[__PK__]]" class="btn btn-default btn-flat btn-xs" id="clonar" ><i class="fa fa-plus"></i></a>
             </div>
-            
+
             <div class="btn-group">
                 <button class="btn btn-default btn-flat _prev"> <i class="fa fa-angle-double-left"></i> </button>
                 <button class="btn btn-default btn-flat prev"> <i class="fa fa-angle-left"></i> </button>
@@ -155,17 +155,19 @@
                         class="xtable" 
                         id="datatable" 
                         url="${url}/musica/programacao-audiostore"
-                        page="1"
+                        page="1" 
                         size="0"
-                        rows="10"
+                        rows="10" 
                         pk="id"
                         btn-edit-onclick="javascript:window.location.href='${url}/musica/programacao-audiostore/atualizar/[[__PK__]]'"> 
                     <thead>
                         <tr>
                             <th options="true" class="options">#</th>
                             <!--<th field="id" options="false">ID</th>-->
+                            <th field="arquivo" options="false">Arquivo</th>
                             <th field="nome" options="false">Nome</th>
-                            <th field="nomeCliente" isfk="true" fk="idcliente" fklabel="nome" fklabelselect="Todos" fkurl="${url}/audiostore-categorias?clientes=true"  options="false">Cliente</th>
+                            <th field="nomeCliente" isfk="true" fk="idcliente" fklabel="nome" fklabelselect="Todos" fkurl="${url}/musica/programacao-audiostore?clientes=true"  options="false"> Cliente </th>
+                            <th field="categoria1" isfk="true" fk="codigo" fklabel="categoria" fklabelselect="Todos"  fkurl="${url}/musica/programacao-audiostore?categorias=true"  options="false"> Categoria </th>
                         </tr>
                     </thead>
                 </table>
@@ -192,7 +194,7 @@
                         var item = arr[i];
                         id_list[i] = item.id;
                     }
- 
+
                     if (countRowsSelected() <= 0) {
                         bootbox.alert("Selecione no minimo um registro na tabela.", function() {
                         });
@@ -204,7 +206,8 @@
                             data: {id_list: id_list, exp_arquivo_audio: false},
                             success: function(json) {
                                 if (!json.success) {
-                                    dialogAjax(json.response);
+                                    bootbox.hideAll();
+                                    bootbox.alert(json.response, function() {});
                                 }
                             },
                             error: function(error) {
@@ -214,22 +217,21 @@
                     }
                     setTimeout(function() {
                         msg_fadeOut();
-                    }, 2000);
+                    }, 4000);
                 });
 
                 jQuery('.btn_export2').on("click", function() {
                     msg_fadeIn();
-                    
+
                     var arr = rowsSelected();
                     var id_list = new Array();
                     for (i in arr) {
                         var item = arr[i];
                         id_list[i] = item.id;
                     }
-                    
+
                     if (countRowsSelected() <= 0) {
-                        bootbox.alert("Selecione no minimo um registro na tabela.", function() {
-                        });
+                        bootbox.alert("Selecione no minimo um registro na tabela.", function() {});
                     } else {
                         jQuery.ajax({
                             async: false,
@@ -238,7 +240,8 @@
                             data: {id_list: id_list, exp_arquivo_audio: true},
                             success: function(json) {
                                 if (!json.success) {
-                                    dialogAjax(json.response);
+                                    bootbox.hideAll();                                   
+                                    bootbox.alert(json.response, function() {});
                                 }
                             },
                             error: function(error) {
@@ -248,7 +251,7 @@
                     }
                     setTimeout(function() {
                         msg_fadeOut();
-                    }, 2000);
+                    }, 4000);
                 });
 
             });

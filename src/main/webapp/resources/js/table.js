@@ -157,9 +157,9 @@ jQuery(document).ready(function() {
                 jQuery.storageAdd(url, JSON.stringify(json));
             }
 
-
+            
             setInterval(function() {
-                jQuery.storageClear()
+                jQuery.storageClear();
             }, 180000);
 
             table.children("tbody").html("");
@@ -180,6 +180,7 @@ jQuery(document).ready(function() {
                             async: false,
                             url: td.attr("fkurl"),
                             success: function(json_response) {
+                                
 //                                    var selected = "";
 //                                    if (null != json[td.attr("fk")] && undefined != json[td.attr("fk")] && "" != json[td.attr("fk")]) {
 //                                        selected = "selected=\"selected\"";
@@ -193,7 +194,6 @@ jQuery(document).ready(function() {
                                     } else {
                                         tr += "<option value=\"" + fk + "\">" + fk_label + "</option>";
                                     }
-
                                 }
                             }
                         });

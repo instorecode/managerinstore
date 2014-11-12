@@ -7,7 +7,6 @@ import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.Each;
 import br.com.instore.core.orm.RepositoryViewer;
-import br.com.instore.core.orm.Test2;
 import br.com.instore.core.orm.bean.CepBean;
 import br.com.instore.core.orm.bean.property.Cep;
 import br.com.instore.web.component.session.SessionRepository;
@@ -39,8 +38,6 @@ public class UtilidadesController implements java.io.Serializable {
     @Path("/utilidades/cepload")
     public void cepload(String cep1 , String cep2) {
         CepResult res = new CepResult();
-        System.out.println("cep1 " + cep1);
-        System.out.println("cep2 " + cep2);
         if (repository.query(CepBean.class).eq(Cep.NUMERO, cep1).count() > 0) {
             CepBean bean = repository.query(CepBean.class).eq(Cep.NUMERO, cep1).findOne();
             res.setUf(bean.getBairro().getCidade().getEstado().getSigla());

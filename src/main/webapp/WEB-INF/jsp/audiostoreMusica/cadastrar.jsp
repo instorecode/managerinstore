@@ -44,12 +44,20 @@
 
                     jQuery('.filter_categoria2').on('change', function() {
                         var valor = jQuery('.filter_categoria2').select2('val');
-                        jQuery('.field_categoria2').select2('val', valor);
+                        if(null == valor || undefined == valor || '' == valor) {
+                            jQuery('.field_categoria2').select2('val', '');
+                        } else {
+                            jQuery('.field_categoria2').select2('val', valor);
+                        }
                     });
 
                     jQuery('.filter_categoria3').on('change', function() {
                         var valor = jQuery('.filter_categoria3').select2('val');
-                        jQuery('.field_categoria3').select2('val', valor);
+                        if(null == valor || undefined == valor || '' == valor) {
+                            jQuery('.field_categoria3').select2('val', '');
+                        } else {
+                            jQuery('.field_categoria3').select2('val', valor);
+                        }
                     });
 
                     jQuery('.filter_tipo_a').on('ifChecked', function() {
@@ -94,6 +102,7 @@
                                 </td>
                                 <td>
                                     <select class="select2 filter_categoria2" data-rule-required="true" >
+                                        <option>Nenhuma</option>
                                         <c:forEach items="${categoriaList}" var="item">
                                             <option value="${item.codigo}">${item.categoria}</option>
                                         </c:forEach>
@@ -101,6 +110,7 @@
                                 </td>
                                 <td>
                                     <select class="select2 filter_categoria3" data-rule-required="true" >
+                                        <option>Nenhuma</option>
                                         <c:forEach items="${categoriaList}" var="item">
                                             <option value="${item.codigo}">${item.categoria}</option>
                                         </c:forEach>
@@ -115,64 +125,29 @@
                                 <c:if test="${mg.existe}">
                                     <tr style="background-color: #C0311E; color: #FFF;">
                                         <td>
-                                            <input disabled="disabled" type="hidden"   value="${mgIdList[vs.index]}"/>
-                                            <input disabled="disabled" type="hidden" value="${clienteBean.idcliente}"/> 
                                             ${mg.titulo}
                                         </td>
 
-                                        <td>
-                                            <select disabled="disabled"  class="select2 sel_cat2" data-rule-required="true" disabled="disabled">
-                                                <option>${clienteBean.nome}</option>
-                                            </select>
-                                        </td>
-
-                                        <td>
-                                            <select disabled="disabled" class="select2 field_categoria1" data-rule-required="true" >
-                                                <c:forEach items="${categoriaList}" var="item">
-                                                    <option value="${item.codigo}">${item.categoria}</option>
-                                                </c:forEach>
-                                            </select>
-                                        </td>
-
-                                        <td>
-                                            <select disabled="disabled" class="select2 field_categoria2" data-rule-required="true" >
-                                                <c:forEach items="${categoriaList}" var="item">
-                                                    <option value="${item.codigo}">${item.categoria}</option>
-                                                </c:forEach>
-                                            </select>
-                                        </td>
-
-                                        <td>
-                                            <select disabled="disabled" class="select2 field_categoria3" data-rule-required="true" >
-                                                <c:forEach items="${categoriaList}" var="item">
-                                                    <option value="${item.codigo}">${item.categoria}</option>
-                                                </c:forEach>
-                                            </select>
-                                        </td>
-
-                                        <td>
-                                            <label class="radio-inline"> <input disabled="disabled" type="radio" class="icheck field_tipo_a" id="optionsRadios1" value="${true}" >&nbsp;Cut </label>
-                                            <label class="radio-inline"> <input disabled="disabled" type="radio" class="icheck field_tipo_b" id="optionsRadios1" value="${false}" checked="checked">&nbsp;FadeOut </label>
-                                        </td>
+                                        <td colspan="5"> ${mg.msgErro} </td>
                                     </tr>
                                 </c:if>
 
                                 <c:if test="${not mg.existe}">
                                     <tr>
                                         <td>
-                                            <input type="hidden" name="audiostoreMusicaBeanList[${vs.index}].musicaGeral"  value="${mgIdList[vs.index]}"/>
-                                            <input type="hidden" name="audiostoreMusicaBeanList[${vs.index}].cliente.idcliente"  value="${clienteBean.idcliente}"/> 
-                                            ${mg.titulo}
+                                            <input type="hidden" name="audiostoreMusicaBeanList[${vs.index+1}].musicaGeral"  value="${mg.id}"/>
+                                            <input type="hidden" name="audiostoreMusicaBeanList[${vs.index+1}].cliente.idcliente"  value="${clienteBean.idcliente}"/> 
+                                            ${mg.titulo} - ${mg.id}
                                         </td>
 
                                         <td>
-                                            <select name="audiostoreMusicaBeanList[${vs.index}].cliente.idcliente" class="select2 sel_cat2" data-rule-required="true" disabled="disabled">
+                                            <select name="audiostoreMusicaBeanList[${vs.index+1}].cliente.idcliente" class="select2 sel_cat2" data-rule-required="true" disabled="disabled">
                                                 <option>${clienteBean.nome}</option>
                                             </select>
                                         </td>
 
                                         <td>
-                                            <select class="select2 field_categoria1" name="audiostoreMusicaBeanList[${vs.index}].categoria1.codigo" data-rule-required="true" >
+                                            <select class="select2 field_categoria1" name="audiostoreMusicaBeanList[${vs.index+1}].categoria1.codigo" data-rule-required="true" >
                                                 <c:forEach items="${categoriaList}" var="item">
                                                     <option value="${item.codigo}">${item.categoria}</option>
                                                 </c:forEach>
@@ -180,7 +155,8 @@
                                         </td>
 
                                         <td>
-                                            <select class="select2 field_categoria2" name="audiostoreMusicaBeanList[${vs.index}].categoria2.codigo" data-rule-required="true" >
+                                            <select class="select2 field_categoria2" name="audiostoreMusicaBeanList[${vs.index+1}].categoria2.codigo" data-rule-required="true" >
+                                                <option>Nenhuma</option>
                                                 <c:forEach items="${categoriaList}" var="item">
                                                     <option value="${item.codigo}">${item.categoria}</option>
                                                 </c:forEach>
@@ -188,7 +164,8 @@
                                         </td>
 
                                         <td>
-                                            <select class="select2 field_categoria3" name="audiostoreMusicaBeanList[${vs.index}].categoria3.codigo" data-rule-required="true" >
+                                            <select class="select2 field_categoria3" name="audiostoreMusicaBeanList[${vs.index+1}].categoria3.codigo" data-rule-required="true" >
+                                                <option>Nenhuma</option>
                                                 <c:forEach items="${categoriaList}" var="item">
                                                     <option value="${item.codigo}">${item.categoria}</option>
                                                 </c:forEach>
@@ -196,8 +173,8 @@
                                         </td>
 
                                         <td>
-                                            <label class="radio-inline"> <input type="radio" class="icheck field_tipo_a"  name="audiostoreMusicaBeanList[${vs.index}].cut" id="optionsRadios1" value="${true}" >&nbsp;Cut </label>
-                                            <label class="radio-inline"> <input type="radio" class="icheck field_tipo_b"  name="audiostoreMusicaBeanList[${vs.index}].cut" id="optionsRadios1" value="${false}" checked="checked">&nbsp;FadeOut </label>
+                                            <label class="radio-inline"> <input type="radio" class="icheck field_tipo_a"  name="audiostoreMusicaBeanList[${vs.index+1}].cut" id="optionsRadios1" value="${true}" >&nbsp;Cut </label>
+                                            <label class="radio-inline"> <input type="radio" class="icheck field_tipo_b"  name="audiostoreMusicaBeanList[${vs.index+1}].cut" id="optionsRadios1" value="${false}" checked="checked">&nbsp;FadeOut </label>
                                         </td>
                                     </tr>
                                 </c:if>
@@ -291,6 +268,13 @@
                 <input type="hidden" name="audiostoreMusicaBean.musicaGeral" value="${audiostoreMusicaBean.musicaGeral}"  />
 
                 <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Nome</label>
+                            <br />
+                            <input class="form-control" value="${musicaGeralBean.arquivo}" disabled="disabled"/>
+                        </div>
+                    </div>
                     <div class="col-md-12">
                         <div class="form-group">
                             <label>Nome</label>
@@ -407,10 +391,9 @@
                     <div class="col-md-2">
                         <div class="form-group">
                             <label>Quantidade </label>
-
                             <input type="text" name="audiostoreMusicaBean.qtdePlayer" class="form-control span2" placeholder="Quantidade máxima de execuções no dia)"  
                                    data-rule-required="true" 
-                                   data-rule-number="true" value="${audiostoreMusicaBean.qtdePlayer}">
+                                   data-rule-number="true" value="${audiostoreMusicaBean.qtdePlayer eq null ? 999 : audiostoreMusicaBean.qtdePlayer}">
                         </div>
                     </div>
 
@@ -485,7 +468,7 @@
                                     <h3>Mensagem</h3>
                                 </div>
                                 <div class="content"> 
-                                    <textarea class="ckeditor form-control" name="audiostoreMusicaBean.msg" rows="10" data-rule-required="true">${audiostoreMusicaBean.msg}</textarea>
+                                    <textarea class="form-control" name="audiostoreMusicaBean.msg" rows="10" data-rule-required="true">${audiostoreMusicaBean.msg}</textarea>
                                 </div>
                             </div>
                         </div>

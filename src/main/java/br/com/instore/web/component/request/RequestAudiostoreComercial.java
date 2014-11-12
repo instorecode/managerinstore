@@ -69,7 +69,7 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
         this.sessionUsuario = sessionUsuario;
     }
 
-    public void beanList(Integer page, Integer rows, Integer id, String titulo, String arquivo) {
+    public void beanList(Integer page, Integer rows, Integer id, String titulo, String arquivo , Integer codigo) {
         AudiostoreComercialJSON json = new AudiostoreComercialJSON();
 
         page = (null == page || 0 == page ? 1 : page);
@@ -97,6 +97,12 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
             q1.ilikeAnyWhere("arquivo", arquivo);
             q2.ilikeAnyWhere("arquivo", arquivo);
             json.setArquivo(arquivo);
+        }
+
+        if (null != codigo && codigo > 0 ) {
+            q1.eq("audiostoreCategoria.codigo", codigo);
+            q2.eq("audiostoreCategoria.codigo", codigo);
+            json.setCodigo(codigo);
         }
 
 
@@ -128,6 +134,7 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
             dto.setRandom(bean.getRandom().toString());
             dto.setSemSom(bean.getSemSom() ? "Sim" : "Não");
             dto.setTempoTotal(new SimpleDateFormat("HH:mm:ss").format(bean.getTempoTotal()));
+            dto.setCategoriaNome(bean.getAudiostoreCategoria().getCategoria());
 
             switch (bean.getTipoInterprete()) {
                 case 1:
@@ -254,7 +261,7 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
     }
 
     public List<AudiostoreCategoriaBean> categoriaBeanList() {
-        List<AudiostoreCategoriaBean> audiostoreCategoriaBeanList = repository.query(AudiostoreCategoriaBean.class).findAll();
+        List<AudiostoreCategoriaBean> audiostoreCategoriaBeanList = repository.query(AudiostoreCategoriaBean.class).eq("tipo", new Short("2")).findAll();
         return audiostoreCategoriaBeanList;
     }
 
@@ -348,7 +355,7 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
             }
 
             repository.finalize();
-            result.redirectTo(AudiostoreComercialController.class).listar(null, null, null, null, null, null, null, null, null);
+            result.redirectTo(AudiostoreComercialController.class).listar(null, null, null, null, null, null, null, null, null, null, null);
         } catch (Exception e) {
             e.printStackTrace();
             result.redirectTo(AudiostoreComercialController.class).cadastrar();
@@ -417,7 +424,7 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
 
 
             repository.finalize();
-            result.redirectTo(AudiostoreComercialController.class).listar(null, null, null, null, null, null, null, null, null);
+            result.redirectTo(AudiostoreComercialController.class).listar(null, null, null, null, null, null, null, null, null, null, null);
         } catch (Exception e) {
             e.printStackTrace();
             result.redirectTo(AudiostoreComercialController.class).cadastrar();

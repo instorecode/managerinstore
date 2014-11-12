@@ -67,8 +67,6 @@
                         <label>CNPJ</label>
                         <input type="text" data-mask="99.999.999/9999-99" name="dadosCliente.cnpj" class="form-control" placeholder="CNPJ"  
                                data-rule-required="true" 
-                               data-rule-minlength="18"
-                               data-rule-maxlength="18"
                                data-rule-cnpj="true"
                                value="${dadosCliente.cnpj}">
                     </div>

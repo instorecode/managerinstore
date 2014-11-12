@@ -23,6 +23,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import jcifs.smb.SmbException;
@@ -50,13 +52,25 @@ public class RequestMusicaGeral implements java.io.Serializable {
         this.result = result;
         this.sessionUsuario = sessionUsuario;
     }
+    
+    public class MusicaGeralDTOInternal extends MusicaGeralDTO {
+        private String nomeArquivoFormatado;
+
+        public String getNomeArquivoFormatado() {
+            return nomeArquivoFormatado;
+        }
+
+        public void setNomeArquivoFormatado(String nomeArquivoFormatado) {
+            this.nomeArquivoFormatado = nomeArquivoFormatado;
+        }
+    }
 
     public List<MusicaGeralDTO> beanList() {
         List<MusicaGeralBean> lista = new ArrayList<MusicaGeralBean>();
         List<MusicaGeralDTO> lista2 = new ArrayList<MusicaGeralDTO>();
         lista = repository.query(MusicaGeralBean.class).findAll();
         for (MusicaGeralBean bean : lista) {
-            MusicaGeralDTO dto = new MusicaGeralDTO();
+            MusicaGeralDTOInternal dto = new MusicaGeralDTOInternal();
 
             dto.setId(Utilities.leftPad(bean.getId()));
             dto.setAfinidade1(bean.getAfinidade1().isEmpty() ? "Sem afinidade definida" : bean.getAfinidade1());
@@ -105,8 +119,15 @@ public class RequestMusicaGeral implements java.io.Serializable {
             dto.setTipoInterprete(ti);
             dto.setTitulo(bean.getTitulo());
             dto.setUsuario(u != null ? u.getNome() : "sem usuário definida");
-
+            
+            List<String> partss = Arrays.asList(dto.getArquivo().split("/"));
+            if (null != partss && !partss.isEmpty()) {
+                dto.setNomeArquivoFormatado(partss.get(partss.size() - 1));
+            }
+            
             lista2.add(dto);
+            
+            
         }
         return lista2;
     }
@@ -294,11 +315,7 @@ public class RequestMusicaGeral implements java.io.Serializable {
             }
             for (SmbFile item : smbDir.listFiles()) {
                 if (item.isFile()) {
-                    if (item.getName().indexOf(".mp3") != -1
-                            || item.getName().indexOf(".wave") != -1
-                            || item.getName().indexOf(".wav") != -1
-                            || item.getName().indexOf(".mp4") != -1) {
-
+                    if (item.getName().indexOf(".wav") != -1) {
                         MusicaGeralBean m = new MusicaGeralBean();
                         m.setCategoriaGeral(0);
                         m.setGravadora(0);
@@ -306,7 +323,7 @@ public class RequestMusicaGeral implements java.io.Serializable {
                         m.setArquivo(dirPath + item.getName() + "/");
                         m.setTitulo(item.getName());
                         m.setInterprete("");
-                        m.setTipoInterprete(new Short("1"));
+                        m.setTipoInterprete(new Short("0"));
                         m.setLetra("Não identificado");
                         m.setBpm(new Short("120"));
                         m.setTempoTotal("00:00:00");
@@ -488,7 +505,7 @@ public class RequestMusicaGeral implements java.io.Serializable {
         List<MusicaGeralDTO> lista2 = new ArrayList<MusicaGeralDTO>();
         lista = query.findAll();
         for (MusicaGeralBean bean : lista) {
-            MusicaGeralDTO dto = new MusicaGeralDTO();
+            MusicaGeralDTOInternal dto = new MusicaGeralDTOInternal();
 
             dto.setId(Utilities.leftPad(bean.getId()));
             dto.setAfinidade1(bean.getAfinidade1().isEmpty() ? "Sem afinidade definida" : bean.getAfinidade1());
@@ -537,7 +554,12 @@ public class RequestMusicaGeral implements java.io.Serializable {
             dto.setTipoInterprete(ti);
             dto.setTitulo(bean.getTitulo());
             dto.setUsuario(u != null ? u.getNome() : "sem usuário definida");
-
+            
+            List<String> partss = Arrays.asList(dto.getArquivo().split("/"));
+            if (null != partss && !partss.isEmpty()) {
+                dto.setNomeArquivoFormatado(partss.get(partss.size() - 1));
+            }
+            
             lista2.add(dto);
         }
 
@@ -554,7 +576,7 @@ public class RequestMusicaGeral implements java.io.Serializable {
     public void validarMsc(Integer[] id_list, Boolean expArquivoAudio) {
         System.out.println("DUMP DADOS");
         System.out.println(expArquivoAudio);
-        
+
         boolean ajaxResultBool = true;
         String ajaxResultStr = "";
         // verifica se todos são do mesmo cliente
@@ -602,6 +624,11 @@ public class RequestMusicaGeral implements java.io.Serializable {
                 if (bean != null) {
                     MusicaGeralBean mgb = repository.query(MusicaGeralBean.class).in("id", bean.getMusicaGeral()).findOne();
                     if (mgb != null) {
+                        
+                        if (!Utilities.verificarArquivoFisicoExiste(mgb.getArquivo())) {
+                            throw new Exception("O arquivo " + mgb.getArquivo() + " não existe. ");
+                        }
+                        
                         conteudo += quebraLinha;
 
                         // arquivo
@@ -656,11 +683,14 @@ public class RequestMusicaGeral implements java.io.Serializable {
                         // categoria 3
                         conteudo += (null == bean.getCategoria3() ? "000" : bean.getCategoria3().getCodInterno());
 
+                        // crossover
+                        conteudo += (bean.getCrossover() ? "sim" : "nao");
+
                         // dias de execucao  
-                        conteudo += StringUtils.leftPad(bean.getDiasExecucao1().toString(), 4, "0");
+                        conteudo += StringUtils.leftPad(bean.getDiasExecucao1().toString(), 4, " ");
 
                         // dias de execucao 2
-                        conteudo += StringUtils.leftPad(bean.getDiasExecucao2().toString(), 4, "0");
+                        conteudo += StringUtils.leftPad(bean.getDiasExecucao2().toString(), 4, " ");
 
                         // afinidade1
                         String afinidade1 = mgb.getAfinidade1();
@@ -707,10 +737,10 @@ public class RequestMusicaGeral implements java.io.Serializable {
                         conteudo += afinidade4;
 
                         // gravadora
-                        conteudo += null != mgb.getGravadora() ? mgb.getGravadora() : "000";
+                        conteudo += null != mgb.getGravadora() ? StringUtils.leftPad(mgb.getGravadora().toString(), 3, "0") : "000";
 
                         // ano gravacao
-                        conteudo += mgb.getAnoGravacao();
+                        conteudo += StringUtils.leftPad(mgb.getAnoGravacao().toString(), 3, "0");
 
                         // ano velocidade
                         conteudo += (mgb.getBpm() > 180 ? 3 : (mgb.getBpm() > 120 ? 2 : 1));
@@ -723,12 +753,13 @@ public class RequestMusicaGeral implements java.io.Serializable {
 
                         // tempo
                         String tempo = mgb.getTempoTotal();
-                        if (tempo.length() > 30) {
-                            tempo = tempo.substring(0, 30);
+                        if (tempo.length() > 8) {
+                            tempo = tempo.substring(0, 8);
                         }
 
-                        if (tempo.length() < 30) {
-                            tempo = StringUtils.leftPad(tempo, 30, " ");
+                        if (tempo.length() < 8) {
+                            
+                            tempo = "00:"+tempo;
                         }
                         conteudo += tempo;
 
@@ -749,6 +780,11 @@ public class RequestMusicaGeral implements java.io.Serializable {
 
                         // msg
                         String msg = bean.getMsg();
+
+                        if (null == msg) {
+                            msg = "";
+                        }
+
                         if (msg.length() > 40) {
                             msg = msg.substring(0, 40);
                         }
@@ -756,9 +792,8 @@ public class RequestMusicaGeral implements java.io.Serializable {
                         if (msg.length() < 40) {
                             msg = StringUtils.leftPad(msg, 40, " ");
                         }
-                        conteudo += msg;
-
                         // sem som
+                        conteudo += msg;
                         conteudo += bean.getSemSom() ? "sim" : "nao";
                     }
 
@@ -777,8 +812,9 @@ public class RequestMusicaGeral implements java.io.Serializable {
                         }
                     }
                 }
-                quebraLinha = "\r\n";
+                quebraLinha = Utilities.quebrarLinhaComHexa();
             }
+            conteudo = Utilities.formatarHexExp(conteudo);
 
             if (null != list && !list.isEmpty()) {
                 DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", list.get(0).getCliente().getIdcliente()).findOne();

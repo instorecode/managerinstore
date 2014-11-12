@@ -2,6 +2,7 @@ package br.com.instore.web.component.request;
 
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.view.Results;
+import br.com.instore.core.orm.Each;
 import br.com.instore.core.orm.bean.BairroBean;
 import br.com.instore.core.orm.bean.CepBean;
 import br.com.instore.core.orm.bean.CidadeBean;
@@ -98,13 +99,75 @@ public class RequestCliente implements java.io.Serializable {
         return clienteDTOList;
     }
 
-    public List<ClienteDTO> clienteDTOList() {
-        List<ClienteDTO> clienteDTOList = new ArrayList<ClienteDTO>();
+    public class ClienteDTOInternal extends ClienteDTO {
+
+        private Integer totalFiliaisAtivas = 0;
+        private Integer totalFiliaisInativas = 0;
+
+        public Integer getTotalFiliaisAtivas() {
+            return totalFiliaisAtivas;
+        }
+
+        public void setTotalFiliaisAtivas(Integer totalFiliaisAtivas) {
+            this.totalFiliaisAtivas = totalFiliaisAtivas;
+        }
+
+        public Integer getTotalFiliaisInativas() {
+            return totalFiliaisInativas;
+        }
+
+        public void setTotalFiliaisInativas(Integer totalFiliaisInativas) {
+            this.totalFiliaisInativas = totalFiliaisInativas;
+        }
+    }
+
+    public List<ClienteDTOInternal> clienteDTOList() {
+        List<ClienteDTOInternal> clienteDTOList = new ArrayList<ClienteDTOInternal>();
         List<ClienteBean> clienteBeanList = repository.query(ClienteBean.class).eq("matriz", true).eq("parente", 0).findAll();
         if (null != clienteBeanList && !clienteBeanList.isEmpty()) {
             for (ClienteBean clienteBean : clienteBeanList) {
                 DadosClienteBean dados = repository.query(DadosClienteBean.class).eq(DadosCliente.IDCLIENTE, clienteBean.getIdcliente()).findOne();
-                ClienteDTO dto = new ClienteDTO();
+
+                String qs = "select \n"
+                        + "	idcliente, \n"
+                        + "	'' as p \n"
+                        + "from \n" 
+                        + "	cliente \n"
+                        + "where \n"
+                        + "	parente = " + clienteBean.getIdcliente();
+                
+                System.out.println("---------------------------------------------------------------");       
+                System.out.println(qs);
+                System.out.println("---------------------------------------------------------------");
+                final List<Integer> idUnidades = new ArrayList<Integer>();
+
+                repository.query(qs).executeSQL(new Each() {
+                    private Integer idcliente;
+                    private String p;
+
+                    @Override
+                    public void each() {
+                        idUnidades.add(idcliente);
+                    }
+                });
+
+                ClienteDTOInternal dto = new ClienteDTOInternal();
+
+                if (null != idUnidades && !idUnidades.isEmpty()) {
+                    for (Integer id : idUnidades) {
+                        ClienteSuspensoBean clienteSuspensoBean = repository.query(ClienteSuspensoBean.class).eq("cliente.idcliente", id).orderDesc("data").limit(1).findOne();
+                        if (null != clienteSuspensoBean) {
+                            if (clienteSuspensoBean.getSuspenso() && new Date().after(clienteSuspensoBean.getDataFim())) {
+                                dto.setTotalFiliaisInativas(dto.getTotalFiliaisInativas() + 1);
+                            } else {
+                                dto.setTotalFiliaisAtivas(dto.getTotalFiliaisAtivas() + 1);
+                            }
+                        } else {
+                            dto.setTotalFiliaisAtivas(dto.getTotalFiliaisAtivas() + 1);
+                        }
+                    }
+                }
+
                 dto.setIdcliente(Utilities.leftPad(clienteBean.getIdcliente()));
                 dto.setInstore(clienteBean.getInstore() ? "Sim" : "Não");
                 dto.setMatriz(clienteBean.getMatriz() ? "Sim" : "Não");
@@ -547,8 +610,8 @@ public class RequestCliente implements java.io.Serializable {
             if (!smbP1.exists() || smbP1.isFile()) {
                 result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel encontrar o diretório " + p1 + " ou caminho do diretório não pode ter o nome de um arquivo!")).recursive().serialize();
                 return;
-            } 
-            
+            }
+
             SmbFile smbP2 = new SmbFile(p2, Utilities.getAuthSmbDefault());
             if (!smbP2.exists() || smbP2.isFile()) {
                 result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel encontrar o diretório " + p2 + " ou caminho do diretório não pode ter o nome de um arquivo!")).recursive().serialize();
@@ -556,7 +619,7 @@ public class RequestCliente implements java.io.Serializable {
             }
 
             SmbFile smbP3 = new SmbFile(p3, Utilities.getAuthSmbDefault());
-            if (!smbP3.exists()|| smbP3.isFile()) {
+            if (!smbP3.exists() || smbP3.isFile()) {
                 result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel encontrar o diretório " + p3 + " ou caminho do diretório não pode ter o nome de um arquivo!")).recursive().serialize();
                 return;
             }

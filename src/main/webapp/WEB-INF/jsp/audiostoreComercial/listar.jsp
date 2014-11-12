@@ -153,6 +153,7 @@
                             <th options="true" class="options">#</th>
                             <th field="titulo" options="false">Título</th>
                             <th field="arquivo" options="false">Arquivo</th>
+                            <th field="categoriaNome" isfk="true" fk="codigo" fklabel="categoria" fklabelselect="Todos"  fkurl="${url}/audiostore-comercial?categorias=true"  options="false"> Categoria </th>
 
                             <!--<th field="tempo" options="false">Duração</th>-->
                         </tr>

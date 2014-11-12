@@ -1,10 +1,10 @@
 package br.com.instore.web.tools;
 
+
 import br.com.instore.core.orm.XmlAnnotation;
 import br.com.instore.core.orm.bean.HistoricoUsuarioBean;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.dto.MusicaDTO;
-import com.google.common.reflect.ClassPath;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import java.io.File;
@@ -13,21 +13,21 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Scanner;
 import java.util.Set;
-import javax.persistence.Entity;
 import jcifs.smb.NtlmPasswordAuthentication;
-import net.sf.corn.cps.ClassFilter;
+
+import jcifs.smb.SmbException;
+import jcifs.smb.SmbFile;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang.StringUtils;
@@ -36,10 +36,7 @@ import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
 import org.apache.tika.parser.mp3.Mp3Parser;
-import org.reflections.Configuration;
 import org.reflections.Reflections;
-import org.reflections.scanners.ResourcesScanner;
-import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.xml.sax.ContentHandler;
@@ -295,8 +292,8 @@ public class Utilities {
     }
 
     public static NtlmPasswordAuthentication getAuthSmbDefault() {
-        String user = "admin";
-        String pass = "q1a2s3";
+        String user = "Intranet";
+        String pass = "<nsto>re#*12";
         return new NtlmPasswordAuthentication("", user, pass);
     }
 
@@ -338,6 +335,20 @@ public class Utilities {
 
         return url;
     }
+    
+    public static boolean verificarArquivoFisicoExiste(String filenameSmb) {
+        try {
+            SmbFile file = new SmbFile(filenameSmb, Utilities.getAuthSmbDefault());
+            if (file.exists()) {
+                return true;
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (SmbException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
     private static Set<Class<?>> listaClasses() {
         Reflections reflections = new Reflections(new ConfigurationBuilder().addUrls(ClasspathHelper.forJavaClassPath()));
@@ -345,7 +356,6 @@ public class Utilities {
                
         return classes;
     }
-
     
     
     public static Class<?> findAnnotation() {
