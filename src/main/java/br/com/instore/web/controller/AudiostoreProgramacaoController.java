@@ -39,7 +39,7 @@ public class AudiostoreProgramacaoController implements java.io.Serializable {
         }
 
         if (null != view && view) {
-            result.use(Results.json()).withoutRoot().from(requestAudiostoreProgramacao.bean(pk)).recursive().serialize();
+            result.use(Results.json()).withoutRoot().from(requestAudiostoreProgramacao.beanDto(pk)).recursive().serialize();
         } else {
             result.include("clienteBeanList", requestAudiostoreProgramacao.clienteBeanList());
         }
@@ -127,7 +127,7 @@ public class AudiostoreProgramacaoController implements java.io.Serializable {
 
     @Post
     @Path("/audiostore-programacao/vld-prg")
-    public void validarProgramacao(Integer[] id_list) {
-        requestAudiostoreProgramacao.validarProgramacao(id_list);
+    public void validarProgramacao(Integer[] id_list , Integer idcliente, String descricao) {
+        requestAudiostoreProgramacao.validarProgramacao(id_list, idcliente, descricao);
     }
 }

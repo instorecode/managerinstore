@@ -82,7 +82,8 @@ public class RequestOcorrenciaSolucao implements java.io.Serializable {
                 Logger.getLogger(RequestOcorrenciaSolucao.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
+        
+        json.setCount(q1.count().intValue());
         int size = q1.count().intValue() / rows + ((q1.count().intValue() % rows == 0) ? 0 : 1);
         lista = q2.limit(offset, rows).findAll();
 

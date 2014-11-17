@@ -8,6 +8,7 @@ public class AudiostoreComercialJSON extends AbstractDTO {
     private Integer size;
     private List<AudiostoreComercialDTO> rows = new ArrayList<AudiostoreComercialDTO>();
     private String id;
+    private Integer idcliente;
     private String clienteNome;
     private String categoriaNome;
     private String semanaHora;
@@ -33,6 +34,7 @@ public class AudiostoreComercialJSON extends AbstractDTO {
     private String semSom;
     private String msg;
     private Integer codigo;
+    private Integer count;
 
     public Integer getCodigo() {
         return codigo;
@@ -264,5 +266,21 @@ public class AudiostoreComercialJSON extends AbstractDTO {
 
     public void setMsg(String msg) {
         this.msg = msg;
+    }
+
+    public Integer getIdcliente() {
+        return idcliente;
+    }
+
+    public void setIdcliente(Integer idcliente) {
+        this.idcliente = idcliente;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
     }
 }

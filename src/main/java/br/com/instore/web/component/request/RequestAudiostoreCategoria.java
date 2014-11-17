@@ -52,7 +52,7 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
         this.sessionUsuario = sessionUsuario;
     }
 
-    public void beanList(Integer page, Integer rows, Integer id, Integer idcliente, String nome, Integer tipo, String duracao, String dataInicio, String dataFinal, String codInterno) {
+    public AudiostoreCategoriaJSON beanList(Integer page, Integer rows, Integer id, Integer idcliente, String nome, String tipo, String duracao, String dataInicio, String dataFinal, String codInterno) {
         AudiostoreCategoriaJSON json = new AudiostoreCategoriaJSON();
 
         page = (null == page || 0 == page ? 1 : page);
@@ -82,10 +82,22 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
             json.setCategoria(nome);
         }
 
-        if (null != tipo && tipo > 0) {
-            q1.eq("tipo", tipo);
-            q2.eq("tipo", tipo);
-            json.setTipo(tipo);
+        if (null != tipo && !tipo.isEmpty()) {
+            System.out.println("TIPOOO: " + tipo.trim());
+            if ("musica".equals(tipo.trim())) {
+                q1.eq("tipo",new Short("1"));
+                json.setTipo("musica"); 
+            }
+            
+            if ("comercial".equals(tipo.trim())) {
+                q1.eq("tipo", new Short("2"));
+                json.setTipo("comercial");
+            }
+
+            if ("video".equals(tipo.trim())) {
+                q1.eq("tipo", new Short("3"));
+                json.setTipo("video");
+            }   
         }
 
         if (null != codInterno && !codInterno.isEmpty()) {
@@ -127,6 +139,7 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
             }
         }
 
+        json.setCount(q1.count().intValue());
         int size = q1.count().intValue() / rows + ((q1.count().intValue() % rows == 0) ? 0 : 1);
         lista = q2.limit(offset, rows).findAll();
 
@@ -149,13 +162,13 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
             dto.setCodInterno(bean.getCodInterno());
             switch (bean.getTipo()) {
                 case 1:
-                    dto.setTipo("Música");
+                    dto.setTipo("musica");
                     break;
                 case 2:
-                    dto.setTipo("Comercial");
+                    dto.setTipo("comercial");
                     break;
                 case 3:
-                    dto.setTipo("Video");
+                    dto.setTipo("video");
                     break;
             }
 
@@ -163,6 +176,8 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
         }
         json.setRows(rowsList);
         result.use(Results.json()).withoutRoot().from(json).recursive().serialize();
+
+        return json;
     }
 
     public List<ClienteBean> clienteBeanList() {
@@ -308,12 +323,12 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
                 if (audiostoreCategoriaBean != null) {
                     conteudo += quebraLinha;
                     conteudo += StringUtils.leftPad(audiostoreCategoriaBean.getCodInterno().toString(), 5, " ");
-                    conteudo += StringUtils.leftPad(audiostoreCategoriaBean.getCategoria(), 30, " ");
+                    conteudo += StringUtils.leftPad(Utilities.formatarHexExp(audiostoreCategoriaBean.getCategoria()), 30, " ");
                     conteudo += StringUtils.leftPad(new SimpleDateFormat("dd/MM/yy").format(audiostoreCategoriaBean.getDataInicio()), 8, " ");
                     conteudo += StringUtils.leftPad(new SimpleDateFormat("dd/MM/yy").format(audiostoreCategoriaBean.getDataFinal()), 8, " ");
                     conteudo += audiostoreCategoriaBean.getTipo();
                 }
-                quebraLinha = "\r\n";
+                quebraLinha = Utilities.quebrarLinhaComHexa();
             }
 
             DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", list.get(0).getCliente().getIdcliente()).findOne();
@@ -355,35 +370,55 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
         }
     }
 
-    public void validarCategorias(Integer[] id_list) {
-        List<AudiostoreCategoriaBean> list = repository.query(AudiostoreCategoriaBean.class).in("codigo", id_list).findAll();
+    public void validarCategorias(Integer[] id_list, Integer id, Integer idcliente, String categoria, String tipo, String duracao, String dataInicio, String dataFinal, String codInterno) {
+        List<AudiostoreCategoriaBean> list = null;
+
+        if (null != id_list && id_list.length > 0) {
+            list = repository.query(AudiostoreCategoriaBean.class).in("codigo", id_list).findAll();
+        } else {
+            AudiostoreCategoriaJSON json = beanList(1, 999999999, id, idcliente, duracao, tipo, duracao, dataInicio, dataFinal, codInterno);
+            if (null != json.getRows() && !json.getRows().isEmpty()) {
+                id_list = new Integer[json.getRows().size()];
+                int i = 0;
+                for (AudiostoreCategoriaDTO dto : json.getRows()) {
+                    id_list[i] = dto.getCodigo();
+                    i++;
+                }
+            }
+            list = repository.query(AudiostoreCategoriaBean.class).in("codigo", id_list).findAll();
+        }
 
         boolean ajaxResultBool = true;
         String ajaxResultStr = "";
-
-        // verifica se todos são do mesmo cliente
-        Integer idcliente = list.get(0).getCliente().getIdcliente();
-        for (AudiostoreCategoriaBean bean : list) {
-            if (!bean.getCliente().getIdcliente().equals(idcliente)) {
-                ajaxResultBool = false;
-                ajaxResultStr = "Você selecionou categorias de clientes diferentes!";
-                break;
+        if (null != id_list && id_list.length > 0) {
+            System.out.println("tamanho da lista ");
+            // verifica se todos são do mesmo cliente
+            Integer idclienteAux = list.get(0).getCliente().getIdcliente();
+            for (AudiostoreCategoriaBean bean : list) {
+                if (!bean.getCliente().getIdcliente().equals(idclienteAux)) {
+                    ajaxResultBool = false;
+                    ajaxResultStr = "Você selecionou categorias de clientes diferentes!";
+                    break;
+                }
             }
-        }
 
-        if (ajaxResultBool) {
-            DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", list.get(0).getCliente().getIdcliente()).findOne();
-            if (null == dados || null == dados.getLocalDestinoExp() || dados.getLocalDestinoExp().trim().isEmpty()) {
-                ajaxResultBool = false;
-                ajaxResultStr = "O cliente não possui um local de destino para os arquivos de exportação!";
+            if (ajaxResultBool) {
+                DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", list.get(0).getCliente().getIdcliente()).findOne();
+                if (null == dados || null == dados.getLocalDestinoExp() || dados.getLocalDestinoExp().trim().isEmpty()) {
+                    ajaxResultBool = false;
+                    ajaxResultStr = "O cliente não possui um local de destino para os arquivos de exportação!";
+                }
             }
-        }
 
-        try {
-            upload(id_list);
-        } catch (Exception e) {
+            try {
+                upload(id_list);
+            } catch (Exception e) {
+                ajaxResultBool = false;
+                ajaxResultStr = e.getMessage();
+            }
+        } else {
             ajaxResultBool = false;
-            ajaxResultStr = e.getMessage();
+            ajaxResultStr = "Não foi possivel gerar os arquivos!";
         }
 
         result.use(Results.json()).withoutRoot().from(new AjaxResult(ajaxResultBool, ajaxResultStr)).recursive().serialize();

@@ -17,6 +17,7 @@ public class AudiostoreProgramacaoJSON  extends AbstractDTO {
     private String horaInicio = null;
     private String horaFinal = null;
     private String diasSemana = null;
+    private Integer count;
 
     public Integer getPage() {
         return page;
@@ -114,5 +115,11 @@ public class AudiostoreProgramacaoJSON  extends AbstractDTO {
         this.diasSemana = diasSemana;
     }
 
-   
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
 }

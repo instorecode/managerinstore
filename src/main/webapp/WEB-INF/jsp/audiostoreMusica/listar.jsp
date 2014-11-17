@@ -117,6 +117,7 @@
                     &nbsp; Aguarde, processando dados...
                 </div> 
             </div>
+
             <button type="button" class="btn btn-default btn-flat btn_cadastro" style="margin-left: 0px;"><i class="fa fa-save"></i> Cadastrar</button>
 
             <div class="btn-group">
@@ -134,8 +135,8 @@
                 </ul>
                 <button type="button" class="btn btn-default btn-flat " id="botaoCsv" ><i class="fa fa-file-excel-o"></i></button>
 
-                <button type="button" class="btn btn-default btn-flat btn_export btn_export1" style="display: none;"><i class="fa fa-upload"></i> Exportar arquivo </button>
-                <button type="button" class="btn btn-default btn-flat btn_export btn_export2" style="display: none;"><i class="fa fa-upload"></i> Exportar arquivo com audio</button>
+                <button type="button" class="btn btn-default btn-flat btn_export btn_export1"><i class="fa fa-upload"></i> Exportar arquivo </button>
+                <button type="button" class="btn btn-default btn-flat btn_export btn_export2"><i class="fa fa-upload"></i> Exportar arquivo com audio</button>
             </div>
 
             <div class="addon" style="display: none;">
@@ -177,83 +178,87 @@
         <script type="text/javascript">
             jQuery(document).ready(function() {
 
-                jQuery(document).on("selected", ".row_data", function(evt, item) {
-                    jQuery('.btn_export').show();
-                }).on("unselected", ".row_data", function(evt, item) {
-                    if (countRowsSelected() == 0) {
-                        jQuery('.btn_export').hide();
-                    }
-                });
-
                 jQuery('.btn_export1').on("click", function() {
-                    msg_fadeIn();
-
-                    var arr = rowsSelected();
-                    var id_list = new Array();
-                    for (i in arr) {
-                        var item = arr[i];
-                        id_list[i] = item.id;
-                    }
-
-                    if (countRowsSelected() <= 0) {
-                        bootbox.alert("Selecione no minimo um registro na tabela.", function() {
-                        });
-                    } else {
-                        jQuery.ajax({
-                            async: false,
-                            type: 'POST',
-                            url: '${url}/musica/vld-msc',
-                            data: {id_list: id_list, exp_arquivo_audio: false},
-                            success: function(json) {
-                                if (!json.success) {
-                                    bootbox.hideAll();
-                                    bootbox.alert(json.response, function() {});
-                                }
-                            },
-                            error: function(error) {
-                                console.log(error);
-                            }
-                        });
-                    }
-                    setTimeout(function() {
-                        msg_fadeOut();
-                    }, 4000);
+                    fnn(false);
                 });
 
                 jQuery('.btn_export2').on("click", function() {
-                    msg_fadeIn();
-
-                    var arr = rowsSelected();
-                    var id_list = new Array();
-                    for (i in arr) {
-                        var item = arr[i];
-                        id_list[i] = item.id;
-                    }
-
-                    if (countRowsSelected() <= 0) {
-                        bootbox.alert("Selecione no minimo um registro na tabela.", function() {});
-                    } else {
-                        jQuery.ajax({
-                            async: false,
-                            type: 'POST',
-                            url: '${url}/musica/vld-msc',
-                            data: {id_list: id_list, exp_arquivo_audio: true},
-                            success: function(json) {
-                                if (!json.success) {
-                                    bootbox.hideAll();                                   
-                                    bootbox.alert(json.response, function() {});
-                                }
-                            },
-                            error: function(error) {
-                                console.log(error);
-                            }
-                        });
-                    }
-                    setTimeout(function() {
-                        msg_fadeOut();
-                    }, 4000);
+                    fnn(true);
                 });
 
+                function fnn(exp_arquivo_audio) {
+                    msg_fadeIn();
+                    var cliente_selecionado = jQuery('[name="idcliente"]').val();
+                    cliente_selecionado = 1029;
+
+                    if (null == cliente_selecionado || undefined == cliente_selecionado || '' == cliente_selecionado) {
+                        bootbox.alert("Selecione um cliente.", function() {
+                        });
+                    } else {
+                        var arr = rowsSelected();
+                        var id_list = new Array();
+                        for (i in arr) {
+                            var item = arr[i];
+                            id_list[i] = item.id;
+                        }
+                        var qtdeRequests = 0;
+                        jQuery.ajax({
+                            async: false,
+                            timeout: ((1000 * 60) * 10),
+                            type: 'GET',
+                            url: '${url}/musica/vld-msc',
+                            dataType:"json",   
+                            data: {
+                                index: null,
+                                id_list: id_list,
+                                idcliente: cliente_selecionado,
+                                arquivo: jQuery('[name="arquivo"]').val(),
+                                nome: jQuery('[name="nome"]').val(),
+                                codigo: jQuery('[name="codigo"]').val(),
+                                exp_arquivo_audio: exp_arquivo_audio
+                            },
+                             
+                            success: function(json) {
+                                if(json.success) {
+                                    qtdeRequests = json.object;
+                                } else {
+                                    alert('Lamento, ocorreu um erro.');
+                                }
+                            },
+                            error: function(resp) {
+                                alert('Lamento, ocorreu um erro.');
+                            },
+                        });
+
+                        for (i = 1; i <= qtdeRequests; i++) {
+                            jQuery.ajax({
+                                async: false,
+                                timeout: ((1000 * 60) * 10),
+                                type: 'POST',
+                                url: '${url}/musica/vld-msc',
+                                data: {
+                                    index: i,
+                                    id_list: null,
+                                    idcliente: null,
+                                    arquivo: null,
+                                    nome: null,
+                                    codigo: null,
+                                    exp_arquivo_audio: exp_arquivo_audio
+                                },
+                                dataType: 'json',
+                                success: function(json) {
+                                    console.log("sucesso: ");
+                                    console.log(json);
+                                },
+                                error: function(resp) {
+                                    console.log("error: ");
+                                    console.log(resp);
+                                }
+                            });
+                        }
+                    }
+                    msg_fadeOut();
+                }
             });
         </script>
     </jsp:body>

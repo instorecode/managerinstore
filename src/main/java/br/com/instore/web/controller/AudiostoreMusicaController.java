@@ -49,7 +49,12 @@ public class AudiostoreMusicaController implements java.io.Serializable {
         }
 
         if (null != categorias && categorias) {
-            result.use(Results.json()).withoutRoot().from(requestAudiostoreMusica.categorias()).recursive().serialize();
+            if (null != idcliente && idcliente > 0) {
+                result.use(Results.json()).withoutRoot().from(requestAudiostoreMusica.categoriasByCliente5(idcliente)).recursive().serialize();
+            } else {
+                result.use(Results.json()).withoutRoot().from(requestAudiostoreMusica.categorias()).recursive().serialize();
+            }
+            
         }
     }
 

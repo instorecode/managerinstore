@@ -11,6 +11,7 @@ public class OcorrenciaSituacaoJSON {
     private String id = null;
     private String descricao = null;
     private String cor = null;
+    private Integer count;
 
     public Integer getPage() {
         return page;
@@ -59,6 +60,12 @@ public class OcorrenciaSituacaoJSON {
     public void setCor(String cor) {
         this.cor = cor;
     }
-    
-    
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
 }

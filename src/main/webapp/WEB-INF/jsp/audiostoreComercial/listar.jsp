@@ -68,9 +68,8 @@
 
         <!--ATUALIZAR-->
         <div class="edit">
-
             <form name="FORM_ATUALIZAR_[[__PK__]]" method="POST" data-formtable="true" action="${url}/audiostore-comercial/atualizar/[[__PK__]]">
-        </form>
+            </form>
         </div>
 
         <!--DELETE-->
@@ -120,15 +119,15 @@
                     <li><a href="100">100</a></li>
                 </ul>
             </div>
-            <button type="button" class="btn btn-default btn-flat btn_export btn_export1" style="display: none;"><i class="fa fa-upload"></i> Exportar arquivo </button>
-            <button type="button" class="btn btn-default btn-flat btn_export btn_export2" style="display: none;"><i class="fa fa-upload"></i> Exportar arquivo com audio</button>
-<!--            <div class="addon" style="display: none;">
-                <a href="${url}/audiostore-comercial/cadastrar?clonar=[[__PK__]]" class="btn btn-default btn-flat btn-xs" id="clonar" ><i class="fa fa-repeat"></i></a>
-            </div>-->
-            
+            <button type="button" class="btn btn-default btn-flat btn_export btn_export1" ><i class="fa fa-upload"></i> Exportar arquivo </button>
+            <button type="button" class="btn btn-default btn-flat btn_export btn_export2" ><i class="fa fa-upload"></i> Exportar arquivo com audio</button>
+            <!--            <div class="addon" style="display: none;">
+                            <a href="${url}/audiostore-comercial/cadastrar?clonar=[[__PK__]]" class="btn btn-default btn-flat btn-xs" id="clonar" ><i class="fa fa-repeat"></i></a>
+                        </div>-->
+
             &nbsp;
             &nbsp;
-            
+
             <div class="btn-group">
                 <button class="btn btn-default btn-flat _prev"> <i class="fa fa-angle-double-left"></i> </button>
                 <button class="btn btn-default btn-flat prev"> <i class="fa fa-angle-left"></i> </button>
@@ -137,7 +136,7 @@
                 <button type="button" class="btn btn-default btn-flat btn_refresh"><i class="fa fa-refresh"></i></button>
                 <span class="pag_info">Página 0 de 0</span>
             </div>
-            
+
             <div class="content">
                 <table  id="table" 
                         class="xtable" 
@@ -154,7 +153,7 @@
                             <th field="titulo" options="false">Título</th>
                             <th field="arquivo" options="false">Arquivo</th>
                             <th field="categoriaNome" isfk="true" fk="codigo" fklabel="categoria" fklabelselect="Todos"  fkurl="${url}/audiostore-comercial?categorias=true"  options="false"> Categoria </th>
-
+                            <th field="clienteNome" isfk="true" fk="idcliente" fklabel="nome" fklabelselect="Todos"  fkurl="${url}/audiostore-comercial?clientes=true"  options="false"> Cliente </th>
                             <!--<th field="tempo" options="false">Duração</th>-->
                         </tr>
                     </thead>
@@ -177,57 +176,22 @@
         <script type="text/javascript">
             jQuery(document).ready(function() {
 
-                jQuery(document).on("selected", ".row_data", function(evt, item) {
-                    jQuery('.btn_export').show();
-                }).on("unselected", ".row_data", function(evt, item) {
-                    if (countRowsSelected() == 0) {
-                        jQuery('.btn_export').hide();
-                    }
-                });
-
                 jQuery('.btn_export1').on("click", function() {
-                    msg_fadeIn();
-                    if (countRowsSelected() <= 0) {
-                        bootbox.alert("Selecione no minimo um registro na tabela.", function() {
-                        });
-                    } else {
-
-                        var arr = rowsSelected();
-                        var id_list = new Array();
-                        for (i in arr) {
-                            var item = arr[i];
-                            id_list[i] = item.id;
-                        }
-
-                        jQuery.ajax({
-                            async: false,
-                            type: 'POST',
-                            url: '${url}/audiostore-comercial/vld-comm',
-                            data: {id_list: id_list, exp_arquivo_audio: false},
-                            success: function(json) {
-                                if (!json.success) {
-                                    dialogAjax(json.response);
-                                    window.location.reload();
-                                }
-                            },
-                            error: function(error) {
-                                console.log(error);
-                                window.location.reload();
-                            }
-                        });
-                    }
-                    setTimeout(function() {
-                        msg_fadeOut();
-                    }, 2000);
+                    fnn(false);
                 });
 
                 jQuery('.btn_export2').on("click", function() {
+                    fnn(true);
+                });
+
+                function fnn(exp_arquivo_audio) {
                     msg_fadeIn();
-                    if (countRowsSelected() <= 0) {
-                        bootbox.alert("Selecione no minimo um registro na tabela.", function() {
+                    var cliente_selecionado = jQuery('[name="idcliente"]').val();
+
+                    if (null == cliente_selecionado || undefined == cliente_selecionado || '' == cliente_selecionado) {
+                        bootbox.alert("Selecione um cliente.", function() {
                         });
                     } else {
-
                         var arr = rowsSelected();
                         var id_list = new Array();
                         for (i in arr) {
@@ -235,28 +199,56 @@
                             id_list[i] = item.id;
                         }
 
-                        jQuery.ajax({
-                            async: false,
-                            type: 'POST',
-                            url: '${url}/audiostore-comercial/vld-comm',
-                            data: {id_list: id_list, exp_arquivo_audio: true},
-                            success: function(json) {
-                                if (!json.success) {
-                                    dialogAjax(json.response);
-                                    window.location.reload();
-                                }
-                            },
-                            error: function(error) {
-                                console.log(error);
-                                window.location.reload();
-                            }
-                        });
-                    }
-                    setTimeout(function() {
-                        msg_fadeOut();
-                    }, 2000);
-                });
 
+                        if (id_list.length <= 0) {
+                            bootbox.confirm("Você não selecionou nenhum comercial, deseja exportar todos os registros?", function(res) {
+                                if (res) {
+                                    jQuery.ajax({
+                                        type: 'POST',
+                                        url: '${url}/audiostore-comercial/vld-comm',
+                                        data: {
+                                            id_list: id_list,
+                                            idcliente: cliente_selecionado,
+                                            titulo: jQuery('[name="titulo"]').val(),
+                                            arquivo: jQuery('[name="arquivo"]').val(),
+                                            codigo: jQuery('[name="codigo"]').val(),
+                                            exp_arquivo_audio: exp_arquivo_audio
+                                        },
+                                        success: function(json) {
+                                            console.log(json);
+                                        },
+                                        error: function(resp) {
+                                            console.log(resp);
+                                        }
+                                    });
+                                }
+                                return false;
+                            });
+                        } else {
+                            jQuery.ajax({
+                                type: 'POST',
+                                url: '${url}/audiostore-comercial/vld-comm',
+                                data: {
+                                    id_list: id_list,
+                                    idcliente: cliente_selecionado,
+                                    titulo: jQuery('[name="titulo"]').val(),
+                                    arquivo: jQuery('[name="arquivo"]').val(),
+                                    codigo: jQuery('[name="codigo"]').val(),
+                                    exp_arquivo_audio: exp_arquivo_audio
+                                },
+                                success: function(json) {
+                                    console.log(json);
+                                },
+                                error: function(resp) {
+                                    console.log(resp);
+                                }
+                            });
+                        }
+
+
+                    }
+                    msg_fadeOut();
+                }
             });
         </script>
     </jsp:body>

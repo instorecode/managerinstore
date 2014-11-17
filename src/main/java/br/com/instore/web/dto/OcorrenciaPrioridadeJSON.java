@@ -12,6 +12,7 @@ public class OcorrenciaPrioridadeJSON {
     private Integer id = null;
     private String descricao = null;
     private Integer nivel = null;
+    private Integer count;
 
     public Integer getPage() {
         return page;
@@ -59,5 +60,13 @@ public class OcorrenciaPrioridadeJSON {
 
     public void setNivel(Integer nivel) {
         this.nivel = nivel;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
     }
 }

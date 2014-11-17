@@ -11,6 +11,7 @@ public class OcorrenciaOrigemJSON {
     private List<OcorrenciaOrigemDTO> rows = new ArrayList<OcorrenciaOrigemDTO>();
     private Integer id = null;
     private String descricao = null;
+    private Integer count;
     
     public Integer getPage() {
         return page;
@@ -50,5 +51,13 @@ public class OcorrenciaOrigemJSON {
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
     }
 }

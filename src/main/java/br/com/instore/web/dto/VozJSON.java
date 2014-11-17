@@ -17,6 +17,7 @@ public class VozJSON {
     private String nome = null;
     private String email = null;
     private String tel = null;
+    private Integer count;
 
     public Integer getPage() {
         return page;
@@ -97,7 +98,12 @@ public class VozJSON {
     public void setTel(String tel) {
         this.tel = tel;
     }
-    
-    
-    
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
 }

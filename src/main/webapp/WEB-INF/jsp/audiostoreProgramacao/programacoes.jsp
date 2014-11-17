@@ -36,20 +36,11 @@
             <hr />
             <ol class="view_itens" type="i">
                 <li>
-                    <strong>Identificador</strong>
-                    <br />
-                    <small field="codigo"></small>
-                </li>
-                <li>
                     <strong>Cliente</strong>
                     <br />
                     <small field="clienteNome"></small>
                 </li>
-                <li>
-                    <strong>Categoria</strong>
-                    <br />
-                    <small field="programacao"></small>
-                </li>
+
                 <li>
                     <strong>Data inicial</strong>
                     <br />
@@ -59,16 +50,6 @@
                     <strong>Data final</strong>
                     <br />
                     <small field="dataFinal"></small>
-                </li>
-                <li>
-                    <strong>Duração</strong>
-                    <br />
-                    <small field="tempo"></small>
-                </li>
-                <li>
-                    <strong>Tipo</strong>
-                    <br />
-                    <small field="tipo"></small>
                 </li>
             </ol>
         </div>
@@ -126,12 +107,16 @@
                     <li><a href="100">100</a></li>
                 </ul>
             </div>
-            <button type="button" class="btn btn-default btn-flat btn_export" style="display: none;"><i class="fa fa-upload"></i> Exportar arquivo </button>
+            
+            <button type="button" class="btn btn-default btn-flat btn_export"><i class="fa fa-upload"></i> Exportar arquivo </button>
+            
             <div class="addon" style="display: none;">
                 <a href="${url}/audiostore-programacao/cadastrar?clonar=[[__PK__]]" class="btn btn-default btn-flat btn-xs" id="clonar" ><i class="fa fa-plus"></i></a>
             </div>
+            
             &nbsp;
             &nbsp;
+            
             <div class="btn-group">
                 <button class="btn btn-default btn-flat _prev"> <i class="fa fa-angle-double-left"></i> </button>
                 <button class="btn btn-default btn-flat prev"> <i class="fa fa-angle-left"></i> </button>
@@ -153,9 +138,8 @@
                     <thead>
                         <tr> 
                             <th options="true" class="options">#</th>
-                            <th field="descricao" options="false">Código</th>
+                            <th field="descricao" options="false">Descrição</th> 
                             <th field="clienteNome" isfk="true" fk="idcliente" fklabel="nome" fklabelselect="Todos" fkurl="${url}/audiostore-programacao?clientes=true"  options="false">Cliente</th>
-                            <!--<th field="tempo" options="false">Duração</th>-->
                         </tr>
                     </thead>
                 </table>
@@ -173,48 +157,48 @@
                 background-color: rgba(0,0,0,0.5);
             }
         </style>
-
+        
         <script type="text/javascript">
             jQuery(document).ready(function() {
-                
-                jQuery(document).on("selected", ".row_data", function(evt, item) {
-                    jQuery('.btn_export').show();
-                }).on("unselected", ".row_data", function(evt, item) {
-                    if (countRowsSelected() == 0) {
-                        jQuery('.btn_export').hide();
-                    }
-                });
-
                 jQuery('.btn_export').on("click", function() {
                     msg_fadeIn();
-                    if (countRowsSelected() <= 0) {
-                        bootbox.alert("Selecione no minimo um registro na tabela.", function() {
+                    var cliente_selecionado = jQuery('[name="idcliente"]').val();
+
+                    if (null == cliente_selecionado || undefined == cliente_selecionado || '' == cliente_selecionado) {
+                        bootbox.alert("Selecione um cliente.", function() {
                         });
                     } else {
-                        
                         var arr = rowsSelected();
                         var id_list = new Array();
                         for (i in arr) {
                             var item = arr[i];
                             id_list[i] = item.id;
                         }
+
+                        console.log(id_list);
+
                         jQuery.ajax({
                             type: 'POST',
                             url : '${url}/audiostore-programacao/vld-prg',
-                            data:{ id_list : id_list },
-                            success : function(json){
-                                if(!json.success) {
-                                    dialogAjax(json.response);
-                                } else {
-                                    
-                                }
+                            data: {
+                                    id_list    : id_list , 
+                                    idcliente  : cliente_selecionado,
+                                    descricao : jQuery('[name="descricao"]').val(),
+                            },
+                            success: function(json) {
+                                console.log(json);
+                            },
+                            error : function(resp){
+                                console.log(resp);
                             }
                         });
-                    }
+                    } 
                     msg_fadeOut();
                 });
-                
+
             });
         </script>
+        
+        
     </jsp:body>
 </instore:template>

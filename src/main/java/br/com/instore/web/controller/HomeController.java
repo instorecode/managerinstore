@@ -141,4 +141,10 @@ public class HomeController implements java.io.Serializable {
     public void minhaSenha(String senha_atual , String nova_senha, String conf_senha) {
         requestUsuario.minhaSenha(senha_atual , nova_senha , conf_senha);
     }
+   
+    @Get
+    @Path("/plantao")
+    public void plantao() {
+        
+    }
 }

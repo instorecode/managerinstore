@@ -50,13 +50,12 @@ public class Utilities {
     }
 
     public static String formatarHexExp(String text) throws DecoderException {
-        text = removeLetrasEspeciais(text);
-
+        System.out.println("TEXTO ANTES DE FORMATAR:   " + text);
+        System.out.println("\n\n");
         List<String> hexaList = new ArrayList<String>();
         hexaList.add("5C");
         hexaList.add("2F");
         hexaList.add("0D");
-        hexaList.add("0A");
         hexaList.add("2E");
         hexaList.add("2d");
         hexaList.add("5D");
@@ -143,12 +142,15 @@ public class Utilities {
                 hexaCode = "0".concat(hexaCode);
             }
 
-            if (!hexaList.contains(hexaCode)) {
+            if (!hexaList.contains(hexaCode.trim())) {
                 finalText += new String(Hex.decodeHex("20".toCharArray()));
             } else {
                 finalText += new String(Hex.decodeHex(hexaCode.toCharArray()));
             }
         }
+        
+        System.out.println("TEXTO DEPOIS DE FORMATAR:   " + text);
+        System.out.println("\n\n");
         return finalText;
     }
 
@@ -404,6 +406,5 @@ public class Utilities {
             return xml;
         }
         return null;       
-
     }
 }

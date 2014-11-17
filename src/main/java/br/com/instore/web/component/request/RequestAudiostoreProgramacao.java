@@ -9,10 +9,10 @@ import br.com.instore.core.orm.bean.AudiostoreProgramacaoBean;
 import br.com.instore.core.orm.bean.AudiostoreProgramacaoCategoriaBean;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.core.orm.bean.ClienteBean;
-import br.com.instore.core.orm.bean.ConfigAppBean;
 import br.com.instore.core.orm.bean.DadosClienteBean;
 import br.com.instore.core.orm.bean.property.AudiostoreProgramacaoCategoria;
 import br.com.instore.web.component.session.SessionUsuario;
+import br.com.instore.web.dto.AudiostoreCategoriaDTO;
 import br.com.instore.web.dto.AudiostoreProgramacaoDTO;
 import br.com.instore.web.dto.AudiostoreProgramacaoJSON;
 import br.com.instore.web.tools.AjaxResult;
@@ -47,7 +47,7 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
         this.sessionUsuario = sessionUsuario;
     }
 
-    public void beanList(Integer page, Integer rows, Integer id, Integer idcliente, String descricao) {
+    public AudiostoreProgramacaoJSON beanList(Integer page, Integer rows, Integer id, Integer idcliente, String descricao) {
         AudiostoreProgramacaoJSON json = new AudiostoreProgramacaoJSON();
 
         page = (null == page || 0 == page ? 1 : page);
@@ -77,7 +77,7 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
             json.setDescricao(descricao);
         }
 
-
+        json.setCount(q1.count().intValue());
         int size = q1.count().intValue() / rows + ((q1.count().intValue() % rows == 0) ? 0 : 1);
         lista = q2.limit(offset, rows).findAll();
 
@@ -142,6 +142,7 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
         }
         json.setRows(rowsList);
         result.use(Results.json()).withoutRoot().from(json).recursive().serialize();
+        return json;
     }
 
     public List<ClienteBean> clienteBeanList() {
@@ -161,6 +162,65 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
 
     public AudiostoreProgramacaoBean bean(Integer id) {
         return repository.find(AudiostoreProgramacaoBean.class, id);
+    }
+
+    public AudiostoreProgramacaoDTO beanDto(Integer id) {
+        AudiostoreProgramacaoBean prog = repository.find(AudiostoreProgramacaoBean.class, id);
+        AudiostoreProgramacaoDTO dto = new AudiostoreProgramacaoDTO();
+        if (null != prog) {
+
+
+            dto.setClienteNome(prog.getCliente().getNome());
+            dto.setDataFinal(new SimpleDateFormat("dd/MM/yyyy").format(prog.getDataFinal()));
+            dto.setDataInicio(new SimpleDateFormat("dd/MM/yyyy").format(prog.getDataInicio()));
+            dto.setDescricao(prog.getDescricao());
+
+            String diasSemana = "";
+            String connector = "";
+
+            if (prog.getSegundaFeira()) {
+                diasSemana += connector + "Segunda Feira";
+                connector = ", ";
+            }
+
+            if (prog.getTercaFeira()) {
+                diasSemana += connector + "Terça Feira";
+                connector = ", ";
+            }
+
+            if (prog.getQuartaFeira()) {
+                diasSemana += connector + "Quarta Feira";
+                connector = ", ";
+            }
+
+            if (prog.getQuintaFeira()) {
+                diasSemana += connector + "Quinta Feira";
+                connector = ", ";
+            }
+
+            if (prog.getSextaFeira()) {
+                diasSemana += connector + "Sexta Feira";
+                connector = ", ";
+            }
+
+            if (prog.getSabado()) {
+                diasSemana += connector + "Sabado";
+                connector = ", ";
+            }
+
+            if (prog.getDomingo()) {
+                diasSemana += connector + "Domingo";
+                connector = ", ";
+            }
+
+            dto.setDiasSemana(diasSemana);
+            dto.setHoraFinal(new SimpleDateFormat("HH:mm:ss").format(prog.getHoraFinal()));
+            dto.setHoraInicio(new SimpleDateFormat("HH:mm:ss").format(prog.getHoraInicio()));
+            dto.setId(prog.getId());
+        }
+
+
+        return dto;
     }
 
     public void salvar(AudiostoreProgramacaoBean audiostoreProgramacaoBean, String horaInicio, String horaFinal, Integer[] categorias, Integer[] diasSemana) {
@@ -400,7 +460,6 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
     }
 
     public void upload(Integer[] id_list) {
-        ConfigAppBean config = repository.find(ConfigAppBean.class, 1);
         try {
             String conteudo = "";
             String quebraLinha = "";
@@ -431,20 +490,20 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
                                 __lista.add(b);
                             }
                         }
-                        
+
                         listaDeLista.add(__lista);
-                        
+
                         contador_aux = 1;
 
                         for (List<AudiostoreProgramacaoCategoriaBean> itemLista : listaDeLista) {
                             String descr = audiostoreProgramacaoBean.getDescricao();
                             if (descr.length() < 20) {
-                                descr += "-"+alphabList.get(contador_aux);
+                                descr += "-" + alphabList.get(contador_aux);
                                 descr = StringUtils.leftPad(descr, 20, " ");
                             } else {
                                 if (descr.length() > 20) {
                                     descr = descr.substring(0, 18);
-                                    descr += "-"+alphabList.get(contador_aux);
+                                    descr += "-" + alphabList.get(contador_aux);
                                 }
                             }
 
@@ -457,7 +516,7 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
                                 }
                             }
                             conteudo += lineBreak;
-                            conteudo += descr;
+                            conteudo += Utilities.formatarHexExp(descr);;
                             conteudo += (new SimpleDateFormat("ddMMyy")).format(audiostoreProgramacaoBean.getDataInicio());
                             conteudo += (new SimpleDateFormat("ddMMyy")).format(audiostoreProgramacaoBean.getDataFinal());
                             conteudo += (audiostoreProgramacaoBean.getSegundaFeira() ? "X" : " ");
@@ -486,7 +545,7 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
                             conteudo += audiostoreProgramacaoBean.getLoopback() ? 1 : 0;
 
                             contador_aux++;
-                            lineBreak = "\r\n";
+                            lineBreak = Utilities.quebrarLinhaComHexa();
                         }
 
                         int ia = 1;
@@ -573,6 +632,7 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
 
             SmbFileOutputStream sfous = new SmbFileOutputStream(smb2);
             sfous.write(conteudo.getBytes());
+            sfous.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -582,36 +642,59 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
         return repository.query(AudiostoreCategoriaBean.class).eq("cliente.idcliente", id).findAll();
     }
 
-    public void validarProgramacao(Integer[] id_list) {
-        List<AudiostoreProgramacaoBean> list = repository.query(AudiostoreProgramacaoBean.class).in("id", id_list).findAll();
+    public void validarProgramacao(Integer[] id_list, Integer idcliente, String descricao) {
+
+        List<AudiostoreProgramacaoBean> list = null;
+
+        if (null != id_list && id_list.length > 0) {
+            list = repository.query(AudiostoreProgramacaoBean.class).in("id", id_list).findAll();
+        } else {
+            AudiostoreProgramacaoJSON json = beanList(1, 999999999, null, idcliente, descricao);
+            if (null != json.getRows() && !json.getRows().isEmpty()) {
+                id_list = new Integer[json.getRows().size()];
+                int i = 0;
+                for (AudiostoreProgramacaoDTO dto : json.getRows()) {
+                    id_list[i] = dto.getId();
+                    i++;
+                }
+            }
+            list = repository.query(AudiostoreProgramacaoBean.class).in("id", id_list).findAll();
+        }
+
 
         boolean ajaxResultBool = true;
         String ajaxResultStr = "";
-        // verifica se todos são do mesmo cliente
-        Integer idcliente = list.get(0).getCliente().getIdcliente();
-        for (AudiostoreProgramacaoBean bean : list) {
-            if (!bean.getCliente().getIdcliente().equals(idcliente)) {
-                ajaxResultBool = false;
-                ajaxResultStr = "Você selecionou programações de clientes diferentes!";
-                break;
+
+        if (null != list && list.size() > 0) {
+            // verifica se todos são do mesmo cliente
+            Integer idclienteAux = list.get(0).getCliente().getIdcliente();
+            for (AudiostoreProgramacaoBean bean : list) {
+                if (!bean.getCliente().getIdcliente().equals(idclienteAux)) {
+                    ajaxResultBool = false;
+                    ajaxResultStr = "Você selecionou programações de clientes diferentes!";
+                    break;
+                }
             }
-        }
-        if (ajaxResultBool) {
-            DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", list.get(0).getCliente().getIdcliente()).findOne();
-            if (null == dados || null == dados.getLocalDestinoExp() || dados.getLocalDestinoExp().trim().isEmpty()) {
-                ajaxResultBool = false;
-                ajaxResultStr = "O cliente não possui um local de destino para os arquivos de exportação!";
+            if (ajaxResultBool) {
+                DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", list.get(0).getCliente().getIdcliente()).findOne();
+                if (null == dados || null == dados.getLocalDestinoExp() || dados.getLocalDestinoExp().trim().isEmpty()) {
+                    ajaxResultBool = false;
+                    ajaxResultStr = "O cliente não possui um local de destino para os arquivos de exportação!";
+                }
             }
-        }
 
 
-        try {
-            upload(id_list);
-        } catch (Exception e) {
+            try {
+                upload(id_list);
+            } catch (Exception e) {
+                ajaxResultBool = false;
+                ajaxResultStr = e.getMessage();
+            }
+
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(ajaxResultBool, ajaxResultStr)).recursive().serialize();
+        } else {
             ajaxResultBool = false;
-            ajaxResultStr = e.getMessage();
+            ajaxResultStr = "Não foi possive gerar arquivos!";
         }
-
-        result.use(Results.json()).withoutRoot().from(new AjaxResult(ajaxResultBool, ajaxResultStr)).recursive().serialize();
     }
 }

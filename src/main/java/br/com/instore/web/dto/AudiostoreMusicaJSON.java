@@ -17,6 +17,7 @@ public class AudiostoreMusicaJSON {
     private Integer idCategoriaArquivo;
     private String nomeCategoriaArquivo;
     private String letra;
+    private Integer count;
 
     public Integer getPage() {
         return page;
@@ -112,5 +113,13 @@ public class AudiostoreMusicaJSON {
 
     public void setLetra(String letra) {
         this.letra = letra;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
     }
 }

@@ -3,20 +3,21 @@ package br.com.instore.web.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AudiostoreCategoriaJSON {
+public class AudiostoreCategoriaJSON extends AbstractDTO {
 
     private Integer page;
     private Integer size;
     private List<AudiostoreCategoriaDTO> rows = new ArrayList<AudiostoreCategoriaDTO>();
     private Integer id;
     private String categoria;
-    private Integer tipo;
+    private String tipo;
     private String duracao;
     private String dataInicio;
     private String dataFinal;
     private Integer idcliente;
     private String tempo;
     private String codInterno;
+    private Integer count;
 
     public String getTempo() {
         return tempo;
@@ -42,11 +43,11 @@ public class AudiostoreCategoriaJSON {
         this.categoria = categoria;
     }
 
-    public Integer getTipo() {
+    public String getTipo() {
         return tipo;
     }
 
-    public void setTipo(Integer tipo) {
+    public void setTipo(String tipo) {
         this.tipo = tipo;
     }
 
@@ -112,5 +113,13 @@ public class AudiostoreCategoriaJSON {
 
     public void setCodInterno(String codInterno) {
         this.codInterno = codInterno;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
     }
 }

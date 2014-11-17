@@ -22,7 +22,7 @@ import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
 import jcifs.smb.SmbException;
-import jcifs.smb.SmbFile; 
+import jcifs.smb.SmbFile;  
 
 @Controller
 public class AudiostoreComercialController implements java.io.Serializable {
@@ -45,9 +45,9 @@ public class AudiostoreComercialController implements java.io.Serializable {
     @Get
     @Restrict
     @Path("/audiostore-comercial")
-    public void listar(Boolean datajson, Boolean view, Boolean clientes, Integer page, Boolean categorias,  Integer rows, Integer id, String titulo, String arquivo, Integer codigo, Integer pk) {
+    public void listar(Boolean datajson, Boolean view, Boolean clientes, Integer page, Boolean categorias,  Integer rows, Integer id, Integer idcliente, String titulo, String arquivo, Integer codigo, Integer pk) {
         if (null != datajson && datajson) {
-            requestAudiostoreComercial.beanList(page, rows, id, titulo, arquivo , codigo);
+            requestAudiostoreComercial.beanList(page, rows, id, titulo, arquivo , codigo , idcliente );
         }
         
         if (null != view && view) {
@@ -55,7 +55,16 @@ public class AudiostoreComercialController implements java.io.Serializable {
         }
         
         if (null != categorias && categorias) {
-            result.use(Results.json()).withoutRoot().from(requestAudiostoreComercial.categoriaBeanList()).recursive().serialize();
+            if(null != idcliente && idcliente > 0) {
+                result.use(Results.json()).withoutRoot().from(requestAudiostoreComercial.categoriaBeanListByCliente(idcliente)).recursive().serialize();
+            } else {
+                result.use(Results.json()).withoutRoot().from(requestAudiostoreComercial.categoriaBeanList()).recursive().serialize();
+            }
+            
+        }
+        
+        if (null != clientes && clientes) {
+            result.use(Results.json()).withoutRoot().from(requestAudiostoreComercial.clienteBeanList2()).recursive().serialize();
         }
     }
 
@@ -140,8 +149,8 @@ public class AudiostoreComercialController implements java.io.Serializable {
     
     @Post
     @Path("/audiostore-comercial/vld-comm")
-    public void validarComercial(Integer[] id_list  , Boolean exp_arquivo_audio) {
-        requestAudiostoreComercial.validarComercial(id_list , exp_arquivo_audio);
+    public void validarComercial(Integer[] id_list  , Boolean exp_arquivo_audio , Integer idcliente, String titulo, String arquivo, Integer codigo) {
+        requestAudiostoreComercial.validarComercial(id_list, exp_arquivo_audio, idcliente, titulo, arquivo, codigo);
     }
     
     @Post

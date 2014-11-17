@@ -35,7 +35,7 @@ public class AudiostoreCategoriaController implements java.io.Serializable {
     @Get
     @Restrict
     @Path("/audiostore-categorias")
-    public void categorias(Boolean datajson , Boolean view , Boolean clientes , Integer page, Integer rows, Integer id , Integer idcliente ,  String categoria , Integer tipo , String duracao , String dataInicio, String dataFinal , String codInterno, Integer pk) {
+    public void categorias(Boolean datajson , Boolean view , Boolean clientes , Integer page, Integer rows, Integer id , Integer idcliente ,  String categoria , String tipo , String duracao , String dataInicio, String dataFinal , String codInterno, Integer pk) {
         if (null != datajson && datajson) {
             requestAudiostoreCategoria.beanList(page, rows, id, idcliente, categoria, tipo, duracao, dataInicio, dataFinal , codInterno);
         } else {
@@ -122,7 +122,7 @@ public class AudiostoreCategoriaController implements java.io.Serializable {
     
     @Post
     @Path("/audiostore-categoria/vld-ctg")
-    public void validarCategorias(Integer [] id_list ) {
-        requestAudiostoreCategoria.validarCategorias(id_list);
+    public void validarCategorias(Integer [] id_list , Integer id , Integer idcliente ,  String categoria , String tipo , String duracao , String dataInicio, String dataFinal , String codInterno) {
+        requestAudiostoreCategoria.validarCategorias(id_list, id, idcliente, categoria, tipo, duracao, dataInicio, dataFinal, codInterno);
     }
 }

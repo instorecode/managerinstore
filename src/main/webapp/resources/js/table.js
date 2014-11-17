@@ -16,7 +16,7 @@ function countRowsSelected() {
     });
     return index;
 }
-;
+
 
 function rowsSelected() {
     var arr = [];
@@ -27,9 +27,21 @@ function rowsSelected() {
     });
     return arr;
 }
-;
 
 jQuery(document).ready(function() {
+
+    jQuery('.btn_sel_tudo').on('click', function() {
+        jQuery('table.xtable').children('tbody').children('tr.row_data').each(function() {
+            var self = jQuery(this);
+            if (self.attr("class").indexOf("selected") != -1) {
+                self.removeClass('selected', true);
+                self.trigger("unselected", null);
+            } else {
+                self.addClass('selected', true);
+                self.trigger("selected", self.data("jsonItem"));
+            }
+        });
+    });
 
     jQuery('[data-mask]').each(function() {
         jQuery(this).mask(jQuery(this).data('mask'));
@@ -121,21 +133,23 @@ jQuery(document).ready(function() {
         jQuery('#table').each(function() {
             var table = jQuery(this);
             var url = table.attr('url');
-            var rowSelectable = table.attr('rowSelectable') == 'false' || table.attr('rowSelectable') == false ? false  : true;
+            var rowSelectable = table.attr('rowSelectable') == 'false' || table.attr('rowSelectable') == false ? false : true;
             url = url + "?datajson=true";
             url = url + "&page=" + table.attr('page');
             url = url + "&rows=" + table.attr('rows');
-
+            var filtro_aux = "";
             jQuery("td.filter").each(function() {
                 var input = jQuery(this).children("input");
 
                 if (null != input.val() && undefined != input.val() && "" != input.val()) {
                     url = url + "&" + input.attr("name") + "=" + input.val();
+                    filtro_aux = filtro_aux + "&" + input.attr("name") + "=" + input.val();
                 }
 
                 var input = jQuery(this).children("select");
                 if (null != input.val() && undefined != input.val() && "" != input.val()) {
                     url = url + "&" + input.attr("name") + "=" + input.val();
+                    filtro_aux = filtro_aux + "&" + input.attr("name") + "=" + input.val();
                 }
             });
 
@@ -157,7 +171,7 @@ jQuery(document).ready(function() {
                 jQuery.storageAdd(url, JSON.stringify(json));
             }
 
-            
+
             setInterval(function() {
                 jQuery.storageClear();
             }, 180000);
@@ -165,22 +179,23 @@ jQuery(document).ready(function() {
             table.children("tbody").html("");
             table.attr("size", json["size"]);
             table.attr("page", json["page"]);
-            jQuery('.pag_info').text("Pagina " + table.attr('page') + " de " + json["size"] + "");
+            jQuery('.pag_info').text("Pagina " + table.attr('page') + " de " + json["size"] + " / Total de registros " + json["count"]);
             var tr = "<tr>";
 
             table.children("thead").children("tr").children("th").each(function() {
                 var td = jQuery(this);
-                tr += "<td class=\"filter\">";
+                tr += "<td class=\"filter\" data-name=\"" + td.attr("field") + "\">";
                 if (td.attr("options") == "false")
                 {
                     if ("true" == td.attr("isfk")) {
-                        tr += "<select class=\"select2_filter\" name=\"" + ( null != td.attr("fkfilter") && undefined != td.attr("fkfilter") && '' != td.attr("fkfilter") ? td.attr("fkfilter") : td.attr("fk")) + "\">";
+                        tr += "<select class=\"select2_filter\" name=\"" + (null != td.attr("fkfilter") && undefined != td.attr("fkfilter") && '' != td.attr("fkfilter") ? td.attr("fkfilter") : td.attr("fk")) + "\">";
                         tr += "<option value=\"\">" + td.attr("fklabelselect") + "</option>";
+                        console.log("URL DE CONSULTA NO FILTRO: " + td.attr("fkurl") + filtro_aux);
                         jQuery.ajax({
                             async: false,
-                            url: td.attr("fkurl"),
+                            url: td.attr("fkurl") + filtro_aux,
                             success: function(json_response) {
-                                
+
 //                                    var selected = "";
 //                                    if (null != json[td.attr("fk")] && undefined != json[td.attr("fk")] && "" != json[td.attr("fk")]) {
 //                                        selected = "selected=\"selected\"";
@@ -208,7 +223,7 @@ jQuery(document).ready(function() {
                 }
                 else
                 {
-                    tr += "<button class=\"btn btn-default btn-flat btn-xs btn_filtrar1\"> Filtrar </button> <button class=\"btn btn-default btn-flat btn-xs btn_filtrar2\"> Limpar filtro </button>";
+                    tr += "<button class=\"btn btn-default btn-flat btn-xs btn_filtrar1\"> Filtrar </button> <button class=\"btn btn-default btn-flat btn-xs btn_filtrar2\"> Limpar filtro </button> ";
                 }
                 tr += "</td>";
             });
@@ -232,19 +247,19 @@ jQuery(document).ready(function() {
                     {
                         data_column = "data_column";
                     }
-                    if(rowSelectable) {
+                    if (rowSelectable) {
                         rowSelectable = "javascript:tr_row_click(this)";
                     } else {
                         rowSelectable = "";
                     }
-                    
-                    tr += "<td class=\"" + (i % 2 == 0 ? "zz1" : "zz2") + " " + data_column + "\"   onclick=\""+rowSelectable+"\" " + onColumnRender + ">";
+
+                    tr += "<td class=\"" + (i % 2 == 0 ? "zz1" : "zz2") + " " + data_column + "\"   onclick=\"" + rowSelectable + "\" " + onColumnRender + ">";
                     if (td.attr("options") == "false")
                     {
                         tr += item[td.attr("field")];
                     } else
                     {
-                        
+
                         var btn_view_onclick = table.attr("btn-view-onclick");
                         if (null != btn_view_onclick && undefined != btn_view_onclick && "" != btn_view_onclick) {
                             btn_view_onclick = 'onclick="' + btn_view_onclick.split("[[__PK__]]").join(item[table.attr("pk")]) + '"';
@@ -347,8 +362,8 @@ jQuery(document).ready(function() {
     });
 
     jQuery(".qtd li a").on("click", function() {
-        jQuery(this).parent().parent().parent().next().next().children().attr("rows", jQuery(this).attr("href"));
-        jQuery(this).parent().parent().parent().next().next().children().attr("page", 1);
+        jQuery("table.xtable").attr("rows", jQuery(this).attr("href"));
+        jQuery("table.xtable").attr("page", 1);
         xtable_load();
         return false;
     });

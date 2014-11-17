@@ -6,23 +6,17 @@ import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Post;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.observer.download.InputStreamDownload;
-import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.bean.CategoriaMusicaGeralBean;
 import br.com.instore.core.orm.bean.MusicaGeralBean;
 import br.com.instore.web.annotation.NaoDeslogar;
 import br.com.instore.web.annotation.Restrict;
+import br.com.instore.web.component.request.RequestAudiostoreMusica;
 import br.com.instore.web.component.request.RequestMusicaGeral;
 import br.com.instore.web.tools.Utilities;
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.inject.Inject;
 import jcifs.smb.SmbFile;
 import jcifs.smb.SmbFileInputStream;
@@ -34,14 +28,19 @@ public class MusicaController implements java.io.Serializable {
     private Result result;
     @Inject
     private RequestMusicaGeral requestMusicaGeral;
+    @Inject
+    private RequestAudiostoreMusica requestAudiostoreMusica;
 
     public MusicaController() {
     }
 
-    public MusicaController(Result result, RequestMusicaGeral requestMusicaGeral) {
+    public MusicaController(Result result, RequestMusicaGeral requestMusicaGeral, RequestAudiostoreMusica requestAudiostoreMusica) {
         this.result = result;
         this.requestMusicaGeral = requestMusicaGeral;
+        this.requestAudiostoreMusica = requestAudiostoreMusica;
     }
+    
+    
 
     @Get
     @Restrict
@@ -148,9 +147,14 @@ public class MusicaController implements java.io.Serializable {
         }
     }
 
-    @Post
+    @Get
     @Path("/musica/vld-msc")
-    public void validarMsc(Integer[] id_list  , Boolean exp_arquivo_audio) {
-        requestMusicaGeral.validarMsc(id_list,exp_arquivo_audio); 
+    public void validarMsc(Integer index , Integer[] id_list  , Boolean exp_arquivo_audio , Integer idcliente,  String arquivo,  String nome, Integer codigo) {
+        if(!(null != index && index > 0)) {
+            requestAudiostoreMusica.validarMsc(id_list, exp_arquivo_audio, idcliente, arquivo, nome, codigo);
+        } else {
+            requestAudiostoreMusica.gerarLinha(index, exp_arquivo_audio);
+        }
+        
     }
 }

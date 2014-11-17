@@ -146,6 +146,7 @@
             </div>
 
             <button type="button" class="btn btn-default btn-flat btn_cadastro" style="margin-left: 0px;"><i class="fa fa-save"></i> Cadastrar</button>
+            <button type="button" class="btn btn-default btn-flat btn_sel_tudo" style="margin-left: 0px;"><i class="fa fa-check-circle"></i> Selecionar tudo</button>
 
             <div class="btn-group">
                 <button type="button" class="btn btn-default dropdown-toggle btn-flat" data-toggle="dropdown">

@@ -26,6 +26,7 @@ public class OcorrenciaJSON {
     private String idstatus;
     private String prioridade;
     private String idprioridade;
+    private Integer count;
 
     public Integer getPage() {
         return page;
@@ -187,5 +188,11 @@ public class OcorrenciaJSON {
         this.idprioridade = idprioridade;
     }
 
-    
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
 }

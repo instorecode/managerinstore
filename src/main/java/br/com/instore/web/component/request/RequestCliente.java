@@ -603,50 +603,50 @@ public class RequestCliente implements java.io.Serializable {
             dcb.setLocalDestinoSpot(p4);
             dcb.setLocalDestinoExp(p5);
 
-            SmbFile smbP1 = new SmbFile(p1, Utilities.getAuthSmbDefault());
+//            SmbFile smbP1 = new SmbFile(p1, Utilities.getAuthSmbDefault());
 
 
 
-            if (!smbP1.exists() || smbP1.isFile()) {
-                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel encontrar o diretório " + p1 + " ou caminho do diretório não pode ter o nome de um arquivo!")).recursive().serialize();
-                return;
-            }
-
-            SmbFile smbP2 = new SmbFile(p2, Utilities.getAuthSmbDefault());
-            if (!smbP2.exists() || smbP2.isFile()) {
-                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel encontrar o diretório " + p2 + " ou caminho do diretório não pode ter o nome de um arquivo!")).recursive().serialize();
-                return;
-            }
-
-            SmbFile smbP3 = new SmbFile(p3, Utilities.getAuthSmbDefault());
-            if (!smbP3.exists() || smbP3.isFile()) {
-                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel encontrar o diretório " + p3 + " ou caminho do diretório não pode ter o nome de um arquivo!")).recursive().serialize();
-                return;
-            }
-
-            SmbFile smbP4 = new SmbFile(p4, Utilities.getAuthSmbDefault());
-            smbP4.isDirectory();
-            if (!smbP4.exists() || smbP4.isFile()) {
-                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel encontrar o diretório " + p4 + " ou caminho do diretório não pode ter o nome de um arquivo!")).recursive().serialize();
-                return;
-            }
-
-            SmbFile smbP5 = new SmbFile(p5, Utilities.getAuthSmbDefault());
-            if (!smbP5.exists() || smbP5.isFile()) {
-                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel encontrar o diretório " + p5 + " ou caminho do diretório não pode ter o nome de um arquivo!")).recursive().serialize();
-                return;
-            }
+//            if (!smbP1.exists() || smbP1.isFile()) {
+//                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel encontrar o diretório " + p1 + " ou caminho do diretório não pode ter o nome de um arquivo!")).recursive().serialize();
+//                return;
+//            }
+//
+//            SmbFile smbP2 = new SmbFile(p2, Utilities.getAuthSmbDefault());
+//            if (!smbP2.exists() || smbP2.isFile()) {
+//                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel encontrar o diretório " + p2 + " ou caminho do diretório não pode ter o nome de um arquivo!")).recursive().serialize();
+//                return;
+//            }
+//
+//            SmbFile smbP3 = new SmbFile(p3, Utilities.getAuthSmbDefault());
+//            if (!smbP3.exists() || smbP3.isFile()) {
+//                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel encontrar o diretório " + p3 + " ou caminho do diretório não pode ter o nome de um arquivo!")).recursive().serialize();
+//                return;
+//            }
+//
+//            SmbFile smbP4 = new SmbFile(p4, Utilities.getAuthSmbDefault());
+//            smbP4.isDirectory();
+//            if (!smbP4.exists() || smbP4.isFile()) {
+//                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel encontrar o diretório " + p4 + " ou caminho do diretório não pode ter o nome de um arquivo!")).recursive().serialize();
+//                return;
+//            }
+//
+//            SmbFile smbP5 = new SmbFile(p5, Utilities.getAuthSmbDefault());
+//            if (!smbP5.exists() || smbP5.isFile()) {
+//                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel encontrar o diretório " + p5 + " ou caminho do diretório não pode ter o nome de um arquivo!")).recursive().serialize();
+//                return;
+//            }
 
             repository.save(dcb);
             repository.finalize();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Dados salvos com sucesso!")).recursive().serialize();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Diretório Inválido")).recursive().serialize();
-        } catch (SmbException e) {
-            System.out.println("aqui o erro samba");
-            e.printStackTrace();
-            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Diretório Inválido")).recursive().serialize();
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Diretório Inválido")).recursive().serialize();
+//        } catch (SmbException e) {
+//            System.out.println("aqui o erro samba");
+//            e.printStackTrace();
+//            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Diretório Inválido")).recursive().serialize();
         } catch (Exception e) {
             e.printStackTrace();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel salvar os dados!")).recursive().serialize();

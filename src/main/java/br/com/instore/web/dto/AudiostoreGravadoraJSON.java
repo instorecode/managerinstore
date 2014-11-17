@@ -18,6 +18,7 @@ public class AudiostoreGravadoraJSON {
     private List<AudiostoreGravadoraDTO> rows = new ArrayList<AudiostoreGravadoraDTO>();
     private Integer id;
     private String nome;
+    private Integer count;
 
     public Integer getPage() {
         return page;
@@ -58,6 +59,12 @@ public class AudiostoreGravadoraJSON {
     public void setNome(String nome) {
         this.nome = nome;
     }
-    
-    
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
 }

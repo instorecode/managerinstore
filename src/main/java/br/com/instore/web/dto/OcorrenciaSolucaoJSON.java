@@ -12,6 +12,7 @@ public class OcorrenciaSolucaoJSON {
     private Integer id = null;
     private String descricao = null;
     private String prazo = null;
+    private Integer count;
 
     public Integer getPage() {
         return page;
@@ -60,6 +61,12 @@ public class OcorrenciaSolucaoJSON {
     public void setPrazo(String prazo) {
         this.prazo = prazo;
     }
-    
-    
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
 }

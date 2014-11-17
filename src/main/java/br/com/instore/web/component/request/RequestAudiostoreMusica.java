@@ -37,6 +37,10 @@ import javax.inject.Inject;
 import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
+import jcifs.smb.SmbFileInputStream;
+import jcifs.smb.SmbFileOutputStream;
+import org.apache.commons.compress.utils.IOUtils;
+import org.apache.commons.lang.StringUtils;
 
 @RequestScoped
 public class RequestAudiostoreMusica implements java.io.Serializable {
@@ -47,6 +51,7 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
     private Result result;
     @Inject
     private SessionUsuario sessionUsuario;
+    private Integer listaIdMusicaExp [];
 
     public RequestAudiostoreMusica() {
     }
@@ -176,7 +181,7 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         return (long) Math.ceil((double) totalRegistros / totalRegistrosPorPagina);
     }
 
-    public void beanList(Boolean datajson, Boolean view, Integer page, Integer rows, Integer id, Integer idcliente, String arquivo,  String nome, Integer codigo, String letra) {
+    public AudiostoreMusicaJSON beanList(Boolean datajson, Boolean view, Integer page, Integer rows, Integer id, Integer idcliente, String arquivo, String nome, Integer codigo, String letra) {
         System.out.println("FILTROS");
         System.out.println("================================================");
         System.out.println("DATAJSON: " + datajson);
@@ -203,15 +208,38 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
 
         String querySQL1 = "";
         String querySQL2 = "";
+//        querySQL1 = " select \n"
+//                + "     audiostore_musica.id as id_musica,\n"
+//                + "	 '' as param\n"
+//                + " from\n"
+//                + "     audiostore_musica\n"
+//                + " inner join musica_geral on musica_geral.id = audiostore_musica.musica_geral\n"
+//                + " inner join cliente on cliente.idcliente = audiostore_musica.cliente\n"
+//                + " left join categoria_musica_geral on categoria_musica_geral.musica = musica_geral.id\n"
+//                + " left join categoria_geral on categoria_geral.id = categoria_musica_geral.categoria\n"
+//                + " where audiostore_musica.id is not null";
+//
+//        querySQL2 = " select sum(__count) as count , '' as param from ( \n"
+//                + " 	 select \n"
+//                + "		 count(distinct audiostore_musica.id) as __count\n"
+//                + "	 from\n"
+//                + "		 audiostore_musica\n"
+//                + "	 inner join musica_geral on musica_geral.id = audiostore_musica.musica_geral\n"
+//                + "	 inner join cliente on cliente.idcliente = audiostore_musica.cliente\n"
+//                + "	 left join categoria_musica_geral on categoria_musica_geral.musica = musica_geral.id\n"
+//                + "	 left join categoria_geral on categoria_geral.id = categoria_musica_geral.categoria\n"
+//                + "	 where audiostore_musica.id is not null [[MAIS_WHERE]]\n"
+//                + "	 group by audiostore_musica.id\n"
+//                + " ) as t";
+
         querySQL1 = " select \n"
                 + "     audiostore_musica.id as id_musica,\n"
                 + "	 '' as param\n"
                 + " from\n"
+                + " [INNER_JOIN_MUSICA_GERAL]"
+                + " [INNER_JOIN_CATEGORIA_MUSICA_GERAL]"
+                + " [INNER_JOIN_CATEGORIA_GERAL]"
                 + "     audiostore_musica\n"
-                + " inner join musica_geral on musica_geral.id = audiostore_musica.musica_geral\n"
-                + " inner join cliente on cliente.idcliente = audiostore_musica.cliente\n"
-                + " left join categoria_musica_geral on categoria_musica_geral.musica = musica_geral.id\n"
-                + " left join categoria_geral on categoria_geral.id = categoria_musica_geral.categoria\n"
                 + " where audiostore_musica.id is not null";
 
         querySQL2 = " select sum(__count) as count , '' as param from ( \n"
@@ -219,10 +247,6 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                 + "		 count(distinct audiostore_musica.id) as __count\n"
                 + "	 from\n"
                 + "		 audiostore_musica\n"
-                + "	 inner join musica_geral on musica_geral.id = audiostore_musica.musica_geral\n"
-                + "	 inner join cliente on cliente.idcliente = audiostore_musica.cliente\n"
-                + "	 left join categoria_musica_geral on categoria_musica_geral.musica = musica_geral.id\n"
-                + "	 left join categoria_geral on categoria_geral.id = categoria_musica_geral.categoria\n"
                 + "	 where audiostore_musica.id is not null [[MAIS_WHERE]]\n"
                 + "	 group by audiostore_musica.id\n"
                 + " ) as t";
@@ -235,12 +259,26 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         }
 
         if (null != nome && !nome.trim().isEmpty()) {
+            querySQL1 = querySQL1.replace("[INNER_JOIN_MUSICA_GERAL]", "inner join musica_geral on musica_geral.id = audiostore_musica.musica_geral\n");
+            querySQL1 = querySQL1.replace("[INNER_JOIN_CATEGORIA_MUSICA_GERAL]", "left join categoria_musica_geral on categoria_musica_geral.musica = musica_geral.id\n");
+            querySQL1 = querySQL1.replace("[INNER_JOIN_CATEGORIA_GERAL]", "left join categoria_geral on categoria_geral.id = categoria_musica_geral.categoria\n");
+            querySQL2 = querySQL2.replace("[INNER_JOIN_MUSICA_GERAL]", "inner join musica_geral on musica_geral.id = audiostore_musica.musica_geral\n");
+            querySQL2 = querySQL2.replace("[INNER_JOIN_CATEGORIA_MUSICA_GERAL]", "left join categoria_musica_geral on categoria_musica_geral.musica = musica_geral.id\n");
+            querySQL2 = querySQL2.replace("[INNER_JOIN_CATEGORIA_GERAL]", "left join categoria_geral on categoria_geral.id = categoria_musica_geral.categoria\n");
+
             querySQL1 += " and musica_geral.titulo like '%" + nome + "%' \n";
             querySQL2 = querySQL2.replace("[[MAIS_WHERE]]", " and musica_geral.titulo like '%" + nome + "%' [[MAIS_WHERE]] \n");
             json.setNome(nome);
         }
 
         if (null != codigo && codigo > 0) {
+            querySQL1 = querySQL1.replace("[INNER_JOIN_MUSICA_GERAL]", "inner join musica_geral on musica_geral.id = audiostore_musica.musica_geral\n");
+            querySQL1 = querySQL1.replace("[INNER_JOIN_CATEGORIA_MUSICA_GERAL]", "left join categoria_musica_geral on categoria_musica_geral.musica = musica_geral.id\n");
+            querySQL1 = querySQL1.replace("[INNER_JOIN_CATEGORIA_GERAL]", "left join categoria_geral on categoria_geral.id = categoria_musica_geral.categoria\n");
+            querySQL2 = querySQL2.replace("[INNER_JOIN_MUSICA_GERAL]", "inner join musica_geral on musica_geral.id = audiostore_musica.musica_geral\n");
+            querySQL2 = querySQL2.replace("[INNER_JOIN_CATEGORIA_MUSICA_GERAL]", "left join categoria_musica_geral on categoria_musica_geral.musica = musica_geral.id\n");
+            querySQL2 = querySQL2.replace("[INNER_JOIN_CATEGORIA_GERAL]", "left join categoria_geral on categoria_geral.id = categoria_musica_geral.categoria\n");
+
             querySQL1 += " and (audiostore_musica.categoria1 = " + codigo + "";
             querySQL1 += " or audiostore_musica.categoria2 = " + codigo + ") \n";
             querySQL2 = querySQL2.replace("[[MAIS_WHERE]]", " and (audiostore_musica.categoria1 = " + codigo + " [[MAIS_WHERE]]");
@@ -250,19 +288,40 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
 
 
         if (null != letra && !letra.trim().isEmpty()) {
+            querySQL1 = querySQL1.replace("[INNER_JOIN_MUSICA_GERAL]", "inner join musica_geral on musica_geral.id = audiostore_musica.musica_geral\n");
+            querySQL1 = querySQL1.replace("[INNER_JOIN_CATEGORIA_MUSICA_GERAL]", "left join categoria_musica_geral on categoria_musica_geral.musica = musica_geral.id\n");
+            querySQL1 = querySQL1.replace("[INNER_JOIN_CATEGORIA_GERAL]", "left join categoria_geral on categoria_geral.id = categoria_musica_geral.categoria\n");
+            querySQL2 = querySQL2.replace("[INNER_JOIN_MUSICA_GERAL]", "inner join musica_geral on musica_geral.id = audiostore_musica.musica_geral\n");
+            querySQL2 = querySQL2.replace("[INNER_JOIN_CATEGORIA_MUSICA_GERAL]", "left join categoria_musica_geral on categoria_musica_geral.musica = musica_geral.id\n");
+            querySQL2 = querySQL2.replace("[INNER_JOIN_CATEGORIA_GERAL]", "left join categoria_geral on categoria_geral.id = categoria_musica_geral.categoria\n");
+
             querySQL1 += " and musica_geral.letra like '%" + letra + "%' \n";
             querySQL2 = querySQL2.replace("[[MAIS_WHERE]]", " and musica_geral.letra like '%" + letra + "%' \"[[MAIS_WHERE]]\" \n");
             json.setLetra(letra);
         }
 
         if (null != arquivo && !arquivo.trim().isEmpty()) {
+            querySQL1 = querySQL1.replace("[INNER_JOIN_MUSICA_GERAL]", "inner join musica_geral on musica_geral.id = audiostore_musica.musica_geral\n");
+            querySQL1 = querySQL1.replace("[INNER_JOIN_CATEGORIA_MUSICA_GERAL]", "left join categoria_musica_geral on categoria_musica_geral.musica = musica_geral.id\n");
+            querySQL1 = querySQL1.replace("[INNER_JOIN_CATEGORIA_GERAL]", "left join categoria_geral on categoria_geral.id = categoria_musica_geral.categoria\n");
+            querySQL2 = querySQL2.replace("[INNER_JOIN_MUSICA_GERAL]", "inner join musica_geral on musica_geral.id = audiostore_musica.musica_geral\n");
+            querySQL2 = querySQL2.replace("[INNER_JOIN_CATEGORIA_MUSICA_GERAL]", "left join categoria_musica_geral on categoria_musica_geral.musica = musica_geral.id\n");
+            querySQL2 = querySQL2.replace("[INNER_JOIN_CATEGORIA_GERAL]", "left join categoria_geral on categoria_geral.id = categoria_musica_geral.categoria\n");
+
             querySQL1 += " and musica_geral.arquivo like '%" + arquivo + "%' \n";
             querySQL2 = querySQL2.replace("[[MAIS_WHERE]]", " and musica_geral.arquivo like '%" + arquivo + "%' \"[[MAIS_WHERE]]\" \n");
             json.setLetra(letra);
         }
-        
+
         querySQL2 = querySQL2.replace("[[MAIS_WHERE]]", "");
         querySQL1 += " group by audiostore_musica.id \n limit " + offset + "," + rows;
+
+        querySQL1 = querySQL1.replace("[INNER_JOIN_MUSICA_GERAL]", "");
+            querySQL1 = querySQL1.replace("[INNER_JOIN_CATEGORIA_MUSICA_GERAL]", "");
+            querySQL1 = querySQL1.replace("[INNER_JOIN_CATEGORIA_GERAL]", "");
+            querySQL2 = querySQL2.replace("[INNER_JOIN_MUSICA_GERAL]", "");
+            querySQL2 = querySQL2.replace("[INNER_JOIN_CATEGORIA_MUSICA_GERAL]", "");
+            querySQL2 = querySQL2.replace("[INNER_JOIN_CATEGORIA_GERAL]", "");
 
         final List<BigDecimal> countBD = new ArrayList<BigDecimal>();
         final List<Integer> idList = new ArrayList<Integer>();
@@ -293,7 +352,8 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                 iniValue = countBD.get(0).intValue();
             }
         }
-
+        
+        json.setCount(iniValue);
         int size = iniValue / rows + ((q1.count().intValue() % rows == 0) ? 0 : 1);
         json.setPage(page);
         json.setSize(size);
@@ -323,12 +383,223 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                     arq = partss.get(partss.size() - 1);
                 }
                 dto.setArquivo(arq);
-                
+
                 rowsList.add(dto);
             }
         }
         json.setRows(rowsList);
         result.use(Results.json()).withoutRoot().from(json).recursive().serialize();
+        return json;
+    }
+    
+    public AudiostoreMusicaJSON beanList2(Boolean datajson, Boolean view, Integer page, Integer rows, Integer id, Integer idcliente, String arquivo, String nome, Integer codigo, String letra) {
+        System.out.println("FILTROS");
+        System.out.println("================================================");
+        System.out.println("DATAJSON: " + datajson);
+        System.out.println("VIEW: " + view);
+        System.out.println("PAGE: " + page);
+        System.out.println("ROWS: " + rows);
+        System.out.println("ID: " + id);
+        System.out.println("IDCLIENTE: " + idcliente);
+        System.out.println("NOME: " + nome);
+        System.out.println("CODIGO: " + codigo);
+        System.out.println("LETRA: " + letra);
+        System.out.println("================================================");
+
+        AudiostoreMusicaJSON json = new AudiostoreMusicaJSON();
+        List<AudiostoreMusicaBean> lista = new ArrayList<AudiostoreMusicaBean>();
+
+        page = (null == page || 0 == page ? 1 : page);
+        rows = (null == rows || 0 == rows ? 10 : rows);
+        Integer offset = (page - 1) * rows;
+
+        Query q1 = repository.query(AudiostoreMusicaBean.class);
+        Query q2 = repository.query(AudiostoreMusicaBean.class);
+
+
+        String querySQL1 = "";
+        String querySQL2 = "";
+//        querySQL1 = " select \n"
+//                + "     audiostore_musica.id as id_musica,\n"
+//                + "	 '' as param\n"
+//                + " from\n"
+//                + "     audiostore_musica\n"
+//                + " inner join musica_geral on musica_geral.id = audiostore_musica.musica_geral\n"
+//                + " inner join cliente on cliente.idcliente = audiostore_musica.cliente\n"
+//                + " left join categoria_musica_geral on categoria_musica_geral.musica = musica_geral.id\n"
+//                + " left join categoria_geral on categoria_geral.id = categoria_musica_geral.categoria\n"
+//                + " where audiostore_musica.id is not null";
+//
+//        querySQL2 = " select sum(__count) as count , '' as param from ( \n"
+//                + " 	 select \n"
+//                + "		 count(distinct audiostore_musica.id) as __count\n"
+//                + "	 from\n"
+//                + "		 audiostore_musica\n"
+//                + "	 inner join musica_geral on musica_geral.id = audiostore_musica.musica_geral\n"
+//                + "	 inner join cliente on cliente.idcliente = audiostore_musica.cliente\n"
+//                + "	 left join categoria_musica_geral on categoria_musica_geral.musica = musica_geral.id\n"
+//                + "	 left join categoria_geral on categoria_geral.id = categoria_musica_geral.categoria\n"
+//                + "	 where audiostore_musica.id is not null [[MAIS_WHERE]]\n"
+//                + "	 group by audiostore_musica.id\n"
+//                + " ) as t";
+
+        querySQL1 = " select \n"
+                + "     audiostore_musica.id as id_musica,\n"
+                + "	 '' as param\n"
+                + " from\n"
+                + " [INNER_JOIN_MUSICA_GERAL]"
+                + " [INNER_JOIN_CATEGORIA_MUSICA_GERAL]"
+                + " [INNER_JOIN_CATEGORIA_GERAL]"
+                + "     audiostore_musica\n"
+                + " where audiostore_musica.id is not null";
+
+        querySQL2 = " select sum(__count) as count , '' as param from ( \n"
+                + " 	 select \n"
+                + "		 count(distinct audiostore_musica.id) as __count\n"
+                + "	 from\n"
+                + "		 audiostore_musica\n"
+                + "	 where audiostore_musica.id is not null [[MAIS_WHERE]]\n"
+                + "	 group by audiostore_musica.id\n"
+                + " ) as t";
+
+
+        if (null != idcliente && idcliente > 0) {
+            querySQL1 += " and audiostore_musica.cliente = " + idcliente + " \n";
+            querySQL2 = querySQL2.replace("[[MAIS_WHERE]]", " and audiostore_musica.cliente = " + idcliente + " [[MAIS_WHERE]] \n");
+            json.setIdcliente(idcliente);
+        }
+
+        if (null != nome && !nome.trim().isEmpty()) {
+            querySQL1 = querySQL1.replace("[INNER_JOIN_MUSICA_GERAL]", "inner join musica_geral on musica_geral.id = audiostore_musica.musica_geral\n");
+            querySQL1 = querySQL1.replace("[INNER_JOIN_CATEGORIA_MUSICA_GERAL]", "left join categoria_musica_geral on categoria_musica_geral.musica = musica_geral.id\n");
+            querySQL1 = querySQL1.replace("[INNER_JOIN_CATEGORIA_GERAL]", "left join categoria_geral on categoria_geral.id = categoria_musica_geral.categoria\n");
+            querySQL2 = querySQL2.replace("[INNER_JOIN_MUSICA_GERAL]", "inner join musica_geral on musica_geral.id = audiostore_musica.musica_geral\n");
+            querySQL2 = querySQL2.replace("[INNER_JOIN_CATEGORIA_MUSICA_GERAL]", "left join categoria_musica_geral on categoria_musica_geral.musica = musica_geral.id\n");
+            querySQL2 = querySQL2.replace("[INNER_JOIN_CATEGORIA_GERAL]", "left join categoria_geral on categoria_geral.id = categoria_musica_geral.categoria\n");
+
+            querySQL1 += " and musica_geral.titulo like '%" + nome + "%' \n";
+            querySQL2 = querySQL2.replace("[[MAIS_WHERE]]", " and musica_geral.titulo like '%" + nome + "%' [[MAIS_WHERE]] \n");
+            json.setNome(nome);
+        }
+
+        if (null != codigo && codigo > 0) {
+            querySQL1 = querySQL1.replace("[INNER_JOIN_MUSICA_GERAL]", "inner join musica_geral on musica_geral.id = audiostore_musica.musica_geral\n");
+            querySQL1 = querySQL1.replace("[INNER_JOIN_CATEGORIA_MUSICA_GERAL]", "left join categoria_musica_geral on categoria_musica_geral.musica = musica_geral.id\n");
+            querySQL1 = querySQL1.replace("[INNER_JOIN_CATEGORIA_GERAL]", "left join categoria_geral on categoria_geral.id = categoria_musica_geral.categoria\n");
+            querySQL2 = querySQL2.replace("[INNER_JOIN_MUSICA_GERAL]", "inner join musica_geral on musica_geral.id = audiostore_musica.musica_geral\n");
+            querySQL2 = querySQL2.replace("[INNER_JOIN_CATEGORIA_MUSICA_GERAL]", "left join categoria_musica_geral on categoria_musica_geral.musica = musica_geral.id\n");
+            querySQL2 = querySQL2.replace("[INNER_JOIN_CATEGORIA_GERAL]", "left join categoria_geral on categoria_geral.id = categoria_musica_geral.categoria\n");
+
+            querySQL1 += " and (audiostore_musica.categoria1 = " + codigo + "";
+            querySQL1 += " or audiostore_musica.categoria2 = " + codigo + ") \n";
+            querySQL2 = querySQL2.replace("[[MAIS_WHERE]]", " and (audiostore_musica.categoria1 = " + codigo + " [[MAIS_WHERE]]");
+            querySQL2 = querySQL2.replace("[[MAIS_WHERE]]", " or audiostore_musica.categoria2 = " + codigo + ") [[MAIS_WHERE]] \n");
+            json.setCodigo(codigo);
+        }
+
+
+        if (null != letra && !letra.trim().isEmpty()) {
+            querySQL1 = querySQL1.replace("[INNER_JOIN_MUSICA_GERAL]", "inner join musica_geral on musica_geral.id = audiostore_musica.musica_geral\n");
+            querySQL1 = querySQL1.replace("[INNER_JOIN_CATEGORIA_MUSICA_GERAL]", "left join categoria_musica_geral on categoria_musica_geral.musica = musica_geral.id\n");
+            querySQL1 = querySQL1.replace("[INNER_JOIN_CATEGORIA_GERAL]", "left join categoria_geral on categoria_geral.id = categoria_musica_geral.categoria\n");
+            querySQL2 = querySQL2.replace("[INNER_JOIN_MUSICA_GERAL]", "inner join musica_geral on musica_geral.id = audiostore_musica.musica_geral\n");
+            querySQL2 = querySQL2.replace("[INNER_JOIN_CATEGORIA_MUSICA_GERAL]", "left join categoria_musica_geral on categoria_musica_geral.musica = musica_geral.id\n");
+            querySQL2 = querySQL2.replace("[INNER_JOIN_CATEGORIA_GERAL]", "left join categoria_geral on categoria_geral.id = categoria_musica_geral.categoria\n");
+
+            querySQL1 += " and musica_geral.letra like '%" + letra + "%' \n";
+            querySQL2 = querySQL2.replace("[[MAIS_WHERE]]", " and musica_geral.letra like '%" + letra + "%' \"[[MAIS_WHERE]]\" \n");
+            json.setLetra(letra);
+        }
+
+        if (null != arquivo && !arquivo.trim().isEmpty()) {
+            querySQL1 = querySQL1.replace("[INNER_JOIN_MUSICA_GERAL]", "inner join musica_geral on musica_geral.id = audiostore_musica.musica_geral\n");
+            querySQL1 = querySQL1.replace("[INNER_JOIN_CATEGORIA_MUSICA_GERAL]", "left join categoria_musica_geral on categoria_musica_geral.musica = musica_geral.id\n");
+            querySQL1 = querySQL1.replace("[INNER_JOIN_CATEGORIA_GERAL]", "left join categoria_geral on categoria_geral.id = categoria_musica_geral.categoria\n");
+            querySQL2 = querySQL2.replace("[INNER_JOIN_MUSICA_GERAL]", "inner join musica_geral on musica_geral.id = audiostore_musica.musica_geral\n");
+            querySQL2 = querySQL2.replace("[INNER_JOIN_CATEGORIA_MUSICA_GERAL]", "left join categoria_musica_geral on categoria_musica_geral.musica = musica_geral.id\n");
+            querySQL2 = querySQL2.replace("[INNER_JOIN_CATEGORIA_GERAL]", "left join categoria_geral on categoria_geral.id = categoria_musica_geral.categoria\n");
+
+            querySQL1 += " and musica_geral.arquivo like '%" + arquivo + "%' \n";
+            querySQL2 = querySQL2.replace("[[MAIS_WHERE]]", " and musica_geral.arquivo like '%" + arquivo + "%' \"[[MAIS_WHERE]]\" \n");
+            json.setLetra(letra);
+        }
+
+        querySQL2 = querySQL2.replace("[[MAIS_WHERE]]", "");
+        querySQL1 += " group by audiostore_musica.id \n limit " + offset + "," + rows;
+
+        querySQL1 = querySQL1.replace("[INNER_JOIN_MUSICA_GERAL]", "");
+            querySQL1 = querySQL1.replace("[INNER_JOIN_CATEGORIA_MUSICA_GERAL]", "");
+            querySQL1 = querySQL1.replace("[INNER_JOIN_CATEGORIA_GERAL]", "");
+            querySQL2 = querySQL2.replace("[INNER_JOIN_MUSICA_GERAL]", "");
+            querySQL2 = querySQL2.replace("[INNER_JOIN_CATEGORIA_MUSICA_GERAL]", "");
+            querySQL2 = querySQL2.replace("[INNER_JOIN_CATEGORIA_GERAL]", "");
+
+        final List<BigDecimal> countBD = new ArrayList<BigDecimal>();
+        final List<Integer> idList = new ArrayList<Integer>();
+
+        repository.query(querySQL1).executeSQL(new Each() {
+            public Integer id_musica;
+            public String param;
+
+            @Override
+            public void each() {
+                idList.add(id_musica);
+            }
+        });
+
+        repository.query(querySQL2).executeSQL(new Each() {
+            public BigDecimal count;
+            public String param;
+
+            @Override
+            public void each() {
+                countBD.add(count);
+            }
+        });
+
+        Integer iniValue = 0;
+        if (null != countBD && !countBD.isEmpty()) {
+            if (null != countBD.get(0)) {
+                iniValue = countBD.get(0).intValue();
+            }
+        }
+        
+        json.setCount(iniValue);
+        int size = iniValue / rows + ((q1.count().intValue() % rows == 0) ? 0 : 1);
+        json.setPage(page);
+        json.setSize(size);
+
+
+        if (null != idList && !idList.isEmpty()) {
+            lista = repository.query(AudiostoreMusicaBean.class).in("id", idList.toArray(new Integer[idList.size()])).findAll();
+        }
+
+        List<AudiostoreMusicaDTO> rowsList = new ArrayList<AudiostoreMusicaDTO>();
+
+        for (AudiostoreMusicaBean bean : lista) {
+            if (null != bean) {
+                MusicaGeralBean mgb = repository.find(MusicaGeralBean.class, bean.getMusicaGeral());
+                AudiostoreMusicaDTO dto = new AudiostoreMusicaDTO();
+
+                dto.setId(bean.getId().toString());
+                dto.setNome(mgb.getTitulo());
+                dto.setIdcliente(bean.getCliente().getIdcliente());
+                dto.setNomeCliente(bean.getCliente().getNome());
+                dto.setCategoria1(null != bean.getCategoria1() ? bean.getCategoria1().getCategoria() : "");
+                dto.setCategoria2(null != bean.getCategoria2() ? bean.getCategoria2().getCategoria() : "");
+                dto.setCategoria3(null != bean.getCategoria3() ? bean.getCategoria3().getCategoria() : "");
+                String arq = "";
+                List<String> partss = Arrays.asList(mgb.getArquivo().split("/"));
+                if (null != partss && !partss.isEmpty()) {
+                    arq = partss.get(partss.size() - 1);
+                }
+                dto.setArquivo(arq);
+
+                rowsList.add(dto);
+            }
+        }
+        json.setRows(rowsList);
+        return json;
     }
 
     public List<ClienteBean> clienteBeanList() {
@@ -352,6 +623,10 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
 
     public List<AudiostoreCategoriaBean> categorias() {
         return repository.query(AudiostoreCategoriaBean.class).eq("tipo", new Short("1")).findAll();
+    }
+    
+    public List<AudiostoreCategoriaBean> categoriasByCliente5(Integer idcliente) {
+        return repository.query(AudiostoreCategoriaBean.class).eq("tipo", new Short("1")).eq("cliente.idcliente", idcliente).findAll();
     }
 
     public List<AudiostoreGravadoraBean> gravadoraBeanList() {
@@ -940,5 +1215,291 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         SmbFile smbFile = new SmbFile(path, Utilities.getAuthSmbDefault());
 
         return new InputStreamDownload(smbFile.getInputStream(), "audio/mpeg", smbFile.getName());
+    }
+    
+    public void validarMsc(Integer[] id_list, Boolean expArquivoAudio , Integer idcliente,  String arquivo,  String nome, Integer codigo) {
+        List<AudiostoreMusicaBean> list = null;
+
+        if (null != id_list && id_list.length > 0) {
+            list = repository.query(AudiostoreMusicaBean.class).in("id", id_list).findAll();
+        } else {
+            AudiostoreMusicaJSON json = beanList2(true, false, 1, 999999999, null, idcliente, arquivo, nome, codigo, null);
+            if (null != json.getRows() && !json.getRows().isEmpty()) {
+                id_list = new Integer[json.getRows().size()];
+                int i = 0;
+                for (AudiostoreMusicaDTO dto : json.getRows()) {
+                    id_list[i] = Integer.parseInt(dto.getId().trim());
+                    i++;
+                }
+            }
+            list = repository.query(AudiostoreMusicaBean.class).in("id", id_list).findAll();
+        }
+
+        boolean ajaxResultBool = true;
+        String ajaxResultStr = "";
+        Object ajaxResultObject = null;
+        
+        // verifica se todos são do mesmo cliente
+        if (ajaxResultBool) {
+            Integer idclienteAux = 0;
+            List<AudiostoreMusicaBean> beanList = repository.query(AudiostoreMusicaBean.class).in("id", id_list).findAll();
+            if (null != beanList && !beanList.isEmpty()) {
+                if (null != beanList.get(0)) {
+                    idclienteAux = beanList.get(0).getCliente().getIdcliente();
+                }
+
+                for (AudiostoreMusicaBean bean : beanList) {
+                    if (idclienteAux != bean.getCliente().getIdcliente()) {
+                        ajaxResultBool = false;
+                        ajaxResultStr = "Você selecionou músicas de clientes diferentes!";
+                    }
+                }
+            } else {
+                ajaxResultBool = false;
+                ajaxResultStr = "Nenhuma música foi selecionada!";
+            }
+        }
+        
+        if (ajaxResultBool) {
+            ajaxResultObject = id_list.length;
+            listaIdMusicaExp = id_list;
+        }
+        
+        result.use(Results.json()).withoutRoot().from(new AjaxResult(ajaxResultBool , ajaxResultStr , ajaxResultObject)).recursive().serialize();
+    }
+    
+    public void gerarLinha(Integer index, Boolean expArquivoAudio) {
+        System.out.println("gerando linhas: " + listaIdMusicaExp[index] + " ");
+        result.use(Results.json()).withoutRoot().from(new AjaxResult(true , "ok")).recursive().serialize();
+//        upload(new Integer[1] {listaIdMusicaExp[index]} , expArquivoAudio);
+    }
+
+    public void upload(Integer[] id_list, Boolean expArquivoAudio) throws Exception {
+        try {
+            String conteudo = "";
+            String quebraLinha = "";
+            List<AudiostoreMusicaBean> list = repository.query(AudiostoreMusicaBean.class).in("id", id_list).findAll();
+            for (AudiostoreMusicaBean bean : list) {
+                if (bean != null) {
+                    MusicaGeralBean mgb = repository.query(MusicaGeralBean.class).in("id", bean.getMusicaGeral()).findOne();
+                    if (mgb != null) {
+                        
+                        if (!Utilities.verificarArquivoFisicoExiste(mgb.getArquivo())) {
+                            throw new Exception("O arquivo " + mgb.getArquivo() + " não existe. ");
+                        }
+                        
+                        conteudo += quebraLinha;
+
+                        // arquivo
+                        if (Arrays.asList(mgb.getArquivo().split("/")).size() > 0) {
+                            List<String> lista = Arrays.asList(mgb.getArquivo().split("/"));
+                            String arq = lista.get(lista.size() - 1);
+
+                            if (arq.length() > 30) {
+                                arq = arq.substring(0, 30);
+                            }
+
+                            if (arq.length() < 30) {
+                                arq = StringUtils.leftPad(arq, 30, " ");
+                            }
+                            conteudo +=  Utilities.formatarHexExp(arq);
+                        }
+                        
+
+                        // interprete
+                        String interprete = mgb.getInterprete();
+                        if (interprete.length() > 30) {
+                            interprete = interprete.substring(0, 30);
+                        }
+
+                        if (interprete.length() < 30) {
+                            interprete = StringUtils.leftPad(interprete, 30, " ");
+                        }
+                        interprete = Utilities.formatarHexExp(interprete);
+                        conteudo += interprete;
+
+                        // tipo interprete
+                        conteudo += mgb.getTipoInterprete();
+
+                        // titulo
+                        String titulo = mgb.getTitulo();
+                        if (titulo.length() > 30) {
+                            titulo = titulo.substring(0, 30);
+                        }
+
+                        if (titulo.length() < 30) {
+                            titulo = StringUtils.leftPad(titulo, 30, " ");
+                        }
+                        titulo = Utilities.formatarHexExp(titulo);
+                        conteudo += titulo;
+
+                        // cut
+                        conteudo += bean.getCut() ? "sim" : "nao";
+
+                        // categoria 1 
+                        conteudo += (null == bean.getCategoria1() ? "000" : bean.getCategoria1().getCodInterno());
+
+                        // categoria 2
+                        conteudo += (null == bean.getCategoria2() ? "000" : bean.getCategoria2().getCodInterno());
+
+                        // categoria 3
+                        conteudo += (null == bean.getCategoria3() ? "000" : bean.getCategoria3().getCodInterno());
+
+                        // crossover
+                        conteudo += (bean.getCrossover() ? "sim" : "nao");
+
+                        // dias de execucao  
+                        conteudo += StringUtils.leftPad(bean.getDiasExecucao1().toString(), 4, " ");
+
+                        // dias de execucao 2
+                        conteudo += StringUtils.leftPad(bean.getDiasExecucao2().toString(), 4, " ");
+
+                        // afinidade1
+                        String afinidade1 = mgb.getAfinidade1();
+                        if (afinidade1.length() > 30) {
+                            afinidade1 = afinidade1.substring(0, 30);
+                        }
+
+                        if (afinidade1.length() < 30) {
+                            afinidade1 = StringUtils.leftPad(afinidade1, 30, " ");
+                        }
+                        afinidade1 = Utilities.formatarHexExp(afinidade1);
+                        conteudo += afinidade1;
+
+                        // afinidade2
+                        String afinidade2 = mgb.getAfinidade2();
+                        if (afinidade2.length() > 30) {
+                            afinidade2 = afinidade2.substring(0, 30);
+                        }
+
+                        if (afinidade2.length() < 30) {
+                            afinidade2 = StringUtils.leftPad(afinidade2, 30, " ");
+                        }
+                        afinidade2 = Utilities.formatarHexExp(afinidade2);
+                        conteudo += afinidade2;
+
+                        // afinidade3
+                        String afinidade3 = mgb.getAfinidade3();
+                        if (afinidade3.length() > 30) {
+                            afinidade3 = afinidade2.substring(0, 30);
+                        }
+
+                        if (afinidade3.length() < 30) {
+                            afinidade3 = StringUtils.leftPad(afinidade3, 30, " ");
+                        }
+                        afinidade3 = Utilities.formatarHexExp(afinidade3);
+                        conteudo += afinidade3;
+
+                        // afinidade4
+                        String afinidade4 = mgb.getAfinidade4();
+                        if (afinidade4.length() > 30) {
+                            afinidade4 = afinidade4.substring(0, 30);
+                        }
+
+                        if (afinidade4.length() < 30) {
+                            afinidade4 = StringUtils.leftPad(afinidade4, 30, " ");
+                        }
+                        afinidade4 = Utilities.formatarHexExp(afinidade4);
+                        conteudo += afinidade4;
+
+                        // gravadora
+                        conteudo += null != mgb.getGravadora() ? StringUtils.leftPad(mgb.getGravadora().toString(), 3, "0") : "000";
+
+                        // ano gravacao
+                        conteudo += StringUtils.leftPad(mgb.getAnoGravacao().toString(), 3, "0");
+
+                        // ano velocidade
+                        conteudo += (mgb.getBpm() > 180 ? 3 : (mgb.getBpm() > 120 ? 2 : 1));
+
+                        // data
+                        conteudo += new SimpleDateFormat("dd/MM/yy").format(bean.getData());
+
+                        // data ultima execução
+                        conteudo += new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(bean.getUltimaExecucaoData());
+
+                        // tempo
+                        String tempo = mgb.getTempoTotal();
+                        if (tempo.length() > 8) {
+                            tempo = tempo.substring(0, 8);
+                        }
+
+                        if (tempo.length() < 8) {
+                            
+                            tempo = "00:"+tempo;
+                        }
+                        conteudo += tempo;
+
+                        // qtde de player total   
+                        conteudo += StringUtils.leftPad(bean.getQtdePlayer().toString(), 3, "0");
+
+                        // data vencimento
+                        conteudo += new SimpleDateFormat("dd/MM/yy").format(bean.getDataVencimento());
+
+                        // data vencimento crossover
+                        conteudo += new SimpleDateFormat("dd/MM/yy").format(bean.getDataVencimentoCrossover());
+
+                        // frame inicial
+                        conteudo += StringUtils.leftPad(bean.getFrameInicio().toString(), 8, "0");
+
+                        // frame final
+                        conteudo += StringUtils.leftPad(bean.getFrameFinal().toString(), 8, "0");
+
+                        // msg
+                        String msg = bean.getMsg();
+
+                        if (null == msg) {
+                            msg = "";
+                        }
+
+                        if (msg.length() > 40) {
+                            msg = msg.substring(0, 40);
+                        }
+
+                        if (msg.length() < 40) {
+                            msg = StringUtils.leftPad(msg, 40, " ");
+                        }
+                        // sem som
+                        msg = Utilities.formatarHexExp(msg);
+                        conteudo += msg;
+                        conteudo += bean.getSemSom() ? "sim" : "nao";
+                    }
+
+                    if (expArquivoAudio) {
+                        DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", list.get(0).getCliente().getIdcliente()).findOne();
+                        String origem = mgb.getArquivo();
+                        String destino = dados.getLocalDestinoExp();
+
+                        SmbFile smbOrigem = new SmbFile(origem, Utilities.getAuthSmbDefault());
+                        if (smbOrigem.exists()) {
+                            SmbFile smbDestino = new SmbFile(destino + smbOrigem.getName(), Utilities.getAuthSmbDefault());
+
+                            SmbFileInputStream sfis = new SmbFileInputStream(smbOrigem);
+                            SmbFileOutputStream sfous = new SmbFileOutputStream(smbDestino, true);
+                            IOUtils.copy(sfis, sfous);
+                        }
+                    }
+                }
+                quebraLinha = Utilities.quebrarLinhaComHexa();
+            }
+//            conteudo = Utilities.formatarHexExp(conteudo);
+
+            if (null != list && !list.isEmpty()) {
+                DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", list.get(0).getCliente().getIdcliente()).findOne();
+                String destino = dados.getLocalDestinoExp();
+                SmbFile smb = new SmbFile(destino, Utilities.getAuthSmbDefault());
+                SmbFile smb2 = new SmbFile(destino + "musica.exp", Utilities.getAuthSmbDefault());
+
+                if (!smb.exists()) {
+                    smb.mkdirs();
+                }
+
+                SmbFileOutputStream sfous = new SmbFileOutputStream(smb2);
+                sfous.write(conteudo.getBytes());
+                sfous.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 }
