@@ -50,8 +50,7 @@ public class Utilities {
     }
 
     public static String formatarHexExp(String text) throws DecoderException {
-        System.out.println("TEXTO ANTES DE FORMATAR:   " + text);
-        System.out.println("\n\n");
+
         List<String> hexaList = new ArrayList<String>();
         hexaList.add("5C");
         hexaList.add("2F");
@@ -148,9 +147,6 @@ public class Utilities {
                 finalText += new String(Hex.decodeHex(hexaCode.toCharArray()));
             }
         }
-        
-        System.out.println("TEXTO DEPOIS DE FORMATAR:   " + text);
-        System.out.println("\n\n");
         return finalText;
     }
 

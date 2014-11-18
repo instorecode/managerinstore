@@ -21,10 +21,14 @@ import br.com.instore.web.dto.Mdto;
 import br.com.instore.web.dto.MusicaDTO;
 import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,12 +38,14 @@ import java.util.List;
 import java.util.Random;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import jcifs.smb.SmbFileInputStream;
 import jcifs.smb.SmbFileOutputStream;
 import org.apache.commons.compress.utils.IOUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 
 @RequestScoped
@@ -1240,9 +1246,10 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         Object ajaxResultObject = null;
         
         // verifica se todos são do mesmo cliente
+        List<AudiostoreMusicaBean> beanList = repository.query(AudiostoreMusicaBean.class).in("id", id_list).findAll();
         if (ajaxResultBool) {
             Integer idclienteAux = 0;
-            List<AudiostoreMusicaBean> beanList = repository.query(AudiostoreMusicaBean.class).in("id", id_list).findAll();
+            
             if (null != beanList && !beanList.isEmpty()) {
                 if (null != beanList.get(0)) {
                     idclienteAux = beanList.get(0).getCliente().getIdcliente();
@@ -1261,34 +1268,34 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         }
         
         if (ajaxResultBool) {
-            ajaxResultObject = id_list.length;
-            listaIdMusicaExp = id_list;
+            try {
+                upload(beanList, expArquivoAudio);
+                ajaxResultBool = true;
+                ajaxResultStr = "Arquivo exportando com sucesso!";
+            } catch (Exception e) {
+                ajaxResultBool = false;
+                ajaxResultStr = e.getMessage();
+            }
         }
         
         result.use(Results.json()).withoutRoot().from(new AjaxResult(ajaxResultBool , ajaxResultStr , ajaxResultObject)).recursive().serialize();
     }
     
-    public void gerarLinha(Integer index, Boolean expArquivoAudio) {
-        System.out.println("gerando linhas: " + listaIdMusicaExp[index] + " ");
-        result.use(Results.json()).withoutRoot().from(new AjaxResult(true , "ok")).recursive().serialize();
-//        upload(new Integer[1] {listaIdMusicaExp[index]} , expArquivoAudio);
-    }
-
-    public void upload(Integer[] id_list, Boolean expArquivoAudio) throws Exception {
+    public void upload(List<AudiostoreMusicaBean> list, Boolean expArquivoAudio) throws Exception {
         try {
-            String conteudo = "";
+            StringBuffer conteudo = new StringBuffer();
             String quebraLinha = "";
-            List<AudiostoreMusicaBean> list = repository.query(AudiostoreMusicaBean.class).in("id", id_list).findAll();
+
             for (AudiostoreMusicaBean bean : list) {
                 if (bean != null) {
                     MusicaGeralBean mgb = repository.query(MusicaGeralBean.class).in("id", bean.getMusicaGeral()).findOne();
                     if (mgb != null) {
                         
-                        if (!Utilities.verificarArquivoFisicoExiste(mgb.getArquivo())) {
-                            throw new Exception("O arquivo " + mgb.getArquivo() + " não existe. ");
-                        }
+//                        if (!Utilities.verificarArquivoFisicoExiste(mgb.getArquivo())) {
+//                            throw new Exception("O arquivo " + mgb.getArquivo() + " não existe. ");
+//                        }
                         
-                        conteudo += quebraLinha;
+                        conteudo.append(quebraLinha);
 
                         // arquivo
                         if (Arrays.asList(mgb.getArquivo().split("/")).size() > 0) {
@@ -1302,7 +1309,7 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                             if (arq.length() < 30) {
                                 arq = StringUtils.leftPad(arq, 30, " ");
                             }
-                            conteudo +=  Utilities.formatarHexExp(arq);
+                            conteudo.append(Utilities.formatarHexExp(arq));
                         }
                         
 
@@ -1316,10 +1323,10 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                             interprete = StringUtils.leftPad(interprete, 30, " ");
                         }
                         interprete = Utilities.formatarHexExp(interprete);
-                        conteudo += interprete;
+                        conteudo.append(interprete);
 
                         // tipo interprete
-                        conteudo += mgb.getTipoInterprete();
+                        conteudo.append(mgb.getTipoInterprete());
 
                         // titulo
                         String titulo = mgb.getTitulo();
@@ -1331,28 +1338,28 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                             titulo = StringUtils.leftPad(titulo, 30, " ");
                         }
                         titulo = Utilities.formatarHexExp(titulo);
-                        conteudo += titulo;
+                        conteudo.append(titulo);
 
                         // cut
-                        conteudo += bean.getCut() ? "sim" : "nao";
+                        conteudo.append(bean.getCut() ? "sim" : "nao");
 
                         // categoria 1 
-                        conteudo += (null == bean.getCategoria1() ? "000" : bean.getCategoria1().getCodInterno());
+                        conteudo.append((null == bean.getCategoria1() ? "000" : bean.getCategoria1().getCodInterno()));
 
                         // categoria 2
-                        conteudo += (null == bean.getCategoria2() ? "000" : bean.getCategoria2().getCodInterno());
+                        conteudo.append((null == bean.getCategoria2() ? "000" : bean.getCategoria2().getCodInterno()));
 
                         // categoria 3
-                        conteudo += (null == bean.getCategoria3() ? "000" : bean.getCategoria3().getCodInterno());
+                        conteudo.append((null == bean.getCategoria3() ? "000" : bean.getCategoria3().getCodInterno()));
 
                         // crossover
-                        conteudo += (bean.getCrossover() ? "sim" : "nao");
+                        conteudo.append((bean.getCrossover() ? "sim" : "nao"));
 
                         // dias de execucao  
-                        conteudo += StringUtils.leftPad(bean.getDiasExecucao1().toString(), 4, " ");
+                        conteudo.append(StringUtils.leftPad(bean.getDiasExecucao1().toString(), 4, " "));
 
                         // dias de execucao 2
-                        conteudo += StringUtils.leftPad(bean.getDiasExecucao2().toString(), 4, " ");
+                        conteudo.append(StringUtils.leftPad(bean.getDiasExecucao2().toString(), 4, " "));
 
                         // afinidade1
                         String afinidade1 = mgb.getAfinidade1();
@@ -1364,7 +1371,7 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                             afinidade1 = StringUtils.leftPad(afinidade1, 30, " ");
                         }
                         afinidade1 = Utilities.formatarHexExp(afinidade1);
-                        conteudo += afinidade1;
+                        conteudo.append(afinidade1);
 
                         // afinidade2
                         String afinidade2 = mgb.getAfinidade2();
@@ -1376,7 +1383,7 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                             afinidade2 = StringUtils.leftPad(afinidade2, 30, " ");
                         }
                         afinidade2 = Utilities.formatarHexExp(afinidade2);
-                        conteudo += afinidade2;
+                        conteudo.append(afinidade2);
 
                         // afinidade3
                         String afinidade3 = mgb.getAfinidade3();
@@ -1388,7 +1395,7 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                             afinidade3 = StringUtils.leftPad(afinidade3, 30, " ");
                         }
                         afinidade3 = Utilities.formatarHexExp(afinidade3);
-                        conteudo += afinidade3;
+                        conteudo.append(afinidade3);
 
                         // afinidade4
                         String afinidade4 = mgb.getAfinidade4();
@@ -1400,22 +1407,22 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                             afinidade4 = StringUtils.leftPad(afinidade4, 30, " ");
                         }
                         afinidade4 = Utilities.formatarHexExp(afinidade4);
-                        conteudo += afinidade4;
+                        conteudo.append(afinidade4);
 
                         // gravadora
-                        conteudo += null != mgb.getGravadora() ? StringUtils.leftPad(mgb.getGravadora().toString(), 3, "0") : "000";
+                        conteudo.append(null != mgb.getGravadora() ? StringUtils.leftPad(mgb.getGravadora().toString(), 3, "0") : "000");
 
                         // ano gravacao
-                        conteudo += StringUtils.leftPad(mgb.getAnoGravacao().toString(), 3, "0");
+                        conteudo.append(StringUtils.leftPad(mgb.getAnoGravacao().toString(), 4, "0"));
 
                         // ano velocidade
-                        conteudo += (mgb.getBpm() > 180 ? 3 : (mgb.getBpm() > 120 ? 2 : 1));
+                        conteudo.append((mgb.getBpm() > 180 ? 3 : (mgb.getBpm() > 120 ? 2 : 1)));
 
                         // data
-                        conteudo += new SimpleDateFormat("dd/MM/yy").format(bean.getData());
+                        conteudo.append(new SimpleDateFormat("dd/MM/yy").format(bean.getData()));
 
                         // data ultima execução
-                        conteudo += new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(bean.getUltimaExecucaoData());
+                        conteudo.append(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(bean.getUltimaExecucaoData()));
 
                         // tempo
                         String tempo = mgb.getTempoTotal();
@@ -1427,22 +1434,22 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                             
                             tempo = "00:"+tempo;
                         }
-                        conteudo += tempo;
+                        conteudo.append(tempo);
 
                         // qtde de player total   
-                        conteudo += StringUtils.leftPad(bean.getQtdePlayer().toString(), 3, "0");
+                        conteudo.append(StringUtils.leftPad(bean.getQtdePlayer().toString(), 3, "0"));
 
                         // data vencimento
-                        conteudo += new SimpleDateFormat("dd/MM/yy").format(bean.getDataVencimento());
+                        conteudo.append(new SimpleDateFormat("dd/MM/yy").format(bean.getDataVencimento()));
 
                         // data vencimento crossover
-                        conteudo += new SimpleDateFormat("dd/MM/yy").format(bean.getDataVencimentoCrossover());
+                        conteudo.append(new SimpleDateFormat("dd/MM/yy").format(bean.getDataVencimentoCrossover()));
 
                         // frame inicial
-                        conteudo += StringUtils.leftPad(bean.getFrameInicio().toString(), 8, "0");
+                        conteudo.append(StringUtils.leftPad(bean.getFrameInicio().toString(), 8, "0"));
 
                         // frame final
-                        conteudo += StringUtils.leftPad(bean.getFrameFinal().toString(), 8, "0");
+                        conteudo.append(StringUtils.leftPad(bean.getFrameFinal().toString(), 8, "0"));
 
                         // msg
                         String msg = bean.getMsg();
@@ -1460,8 +1467,8 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                         }
                         // sem som
                         msg = Utilities.formatarHexExp(msg);
-                        conteudo += msg;
-                        conteudo += bean.getSemSom() ? "sim" : "nao";
+                        conteudo.append(msg);
+                        conteudo.append(bean.getSemSom() ? "sim" : "nao");
                     }
 
                     if (expArquivoAudio) {
@@ -1481,25 +1488,34 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                 }
                 quebraLinha = Utilities.quebrarLinhaComHexa();
             }
-//            conteudo = Utilities.formatarHexExp(conteudo);
 
             if (null != list && !list.isEmpty()) {
+                System.out.println("GERAR ARQUIVO");
                 DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", list.get(0).getCliente().getIdcliente()).findOne();
                 String destino = dados.getLocalDestinoExp();
                 SmbFile smb = new SmbFile(destino, Utilities.getAuthSmbDefault());
                 SmbFile smb2 = new SmbFile(destino + "musica.exp", Utilities.getAuthSmbDefault());
-
+                System.out.println("GERAR ARQUIVO 2");
                 if (!smb.exists()) {
                     smb.mkdirs();
                 }
+                
+                System.out.println("GERAR ARQUIVO ");
 
                 SmbFileOutputStream sfous = new SmbFileOutputStream(smb2);
-                sfous.write(conteudo.getBytes());
+//                sfous.write(conteudo.toString().getBytes());
+                IOUtils.copy(new ByteArrayInputStream(conteudo.toString().getBytes()), sfous);
                 sfous.close();
+                System.out.println("FIM DO EXP");
             }
-        } catch (Exception e) {
+        } catch (SmbException e) {
             e.printStackTrace();
-            throw e;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

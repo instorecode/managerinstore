@@ -185,7 +185,6 @@
                 });
 
                 function fnn(exp_arquivo_audio) {
-                    msg_fadeIn();
                     var cliente_selecionado = jQuery('[name="idcliente"]').val();
 
                     if (null == cliente_selecionado || undefined == cliente_selecionado || '' == cliente_selecionado) {
@@ -206,6 +205,9 @@
                                     jQuery.ajax({
                                         type: 'POST',
                                         url: '${url}/audiostore-comercial/vld-comm',
+                                        beforeSend: function() {
+                                            msg_fadeIn();
+                                        },
                                         data: {
                                             id_list: id_list,
                                             idcliente: cliente_selecionado,
@@ -219,15 +221,21 @@
                                         },
                                         error: function(resp) {
                                             console.log(resp);
-                                        }
+                                        },
+                                        complete: function() {
+                                            msg_fadeOut();
+                                        },
                                     });
                                 }
-                                return false;
+                                return true;
                             });
                         } else {
                             jQuery.ajax({
                                 type: 'POST',
                                 url: '${url}/audiostore-comercial/vld-comm',
+                                beforeSend: function() {
+                                    msg_fadeIn();
+                                },
                                 data: {
                                     id_list: id_list,
                                     idcliente: cliente_selecionado,
@@ -241,7 +249,10 @@
                                 },
                                 error: function(resp) {
                                     console.log(resp);
-                                }
+                                },
+                                complete: function() {
+                                    msg_fadeOut();
+                                },
                             });
                         }
 

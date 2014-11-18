@@ -393,7 +393,6 @@
         <script type="text/javascript">
             jQuery(document).ready(function() {
                 jQuery('.btn_export').on("click", function() {
-                    msg_fadeIn();
                     var cliente_selecionado = jQuery('[name="idcliente"]').val();
 
                     if (null == cliente_selecionado || undefined == cliente_selecionado || '' == cliente_selecionado) {
@@ -407,26 +406,65 @@
                             id_list[i] = item.codigo;
                         }
 
-                        jQuery.ajax({
-                            type: 'POST',
-                            url: '${url}/audiostore-categoria/vld-ctg',
-                            data: {
-                                    id_list    : id_list , 
-                                    idcliente  : cliente_selecionado,
-                                    codInterno : jQuery('[name="codInterno"]').val(),
-                                    categoria  : jQuery('[name="categoria"]').val(),
-                                    dataInicio : jQuery('[name="dataInicio"]').val(),
-                                    dataFinal  : jQuery('[name="dataFinal"]').val(), 
-                            },
-                            success: function(json) {
-                                console.log(json);
-                            },
-                            error : function(resp){
-                                console.log(resp);
-                            }
-                        });
-                    } 
-                    msg_fadeOut();
+                        if (id_list.length <= 0) {
+                            bootbox.confirm("Você não selecionou nenhuma categoria, deseja exportar todos os registros?", function(res) {
+                                if (res) {
+                                    jQuery.ajax({
+                                        type: 'POST',
+                                        url: '${url}/audiostore-categoria/vld-ctg',
+                                        beforeSend: function() {
+                                            msg_fadeIn();
+                                        },
+                                        data: {
+                                            id_list: id_list,
+                                            idcliente: cliente_selecionado,
+                                            codInterno: jQuery('[name="codInterno"]').val(),
+                                            categoria: jQuery('[name="categoria"]').val(),
+                                            dataInicio: jQuery('[name="dataInicio"]').val(),
+                                            dataFinal: jQuery('[name="dataFinal"]').val(),
+                                        },
+                                        success: function(json) {
+                                            console.log(json);
+                                        },
+                                        error: function(resp) {
+                                            console.log(resp);
+                                        },
+                                        complete: function() {
+                                            msg_fadeOut();
+                                        }
+                                    });
+                                }
+                                return true;
+                            });
+                        } else {
+                            jQuery.ajax({
+                                type: 'POST',
+                                url: '${url}/audiostore-categoria/vld-ctg',
+                                beforeSend: function() {
+                                    msg_fadeIn();
+                                },
+                                data: {
+                                    id_list: id_list,
+                                    idcliente: cliente_selecionado,
+                                    codInterno: jQuery('[name="codInterno"]').val(),
+                                    categoria: jQuery('[name="categoria"]').val(),
+                                    dataInicio: jQuery('[name="dataInicio"]').val(),
+                                    dataFinal: jQuery('[name="dataFinal"]').val(),
+                                },
+                                success: function(json) {
+                                    console.log(json);
+                                },
+                                error: function(resp) {
+                                    console.log(resp);
+                                },
+                                complete: function() {
+                                    msg_fadeOut();
+                                }
+                            });
+                        }
+
+
+                    }
                 });
 
             });

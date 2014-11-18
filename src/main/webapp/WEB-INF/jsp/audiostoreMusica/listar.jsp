@@ -187,7 +187,7 @@
                 });
 
                 function fnn(exp_arquivo_audio) {
-                    msg_fadeIn();
+
                     var cliente_selecionado = jQuery('[name="idcliente"]').val();
                     cliente_selecionado = 1029;
 
@@ -201,63 +201,83 @@
                             var item = arr[i];
                             id_list[i] = item.id;
                         }
-                        var qtdeRequests = 0;
-                        jQuery.ajax({
-                            async: false,
-                            timeout: ((1000 * 60) * 10),
-                            type: 'GET',
-                            url: '${url}/musica/vld-msc',
-                            dataType:"json",   
-                            data: {
-                                index: null,
-                                id_list: id_list,
-                                idcliente: cliente_selecionado,
-                                arquivo: jQuery('[name="arquivo"]').val(),
-                                nome: jQuery('[name="nome"]').val(),
-                                codigo: jQuery('[name="codigo"]').val(),
-                                exp_arquivo_audio: exp_arquivo_audio
-                            },
-                             
-                            success: function(json) {
-                                if(json.success) {
-                                    qtdeRequests = json.object;
-                                } else {
-                                    alert('Lamento, ocorreu um erro.');
-                                }
-                            },
-                            error: function(resp) {
-                                alert('Lamento, ocorreu um erro.');
-                            },
-                        });
 
-                        for (i = 1; i <= qtdeRequests; i++) {
+                        if (id_list.length <= 0) {
+                            bootbox.confirm("Você não selecionou nenhuma música, deseja exportar todos os registros?", function(res) {
+                                if (res) {
+                                    jQuery.ajax({
+                                        async: true,
+                                        timeout: ((1000 * 60) * 10),
+                                        type: 'POST',
+                                        url: '${url}/musica/vld-msc',
+                                        dataType: "json",
+                                        beforeSend: function() {
+                                            msg_fadeIn();
+                                        },
+                                        data: {
+                                            id_list: id_list,
+                                            idcliente: cliente_selecionado,
+                                            arquivo: jQuery('[name="arquivo"]').val(),
+                                            nome: jQuery('[name="nome"]').val(),
+                                            codigo: jQuery('[name="codigo"]').val(),
+                                            exp_arquivo_audio: exp_arquivo_audio
+                                        },
+                                        success: function(json) {
+                                            if (json.success) {
+                                                qtdeRequests = json.object;
+                                            } else {
+                                                bootbox.alert(json.response, function() {
+                                                });
+                                            }
+                                        },
+                                        error: function(resp) {
+                                            bootbox.alert('Lamento, ocorreu um erro.', function() {
+                                            });
+                                        },
+                                        complete: function() {
+                                            msg_fadeOut();
+                                        },
+                                    });
+                                }
+                                return true;
+                            });
+                        } else {
                             jQuery.ajax({
-                                async: false,
+                                async: true,
                                 timeout: ((1000 * 60) * 10),
                                 type: 'POST',
                                 url: '${url}/musica/vld-msc',
+                                dataType: "json",
+                                beforeSend: function() {
+                                    msg_fadeIn();
+                                },
                                 data: {
-                                    index: i,
-                                    id_list: null,
-                                    idcliente: null,
-                                    arquivo: null,
-                                    nome: null,
-                                    codigo: null,
+                                    id_list: id_list,
+                                    idcliente: cliente_selecionado,
+                                    arquivo: jQuery('[name="arquivo"]').val(),
+                                    nome: jQuery('[name="nome"]').val(),
+                                    codigo: jQuery('[name="codigo"]').val(),
                                     exp_arquivo_audio: exp_arquivo_audio
                                 },
-                                dataType: 'json',
                                 success: function(json) {
-                                    console.log("sucesso: ");
-                                    console.log(json);
+                                    if (json.success) {
+                                        qtdeRequests = json.object;
+                                    } else {
+                                        bootbox.alert(json.response, function() {
+                                        });
+                                    }
                                 },
                                 error: function(resp) {
-                                    console.log("error: ");
-                                    console.log(resp);
-                                }
+                                    bootbox.alert('Lamento, ocorreu um erro.', function() {
+                                    });
+                                },
+                                complete: function() {
+                                    msg_fadeOut();
+                                },
                             });
                         }
                     }
-                    msg_fadeOut();
+
                 }
             });
         </script>

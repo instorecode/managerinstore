@@ -147,14 +147,10 @@ public class MusicaController implements java.io.Serializable {
         }
     }
 
-    @Get
+    @Post
     @Path("/musica/vld-msc")
-    public void validarMsc(Integer index , Integer[] id_list  , Boolean exp_arquivo_audio , Integer idcliente,  String arquivo,  String nome, Integer codigo) {
-        if(!(null != index && index > 0)) {
-            requestAudiostoreMusica.validarMsc(id_list, exp_arquivo_audio, idcliente, arquivo, nome, codigo);
-        } else {
-            requestAudiostoreMusica.gerarLinha(index, exp_arquivo_audio);
-        }
+    public void validarMsc(Integer[] id_list  , Boolean exp_arquivo_audio , Integer idcliente,  String arquivo,  String nome, Integer codigo) {
+        requestAudiostoreMusica.validarMsc(id_list, exp_arquivo_audio, idcliente, arquivo, nome, codigo);
         
     }
 }
