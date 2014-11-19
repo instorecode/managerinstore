@@ -145,35 +145,4 @@ public class AudiostoreMusicaController implements java.io.Serializable {
     public void upload(Integer id) {
         requestAudiostoreMusica.upload(id);
     }
-
-    @Get
-    @Path("/audiostore-musica/informacao/{idcliente}")
-    public void informacao(Integer idcliente) {
-        try {
-            requestAudiostoreMusica.carregarInforWizard(idcliente);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (SmbException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Get
-    @Path("/audiostore-musica/loadmusica/{id}/{nome}")
-    public InputStreamDownload loadmusica(Integer id, String nome) {
-        try {
-            System.out.println("ID_EH " + id);
-            System.out.println("NOME_EH" + nome);
-            return requestAudiostoreMusica.loadMusica(id, nome);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (SmbException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 }

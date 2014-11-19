@@ -189,7 +189,6 @@
                 function fnn(exp_arquivo_audio) {
 
                     var cliente_selecionado = jQuery('[name="idcliente"]').val();
-                    cliente_selecionado = 1029;
 
                     if (null == cliente_selecionado || undefined == cliente_selecionado || '' == cliente_selecionado) {
                         bootbox.alert("Selecione um cliente.", function() {

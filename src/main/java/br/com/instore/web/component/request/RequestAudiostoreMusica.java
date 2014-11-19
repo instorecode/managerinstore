@@ -13,19 +13,12 @@ import br.com.instore.core.orm.bean.DadosClienteBean;
 import br.com.instore.core.orm.bean.MusicaGeralBean;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.component.session.SessionUsuario;
-import br.com.instore.web.dto.AudiostoreCategoriaDTO;
 import br.com.instore.web.dto.AudiostoreMusicaDTO;
 import br.com.instore.web.dto.AudiostoreMusicaJSON;
-import br.com.instore.web.dto.CadastroMusicaDTO;
-import br.com.instore.web.dto.Mdto;
-import br.com.instore.web.dto.MusicaDTO;
 import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
@@ -33,13 +26,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import jcifs.smb.SmbFileInputStream;
@@ -57,7 +47,7 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
     private Result result;
     @Inject
     private SessionUsuario sessionUsuario;
-    private Integer listaIdMusicaExp [];
+    private Integer listaIdMusicaExp[];
 
     public RequestAudiostoreMusica() {
     }
@@ -323,11 +313,11 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         querySQL1 += " group by audiostore_musica.id \n limit " + offset + "," + rows;
 
         querySQL1 = querySQL1.replace("[INNER_JOIN_MUSICA_GERAL]", "");
-            querySQL1 = querySQL1.replace("[INNER_JOIN_CATEGORIA_MUSICA_GERAL]", "");
-            querySQL1 = querySQL1.replace("[INNER_JOIN_CATEGORIA_GERAL]", "");
-            querySQL2 = querySQL2.replace("[INNER_JOIN_MUSICA_GERAL]", "");
-            querySQL2 = querySQL2.replace("[INNER_JOIN_CATEGORIA_MUSICA_GERAL]", "");
-            querySQL2 = querySQL2.replace("[INNER_JOIN_CATEGORIA_GERAL]", "");
+        querySQL1 = querySQL1.replace("[INNER_JOIN_CATEGORIA_MUSICA_GERAL]", "");
+        querySQL1 = querySQL1.replace("[INNER_JOIN_CATEGORIA_GERAL]", "");
+        querySQL2 = querySQL2.replace("[INNER_JOIN_MUSICA_GERAL]", "");
+        querySQL2 = querySQL2.replace("[INNER_JOIN_CATEGORIA_MUSICA_GERAL]", "");
+        querySQL2 = querySQL2.replace("[INNER_JOIN_CATEGORIA_GERAL]", "");
 
         final List<BigDecimal> countBD = new ArrayList<BigDecimal>();
         final List<Integer> idList = new ArrayList<Integer>();
@@ -358,7 +348,7 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                 iniValue = countBD.get(0).intValue();
             }
         }
-        
+
         json.setCount(iniValue);
         int size = iniValue / rows + ((q1.count().intValue() % rows == 0) ? 0 : 1);
         json.setPage(page);
@@ -397,7 +387,7 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         result.use(Results.json()).withoutRoot().from(json).recursive().serialize();
         return json;
     }
-    
+
     public AudiostoreMusicaJSON beanList2(Boolean datajson, Boolean view, Integer page, Integer rows, Integer id, Integer idcliente, String arquivo, String nome, Integer codigo, String letra) {
         System.out.println("FILTROS");
         System.out.println("================================================");
@@ -534,11 +524,11 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         querySQL1 += " group by audiostore_musica.id \n limit " + offset + "," + rows;
 
         querySQL1 = querySQL1.replace("[INNER_JOIN_MUSICA_GERAL]", "");
-            querySQL1 = querySQL1.replace("[INNER_JOIN_CATEGORIA_MUSICA_GERAL]", "");
-            querySQL1 = querySQL1.replace("[INNER_JOIN_CATEGORIA_GERAL]", "");
-            querySQL2 = querySQL2.replace("[INNER_JOIN_MUSICA_GERAL]", "");
-            querySQL2 = querySQL2.replace("[INNER_JOIN_CATEGORIA_MUSICA_GERAL]", "");
-            querySQL2 = querySQL2.replace("[INNER_JOIN_CATEGORIA_GERAL]", "");
+        querySQL1 = querySQL1.replace("[INNER_JOIN_CATEGORIA_MUSICA_GERAL]", "");
+        querySQL1 = querySQL1.replace("[INNER_JOIN_CATEGORIA_GERAL]", "");
+        querySQL2 = querySQL2.replace("[INNER_JOIN_MUSICA_GERAL]", "");
+        querySQL2 = querySQL2.replace("[INNER_JOIN_CATEGORIA_MUSICA_GERAL]", "");
+        querySQL2 = querySQL2.replace("[INNER_JOIN_CATEGORIA_GERAL]", "");
 
         final List<BigDecimal> countBD = new ArrayList<BigDecimal>();
         final List<Integer> idList = new ArrayList<Integer>();
@@ -569,7 +559,7 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                 iniValue = countBD.get(0).intValue();
             }
         }
-        
+
         json.setCount(iniValue);
         int size = iniValue / rows + ((q1.count().intValue() % rows == 0) ? 0 : 1);
         json.setPage(page);
@@ -630,7 +620,7 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
     public List<AudiostoreCategoriaBean> categorias() {
         return repository.query(AudiostoreCategoriaBean.class).eq("tipo", new Short("1")).findAll();
     }
-    
+
     public List<AudiostoreCategoriaBean> categoriasByCliente5(Integer idcliente) {
         return repository.query(AudiostoreCategoriaBean.class).eq("tipo", new Short("1")).eq("cliente.idcliente", idcliente).findAll();
     }
@@ -1122,108 +1112,7 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
 //            }
 //        }
 //    }
-    public void carregarInforWizard(Integer id) throws MalformedURLException, SmbException, IOException {
-        List<AudiostoreCategoriaBean> categoriaLista = repository.query(AudiostoreCategoriaBean.class).eq("cliente.idcliente", id).findAll();
-
-        if (null == categoriaLista || categoriaLista.isEmpty()) {
-            CadastroMusicaDTO dto = new CadastroMusicaDTO();
-            dto.setPossuiCategoria(false);
-
-            result.use(Results.json()).withoutRoot().from(dto).recursive().serialize();
-        } else {
-            DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", id).findOne();
-
-            if (null == dados) {
-                CadastroMusicaDTO dto = new CadastroMusicaDTO();
-                dto.setPossuiCategoria(true);
-                dto.setExisteDiretorio(false);
-                result.use(Results.json()).withoutRoot().from(dto).recursive().serialize();
-            } else {
-                if (null == dados.getLocalOrigemMusica() || dados.getLocalOrigemMusica().isEmpty()) {
-                    CadastroMusicaDTO dto = new CadastroMusicaDTO();
-                    dto.setPossuiCategoria(true);
-                    dto.setExisteDiretorio(false);
-                    result.use(Results.json()).withoutRoot().from(dto).recursive().serialize();
-                } else {
-
-                    String user = "admin";
-                    String pass = "q1a2s3";
-
-                    String sharedFolder = "shared";
-                    String path = "smb:" + dados.getLocalOrigemMusica();
-
-                    if (!path.endsWith("/")) {
-                        path += "/";
-                    }
-                    NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication("", user, pass);
-                    SmbFile smbDir = new SmbFile(path, auth);
-                    if (!smbDir.exists()) {
-                        CadastroMusicaDTO dto = new CadastroMusicaDTO();
-                        dto.setPossuiCategoria(true);
-                        dto.setExisteDiretorio(false);
-                        result.use(Results.json()).withoutRoot().from(dto).recursive().serialize();
-                    } else {
-                        if (null == smbDir.listFiles() || smbDir.listFiles().length == 0) {
-                            CadastroMusicaDTO dto = new CadastroMusicaDTO();
-                            dto.setPossuiCategoria(true);
-                            dto.setExisteDiretorio(true);
-                            dto.setExisteArquivo(false);
-                            result.use(Results.json()).withoutRoot().from(dto).recursive().serialize();
-                        } else {
-                            CadastroMusicaDTO dto = new CadastroMusicaDTO();
-                            dto.setPossuiCategoria(true);
-                            dto.setExisteDiretorio(true);
-                            dto.setExisteArquivo(true);
-
-                            for (AudiostoreCategoriaBean item : categoriaLista) {
-                                AudiostoreCategoriaDTO dtoItem = new AudiostoreCategoriaDTO();
-                                dtoItem.setCategoria(item.getCategoria());
-                                dtoItem.setCodigo(item.getCodigo());
-                                dto.getCategoriaList().add(dtoItem);
-                            }
-                            HashMap<String, HashMap<String, InputStream>> hashMap = new HashMap<String, HashMap<String, InputStream>>();
-
-                            List<Mdto> mdtoList = new ArrayList<Mdto>();
-
-                            for (SmbFile item : smbDir.listFiles()) {
-                                // mdtoList.add( new Mdto(item.getName(), item.getPath(), item.getInputStream()));
-                                MusicaDTO mdt = new MusicaDTO();
-                                mdt.setCaminhoCaminho(item.getPath());
-                                mdt.setTitulo(item.getName());
-                                mdt.setNomeArquivo(item.getName());
-                                mdt.setCaminhoFull(path + "/" + item.getName());
-                                dto.getMusicaList().add(mdt);
-                            }
-
-//                            for (Mdto mdto : mdtoList) {
-//                                dto.getMusicaList().add(Utilities.getMetadataByIS(mdto.getIs(), mdto.getNome(), mdto.getPath()));
-//                            }
-
-                            result.use(Results.json()).withoutRoot().from(dto).recursive().serialize();
-                        }
-
-
-                    }
-                }
-            }
-        }
-    }
-
-    public InputStreamDownload loadMusica(Integer id, String nome) throws MalformedURLException, SmbException, IOException {
-        DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", id).findOne();
-
-        String user = "admin";
-        String pass = "q1a2s3";
-
-        String sharedFolder = "shared";
-        String path = "smb:" + dados.getLocalOrigemMusica() + "/" + nome;
-
-        SmbFile smbFile = new SmbFile(path, Utilities.getAuthSmbDefault());
-
-        return new InputStreamDownload(smbFile.getInputStream(), "audio/mpeg", smbFile.getName());
-    }
-    
-    public void validarMsc(Integer[] id_list, Boolean expArquivoAudio , Integer idcliente,  String arquivo,  String nome, Integer codigo) {
+    public void validarMsc(Integer[] id_list, Boolean expArquivoAudio, Integer idcliente, String arquivo, String nome, Integer codigo) {
         List<AudiostoreMusicaBean> list = null;
 
         if (null != id_list && id_list.length > 0) {
@@ -1244,12 +1133,13 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         boolean ajaxResultBool = true;
         String ajaxResultStr = "";
         Object ajaxResultObject = null;
-        
+
         // verifica se todos são do mesmo cliente
         List<AudiostoreMusicaBean> beanList = repository.query(AudiostoreMusicaBean.class).in("id", id_list).findAll();
+        Integer idclienteAux = 0;
         if (ajaxResultBool) {
-            Integer idclienteAux = 0;
-            
+
+
             if (null != beanList && !beanList.isEmpty()) {
                 if (null != beanList.get(0)) {
                     idclienteAux = beanList.get(0).getCliente().getIdcliente();
@@ -1266,10 +1156,14 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                 ajaxResultStr = "Nenhuma música foi selecionada!";
             }
         }
-        
+
         if (ajaxResultBool) {
             try {
-                upload(beanList, expArquivoAudio);
+                if (null == idcliente || 0 == idcliente) {
+                    idclienteAux = idcliente;
+                }
+
+                upload(beanList, expArquivoAudio, idcliente);
                 ajaxResultBool = true;
                 ajaxResultStr = "Arquivo exportando com sucesso!";
             } catch (Exception e) {
@@ -1277,24 +1171,24 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                 ajaxResultStr = e.getMessage();
             }
         }
-        
-        result.use(Results.json()).withoutRoot().from(new AjaxResult(ajaxResultBool , ajaxResultStr , ajaxResultObject)).recursive().serialize();
+
+        result.use(Results.json()).withoutRoot().from(new AjaxResult(ajaxResultBool, ajaxResultStr, ajaxResultObject)).recursive().serialize();
     }
-    
-    public void upload(List<AudiostoreMusicaBean> list, Boolean expArquivoAudio) throws Exception {
+
+    public void upload(List<AudiostoreMusicaBean> list, Boolean expArquivoAudio, Integer idcliente) throws Exception {
         try {
             StringBuffer conteudo = new StringBuffer();
             String quebraLinha = "";
-
+            DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", idcliente).findOne();
             for (AudiostoreMusicaBean bean : list) {
                 if (bean != null) {
                     MusicaGeralBean mgb = repository.query(MusicaGeralBean.class).in("id", bean.getMusicaGeral()).findOne();
                     if (mgb != null) {
-                        
+
 //                        if (!Utilities.verificarArquivoFisicoExiste(mgb.getArquivo())) {
 //                            throw new Exception("O arquivo " + mgb.getArquivo() + " não existe. ");
 //                        }
-                        
+
                         conteudo.append(quebraLinha);
 
                         // arquivo
@@ -1311,7 +1205,7 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                             }
                             conteudo.append(Utilities.formatarHexExp(arq));
                         }
-                        
+
 
                         // interprete
                         String interprete = mgb.getInterprete();
@@ -1431,8 +1325,8 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                         }
 
                         if (tempo.length() < 8) {
-                            
-                            tempo = "00:"+tempo;
+
+                            tempo = "00:" + tempo;
                         }
                         conteudo.append(tempo);
 
@@ -1472,7 +1366,7 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                     }
 
                     if (expArquivoAudio) {
-                        DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", list.get(0).getCliente().getIdcliente()).findOne();
+
                         String origem = mgb.getArquivo();
                         String destino = dados.getLocalDestinoExp();
 
@@ -1490,21 +1384,20 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
             }
 
             if (null != list && !list.isEmpty()) {
-                System.out.println("GERAR ARQUIVO");
-                DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", list.get(0).getCliente().getIdcliente()).findOne();
                 String destino = dados.getLocalDestinoExp();
                 SmbFile smb = new SmbFile(destino, Utilities.getAuthSmbDefault());
                 SmbFile smb2 = new SmbFile(destino + "musica.exp", Utilities.getAuthSmbDefault());
-                System.out.println("GERAR ARQUIVO 2");
+
                 if (!smb.exists()) {
                     smb.mkdirs();
                 }
                 
-                System.out.println("GERAR ARQUIVO ");
-
+                System.out.println("CAMINHO DO ARQUIVO " + destino);
+                
                 SmbFileOutputStream sfous = new SmbFileOutputStream(smb2);
-//                sfous.write(conteudo.toString().getBytes());
-                IOUtils.copy(new ByteArrayInputStream(conteudo.toString().getBytes()), sfous);
+                sfous.write(conteudo.toString().getBytes());
+
+                sfous.flush();
                 sfous.close();
                 System.out.println("FIM DO EXP");
             }
