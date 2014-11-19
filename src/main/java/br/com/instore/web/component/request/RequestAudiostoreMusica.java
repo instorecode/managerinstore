@@ -17,7 +17,6 @@ import br.com.instore.web.dto.AudiostoreMusicaDTO;
 import br.com.instore.web.dto.AudiostoreMusicaJSON;
 import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
@@ -35,7 +34,6 @@ import jcifs.smb.SmbFile;
 import jcifs.smb.SmbFileInputStream;
 import jcifs.smb.SmbFileOutputStream;
 import org.apache.commons.compress.utils.IOUtils;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 
 @RequestScoped
@@ -1392,14 +1390,11 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                     smb.mkdirs();
                 }
                 
-                System.out.println("CAMINHO DO ARQUIVO " + destino);
-                
                 SmbFileOutputStream sfous = new SmbFileOutputStream(smb2);
                 sfous.write(conteudo.toString().getBytes());
 
                 sfous.flush();
                 sfous.close();
-                System.out.println("FIM DO EXP");
             }
         } catch (SmbException e) {
             e.printStackTrace();
