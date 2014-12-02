@@ -17,7 +17,9 @@ import br.com.instore.web.dto.AudiostoreMusicaDTO;
 import br.com.instore.web.dto.AudiostoreMusicaJSON;
 import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
@@ -27,8 +29,11 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import jcifs.smb.SmbFileInputStream;
@@ -45,15 +50,17 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
     private Result result;
     @Inject
     private SessionUsuario sessionUsuario;
-    private Integer listaIdMusicaExp[];
+    @Inject
+    private HttpServletRequest httpServletRequest;
 
     public RequestAudiostoreMusica() {
     }
 
-    public RequestAudiostoreMusica(SessionRepository repository, Result result, SessionUsuario sessionUsuario) {
+    public RequestAudiostoreMusica(SessionRepository repository, Result result, SessionUsuario sessionUsuario, HttpServletRequest httpServletRequest) {
         this.repository = repository;
         this.result = result;
         this.sessionUsuario = sessionUsuario;
+        this.httpServletRequest = httpServletRequest;
     }
 
     public void cadastrar(String idmusicaGeral) {
@@ -1137,16 +1144,18 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         Integer idclienteAux = 0;
         if (ajaxResultBool) {
 
-
+            System.out.println("IDENT CLIENTE::"+idcliente);
             if (null != beanList && !beanList.isEmpty()) {
-                if (null != beanList.get(0)) {
-                    idclienteAux = beanList.get(0).getCliente().getIdcliente();
-                }
-
-                for (AudiostoreMusicaBean bean : beanList) {
-                    if (idclienteAux != bean.getCliente().getIdcliente()) {
+                for (AudiostoreMusicaBean bean : beanList) {                   
+                    if (null != idcliente && idcliente > 0) {
+                        if (!idcliente.equals(bean.getCliente().getIdcliente())) {
+                            ajaxResultBool = false;
+                            ajaxResultStr = "Você selecionou músicas de clientes diferentes!";
+                        }
+                    } else {
                         ajaxResultBool = false;
-                        ajaxResultStr = "Você selecionou músicas de clientes diferentes!";
+                        ajaxResultStr = "Selecione um cliente!";
+                        break;
                     }
                 }
             } else {
@@ -1155,37 +1164,53 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
             }
         }
 
+        DadosClienteBean dados = null;
+        if (ajaxResultBool) {
+            if (null == idcliente || 0 == idcliente) {
+                idclienteAux = idcliente;
+            }
+
+            dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", idcliente).findOne();
+            String destino = dados.getLocalDestinoExp();
+            if (!Utilities.verifyTaskLock(dados.getLocalDestinoExp() , Utilities.TaskLock.MUSICA)) {
+                ajaxResultBool = false;
+                ajaxResultStr = Utilities.verifyInfoMessageTaskLock(destino , Utilities.TaskLock.MUSICA);
+            }
+        }
+
+
         if (ajaxResultBool) {
             try {
-                if (null == idcliente || 0 == idcliente) {
-                    idclienteAux = idcliente;
-                }
-
-                upload(beanList, expArquivoAudio, idcliente);
+                Utilities.createTaskLock(dados.getLocalDestinoExp(), sessionUsuario.getUsuarioBean().getNome(), httpServletRequest , Utilities.TaskLock.MUSICA);
+                
+                Utilities.removerLogMusica(dados.getLocalDestinoExp());
+                
+                upload(beanList, expArquivoAudio, idcliente, dados);
                 ajaxResultBool = true;
                 ajaxResultStr = "Arquivo exportando com sucesso!";
             } catch (Exception e) {
+                e.printStackTrace();
                 ajaxResultBool = false;
                 ajaxResultStr = e.getMessage();
+            } finally {
+                Utilities.deleteTaskLock(dados.getLocalDestinoExp() , Utilities.TaskLock.MUSICA);
             }
         }
 
         result.use(Results.json()).withoutRoot().from(new AjaxResult(ajaxResultBool, ajaxResultStr, ajaxResultObject)).recursive().serialize();
     }
 
-    public void upload(List<AudiostoreMusicaBean> list, Boolean expArquivoAudio, Integer idcliente) throws Exception {
+    public void upload(List<AudiostoreMusicaBean> list, Boolean expArquivoAudio, Integer idcliente, DadosClienteBean dados) throws SmbException , MalformedURLException , UnknownHostException , IOException , Exception {
         try {
+
             StringBuffer conteudo = new StringBuffer();
             String quebraLinha = "";
-            DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", idcliente).findOne();
+
+
             for (AudiostoreMusicaBean bean : list) {
                 if (bean != null) {
                     MusicaGeralBean mgb = repository.query(MusicaGeralBean.class).in("id", bean.getMusicaGeral()).findOne();
                     if (mgb != null) {
-
-//                        if (!Utilities.verificarArquivoFisicoExiste(mgb.getArquivo())) {
-//                            throw new Exception("O arquivo " + mgb.getArquivo() + " não existe. ");
-//                        }
 
                         conteudo.append(quebraLinha);
 
@@ -1370,11 +1395,18 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
 
                         SmbFile smbOrigem = new SmbFile(origem, Utilities.getAuthSmbDefault());
                         if (smbOrigem.exists()) {
+                            Utilities.createLogMusica(dados.getLocalDestinoExp(), true, smbOrigem.getName());
                             SmbFile smbDestino = new SmbFile(destino + smbOrigem.getName(), Utilities.getAuthSmbDefault());
 
                             SmbFileInputStream sfis = new SmbFileInputStream(smbOrigem);
                             SmbFileOutputStream sfous = new SmbFileOutputStream(smbDestino, true);
                             IOUtils.copy(sfis, sfous);
+                             
+                            sfis.close();
+                            sfous.flush();
+                            sfous.close();
+                        } else {
+                            Utilities.createLogMusica(dados.getLocalDestinoExp(), false, smbOrigem.getName());
                         }
                     }
                 }
@@ -1382,6 +1414,7 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
             }
 
             if (null != list && !list.isEmpty()) {
+                
                 String destino = dados.getLocalDestinoExp();
                 SmbFile smb = new SmbFile(destino, Utilities.getAuthSmbDefault());
                 SmbFile smb2 = new SmbFile(destino + "musica.exp", Utilities.getAuthSmbDefault());
@@ -1389,8 +1422,16 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                 if (!smb.exists()) {
                     smb.mkdirs();
                 }
+
                 
-                SmbFileOutputStream sfous = new SmbFileOutputStream(smb2);
+                if(smb2.exists()) {
+                    StringBuffer aux = conteudo;
+                    conteudo = new StringBuffer();
+                    conteudo.append(Utilities.quebrarLinhaComHexa());
+                    conteudo.append(aux.toString());
+                }
+                
+                SmbFileOutputStream sfous = new SmbFileOutputStream(smb2, true);
                 sfous.write(conteudo.toString().getBytes());
 
                 sfous.flush();
@@ -1398,12 +1439,23 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
             }
         } catch (SmbException e) {
             e.printStackTrace();
+            throw e;
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            throw e;
         } catch (UnknownHostException e) {
             e.printStackTrace();
+            throw e;
         } catch (IOException e) {
             e.printStackTrace();
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
         }
+    }
+    
+    public void logs(Integer idcliente) {
+        ClienteBean cliente = repository.find(ClienteBean.class, idcliente);
     }
 }

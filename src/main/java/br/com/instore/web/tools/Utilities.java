@@ -1,33 +1,40 @@
 package br.com.instore.web.tools;
 
-
 import br.com.instore.core.orm.XmlAnnotation;
 import br.com.instore.core.orm.bean.HistoricoUsuarioBean;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.dto.MusicaDTO;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.annotation.Annotation;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.http.HttpServletRequest;
 import jcifs.smb.NtlmPasswordAuthentication;
 
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
+import jcifs.smb.SmbFileOutputStream;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang.StringUtils;
@@ -48,6 +55,12 @@ public class Utilities {
     public static String quebrarLinhaComHexa() throws DecoderException {
         return new String(Hex.decodeHex("0d0a".toCharArray()));
     }
+
+    public static enum TaskLock {
+
+        CATEGORIA, PROGRAMACAO, MUSICA, COMERCIAL, GRAVADORA
+    }
+    public static TaskLock taskLock;
 
     public static String formatarHexExp(String text) throws DecoderException {
 
@@ -333,7 +346,7 @@ public class Utilities {
 
         return url;
     }
-    
+
     public static boolean verificarArquivoFisicoExiste(String filenameSmb) {
         try {
             SmbFile file = new SmbFile(filenameSmb, Utilities.getAuthSmbDefault());
@@ -351,16 +364,15 @@ public class Utilities {
     private static Set<Class<?>> listaClasses() {
         Reflections reflections = new Reflections(new ConfigurationBuilder().addUrls(ClasspathHelper.forJavaClassPath()));
         Set<Class<?>> classes = reflections.getTypesAnnotatedWith(XmlAnnotation.class);
-               
+
         return classes;
     }
-    
-    
+
     public static Class<?> findAnnotation() {
 
         for (Class<?> classe : listaClasses()) {
             for (Annotation annotation : classe.getAnnotations()) {
-                if (annotation.annotationType().getName().contains("XmlAnnotation")) {                  
+                if (annotation.annotationType().getName().contains("XmlAnnotation")) {
                     return classe;
                 }
             }
@@ -368,17 +380,17 @@ public class Utilities {
         return null;
     }
 
-    public <T> T xmlParaObjeto (String url){
-       return xmlParaObjetoPrivate(url, findAnnotation());
+    public <T> T xmlParaObjeto(String url) {
+        return xmlParaObjetoPrivate(url, findAnnotation());
     }
-        
-    public <T> T xmlParaObjeto (String url, Class<?> type ){
-        return  xmlParaObjetoPrivate(url, type);
+
+    public <T> T xmlParaObjeto(String url, Class<?> type) {
+        return xmlParaObjetoPrivate(url, type);
     }
-    
-    private static <T> T xmlParaObjetoPrivate(String url, Class <?> type) {
+
+    private static <T> T xmlParaObjetoPrivate(String url, Class<?> type) {
         T t = null;
-        if (type != null) {            
+        if (type != null) {
             try {
                 URL pagina = new URL(url);
                 XStream xstream = new XStream(new DomDriver());
@@ -401,6 +413,264 @@ public class Utilities {
             xml = xstream.toXML(obj);
             return xml;
         }
-        return null;       
+        return null;
     }
+
+    public static void createTaskLock(String path, String username, HttpServletRequest req, TaskLock taskLock) {
+        try {
+            deleteTaskLock(path, taskLock);
+            String content = "";
+            String taskLockStrCode = "001";
+            content += "[" + (new SimpleDateFormat("dd/MM/yyyy")).format(new Date()) + "]\n";
+            content += "[" + (new SimpleDateFormat("HH:mm:ss")).format(new Date()) + "]\n";
+            content += "[" + username + "]\n";
+            content += "[" + req.getRemoteAddr() + "]\n";
+
+            switch (taskLock) {
+                case CATEGORIA:
+                    taskLockStrCode = "001";
+                    break;
+                case PROGRAMACAO:
+                    taskLockStrCode = "002";
+                    break;
+                case MUSICA:
+                    taskLockStrCode = "003";
+                    break;
+                case COMERCIAL:
+                    taskLockStrCode = "004";
+                    break;
+                case GRAVADORA:
+                    taskLockStrCode = "005";
+                    break;
+            }
+
+            SmbFileOutputStream sfos = new SmbFileOutputStream(new SmbFile(path + "task" + taskLockStrCode + ".lock", getAuthSmbDefault()));
+            sfos.write(content.getBytes());
+            sfos.flush();
+            sfos.close();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (SmbException e) {
+            e.printStackTrace();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteTaskLock(String path, TaskLock taskLock) {
+        String taskLockStrCode = "001";
+        switch (taskLock) {
+            case CATEGORIA:
+                taskLockStrCode = "001";
+                break;
+            case PROGRAMACAO:
+                taskLockStrCode = "002";
+                break;
+            case MUSICA:
+                taskLockStrCode = "003";
+                break;
+            case COMERCIAL:
+                taskLockStrCode = "004";
+                break;
+            case GRAVADORA:
+                taskLockStrCode = "005";
+                break;
+        }
+
+        try {
+            SmbFile smb = new SmbFile(path + "task" + taskLockStrCode + ".lock", getAuthSmbDefault());
+            if (smb.exists()) {
+                smb.delete();
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (SmbException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean verifyTaskLock(String path, TaskLock taskLock) {
+        boolean $return = true;
+        try {
+            String taskLockStrCode = "001";
+
+            switch (taskLock) {
+                case CATEGORIA:
+                    taskLockStrCode = "001";
+                    break;
+                case PROGRAMACAO:
+                    taskLockStrCode = "002";
+                    break;
+                case MUSICA:
+                    taskLockStrCode = "003";
+                    break;
+                case COMERCIAL:
+                    taskLockStrCode = "004";
+                    break;
+                case GRAVADORA:
+                    taskLockStrCode = "005";
+                    break;
+            }
+
+            SmbFile file = new SmbFile(path + "task" + taskLockStrCode + ".lock", Utilities.getAuthSmbDefault());
+
+            if (file.exists()) {
+                $return = false;
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            $return = false;
+        } catch (IOException e) {
+            e.printStackTrace();
+            $return = false;
+        }
+
+        return $return;
+    }
+
+    public static String verifyInfoMessageTaskLock(String path, TaskLock taskLock) {
+        String $return = "";
+        
+        String taskLockStrCode = "001";
+        switch (taskLock) {
+            case CATEGORIA:
+                taskLockStrCode = "001";
+                break;
+            case PROGRAMACAO:
+                taskLockStrCode = "002";
+                break;
+            case MUSICA:
+                taskLockStrCode = "003";
+                break;
+            case COMERCIAL:
+                taskLockStrCode = "004";
+                break;
+            case GRAVADORA:
+                taskLockStrCode = "005";
+                break;
+        }
+        
+        
+        try {
+            SmbFile file = new SmbFile(path + "task" + taskLockStrCode + ".lock", Utilities.getAuthSmbDefault());
+            
+            if (file.exists()) {
+                BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream()));
+                
+                List<String> lines = new ArrayList<String>();
+                String line;
+                
+                while(null != (line = br.readLine())) {
+                    lines.add(line.replace("[", "").replace("]", ""));
+                }
+                
+                String dateStr = lines.get(0);
+                String hourStr = lines.get(1);
+                String usernameStr = lines.get(2);
+                String machineIpStr = lines.get(3);
+
+                $return = "Lamento, não é possivel gerar os arquivos agora, na data " + dateStr + " ás " + hourStr + " o usuário " + usernameStr + " iniciou este processo e ainda não foi finalizado. Por favor tente mais tarde.";
+                
+                br.close();
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            $return = "Erro ao verificar a trava de segurança (exclua arquivo task.lock)";
+        } catch (IOException e) {
+            e.printStackTrace();
+            $return = "Erro ao verificar a trava de segurança (exclua arquivo task.lock)";
+        }
+        return $return;
+    }
+    
+    public static void createLogMusica(String path , Boolean existe, String nomeArquivo) {
+        try {
+            SmbFile file = new SmbFile(path + "musica_files_"+(existe ? "" : "not_")+"exists.log", getAuthSmbDefault());
+            String content = "";
+            content += "[" + (new SimpleDateFormat("dd/MM/yyyy")).format(new Date()) + "] ";
+            content += "" + nomeArquivo + "";
+            content += "\n";
+
+            SmbFileOutputStream sfos = new SmbFileOutputStream(file , true);
+            sfos.write(content.getBytes());
+            sfos.flush();
+            sfos.close();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (SmbException e) {
+            e.printStackTrace();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static void createLogComercial(String path , Boolean existe, String nomeArquivo) {
+        try {
+            SmbFile file = new SmbFile(path + "comercial_files_"+(existe ? "" : "not_")+"exists.log", getAuthSmbDefault());
+            String content = "";
+            content += "[" + (new SimpleDateFormat("dd/MM/yyyy")).format(new Date()) + "] ";
+            content += "" + nomeArquivo + "";
+            content += "\n";
+
+            SmbFileOutputStream sfos = new SmbFileOutputStream(file , true);
+            sfos.write(content.getBytes());
+            sfos.flush();
+            sfos.close();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (SmbException e) {
+            e.printStackTrace();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static void removerLogMusica(String path) {
+        try {
+            SmbFile file = new SmbFile(path + "musica_files_exists.log", getAuthSmbDefault());
+            SmbFile file2 = new SmbFile(path + "musica_files_not_exists.log", getAuthSmbDefault());
+
+            if(file.exists()) {
+                file.delete();
+            }
+
+            if(file2.exists()) {
+                file2.delete();
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (SmbException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static void removerLogComercial(String path) {
+        try {
+            SmbFile file = new SmbFile(path + "comercial_files_exists.log", getAuthSmbDefault());
+            SmbFile file2 = new SmbFile(path + "comercial_files_not_exists.log", getAuthSmbDefault());
+
+            if(file.exists()) {
+                file.delete();
+            }
+
+            if(file2.exists()) {
+                file2.delete();
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (SmbException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
 }

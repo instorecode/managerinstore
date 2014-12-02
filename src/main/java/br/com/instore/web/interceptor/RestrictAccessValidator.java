@@ -47,7 +47,8 @@ public class RestrictAccessValidator {
 
     @AroundCall
     public void intercept(SimpleInterceptorStack stack) {
-
+        System.out.println("A SESSAO COMP EH NULA::"+(null == requestRepository));
+        System.out.println("A SESSAO EH NULA::"+(null == requestRepository.getSession()));
         Path path = controllerMethod.getMethod().getAnnotation(Path.class);
         if (null != path && sessionUsuario.isLogado()) {
 

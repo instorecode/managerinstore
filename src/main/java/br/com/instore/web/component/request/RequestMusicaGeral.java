@@ -5,11 +5,9 @@ import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.Query;
 import br.com.instore.core.orm.bean.AudiostoreCategoriaBean;
 import br.com.instore.core.orm.bean.AudiostoreGravadoraBean;
-import br.com.instore.core.orm.bean.AudiostoreMusicaBean;
 import br.com.instore.core.orm.bean.CategoriaGeralBean;
 import br.com.instore.core.orm.bean.CategoriaMusicaGeralBean;
 import br.com.instore.core.orm.bean.ClienteBean;
-import br.com.instore.core.orm.bean.DadosClienteBean;
 import br.com.instore.core.orm.bean.MusicaGeralBean;
 import br.com.instore.core.orm.bean.UsuarioBean;
 import br.com.instore.web.component.session.SessionRepository;
@@ -19,20 +17,13 @@ import br.com.instore.web.dto.MusicaId;
 import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
 import java.net.MalformedURLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
-import jcifs.smb.SmbFileInputStream;
-import jcifs.smb.SmbFileOutputStream;
-import org.apache.commons.compress.utils.IOUtils;
-import org.apache.commons.lang.StringUtils;
 
 @RequestScoped
 public class RequestMusicaGeral implements java.io.Serializable {

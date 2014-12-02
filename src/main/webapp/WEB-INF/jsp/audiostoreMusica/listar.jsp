@@ -137,6 +137,7 @@
 
                 <button type="button" class="btn btn-default btn-flat btn_export btn_export1"><i class="fa fa-upload"></i> Exportar arquivo </button>
                 <button type="button" class="btn btn-default btn-flat btn_export btn_export2"><i class="fa fa-upload"></i> Exportar arquivo com audio</button>
+                <!--<button type="button" class="btn btn-default btn-flat btn_export btn_export2"><i class="fa fa-download"></i> Logs</button>-->
             </div>
 
             <div class="addon" style="display: none;">
@@ -163,7 +164,7 @@
                         btn-edit-onclick="javascript:window.location.href='${url}/musica/programacao-audiostore/atualizar/[[__PK__]]'"> 
                     <thead>
                         <tr>
-                            <th options="true" class="options">#</th>
+                            <th options="true" class="options" data-html="">#</th>
                             <!--<th field="id" options="false">ID</th>-->
                             <th field="arquivo" options="false">Arquivo</th>
                             <th field="nome" options="false">Nome</th>
@@ -175,8 +176,40 @@
             </div>
         </div>
 
+        <div class="ctrl">
+            <a id="play${vs.index}" class="label label-info" href="#">
+                <i class="fa fa-play"></i>
+            </a>
+            <a style="display: none" id="pause${vs.index}" class="label label-info" href="#">
+                <i class="fa fa-pause"></i>
+            </a>
+            <a id="stop${vs.index}" class="label label-info" href="#">
+                <i class="fa fa-stop"></i>
+            </a>
+
+            <a  id="mute${vs.index}" class="label label-info" href="#">
+                <i class="fa fa-volume-off"></i>
+            </a>
+
+            <a style="display: none" id="unmute${vs.index}" class="label label-info" href="#">
+                <i class="fa fa-volume-up"></i>
+            </a>
+
+            <a id="time{vs.index}" class="label label-info" href="javascript:;">
+                <span id="currentTime${vs.index}">00:00</span> 
+                <!--/  <span id="duration${vs.index}"></span>-->
+            </a>
+
+            <a class="label label-info btn_letra" href="javascript:;" data-popover="popover" data-html="true" data-content="${item.letra}" data-placement="bottom">
+                <i class="fa fa-file-text"></i>
+            </a>
+        </div>
+
         <script type="text/javascript">
             jQuery(document).ready(function() {
+                jQuery.ajaxSetup({
+                    timeout: 1000 * 60 * 60 * 24
+                });
 
                 jQuery('.btn_export1').on("click", function() {
                     fnn(false);
@@ -222,6 +255,8 @@
                                             exp_arquivo_audio: exp_arquivo_audio
                                         },
                                         success: function(json) {
+                                            console.log("JSON");
+                                            console.log(json);
                                             if (json.success) {
                                                 qtdeRequests = json.object;
                                             } else {
@@ -259,6 +294,8 @@
                                     exp_arquivo_audio: exp_arquivo_audio
                                 },
                                 success: function(json) {
+                                    console.log("JSON");
+                                    console.log(json);
                                     if (json.success) {
                                         qtdeRequests = json.object;
                                     } else {

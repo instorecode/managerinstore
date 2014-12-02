@@ -8,13 +8,22 @@ import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.observer.download.InputStreamDownload;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.bean.AudiostoreMusicaBean;
+import br.com.instore.core.orm.bean.ClienteBean;
+import br.com.instore.core.orm.bean.DadosClienteBean;
 import br.com.instore.core.orm.bean.MusicaGeralBean;
 import br.com.instore.web.annotation.Restrict;
 import br.com.instore.web.component.request.RequestAudiostoreMusica;
+import br.com.instore.web.component.session.SessionRepository;
+import br.com.instore.web.tools.Utilities;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 import jcifs.smb.SmbException;
+import jcifs.smb.SmbFile;
 
 @Controller
 public class AudiostoreMusicaController implements java.io.Serializable {
@@ -23,13 +32,16 @@ public class AudiostoreMusicaController implements java.io.Serializable {
     private Result result;
     @Inject
     private RequestAudiostoreMusica requestAudiostoreMusica;
+    @Inject
+    private SessionRepository repository;
 
     public AudiostoreMusicaController() {
     }
 
-    public AudiostoreMusicaController(Result result, RequestAudiostoreMusica requestAudiostoreMusica) {
+    public AudiostoreMusicaController(Result result, RequestAudiostoreMusica requestAudiostoreMusica, SessionRepository repository) {
         this.result = result;
         this.requestAudiostoreMusica = requestAudiostoreMusica;
+        this.repository = repository;
     }
 
     @Get
@@ -144,5 +156,49 @@ public class AudiostoreMusicaController implements java.io.Serializable {
     @Path("/audiostore-musica/upload-exp/{id}")
     public void upload(Integer id) {
         requestAudiostoreMusica.upload(id);
+    }
+
+    @Get
+    @Path("/musica/programacao-audiostore/logs/{idcliente}")
+    public void logs(Integer idcliente) {
+        if (null != idcliente && idcliente > 0) {
+            ClienteBean cliente = repository.find(ClienteBean.class, idcliente);
+            if (null != cliente) {
+                try {
+                    DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", cliente.getIdcliente()).findOne();
+                    SmbFile file = new SmbFile(dados.getLocalDestinoMusica()+"/musica_files_exists.log" , Utilities.getAuthSmbDefault());
+                    if (file.exists()) {
+                        BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream()));
+                        List<String> lines = new ArrayList<String>();
+                        String line;
+                        
+                        while(null != (line = br.readLine())) {
+                            lines.add(line);
+                        } 
+                        result.include("lines_file_exists", lines);
+                    }
+                    
+                    SmbFile file2 = new SmbFile(dados.getLocalDestinoMusica()+"/musica_files_not_exists.log" , Utilities.getAuthSmbDefault());
+                    if (file2.exists()) {
+                        BufferedReader br = new BufferedReader(new InputStreamReader(file2.getInputStream()));
+                        List<String> lines = new ArrayList<String>();
+                        String line;
+                        
+                        while(null != (line = br.readLine())) {
+                            lines.add(line);
+                        } 
+                        result.include("lines_file_not_exists", lines);
+                    }
+                    
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (SmbException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                
+            }
+        }
     }
 }

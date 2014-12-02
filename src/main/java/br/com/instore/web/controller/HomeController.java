@@ -41,7 +41,7 @@ public class HomeController implements java.io.Serializable {
         this.sessionUsuario = sessionUsuario;
         this.requestUsuario = requestUsuario;
         this.result = result;
-    }
+    }    
     
     @Get
     @Path("/test")
@@ -127,7 +127,7 @@ public class HomeController implements java.io.Serializable {
     public void meusDados(UsuarioBean usuarioBean) {
         requestUsuario.meusDados(usuarioBean);
     }
-    
+                        
     @Get
     @Path("/minha-senha")
     @Restrict
@@ -147,4 +147,8 @@ public class HomeController implements java.io.Serializable {
     public void plantao() {
         
     }
+    
+    
+    
+    
 }

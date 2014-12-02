@@ -231,8 +231,8 @@
                         </select>
                     </div>
                 </div>
-                
-                        <div class="col-md-2">
+
+                <div class="col-md-2">
                     <div class="form-group">
                         <label>Sem som?</label>
                         <br />
@@ -281,6 +281,7 @@
                                 <table class="tbl table table-striped table-bordered table-hover table-condensed">
                                     <thead>
                                         <tr>
+                                            <td style="background-color: #606060; color: #FFF; font-weight: bold;">Interromper</td>
                                             <td style="background-color: #606060; color: #FFF; font-weight: bold;">Horário</td>
                                             <td style="background-color: #606060; color: #FFF; font-weight: bold;">Semana</td>
                                         </tr>
@@ -300,6 +301,7 @@
                                             </tr>
                                             </td>
                                             <tr>
+                                                <td>${sh.interromperMusicaTocada ? "Sim" : "Não"}</td> 
                                                 <td>${cf:dateFormat(sh.horario, "HH:mm")}</td> 
                                                 <td>${sh.semana} ,
                                                     <input class="hidden_input_sh" type="hidden" name="sh[${indx}].semana" value="${sh.semana}" />
@@ -373,6 +375,10 @@
                             </button>
                             <button type="button" class="btn btn-default rm_sh" data-tooltip="true" title="Para remover um selecione um registro da tabela!">
                                 <i class="fa fa-trash-o"></i>
+                            </button>
+
+                            <button type="button" class="btn btn-default rm_all_sh" data-tooltip="true" title="Para remover um selecione um registro da tabela!">
+                                <i class="fa fa-eraser"></i>
                             </button>
                         </div>
                     </div>
@@ -526,17 +532,19 @@
                 });
 
                 jQuery(document).on('click', '.tbl tbody tr td', function(event) {
-                    if (!event.ctrlKey) {
-                        jQuery('.tbl tbody tr td').removeAttr('style');
-                        jQuery('.tbl tbody tr').removeAttr('data-selected');
-                    }
-
-                    jQuery(this).parent('tr').attr('data-selected', true);
-                    jQuery(this).parent('tr').children('td').each(function() {
-                        jQuery(this).css({
-                            'background-color': '#ffffcc'
+                    
+                    if (null != jQuery(this).parent('tr').attr('data-selected') && undefined != jQuery(this).parent('tr').attr('data-selected') && '' != jQuery(this).parent('tr').attr('data-selected')) {
+                        console.log('aqui'); 
+                        jQuery(this).parent('tr').children('td').removeAttr('style');
+                        jQuery(this).parent('tr').removeAttr('data-selected');
+                    } else {
+                        jQuery(this).parent('tr').attr('data-selected', true);
+                        jQuery(this).parent('tr').children('td').each(function() {
+                            jQuery(this).css({
+                                'background-color': '#ffffcc'
+                            });
                         });
-                    });
+                    }
                 });
 
                 jQuery('.add_sh').on('click', function() {
@@ -591,7 +599,9 @@
                         i = Math.floor(i.toFixed(1));
                         i = parseInt(jQuery('.hidden_input_sh').size()) / 3;
 
+
                         inputsHiddens += '<tr> ';
+                        inputsHiddens += ' <td>' + (1 == interromperMusicaTocada || true == interromperMusicaTocada ? "Sim" : "Não") + '</td>';
                         inputsHiddens += ' <td>' + hora.val() + '</td>';
                         inputsHiddens += '<td> ';
 
@@ -816,7 +826,9 @@
                                 i = i / 2;
                                 i = parseInt(jQuery('.hidden_input_sh').size()) / 3;
 
+
                                 inputsHiddens += '<tr> ';
+                                inputsHiddens += ' <td>' + (1 == interromperMusicaTocada || true == interromperMusicaTocada ? "Sim" : "Não") + '</td>';
                                 inputsHiddens += ' <td>' + horas_strings + '</td>';
                                 inputsHiddens += '<td> ';
 
@@ -953,6 +965,13 @@
                 });
 
                 jQuery('.rm_sh').on('click', function() {
+                    jQuery('[data-selected="true"]').remove();
+                });
+
+                jQuery('.rm_all_sh').on('click', function() {
+                    jQuery('.tbl tbody tr').each(function() {
+                        jQuery(this).attr("data-selected", "true");
+                    });
                     jQuery('[data-selected="true"]').remove();
                 });
 

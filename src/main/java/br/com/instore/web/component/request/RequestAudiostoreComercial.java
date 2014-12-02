@@ -32,11 +32,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import jcifs.smb.SmbFileInputStream;
 import jcifs.smb.SmbFileOutputStream;
-import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -51,6 +51,8 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
     private Validator validator;
     @Inject
     private SessionUsuario sessionUsuario;
+    @Inject
+    private HttpServletRequest httpServletRequest;
 
     public RequestAudiostoreComercial() {
     }
@@ -525,11 +527,11 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
                     if (!counts.isEmpty()) {
                         multiplo_24 = counts.get(0).intValue();
                     }
-                    
+
                     if (multiplo_24 < 1) {
                         multiplo_24 = 1;
                     }
-                    
+
                     Integer multiplo_24_max = multiplo_24;
                     multiplo_24 = 1;
 
@@ -563,7 +565,7 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
                             horasDiasList.add(hora + dia);
                         }
                     });
-                    
+
                     while (multiplo_24 <= multiplo_24_max) {
                         conteudo += breakLine;
                         breakLine = Utilities.quebrarLinhaComHexa();
@@ -729,17 +731,21 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
                             if (!smbOrigem.exists()) {
                                 smbOrigem.mkdirs();
                             }
-                            
+
                             if (smb2Origem.exists()) {
+                                Utilities.createLogComercial(dados.getLocalDestinoExp(), true, smbOrigem.getName());
                                 SmbFileInputStream sfis = new SmbFileInputStream(smb2Origem);
                                 SmbFileOutputStream sfous = new SmbFileOutputStream(smbDestino, true);
                                 IOUtils.copy(sfis, sfous);
+                            } else {
+                                Utilities.createLogComercial(dados.getLocalDestinoExp(), false, smbOrigem.getName());
                             }
                         }
                         multiplo_24++;
                     }
                 }
             }
+
             DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", list.get(0).getCliente().getIdcliente()).findOne();
             String destino = dados.getLocalDestinoExp();
             SmbFile smb = new SmbFile(destino, Utilities.getAuthSmbDefault());
@@ -747,6 +753,10 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
 
             if (!smb.exists()) {
                 smb.mkdirs();
+            }
+
+            if (smb2.exists()) {
+                conteudo = Utilities.quebrarLinhaComHexa() + conteudo;
             }
 
             SmbFileOutputStream sfous = new SmbFileOutputStream(smb2);
@@ -846,22 +856,38 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
                     break;
                 }
             }
+
+            DadosClienteBean dados = null;
             if (ajaxResultBool) {
-                DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", list.get(0).getCliente().getIdcliente()).findOne();
+                if (null == idcliente || 0 == idcliente) {
+                    idclienteAux = idcliente;
+                }
+
+                dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", idcliente).findOne();
+                String destino = dados.getLocalDestinoExp();
+                if (!Utilities.verifyTaskLock(dados.getLocalDestinoExp(), Utilities.TaskLock.MUSICA)) {
+                    ajaxResultBool = false;
+                    ajaxResultStr = Utilities.verifyInfoMessageTaskLock(destino, Utilities.TaskLock.MUSICA);
+                }
+            }
+
+            if (ajaxResultBool) {
                 if (null == dados || null == dados.getLocalDestinoExp() || dados.getLocalDestinoExp().trim().isEmpty()) {
                     ajaxResultBool = false;
                     ajaxResultStr = "O cliente não possui um local de destino para os arquivos de exportação!";
                 }
             }
 
-
             try {
+                Utilities.createTaskLock(dados.getLocalDestinoExp(), sessionUsuario.getUsuarioBean().getNome(), httpServletRequest, Utilities.TaskLock.COMERCIAL);
                 upload(id_list, expArquivoAudio);
+                Utilities.removerLogComercial(dados.getLocalDestinoExp());
             } catch (Exception e) {
                 ajaxResultBool = false;
                 ajaxResultStr = e.getMessage();
+            } finally {
+                Utilities.deleteTaskLock(dados.getLocalDestinoExp(), Utilities.TaskLock.COMERCIAL);
             }
-
             result.use(Results.json()).withoutRoot().from(new AjaxResult(ajaxResultBool, ajaxResultStr)).recursive().serialize();
         } else {
             ajaxResultBool = false;
