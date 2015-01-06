@@ -48,7 +48,6 @@
                                    value="${cf:dateFormat(audiostoreProgramacaoBean.dataInicio , "dd/MM/yyyy")}">
                             <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
                         </div>
-
                     </div>
                 </div>
 
@@ -77,10 +76,12 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="col-md-3">
+            <div class="row" style="background-color: #e3e3e3">
+                <div class="col-md-1">
                     <div class="form-group"> 
-                        <label>Horário inicial ${audiostoreProgramacaoBean.horaInicio}</label>
+                        <label>Horário inicial</label>
                         <input type="text" name="horaInicio" class="form-control" placeholder="Tempo de duração"  
                                data-rule-required="true" 
                                data-rule-minlength="8"
@@ -91,7 +92,48 @@
                                value="${audiostoreProgramacaoBean.horaInicio ne null ? cf:dateFormat(audiostoreProgramacaoBean.horaInicio , "HH:mm:ss") : '00:00:00'}">
                     </div>
                 </div>
-                <div class="col-md-3">
+
+                <link rel="stylesheet" type="text/css" href="${url_css}bootstrap-tagsinput.css" />
+                <script src="${url_js}bootstrap-tagsinput.js" type="text/javascript"></script>
+
+                <div class="col-md-12">
+                    <div class="form-group">  
+                        <label>Comerciais relacionados ao horário inicial da programação </label>                       
+                        <input type="text" name="comercialHorarioA" value="" data-role="tagsinput" />
+                    </div>
+                </div>
+
+                <script>
+var json = [
+                    <c:forEach items="${comercialList}" var="item" varStatus="vs">
+{"value":"${item.id}", "text":"${item.titulo}"},
+                    </c:forEach> 
+                    <c:forEach begin="0" end="59" varStatus="vsa">
+                        <c:forEach begin="0" end="59" varStatus="vsb">
+                            {"value":"00:${vsa.index <= 9 ? '0':''}${vsa.index}:${vsb.index <= 9 ? '0' : ''}${vsb.index}", "text":"00:${vsa.index <= 9 ? '0':''}${vsa.index}:${vsb.index <= 9 ? '0' : ''}${vsb.index}"},
+                        </c:forEach> 
+                    </c:forEach> 
+                            ];
+                            var elt = jQuery('[name="comercialHorarioA"]');
+                            elt.tagsinput({
+                                itemValue: 'value',
+                                itemText: 'text',
+                                typeahead: {
+                                    source: json
+                                }
+                            });
+                            <c:forEach items="${comercialVinculadoList}" var="item" varStatus="vs">
+                                <c:if test="${item.beanLigacao.inicialFinal eq true}">
+                                    elt.tagsinput('add', {"value":"${item.comercial.id}", "text":"${item.comercial.titulo}"});
+                                    elt.tagsinput('add', {"value":"${item.beanLigacao.intervalo}", "text":"${item.beanLigacao.intervalo}"});
+                                </c:if>
+                            </c:forEach>
+                </script>
+            </div>
+
+
+            <div class="row" style="background-color: #e3e3e3">
+                <div class="col-md-1">
                     <div class="form-group">
                         <label>Horário final</label>
                         <input type="text" name="horaFinal" class="form-control" placeholder="Tempo de duração"  
@@ -105,6 +147,45 @@
                     </div>
                 </div> 
 
+                <link rel="stylesheet" type="text/css" href="${url_css}bootstrap-tagsinput.css" />
+                <script src="${url_js}bootstrap-tagsinput.js" type="text/javascript"></script>
+
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Comerciais relacionados ao horário inicial da programação</label>
+                        <input type="text" name="comercialHorarioB" value="" data-role="tagsinput" />
+                    </div>
+                </div>
+
+                <script>
+                            var json = [
+                    <c:forEach items="${comercialList}" var="item" varStatus="vs">
+                            {"value":"${item.id}", "text":"${item.titulo}"},
+                    </c:forEach> 
+                    <c:forEach begin="0" end="59" varStatus="vsa">
+                        <c:forEach begin="0" end="59" varStatus="vsb">
+                            {"value":"00:${vsa.index <= 9 ? '0':''}${vsa.index}:${vsb.index <= 9 ? '0' : ''}${vsb.index}", "text":"00:${vsa.index <= 9 ? '0':''}${vsa.index}:${vsb.index <= 9 ? '0' : ''}${vsb.index}"},
+                        </c:forEach> 
+                    </c:forEach> 
+                            ];
+                                    var elt = jQuery('[name="comercialHorarioB"]');
+                            elt.tagsinput({
+                                itemValue: 'value',
+                                itemText: 'text',
+                                typeahead: {
+                                    source: json
+                                }
+                            });
+                            
+                            <c:forEach items="${comercialVinculadoList}" var="item" varStatus="vs">
+                                <c:if test="${item.beanLigacao.inicialFinal eq false}">
+                                    elt.tagsinput('add', {"value":"${item.comercial.id}", "text":"${item.comercial.titulo}"});
+                                    elt.tagsinput('add', {"value":"${item.beanLigacao.intervalo}", "text":"${item.beanLigacao.intervalo}"});
+                                </c:if>
+                            </c:forEach>
+                </script>
+            </div>
+            <div class="row">
                 <div class="col-md-12">
                     <div class="form-group">
                         <label>Conteudo</label>
@@ -171,12 +252,10 @@
 
                     <script type="text/javascript">
                         jQuery(document).ready(function() {
-
-                            if (null != jQuery('.select_cliente').children('option:selected').val()
-                                    && undefined != jQuery('.select_cliente').children('option:selected').val()
-                                    && '' != jQuery('.select_cliente').children('option:selected').val()) {
+                            if (null != jQuery('.select_cliente').children('option:selected').val() && undefined != jQuery('.select_cliente').children('option:selected').val() && '' != jQuery('.select_cliente').children('option:selected').val()) {
 
                                 var novo_id = jQuery('.select_cliente').children('option:selected').val();
+
                                 jQuery.ajax({
                                     url: '${url}/audiostore-programacao/categorias/' + novo_id,
                                     type: 'GET',
@@ -205,11 +284,13 @@
                                                 html += '<li id="' + i + '" data-index="' + i + '"> <i class="fa fa-file-code-o"></i> <div class="text">' + item.categoria + '</div> <small> <b style="color: green;"> ' + item.cliente.nome + ' -  ' + tipo + '</b> </small> <input type="hidden" name="categorias" value="' + item.codigo + '" disabled="disabled"/> </li>';
 
                                             }
+
                                             jQuery('.lista_filial2 li').each(function() {
                                                 if (jQuery(this).data('cliente') != novo_id) {
                                                     jQuery(this).remove();
                                                 }
                                             });
+
                                             jQuery('.lista_filial1').html('');
                                             jQuery('.lista_filial1').html(html);
                                             jQuery('.cat_container').show();
@@ -225,49 +306,52 @@
                             jQuery('.select_cliente').on('change', function() {
 
                                 var novo_id = jQuery(this).val();
-                                jQuery.ajax({
-                                    url: '${url}/audiostore-programacao/categorias/' + jQuery(this).val(),
-                                    type: 'GET',
-                                    success: function(json) {
+                                if (null != novo_id && undefined != novo_id && '' != novo_id) {
+                                    jQuery.ajax({
+                                        url: '${url}/audiostore-programacao/categorias/' + jQuery(this).val(),
+                                        type: 'GET',
+                                        success: function(json) {
 
-                                        if (json.length == 0) {
-                                            jQuery('.cat_container').hide();
-                                            jQuery('.btn_salvar').hide();
-                                        } else {
-                                            var html = '';
-                                            for (i in json) {
-                                                var item = json[i];
-                                                var tipo = '';
+                                            if (json.length == 0) {
+                                                jQuery('.cat_container').hide();
+                                                jQuery('.btn_salvar').hide();
+                                            } else {
+                                                var html = '';
+                                                for (i in json) {
+                                                    var item = json[i];
+                                                    var tipo = '';
 
-                                                if (item.tipo == 1) {
-                                                    tipo = 'música';
+                                                    if (item.tipo == 1) {
+                                                        tipo = 'música';
+                                                    }
+
+                                                    if (item.tipo == 2) {
+                                                        tipo = 'comercial';
+                                                    }
+
+                                                    if (item.tipo == 3) {
+                                                        tipo = 'video';
+                                                    }
+                                                    html += '<li id="' + i + '" data-index="' + i + '"> <i class="fa fa-file-code-o"></i> <div class="text">' + item.categoria + '</div> <small> <b style="color: green;"> ' + item.cliente.nome + ' -  ' + tipo + '</b> </small> <input type="hidden" name="categorias" value="' + item.codigo + '" disabled="disabled"/> </li>';
+
                                                 }
-
-                                                if (item.tipo == 2) {
-                                                    tipo = 'comercial';
-                                                }
-
-                                                if (item.tipo == 3) {
-                                                    tipo = 'video';
-                                                }
-                                                html += '<li id="' + i + '" data-index="' + i + '"> <i class="fa fa-file-code-o"></i> <div class="text">' + item.categoria + '</div> <small> <b style="color: green;"> ' + item.cliente.nome + ' -  ' + tipo + '</b> </small> <input type="hidden" name="categorias" value="' + item.codigo + '" disabled="disabled"/> </li>';
-
+                                                jQuery('.lista_filial2 li').each(function() {
+                                                    if (jQuery(this).data('cliente') != novo_id) {
+                                                        jQuery(this).remove();
+                                                    }
+                                                });
+                                                jQuery('.lista_filial1').html('');
+                                                jQuery('.lista_filial1').html(html);
+                                                jQuery('.cat_container').show();
+                                                jQuery('.btn_salvar').show();
                                             }
-                                            jQuery('.lista_filial2 li').each(function() {
-                                                if (jQuery(this).data('cliente') != novo_id) {
-                                                    jQuery(this).remove();
-                                                }
-                                            });
-                                            jQuery('.lista_filial1').html('');
-                                            jQuery('.lista_filial1').html(html);
-                                            jQuery('.cat_container').show();
-                                            jQuery('.btn_salvar').show();
+                                        },
+                                        error: function(err) {
+                                            console.log(err);
                                         }
-                                    },
-                                    error: function(err) {
-                                        console.log(err);
-                                    }
-                                });
+                                    });
+                                }
+
                             });
 
                             jQuery('.btn_sel_all_dia_semana').on('click', function() {
@@ -415,7 +499,7 @@
                                             jQuery(this).show();
                                         });
                                         jQuery('.contador_l2').text("Total " + (jQuery('.lista_filial2 li').size() - 1));
-                                    } 
+                                    }
                                     return true;
                                 });
 

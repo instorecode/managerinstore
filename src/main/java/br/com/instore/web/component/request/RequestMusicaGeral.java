@@ -16,6 +16,14 @@ import br.com.instore.web.dto.MusicaGeralDTO;
 import br.com.instore.web.dto.MusicaId;
 import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
+import com.mpatric.mp3agic.ID3v1;
+import com.mpatric.mp3agic.ID3v2;
+import com.mpatric.mp3agic.InvalidDataException;
+import com.mpatric.mp3agic.Mp3File;
+import com.mpatric.mp3agic.UnsupportedTagException;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +32,14 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
+import org.apache.tika.exception.TikaException;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.parser.ParseContext;
+import org.apache.tika.parser.Parser;
+import org.apache.tika.parser.mp3.Mp3Parser;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 @RequestScoped
 public class RequestMusicaGeral implements java.io.Serializable {
@@ -43,8 +59,9 @@ public class RequestMusicaGeral implements java.io.Serializable {
         this.result = result;
         this.sessionUsuario = sessionUsuario;
     }
-    
+
     public class MusicaGeralDTOInternal extends MusicaGeralDTO {
+
         private String nomeArquivoFormatado;
 
         public String getNomeArquivoFormatado() {
@@ -110,15 +127,15 @@ public class RequestMusicaGeral implements java.io.Serializable {
             dto.setTipoInterprete(ti);
             dto.setTitulo(bean.getTitulo());
             dto.setUsuario(u != null ? u.getNome() : "sem usuário definida");
-            
+
             List<String> partss = Arrays.asList(dto.getArquivo().split("/"));
             if (null != partss && !partss.isEmpty()) {
                 dto.setNomeArquivoFormatado(partss.get(partss.size() - 1));
             }
-            
+
             lista2.add(dto);
-            
-            
+
+
         }
         return lista2;
     }
@@ -259,18 +276,17 @@ public class RequestMusicaGeral implements java.io.Serializable {
 
     public void sinc(String dir, String usuario, String senha) {
         try {
-
-
             if (!dir.endsWith("/")) {
                 dir += "/";
             }
 
             dir = dir.replace("\\", "/");
+            dir = dir.substring(2, dir.length());
             dir = "smb://" + dir;
 
             List<MusicaGeralBean> musicaGeralBeanList = new ArrayList<MusicaGeralBean>();
             sinc(dir, musicaGeralBeanList, usuario, senha);
-            repository.setUsuario(sessionUsuario.getUsuarioBean());
+//            repository.setUsuario(sessionUsuario.getUsuarioBean());
 
             StringBuilder inserts = new StringBuilder();
             inserts.append("INSERT INTO musica_geral VALUES");
@@ -290,6 +306,87 @@ public class RequestMusicaGeral implements java.io.Serializable {
         }
     }
 
+    public static void main(String[] args) throws FileNotFoundException, IOException, UnsupportedTagException, InvalidDataException {
+        Mp3File mp3file = new Mp3File("C:\\Users\\TI-Caio\\Desktop\\download\\angra.mp3");
+
+        System.out.println("Length of this mp3 is: " + mp3file.getLengthInSeconds() + " seconds");
+        System.out.println("Bitrate: " + mp3file.getLengthInSeconds() + " kbps " + (mp3file.isVbr() ? "(VBR)" : "(CBR)"));
+        System.out.println("Sample rate: " + mp3file.getSampleRate() + " Hz");
+        System.out.println("Has ID3v1 tag?: " + (mp3file.hasId3v1Tag() ? "YES" : "NO"));
+        System.out.println("Has ID3v2 tag?: " + (mp3file.hasId3v2Tag() ? "YES" : "NO"));
+        System.out.println("Has custom tag?: " + (mp3file.hasCustomTag() ? "YES" : "NO"));
+
+        if (mp3file.hasId3v1Tag()) {
+            ID3v1 id3v1Tag = mp3file.getId3v1Tag();
+            System.out.println("Track: " + id3v1Tag.getTrack());
+            System.out.println("Artist: " + id3v1Tag.getArtist());
+            System.out.println("Title: " + id3v1Tag.getTitle());
+            System.out.println("Album: " + id3v1Tag.getAlbum());
+            System.out.println("Year: " + id3v1Tag.getYear());
+            System.out.println("Genre: " + id3v1Tag.getGenre() + " (" + id3v1Tag.getGenreDescription() + ")");
+            System.out.println("Comment: " + id3v1Tag.getComment());
+        }
+
+        if (mp3file.hasId3v2Tag()) {
+            ID3v2 id3v2Tag = mp3file.getId3v2Tag();
+            System.out.println("Track: " + id3v2Tag.getTrack());
+            System.out.println("Artist: " + id3v2Tag.getArtist());
+            System.out.println("Title: " + id3v2Tag.getTitle());
+            System.out.println("Album: " + id3v2Tag.getAlbum());
+            System.out.println("Year: " + id3v2Tag.getYear());
+            System.out.println("Genre: " + id3v2Tag.getGenre() + " (" + id3v2Tag.getGenreDescription() + ")");
+            System.out.println("Comment: " + id3v2Tag.getComment());
+            System.out.println("Composer: " + id3v2Tag.getComposer());
+            System.out.println("Publisher: " + id3v2Tag.getPublisher());
+            System.out.println("Original artist: " + id3v2Tag.getOriginalArtist());
+            System.out.println("Album artist: " + id3v2Tag.getAlbumArtist());
+            System.out.println("Copyright: " + id3v2Tag.getCopyright());
+            System.out.println("URL: " + id3v2Tag.getUrl());
+            System.out.println("Encoder: " + id3v2Tag.getEncoder());
+            byte[] albumImageData = id3v2Tag.getAlbumImage();
+            if (albumImageData != null) {
+                System.out.println("Have album image data, length: " + albumImageData.length + " bytes");
+                System.out.println("Album image mime type: " + id3v2Tag.getAlbumImageMimeType());
+            }
+        }
+    }
+
+    public static void metadata(InputStream input) {
+        try {
+            ContentHandler handler = new DefaultHandler();
+            Metadata metadata = new Metadata();
+            Parser parser = new Mp3Parser();
+            ParseContext parseCtx = new ParseContext();
+            parser.parse(input, handler, metadata);
+            input.close();
+
+            // List all metadata
+            String[] metadataNames = metadata.names();
+
+            for (String name : metadataNames) {
+                System.out.println(name + "::::" + metadata.get(name));
+            }
+
+            // Retrieve the necessary info from metadata
+            // Names - title, xmpDM:artist etc. - mentioned below may differ based
+            System.out.println("----------------------------------------------");
+            System.out.println("Title: " + metadata.get("title"));
+            System.out.println("Artists: " + metadata.get("xmpDM:artist"));
+            System.out.println("Composer : " + metadata.get("xmpDM:composer"));
+            System.out.println("Genre : " + metadata.get("xmpDM:genre"));
+            System.out.println("Album : " + metadata.get("xmpDM:album"));
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (TikaException e) {
+            e.printStackTrace();
+        }
+    }
+
     private static void sinc(String dirPath, List<MusicaGeralBean> musicaGeralBeanList, String usuario, String senha) throws Exception {
         try {
 
@@ -305,8 +402,13 @@ public class RequestMusicaGeral implements java.io.Serializable {
                 throw new Exception("O diretório informado está vazío!");
             }
             for (SmbFile item : smbDir.listFiles()) {
+                System.out.println("======================");
+                System.out.println("ARQUIVO");
+                System.out.println(item.getName());
+                metadata(item.getInputStream());
+                System.out.println("======================");
                 if (item.isFile()) {
-                    if (item.getName().indexOf(".wav") != -1) {
+                    if (item.getName().indexOf(".mp3") != -1 || item.getName().indexOf(".wav") != -1) {
                         MusicaGeralBean m = new MusicaGeralBean();
                         m.setCategoriaGeral(0);
                         m.setGravadora(0);
@@ -545,12 +647,12 @@ public class RequestMusicaGeral implements java.io.Serializable {
             dto.setTipoInterprete(ti);
             dto.setTitulo(bean.getTitulo());
             dto.setUsuario(u != null ? u.getNome() : "sem usuário definida");
-            
+
             List<String> partss = Arrays.asList(dto.getArquivo().split("/"));
             if (null != partss && !partss.isEmpty()) {
                 dto.setNomeArquivoFormatado(partss.get(partss.size() - 1));
             }
-            
+
             lista2.add(dto);
         }
 

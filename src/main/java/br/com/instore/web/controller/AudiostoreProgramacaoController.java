@@ -77,18 +77,21 @@ public class AudiostoreProgramacaoController implements java.io.Serializable {
     @Restrict
     @Path("/audiostore-programacao/atualizar/{id}")
     public void cadastrar(Integer id) {
+        AudiostoreProgramacaoBean bean = requestAudiostoreProgramacao.bean(id);
         result.include("isPageCadastro", false);
         result.include("programacaoCategoriaBeanList", requestAudiostoreProgramacao.programacaoCategoriaBeanList(id));
-        result.include("audiostoreProgramacaoBean", requestAudiostoreProgramacao.bean(id));
+        result.include("audiostoreProgramacaoBean", bean);
         result.include("clienteBeanList", requestAudiostoreProgramacao.clienteBeanList());
         result.include("categoriaBeanList", requestAudiostoreProgramacao.categoriaBeanList());
+        result.include("comercialList", requestAudiostoreProgramacao.comercialList(bean));
+        result.include("comercialVinculadoList", requestAudiostoreProgramacao.comercialVinculadosAProgramacao(bean));
     }
 
     @Post
     @Restrict
     @Path("/audiostore-programacao/atualizar/{id}")
-    public void cadastrar(Integer id, AudiostoreProgramacaoBean audiostoreProgramacaoBean, String horaInicio, String horaFinal, Integer[] categorias, Integer[] diasSemana) {
-        requestAudiostoreProgramacao.salvar(audiostoreProgramacaoBean, horaInicio, horaFinal, categorias, diasSemana);
+    public void cadastrar(Integer id, AudiostoreProgramacaoBean audiostoreProgramacaoBean, String horaInicio, String horaFinal, Integer[] categorias, Integer[] diasSemana, String comercialHorarioA , String comercialHorarioB) {
+        requestAudiostoreProgramacao.salvar2(audiostoreProgramacaoBean, horaInicio, horaFinal, categorias, diasSemana , comercialHorarioA , comercialHorarioB);
     }
 
     @Get

@@ -66,18 +66,22 @@ public class RequestUsuario implements java.io.Serializable {
             senha = Utilities.md5(senha);
             if (repository.query(UsuarioBean.class).eq(Usuario.EMAIL, email).and().eq(Usuario.SENHA, senha).count() >= 0) {
                 UsuarioBean usuario = repository.query(UsuarioBean.class).eq(Usuario.EMAIL, email).and().eq(Usuario.SENHA, senha).findOne();
-                usuario.getPerfilBeanList();
-                sessionUsuario.setUsuarioBean(usuario);
-                sessionUsuario.setLogado(true);
+                if (null != usuario) {
+                    usuario.getPerfilBeanList();
+                    sessionUsuario.setUsuarioBean(usuario);
+                    sessionUsuario.setLogado(true);
 
-                repository.setUsuario(sessionUsuario.getUsuarioBean());
-                Utilities.historicoUsuarioLogin(repository);
+                    repository.setUsuario(sessionUsuario.getUsuarioBean());
+                    Utilities.historicoUsuarioLogin(repository);
 
-                Cookie cookie1 = new Cookie("managerinstore_machine_userck", usuario.getIdusuario().toString());
+                    Cookie cookie1 = new Cookie("managerinstore_machine_userck", usuario.getIdusuario().toString());
 
-                httpServletResponse.addCookie(cookie1);
+                    httpServletResponse.addCookie(cookie1);
 
-                result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Usuário logado com sucesso")).recursive().serialize();
+                    result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Usuário logado com sucesso")).recursive().serialize();
+                } else {
+                    result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "E-mail / Senha inválidos.")).recursive().serialize();
+                }
             } else {
                 result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "E-mail / Senha inválidos.")).recursive().serialize();
             }
@@ -314,12 +318,12 @@ public class RequestUsuario implements java.io.Serializable {
 
 
             String updateUsuario = "UPDATE usuario SET nome = ? , cpf = ? , email = ? , senha = ? , idendereco = ? where idusuario = " + bean.getIdusuario();
-            updateUsuario = updateUsuario.replaceFirst("\\?", "'"+bean.getNome()+"'");
-            updateUsuario = updateUsuario.replaceFirst("\\?", "'"+bean.getCpf()+"'");
-            updateUsuario = updateUsuario.replaceFirst("\\?", "'"+bean.getEmail()+"'");
-            updateUsuario = updateUsuario.replaceFirst("\\?", "'"+bean.getSenha()+"'");
-            updateUsuario = updateUsuario.replaceFirst("\\?", "'"+end.getIdendereco()+"'");
-            
+            updateUsuario = updateUsuario.replaceFirst("\\?", "'" + bean.getNome() + "'");
+            updateUsuario = updateUsuario.replaceFirst("\\?", "'" + bean.getCpf() + "'");
+            updateUsuario = updateUsuario.replaceFirst("\\?", "'" + bean.getEmail() + "'");
+            updateUsuario = updateUsuario.replaceFirst("\\?", "'" + bean.getSenha() + "'");
+            updateUsuario = updateUsuario.replaceFirst("\\?", "'" + end.getIdendereco() + "'");
+
 
             repository.query(updateUsuario).executeSQLCommand();
 
@@ -331,38 +335,38 @@ public class RequestUsuario implements java.io.Serializable {
             result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel salvar os dados!")).recursive().serialize();
         }
     }
-    
-    public void minhaSenha(String senha_atual , String nova_senha, String conf_senha) {
+
+    public void minhaSenha(String senha_atual, String nova_senha, String conf_senha) {
         try {
-            
+
             boolean ajaxResultBool = true;
             String ajaxResultStr = "";
-            
-            if(repository.query(UsuarioBean.class).eq("senha", Utilities.md5(senha_atual)).count() <= 0) {
+
+            if (repository.query(UsuarioBean.class).eq("senha", Utilities.md5(senha_atual)).count() <= 0) {
                 ajaxResultBool = false;
                 ajaxResultStr = "A senha atual está incorreta!";
             }
-            
+
             if (ajaxResultBool) {
-                if(null == nova_senha || nova_senha.trim().isEmpty() || null == conf_senha || conf_senha.trim().isEmpty()) {
+                if (null == nova_senha || nova_senha.trim().isEmpty() || null == conf_senha || conf_senha.trim().isEmpty()) {
                     ajaxResultBool = false;
                     ajaxResultStr = "Preencha todos os campos!";
                 }
-                
-                if(!nova_senha.equals(conf_senha)) {
+
+                if (!nova_senha.equals(conf_senha)) {
                     ajaxResultBool = false;
                     ajaxResultStr = "Você informu duas senhas diferentes!";
                 }
             }
-            
+
             if (ajaxResultBool) {
                 String updateUsuario = "UPDATE usuario SET  senha = ?  where idusuario = " + sessionUsuario.getUsuarioBean().getIdusuario();
-                updateUsuario = updateUsuario.replaceFirst("\\?", "'"+Utilities.md5(nova_senha)+"'");
+                updateUsuario = updateUsuario.replaceFirst("\\?", "'" + Utilities.md5(nova_senha) + "'");
                 repository.query(updateUsuario).executeSQLCommand();
                 repository.finalize();
-                
+
                 sessionUsuario.getUsuarioBean().setSenha(Utilities.md5(nova_senha));
-                
+
                 ajaxResultBool = false;
                 ajaxResultStr = "Senha atualizada com sucesso!";
             }

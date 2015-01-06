@@ -9,22 +9,17 @@ import br.com.caelum.vraptor.interceptor.AcceptsWithAnnotations;
 import br.com.caelum.vraptor.interceptor.SimpleInterceptorStack;
 import br.com.instore.core.orm.bean.ClienteBean;
 import br.com.instore.core.orm.bean.FuncionalidadeBean;
-import br.com.instore.core.orm.bean.PerfilUsuarioBean;
-import br.com.instore.core.orm.bean.UsuarioBean;
 import br.com.instore.core.orm.bean.property.Funcionalidade;
-import br.com.instore.core.orm.bean.property.Usuario;
 import br.com.instore.web.annotation.Restrict;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.controller.HomeController;
-import br.com.instore.web.tools.Utilities;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 @Intercepts(after = HibernateSession.class)
@@ -47,8 +42,6 @@ public class RestrictAccessValidator {
 
     @AroundCall
     public void intercept(SimpleInterceptorStack stack) {
-        System.out.println("A SESSAO COMP EH NULA::"+(null == requestRepository));
-        System.out.println("A SESSAO EH NULA::"+(null == requestRepository.getSession()));
         Path path = controllerMethod.getMethod().getAnnotation(Path.class);
         if (null != path && sessionUsuario.isLogado()) {
 

@@ -119,7 +119,7 @@ public class MusicaController implements java.io.Serializable {
         requestMusicaGeral.remover(id);
     }
 
-    @Post
+    @Get
     @Path("/musica/sinc")
     public void sinc(String dir, String usuario, String senha) {
         requestMusicaGeral.sinc(dir, usuario, senha);
