@@ -135,6 +135,7 @@
                                 <c:if test="${not mg.existe}">
                                     <tr>
                                         <td>
+                                            <input type="hidden" name="audiostoreMusicaBeanList[${vs.index+1}].ultimaImportacao"  value="1"/>
                                             <input type="hidden" name="audiostoreMusicaBeanList[${vs.index+1}].musicaGeral"  value="${mg.id}"/>
                                             <input type="hidden" name="audiostoreMusicaBeanList[${vs.index+1}].cliente.idcliente"  value="${clienteBean.idcliente}"/> 
                                             ${mg.titulo} - ${mg.id}
@@ -270,14 +271,14 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label>Nome</label>
+                            <label>Caminho do arquivo</label>
                             <br />
                             <input class="form-control" value="${musicaGeralBean.arquivo}" disabled="disabled"/>
                         </div>
                     </div>
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label>Nome</label>
+                            <label>Titulo da musica</label>
                             <br />
                             <input class="form-control" value="${musicaGeralBean.titulo}" disabled="disabled"/>
                         </div>
@@ -312,7 +313,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-2">
+<!--                    <div class="col-md-2">
                         <div class="form-group">
                             <label>Categoria Secundário</label> 
                             <br />
@@ -325,9 +326,12 @@
                                 </c:if>
                             </select>
                         </div>
-                    </div>
+                    </div>-->
+                    
+                    <input type="hidden" name="audiostoreMusicaBean.categoria2.codigo" value="0" />
+                    <input type="hidden" name="audiostoreMusicaBean.categoria3.codigo" value="0" />
 
-                    <div class="col-md-2">
+<!--                    <div class="col-md-2">
                         <div class="form-group">
                             <label>Categoria Terciária</label> 
                             <br />
@@ -340,9 +344,9 @@
                                 </c:if>
                             </select>
                         </div>
-                    </div>
+                    </div>-->
 
-                    <div class="col-md-2">
+<!--                    <div class="col-md-2">
                         <div class="form-group">
                             <label>Dias execução <i>(Primária)</i></label>
                             <input type="text" name="audiostoreMusicaBean.diasExecucao1" class="form-control" placeholder="Dias execução (Primária)"  
@@ -358,16 +362,17 @@
                                    data-rule-required="true" 
                                    data-rule-number="true" value="${audiostoreMusicaBean.diasExecucao2}">
                         </div>
-                    </div>
+                    </div>-->
 
-
+                    <input type="hidden" name="audiostoreMusicaBean.diasExecucao1" value="0" />
+                    <input type="hidden" name="audiostoreMusicaBean.diasExecucao2" value="0" />
 
                 </div>
 
                 <hr />
 
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="form-group">                        
                             <label></label>
                             <br />
@@ -424,11 +429,17 @@
                 </div>
 
                 <div class="row">
-
-
-
-
                     <div class="col-md-2">
+                        <div class="form-group">                                               
+                            Faz parte da ultima importação 
+                            <label class="radio-inline"> <input type="radio" class="icheck"  name="audiostoreMusicaBean.ultimaImportacao" id="optionsRadios1" value="${true}" ${audiostoreMusicaBean.ultimaImportacao ? 'checked="checked"' : ''} >&nbsp;Sim</label>
+                            <label class="radio-inline"> <input type="radio" class="icheck"  name="audiostoreMusicaBean.ultimaImportacao" id="optionsRadios1" value="${false}"  ${not audiostoreMusicaBean.ultimaImportacao ? 'checked="checked"' : ''}>&nbsp;Não</label>
+                        </div>
+                    </div>
+
+
+
+<!--                    <div class="col-md-2">
                         <div class="form-group">
                             <label>Data de inclusao</label>
 
@@ -439,17 +450,20 @@
                                 <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
                             </div>
                         </div>
-                    </div>
+                    </div>-->
 
-                    <div class="col-md-2">
+                    <input type="hidden" name="audiostoreMusicaBean.data" value="${cf:dateFormat(audiostoreMusicaBean.data, "dd/MM/yyyy")}" />
+                    
+
+<!--                    <div class="col-md-2">
                         <div class="form-group">
                             <label></label>
                             <br />
                             Tipo <label class="radio-inline"> <input type="radio" class="icheck"  name="audiostoreMusicaBean.cut" id="optionsRadios1" value="${true}" ${audiostoreMusicaBean.cut ? 'checked="checked"' : ''} >&nbsp;Cut </label>
                             <label class="radio-inline"> <input type="radio" class="icheck"  name="audiostoreMusicaBean.cut" id="optionsRadios1" value="${false}"  ${not audiostoreMusicaBean.cut ? 'checked="checked"' : ''}>&nbsp;FadeOut </label>
                         </div>
-                    </div>
-
+                    </div>-->
+<!--
                     <div class="col-md-3">
                         <div class="form-group">
                             <label></label>
@@ -458,10 +472,12 @@
                             <label class="radio-inline"> <input type="radio" class="icheck"  name="audiostoreMusicaBean.semSom" id="optionsRadios1" value="${true}" ${audiostoreMusicaBean.semSom ? 'checked="checked"' : ''} >&nbsp;Sim </label>
                             <label class="radio-inline"> <input type="radio" class="icheck"  name="audiostoreMusicaBean.semSom" id="optionsRadios1" value="${false}"  ${not audiostoreMusicaBean.semSom ? 'checked="checked"' : ''}>&nbsp;Não </label>
                         </div>
-                    </div>
+                    </div>-->
+                    <input type="hidden" name="audiostoreMusicaBean.semSom" value="${false}" />
+                    <input type="hidden" name="audiostoreMusicaBean.msg" value="" />
+                    <input type="hidden" name="audiostoreMusicaBean.cut" value="${false}" />
 
-
-                    <div class="col-md-12">
+<!--                    <div class="col-md-12">
                         <div class="form-group">
                             <div class="block-flat">
                                 <div class="header">							
@@ -472,7 +488,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>-->
 
                 </div>
 

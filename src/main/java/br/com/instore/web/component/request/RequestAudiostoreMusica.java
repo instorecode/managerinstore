@@ -182,7 +182,7 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         return (long) Math.ceil((double) totalRegistros / totalRegistrosPorPagina);
     }
 
-    public AudiostoreMusicaJSON beanList(Boolean datajson, Boolean view, Integer page, Integer rows, Integer id, Integer idcliente, String arquivo, String nome, Integer codigo, String letra) {
+    public AudiostoreMusicaJSON beanList(Boolean datajson, Boolean view, Integer page, Integer rows, Integer id, Integer idcliente, String arquivo, String nome, Integer codigo, String letra, String ultimaImportacao) {
         System.out.println("FILTROS");
         System.out.println("================================================");
         System.out.println("DATAJSON: " + datajson);
@@ -237,10 +237,10 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                 + "     audiostore_musica.id as id_musica,\n"
                 + "	 '' as param\n"
                 + " from\n"
+                + "     audiostore_musica\n"
                 + " [INNER_JOIN_MUSICA_GERAL]"
                 + " [INNER_JOIN_CATEGORIA_MUSICA_GERAL]"
                 + " [INNER_JOIN_CATEGORIA_GERAL]"
-                + "     audiostore_musica\n"
                 + " where audiostore_musica.id is not null";
 
         querySQL2 = " select sum(__count) as count , '' as param from ( \n"
@@ -300,7 +300,15 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
             querySQL2 = querySQL2.replace("[[MAIS_WHERE]]", " and musica_geral.letra like '%" + letra + "%' \"[[MAIS_WHERE]]\" \n");
             json.setLetra(letra);
         }
-
+        
+        if (null != ultimaImportacao && !ultimaImportacao.isEmpty()) {
+            querySQL1 += " and audiostore_musica.ultima_importacao = '" + (ultimaImportacao.equals("true") ? "1" : "0") + "' \n";
+            querySQL2 = querySQL2.replace("[[MAIS_WHERE]]", " and audiostore_musica.ultima_importacao = '" + (ultimaImportacao.equals("true") ? "1" : "0") + "'  [[MAIS_WHERE]]  \n");
+            json.setUltimaImportacao(ultimaImportacao);
+            json.setBool(ultimaImportacao);
+        }
+        
+        
         if (null != arquivo && !arquivo.trim().isEmpty()) {
             querySQL1 = querySQL1.replace("[INNER_JOIN_MUSICA_GERAL]", "inner join musica_geral on musica_geral.id = audiostore_musica.musica_geral\n");
             querySQL1 = querySQL1.replace("[INNER_JOIN_CATEGORIA_MUSICA_GERAL]", "left join categoria_musica_geral on categoria_musica_geral.musica = musica_geral.id\n");
@@ -326,7 +334,24 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
 
         final List<BigDecimal> countBD = new ArrayList<BigDecimal>();
         final List<Integer> idList = new ArrayList<Integer>();
-
+                
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+        System.out.println("SQLDUMP");
+        System.out.println(querySQL1);
+        
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+        
+        System.out.println("SQLDUMP");
+        System.out.println(querySQL2);
+        
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+        
         repository.query(querySQL1).executeSQL(new Each() {
             public Integer id_musica;
             public String param;
@@ -378,6 +403,7 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                 dto.setCategoria1(null != bean.getCategoria1() ? bean.getCategoria1().getCategoria() : "");
                 dto.setCategoria2(null != bean.getCategoria2() ? bean.getCategoria2().getCategoria() : "");
                 dto.setCategoria3(null != bean.getCategoria3() ? bean.getCategoria3().getCategoria() : "");
+                dto.setUltimaImportacao(bean.getUltimaImportacao() ? "sim" : "nao");
                 String arq = "";
                 List<String> partss = Arrays.asList(mgb.getArquivo().split("/"));
                 if (null != partss && !partss.isEmpty()) {
@@ -663,14 +689,15 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
     }
 
     public void salvar(AudiostoreMusicaBean[] beans) {
-        for (AudiostoreMusicaBean i : beans) {
-            if (null != i) {
-                System.out.println(i);
-            }
-        }
+        repository.setUsuario(sessionUsuario.getUsuarioBean());
         try {
+            int ixy = 0;
             for (AudiostoreMusicaBean bean : beans) {
                 if (null != bean) {
+                    if (ixy == 0) {
+                        repository.query("update audiostore_musica set ultima_importacao = 0 where idcliente = " + bean.getCliente().getIdcliente() + " and ultima_importacao = 1;").executeSQL();
+                    }
+                    ixy++;
                     // verifica se ja existe
                     if (null == bean.getId() || bean.getId() <= 0) {
                         if (repository.query(AudiostoreMusicaBean.class).eq("cliente.idcliente", bean.getCliente().getIdcliente()).eq("musicaGeral", bean.getMusicaGeral()).count() > 0) {
@@ -768,7 +795,7 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                     }
 
                     sql = "";
-                    sql = "INSERT INTO audiostore_musica VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                    sql = "INSERT INTO audiostore_musica VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
                     sql = sql.replaceFirst("\\?", "null"); // id
                     sql = sql.replaceFirst("\\?", bean.getMusicaGeral().toString()); // musica_geral
                     sql = sql.replaceFirst("\\?", bean.getCategoria1().getCodigo().toString()); // categoria1
@@ -792,6 +819,7 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                     sql = sql.replaceFirst("\\?", bean.getSemSom() ? "1" : "0"); // sem_som
                     sql = sql.replaceFirst("\\?", bean.getSuperCrossover() ? "1" : "0"); // super_crossover
                     sql = sql.replaceFirst("\\?", bean.getCliente().getIdcliente().toString()); // cliente
+                    sql = sql.replaceFirst("\\?", bean.getUltimaImportacao() ? "1" : "0"); // cliente
 
                     System.out.println("SCRIPT");
                     System.out.println(sql);

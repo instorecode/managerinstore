@@ -89,32 +89,39 @@
                                 <textarea class="ckeditor form-control"  name="musicaGeralBean.letra" class="form-control" style="height: 150px;">${musicaGeralBean.letra}</textarea>
                             </div>
                         </div>
-<!--                        <label>Letra</label>
-                        <textarea name="musicaGeralBean.letra" class="form-control" style="height: 150px;">${musicaGeralBean.letra}</textarea>-->
+                        <!--                        <label>Letra</label>
+                                                <textarea name="musicaGeralBean.letra" class="form-control" style="height: 150px;">${musicaGeralBean.letra}</textarea>-->
                     </div>
                 </div>
 
-                <div class="col-md-4">
+
+                <div class="col-md-2">
                     <div class="form-group">
-                        <label>BPM</label>
-                        <input type="text" name="musicaGeralBean.bpm" class="form-control" placeholder="BPM" value="${musicaGeralBean.bpm}" data-rule-required="true" data-rule-number="true">
+                        <label>Velocidade</label>
+                        <select class="select2" dara-rule-required="true" name="musicaGeralBean.bpm">
+                            <option value="50"  ${musicaGeralBean.bpm eq 50 ? 'selected="selected"' : ''}>Rapida</option>
+                            <option value="100" ${musicaGeralBean.bpm eq 100 ? 'selected="selected"' : ''}>Media</option>
+                            <option value="200" ${musicaGeralBean.bpm eq 200 ? 'selected="selected"' : ''}>Lenta</option>
+                        </select>
                     </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <div class="form-group">
                         <label>Tempo total</label>
                         <input type="text" name="musicaGeralBean.tempoTotal" class="form-control" placeholder="Tempo total" value="${musicaGeralBean.tempoTotal}" data-rule-required="true" data-mask="00:00:00">
                     </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <div class="form-group">
                         <label>Ano de gravação</label>
                         <input type="text" name="musicaGeralBean.anoGravacao" class="form-control" placeholder="Ano de gravação" value="${musicaGeralBean.anoGravacao}" data-rule-required="true" data-rule-number="true">
                     </div>
                 </div>
+            </div>
 
+            <div class="row">
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>1ª Afinidade</label>
@@ -142,6 +149,14 @@
                         <input type="text" name="musicaGeralBean.afinidade4" class="form-control" placeholder="4ª Afinidade" value="${musicaGeralBean.afinidade4}">
                     </div>
                 </div>
+                    
+                    <div class="col-md-2">
+                        <div class="form-group">                                               
+                            Faz parte da ultima importação 
+                            <label class="radio-inline"> <input type="radio" class="icheck"  name="musicaGeralBean.ultimaImportacao" id="optionsRadios1" value="${true}" ${musicaGeralBean.ultimaImportacao ? 'checked="checked"' : ''} >&nbsp;Sim</label>
+                            <label class="radio-inline"> <input type="radio" class="icheck"  name="musicaGeralBean.ultimaImportacao" id="optionsRadios1" value="${false}"  ${not musicaGeralBean.ultimaImportacao ? 'checked="checked"' : ''}>&nbsp;Não</label>
+                        </div>
+                    </div>
             </div>
 
             <button type="submit" class="btn btn-success btn_enviar">

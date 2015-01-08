@@ -14,6 +14,7 @@ import br.com.instore.core.orm.bean.MusicaGeralBean;
 import br.com.instore.web.annotation.Restrict;
 import br.com.instore.web.component.request.RequestAudiostoreMusica;
 import br.com.instore.web.component.session.SessionRepository;
+import br.com.instore.web.dto.UltimpDTO;
 import br.com.instore.web.tools.Utilities;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -47,13 +48,29 @@ public class AudiostoreMusicaController implements java.io.Serializable {
     @Get
     @Restrict
     @Path("/musica/programacao-audiostore")
-    public void listar(Integer idmusicaGeral, Boolean clientes, Boolean categorias, Boolean datajson, Boolean view, Integer page, Integer rows, Integer id, Integer idcliente,  String arquivo,  String nome, Integer codigo, String letra , Integer pk) {
+    public void listar(Integer idmusicaGeral, Boolean clientes, Boolean categorias, Boolean ultimp , Boolean datajson, Boolean view, Integer page, Integer rows, Integer id, Integer idcliente,  String arquivo,  String nome, Integer codigo, String letra , String bool , Integer pk) {
         if (null != datajson && datajson) {
-            requestAudiostoreMusica.beanList(datajson, view, page, rows, id, idcliente, arquivo , nome, codigo, letra);
+            requestAudiostoreMusica.beanList(datajson, view, page, rows, id, idcliente, arquivo , nome, codigo, letra , bool);
         }
         
         if (null != view && view) {
             result.use(Results.json()).withoutRoot().from(requestAudiostoreMusica.bean2(pk)).recursive().serialize();
+        }
+        
+        if (null != ultimp && ultimp) {
+            List<UltimpDTO> lista = new ArrayList<UltimpDTO>();
+            UltimpDTO sim = new UltimpDTO();
+            UltimpDTO nao = new UltimpDTO();
+            
+            sim.setBool(true);
+            sim.setLabel("sim");
+            
+            nao.setBool(true);
+            nao.setLabel("nao");
+            
+            lista.add(sim);
+            lista.add(nao);
+            result.use(Results.json()).withoutRoot().from(lista).recursive().serialize();
         }
 
         if (null != clientes && clientes) {

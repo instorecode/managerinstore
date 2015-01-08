@@ -828,10 +828,12 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
         }
 
         List<AudiostoreProgramacaoComercialBean> comercialList = new ArrayList<AudiostoreProgramacaoComercialBean>();
-        
+
         if (!acontinue || !bcontinue) {
-            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Existe algo errado com os comerciais a programação")).recursive().serialize();
-            return;
+            if ((null != comercialHorarioA && !comercialHorarioA.isEmpty()) || (null != comercialHorarioB && !comercialHorarioB.isEmpty())) {
+                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Existe algo errado com os comerciais a programação")).recursive().serialize();
+                return;
+            }
         }
 
         try {
@@ -905,7 +907,7 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
 
                 sql = "DELETE FROM audiostore_programacao WHERE id = " + audiostoreProgramacaoBean.getId() + "; ";
                 repository.query(sql).executeSQLCommand2();
-                
+
                 sql = "DELETE FROM audiostore_programacao_comercial WHERE programacao = " + audiostoreProgramacaoBean.getId() + ";";
                 repository.query(sql).executeSQLCommand2();
             }
@@ -938,19 +940,19 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
                     repository.query(sql).executeSQLCommand2();
                 }
             }
-            
+
             sql = "select id as num, '' as param from audiostore_programacao order by id desc limit 1";
             final List<Integer> idprogList = new ArrayList<Integer>();
             repository.query(sql).executeSQL(new Each() {
                 public Integer num;
                 public String param;
-                
+
                 @Override
                 public void each() {
                     idprogList.add(num);
                 }
             });
-            
+
             int idprog = idprogList.get(0);
 
             if (acontinue) {

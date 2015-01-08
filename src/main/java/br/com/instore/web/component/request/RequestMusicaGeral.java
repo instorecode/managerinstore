@@ -569,6 +569,7 @@ public class RequestMusicaGeral implements java.io.Serializable {
             List<Integer> integerList = new ArrayList<Integer>();
 
             for (String categ : categs) {
+                
                 List<MusicaId> tests = repository.query("select \n"
                         + "    mg.id as id,\n"
                         + "	'param_a' as param_a,\n"
@@ -592,9 +593,12 @@ public class RequestMusicaGeral implements java.io.Serializable {
             if (null != integerList && !integerList.isEmpty()) {
                 query.in("id", integerList.toArray(new Integer[integerList.size()])).findAll();
                 query2.in("id", integerList.toArray(new Integer[integerList.size()])).findAll();
+            } else {
+                query.eq("id", 0).findAll();
+                query2.eq("id", 0).findAll();
             }
         }
-
+        
         List<MusicaGeralDTO> lista2 = new ArrayList<MusicaGeralDTO>();
         lista = query.findAll();
         for (MusicaGeralBean bean : lista) {

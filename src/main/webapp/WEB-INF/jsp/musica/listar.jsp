@@ -4,7 +4,7 @@
 <instore:template  menucolapse="false" isGrid="false">
     <jsp:attribute name="submenu">
         <div class="btn-group">
-            <a href="${url}/musica/cadastrar" class="btn btn-default btn-flat"> <i class="fa fa-save"></i> Cadastrar </a>
+            <!--<a href="${url}/musica/cadastrar" class="btn btn-default btn-flat"> <i class="fa fa-save"></i> Cadastrar </a>-->
             <!--<a href="#" class="btn btn-default btn-flat" data-toggle="modal" data-target="#modal_sincronizacao" > <i class="fa fa-download"></i></a>-->
         </div>
     </jsp:attribute>
@@ -310,7 +310,7 @@
             $(document).ready(function() {
                 jQuery('#play${vs.index}').on('click', function() {
                     //".btn_letra"    
-                    jQuery(this).next().next().next().next().next().next().click();
+                    //jQuery(this).next().next().next().next().next().next().click();
 
                     $("#jquery_jplayer_${vs.index}").jPlayer({
                         ready: function() {
@@ -356,27 +356,31 @@
                             <input type="text" class="form-control arq" name="interprete" value="${interprete}" placeholder="Interprete" data-rule-required="true">
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <label>Velocidade</label>
-                            <input type="text" class="form-control arq" name="velocidade" value="${velocidade}" placeholder="Velocidade" data-rule-required="true">
+                            <select class="select2" dara-rule-required="true" name="velocidade">
+                                <option value="50"  ${velocidade eq 50 ? 'selected="selected"' : ''}>Rapida</option>
+                                <option value="100" ${velocidade eq 100 ? 'selected="selected"' : ''}>Media</option>
+                                <option value="200" ${velocidade eq 200 ? 'selected="selected"' : ''}>Lenta</option>
+                            </select>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <label>Ano de gravação</label>
                             <input type="text" class="form-control arq" name="anoGravacao" value="${anoGravacao}" placeholder="Ano de gravação" data-rule-required="true">
                         </div>
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <label>Letra</label>
                             <input type="text" class="form-control arq" name="letra" value="${letra}" placeholder="Letra" data-rule-required="true">
                         </div>
                     </div>
 
-                    <div class="col-md-9">
+                    <div class="col-md-12">
                         <div class="form-group">
                             <label>Categoria</label>
                             <input type="text" class="form-control arq" name="categoria" value="${categoria}" placeholder="Categoras" data-rule-required="true" data-role="tagsinput"> 
@@ -403,15 +407,20 @@
 
                     <div style="float: right">
                         <div class="btn-group">
+                            <a href="${url}/musica${paginacao}${paginacao_concat}pagina=1" class="btn btn-default btn-flat" ${(paginaAtual-1) < 1 ? 'disabled="disabled"':''}> 
+                            <i class="fa fa-angle-double-left"></i>
                             <a href="${url}/musica${paginacao}${paginacao_concat}pagina=${paginaAtual-1}" class="btn btn-default btn-flat" ${(paginaAtual-1) < 1 ? 'disabled="disabled"':''}> 
-                            <i class="fa fa-arrow-left"></i>
-                        </a>
-                        <a href="javascript:void(0)" class="btn btn-default btn-flat"> 
-                            Página ${paginaAtual} de ${totalPaginas}
-                        </a>
-                        <a href="${url}/musica${paginacao}${paginacao_concat}pagina=${paginaAtual+1}" class="btn btn-default btn-flat" ${(paginaAtual+1) > totalPaginas ? 'disabled="disabled"':''}>
-                            <i class="fa fa-arrow-right"></i>
-                        </a>
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a href="javascript:void(0)" class="btn btn-default btn-flat"> 
+                                Página ${paginaAtual} de ${totalPaginas}
+                            </a>
+                            <a href="${url}/musica${paginacao}${paginacao_concat}pagina=${paginaAtual+1}" class="btn btn-default btn-flat" ${(paginaAtual+1) > totalPaginas ? 'disabled="disabled"':''}>
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                            <a href="${url}/musica${paginacao}${paginacao_concat}pagina=${totalPaginas}" class="btn btn-default btn-flat" ${(paginaAtual+1) > totalPaginas ? 'disabled="disabled"':''}>
+                                <i class="fa fa-angle-double-right"></i>
+                            </a>
                     </div>
                 </div>	
 
@@ -467,6 +476,11 @@
                             </tr>
                         </thead>
                         <tbody class="no-border-y">
+                            <c:if test="${empty lista2}">
+                                <tr>
+                                    <td colspan="7"><b>Não existe música nessa categoria</b></td>
+                                </tr>
+                            </c:if>
                             <c:forEach items="${lista2}" var="item" varStatus="vs">
                                 <tr data-item-id="${item.id}">
                                     <td width="300">
@@ -642,15 +656,17 @@
                 jQuery('.btn_exp_arquivo').on("click", function() {
                     var selected_line = tabela.children('tbody').children('tr.tr__selected').size();
                     var selected_cliente = jQuery.storage('matriz_selecionada');
-                    if ( !(null != selected_line && undefined != selected_line && selected_line > 0) ) {
-                        bootbox.alert("Selecione uma  ou mais músicas!", function(){});
+                    if (!(null != selected_line && undefined != selected_line && selected_line > 0)) {
+                        bootbox.alert("Selecione uma  ou mais músicas!", function() {
+                        });
                     }
 
-                    if ( !(null != selected_cliente && undefined != selected_cliente && selected_cliente > 0) ) {
-                        bootbox.alert("Selecione um cliente!", function(){});
+                    if (!(null != selected_cliente && undefined != selected_cliente && selected_cliente > 0)) {
+                        bootbox.alert("Selecione um cliente!", function() {
+                        });
                     }
-                    
-                    
+
+
                     var id_list = '';
                     var comma = '';
 
@@ -659,9 +675,9 @@
                         id_list += comma + tr.data('itemId');
                         comma = ',';
                     });
-                    
+
                     id_list += comma + selected_cliente;
-                    
+
                     if ((null != selected_line && undefined != selected_line && selected_line > 0) && (null != selected_cliente && undefined != selected_cliente && selected_cliente > 0)) {
                         var ____url = '${url}/musica/programacao-audiostore/cadastrar/';
                         ____url += id_list;
@@ -674,7 +690,7 @@
 
         <style>
             .tr__selected {
-                background-color: #fffbd3 !important;
+                background-color: #fcad37  !important;
             }
         </style>
     </jsp:body>

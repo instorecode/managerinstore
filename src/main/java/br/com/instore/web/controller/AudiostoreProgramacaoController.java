@@ -69,7 +69,7 @@ public class AudiostoreProgramacaoController implements java.io.Serializable {
     @Post
     @Restrict
     @Path("/audiostore-programacao/cadastrar")
-    public void cadastrar(AudiostoreProgramacaoBean audiostoreProgramacaoBean, String horaInicio, String horaFinal, Integer[] categorias, Integer[] diasSemana) {
+    public void cadastrar(AudiostoreProgramacaoBean audiostoreProgramacaoBean, String horaInicio, String horaFinal, Integer[] categorias, Integer[] diasSemana, String comercialHorarioA , String comercialHorarioB) {
         requestAudiostoreProgramacao.salvar(audiostoreProgramacaoBean, horaInicio, horaFinal, categorias, diasSemana);
     }
 

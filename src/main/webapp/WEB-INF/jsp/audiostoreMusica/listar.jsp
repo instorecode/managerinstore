@@ -170,40 +170,14 @@
                             <th field="nome" options="false">Nome</th>
                             <th field="nomeCliente" isfk="true" fk="idcliente" fklabel="nome" fklabelselect="Todos" fkurl="${url}/musica/programacao-audiostore?clientes=true"  options="false"> Cliente </th>
                             <th field="categoria1" isfk="true" fk="codigo" fklabel="categoria" fklabelselect="Todos"  fkurl="${url}/musica/programacao-audiostore?categorias=true"  options="false"> Categoria </th>
+                            <th field="ultimaImportacao" isfk="true" fk="bool" fklabel="label" fklabelselect="Todos"  fkurl="${url}/musica/programacao-audiostore?ultimp=true"  options="false"> Ultima importação </th>
                         </tr>
                     </thead>
                 </table>
             </div>
         </div>
 
-        <div class="ctrl">
-            <a id="play${vs.index}" class="label label-info" href="#">
-                <i class="fa fa-play"></i>
-            </a>
-            <a style="display: none" id="pause${vs.index}" class="label label-info" href="#">
-                <i class="fa fa-pause"></i>
-            </a>
-            <a id="stop${vs.index}" class="label label-info" href="#">
-                <i class="fa fa-stop"></i>
-            </a>
-
-            <a  id="mute${vs.index}" class="label label-info" href="#">
-                <i class="fa fa-volume-off"></i>
-            </a>
-
-            <a style="display: none" id="unmute${vs.index}" class="label label-info" href="#">
-                <i class="fa fa-volume-up"></i>
-            </a>
-
-            <a id="time{vs.index}" class="label label-info" href="javascript:;">
-                <span id="currentTime${vs.index}">00:00</span> 
-                <!--/  <span id="duration${vs.index}"></span>-->
-            </a>
-
-            <a class="label label-info btn_letra" href="javascript:;" data-popover="popover" data-html="true" data-content="${item.letra}" data-placement="bottom">
-                <i class="fa fa-file-text"></i>
-            </a>
-        </div>
+        
 
         <script type="text/javascript">
             jQuery(document).ready(function() {

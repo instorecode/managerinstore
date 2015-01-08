@@ -18,6 +18,8 @@ public class AudiostoreMusicaJSON {
     private String nomeCategoriaArquivo;
     private String letra;
     private Integer count;
+    private String ultimaImportacao;
+    private String bool;
 
     public Integer getPage() {
         return page;
@@ -122,4 +124,20 @@ public class AudiostoreMusicaJSON {
     public void setCount(Integer count) {
         this.count = count;
     }
+
+    public String getUltimaImportacao() {
+        return ultimaImportacao;
+    }
+
+    public void setUltimaImportacao(String ultimaImportacao) {
+        this.ultimaImportacao = ultimaImportacao;
+    }
+
+    public String getBool() {
+        return bool;
+    }
+
+    public void setBool(String bool) {
+        this.bool = bool;
+    }    
 }

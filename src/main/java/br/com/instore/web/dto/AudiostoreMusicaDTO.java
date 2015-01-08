@@ -42,6 +42,7 @@ public class AudiostoreMusicaDTO extends AbstractDTO {
     private String idCategoriaArquivo;
     private String nomeCategoriaArquivo;
     private String letra;
+    private String ultimaImportacao;
 
     public String getId() {
         return id;
@@ -369,5 +370,13 @@ public class AudiostoreMusicaDTO extends AbstractDTO {
 
     public void setLetra(String letra) {
         this.letra = letra;
+    }
+
+    public String getUltimaImportacao() {
+        return ultimaImportacao;
+    }
+
+    public void setUltimaImportacao(String ultimaImportacao) {
+        this.ultimaImportacao = ultimaImportacao;
     }
 }

@@ -22,7 +22,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
-@Intercepts(after = HibernateSession.class)
+@Intercepts(after = GC.class)
 @RequestScoped
 @AcceptsWithAnnotations(Restrict.class)
 public class RestrictAccessValidator {
