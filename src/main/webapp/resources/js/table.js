@@ -129,209 +129,211 @@ jQuery(document).ready(function() {
 
     xtable_load();
     function xtable_load() {
-        msg_fadeIn();
-        jQuery('#table').each(function() {
-            var table = jQuery(this);
-            var url = table.attr('url');
-            var rowSelectable = table.attr('rowSelectable') == 'false' || table.attr('rowSelectable') == false ? false : true;
-            url = url + "?datajson=true";
-            url = url + "&page=" + table.attr('page');
-            url = url + "&rows=" + table.attr('rows');
-            var filtro_aux = "";
-            jQuery("td.filter").each(function() {
-                var input = jQuery(this).children("input");
+        setTimeout(msg_fadeIn, 0);
+        setTimeout(function() {
+            jQuery('#table').each(function() {
+                var table = jQuery(this);
+                var url = table.attr('url');
+                var rowSelectable = table.attr('rowSelectable') == 'false' || table.attr('rowSelectable') == false ? false : true;
+                url = url + "?datajson=true";
+                url = url + "&page=" + table.attr('page');
+                url = url + "&rows=" + table.attr('rows');
+                var filtro_aux = "";
+                jQuery("td.filter").each(function() {
+                    var input = jQuery(this).children("input");
 
-                if (null != input.val() && undefined != input.val() && "" != input.val()) {
-                    url = url + "&" + input.attr("name") + "=" + input.val();
-                    filtro_aux = filtro_aux + "&" + input.attr("name") + "=" + input.val();
-                }
+                    if (null != input.val() && undefined != input.val() && "" != input.val()) {
+                        url = url + "&" + input.attr("name") + "=" + input.val();
+                        filtro_aux = filtro_aux + "&" + input.attr("name") + "=" + input.val();
+                    }
 
-                var input = jQuery(this).children("select");
-                if (null != input.val() && undefined != input.val() && "" != input.val()) {
-                    url = url + "&" + input.attr("name") + "=" + input.val();
-                    filtro_aux = filtro_aux + "&" + input.attr("name") + "=" + input.val();
-                }
-            });
-
-            var json = null;
-//            if (jQuery.storage(url) != null) {
-            if (false) {
-                json = JSON.parse(jQuery.storage(url));
-            } else {
-                jQuery.ajax({
-                    async: false,
-                    type: 'GET',
-                    url: url,
-                    dataType: 'json',
-                    success: function(json_interno) {
-                        json = json_interno;
+                    var input = jQuery(this).children("select");
+                    if (null != input.val() && undefined != input.val() && "" != input.val()) {
+                        url = url + "&" + input.attr("name") + "=" + input.val();
+                        filtro_aux = filtro_aux + "&" + input.attr("name") + "=" + input.val();
                     }
                 });
 
-                jQuery.storageAdd(url, JSON.stringify(json));
-            }
+                var json = null;
+//            if (jQuery.storage(url) != null) {
+                if (false) {
+                    json = JSON.parse(jQuery.storage(url));
+                } else {
+                    jQuery.ajax({
+                        async: false,
+                        type: 'GET',
+                        url: url,
+                        dataType: 'json',
+                        success: function(json_interno) {
+                            json = json_interno;
+                        }
+                    });
+
+                    jQuery.storageAdd(url, JSON.stringify(json));
+                }
 
 
-            setInterval(function() {
-                jQuery.storageClear();
-            }, 180000);
+                setInterval(function() {
+                    jQuery.storageClear();
+                }, 180000);
 
-            table.children("tbody").html("");
-            table.attr("size", json["size"]);
-            table.attr("page", json["page"]);
-            jQuery('.pag_info').text("Pagina " + table.attr('page') + " de " + json["size"] + " / Total de registros " + json["count"]);
-            var tr = "<tr>";
+                table.children("tbody").html("");
+                table.attr("size", json["size"]);
+                table.attr("page", json["page"]);
+                jQuery('.pag_info').text("Pagina " + table.attr('page') + " de " + json["size"] + " / Total de registros " + json["count"]);
+                var tr = "<tr>";
 
-            table.children("thead").children("tr").children("th").each(function() {
-                var td = jQuery(this);
-                tr += "<td class=\"filter\" data-name=\"" + td.attr("field") + "\">";
-                if (td.attr("options") == "false")
-                {
-                    if ("true" == td.attr("isfk")) {
-                        tr += "<select class=\"select2_filter\" name=\"" + (null != td.attr("fkfilter") && undefined != td.attr("fkfilter") && '' != td.attr("fkfilter") ? td.attr("fkfilter") : td.attr("fk")) + "\">";
-                        tr += "<option value=\"\">" + td.attr("fklabelselect") + "</option>";
-                        console.log("URL DE CONSULTA NO FILTRO: " + td.attr("fkurl") + filtro_aux);
-                        jQuery.ajax({
-                            async: false,
-                            url: td.attr("fkurl") + filtro_aux,
-                            success: function(json_response) {
+                table.children("thead").children("tr").children("th").each(function() {
+                    var td = jQuery(this);
+                    tr += "<td class=\"filter\" data-name=\"" + td.attr("field") + "\">";
+                    if (td.attr("options") == "false")
+                    {
+                        if ("true" == td.attr("isfk")) {
+                            tr += "<select class=\"select2_filter\" name=\"" + (null != td.attr("fkfilter") && undefined != td.attr("fkfilter") && '' != td.attr("fkfilter") ? td.attr("fkfilter") : td.attr("fk")) + "\">";
+                            tr += "<option value=\"\">" + td.attr("fklabelselect") + "</option>";
+                            console.log("URL DE CONSULTA NO FILTRO: " + td.attr("fkurl") + filtro_aux);
+                            jQuery.ajax({
+                                async: false,
+                                url: td.attr("fkurl") + filtro_aux,
+                                success: function(json_response) {
 
 //                                    var selected = "";
 //                                    if (null != json[td.attr("fk")] && undefined != json[td.attr("fk")] && "" != json[td.attr("fk")]) {
 //                                        selected = "selected=\"selected\"";
 //                                    }
-                                for (indice in json_response) {
-                                    var item_fk = json_response[indice];
-                                    var fk = item_fk[td.attr("fk")];
-                                    var fk_label = item_fk[td.attr("fklabel")];
-                                    if (json[td.attr("fk")] == fk) {
-                                        tr += "<option value=\"" + fk + "\" selected=\"selected\">" + fk_label + "</option>";
-                                    } else {
-                                        tr += "<option value=\"" + fk + "\">" + fk_label + "</option>";
+                                    for (indice in json_response) {
+                                        var item_fk = json_response[indice];
+                                        var fk = item_fk[td.attr("fk")];
+                                        var fk_label = item_fk[td.attr("fklabel")];
+                                        if (json[td.attr("fk")] == fk) {
+                                            tr += "<option value=\"" + fk + "\" selected=\"selected\">" + fk_label + "</option>";
+                                        } else {
+                                            tr += "<option value=\"" + fk + "\">" + fk_label + "</option>";
+                                        }
                                     }
                                 }
+                            });
+                            tr += "</select>";
+                        } else {
+                            value = "";
+                            if (null != json[td.attr("field")] && undefined != json[td.attr("field")] && "" != json[td.attr("field")]) {
+                                value = "value=\"" + json[td.attr("field")] + "\"";
                             }
-                        });
-                        tr += "</select>";
-                    } else {
-                        value = "";
-                        if (null != json[td.attr("field")] && undefined != json[td.attr("field")] && "" != json[td.attr("field")]) {
-                            value = "value=\"" + json[td.attr("field")] + "\"";
+                            tr += "<input type=\"text\" class=\"form-control \" name=\"" + td.attr("field") + "\" " + value + ">";
                         }
-                        tr += "<input type=\"text\" class=\"form-control \" name=\"" + td.attr("field") + "\" " + value + ">";
                     }
-                }
-                else
-                {
-                    tr += "<button class=\"btn btn-default btn-flat btn-xs btn_filtrar1\"> Filtrar </button> <button class=\"btn btn-default btn-flat btn-xs btn_filtrar2\"> Limpar filtro </button> ";
-                }
-                tr += "</td>";
-            });
-            tr += "</tr>";
-
-            for (i in json["rows"])
-            {
-                var item = json["rows"][i];
-                tr += "<tr id=\"row_data_" + i + "\" class=\"row_data\" data-json-item='" + JSON.stringify(item) + "'>";
-
-                table.children("thead").children("tr").children("th").each(function() {
-                    var td = jQuery(this);
-                    var onColumnRender = td.attr("onColumnRender");
-                    if (null != onColumnRender && undefined != onColumnRender && '' != onColumnRender) {
-                        onColumnRender = 'onColumnRender="' + onColumnRender + '"';
-                    } else {
-                        onColumnRender = "";
-                    }
-                    var data_column = "";
-                    if (td.attr("options") == "false")
+                    else
                     {
-                        data_column = "data_column";
-                    }
-                    if (rowSelectable) {
-                        rowSelectable = "javascript:tr_row_click(this)";
-                    } else {
-                        rowSelectable = "";
-                    }
-
-                    tr += "<td class=\"" + (i % 2 == 0 ? "zz1" : "zz2") + " " + data_column + "\"   onclick=\"" + rowSelectable + "\" " + onColumnRender + ">";
-                    if (td.attr("options") == "false")
-                    {
-                        tr += item[td.attr("field")];
-                    } else
-                    {
-
-                        var btn_view_onclick = table.attr("btn-view-onclick");
-                        if (null != btn_view_onclick && undefined != btn_view_onclick && "" != btn_view_onclick) {
-                            btn_view_onclick = 'onclick="' + btn_view_onclick.split("[[__PK__]]").join(item[table.attr("pk")]) + '"';
-                        } else {
-                            btn_view_onclick = "  ";
-                        }
-
-                        var btn_edit_onclick = table.attr("btn-edit-onclick");
-                        if (null != btn_edit_onclick && undefined != btn_edit_onclick && "" != btn_edit_onclick) {
-                            btn_edit_onclick = 'onclick="' + btn_edit_onclick.split("[[__PK__]]").join(item[table.attr("pk")]) + '"';
-                        } else {
-                            btn_edit_onclick = "  ";
-                        }
-
-                        tr += "<div class=\"btn-group\">";
-                        tr += "<button class=\"btn btn-default btn-flat btn-xs btn_view\" pk=\"" + item[table.attr("pk")] + "\"  " + btn_view_onclick + "> <i class=\"fa fa-eye\"></i> </button>";
-                        tr += "<button class=\"btn btn-default btn-flat btn-xs btn_edit\" pk=\"" + item[table.attr("pk")] + "\"  " + btn_edit_onclick + "> <i class=\"fa fa-pencil\"></i> </button>";
-                        tr += "<button class=\"btn btn-default btn-flat btn-xs btn_delete\" pk=\"" + item[table.attr("pk")] + "\"> <i class=\"fa fa-trash-o\"></i> </button>";
-
-                        // add btn
-                        if (null != jQuery(".addon") && undefined != jQuery(".addon")
-                                && null != jQuery(".addon").html() && undefined != jQuery(".addon").html()) {
-                            tr += jQuery(".addon").html().split("[[__PK__]]").join(item[table.attr("pk")]);
-                        }
-
-
-                        tr += "</div>";
+                        tr += "<button class=\"btn btn-default btn-flat btn-xs btn_filtrar1\"> Filtrar </button> <button class=\"btn btn-default btn-flat btn-xs btn_filtrar2\"> Limpar filtro </button> ";
                     }
                     tr += "</td>";
                 });
-
-                // tr view
-                tr += "</tr>";
-                tr += "<tr class=\"row_opt row_view\">";
-                tr += "<td colspan=\"" + table.children("thead").children("tr").children("th").size() + "\" style=\"padding: 20px; padding-top: 0px;\">";
-                tr += jQuery('.view').html().split("[[__PK__]]").join(item[table.attr("pk")]);
-                tr += "</td>";
                 tr += "</tr>";
 
-                // tr edit
-                tr += "</tr>";
-                tr += "<tr class=\"row_opt row_edit\">";
-                tr += "<td colspan=\"" + table.children("thead").children("tr").children("th").size() + "\" style=\"padding: 20px; padding-top: 0px;\">";
-                tr += jQuery('.edit').html().split("[[__PK__]]").join(item[table.attr("pk")]);
-                tr += "</td>";
-                tr += "</tr>";
+                for (i in json["rows"])
+                {
+                    var item = json["rows"][i];
+                    tr += "<tr id=\"row_data_" + i + "\" class=\"row_data\" data-json-item='" + JSON.stringify(item) + "'>";
 
-                // tr delete
-                tr += "</tr>";
-                tr += "<tr class=\"row_opt row_delete\">";
-                tr += "<td colspan=\"" + table.children("thead").children("tr").children("th").size() + "\" style=\"padding: 20px; padding-top: 0px;\">";
-                tr += jQuery('.delete').html().split("[[__PK__]]").join(item[table.attr("pk")]);
-                tr += "</td>";
-                tr += "</tr>";
-            }
-            table.append("<tbody>" + tr + "</tbody>");
+                    table.children("thead").children("tr").children("th").each(function() {
+                        var td = jQuery(this);
+                        var onColumnRender = td.attr("onColumnRender");
+                        if (null != onColumnRender && undefined != onColumnRender && '' != onColumnRender) {
+                            onColumnRender = 'onColumnRender="' + onColumnRender + '"';
+                        } else {
+                            onColumnRender = "";
+                        }
+                        var data_column = "";
+                        if (td.attr("options") == "false")
+                        {
+                            data_column = "data_column";
+                        }
+                        if (rowSelectable) {
+                            rowSelectable = "javascript:tr_row_click(this)";
+                        } else {
+                            rowSelectable = "";
+                        }
 
-            jQuery('.block-xtable .loader').hide();
-            jQuery(".select2_filter").select2({width: '100%'});
+                        tr += "<td class=\"" + (i % 2 == 0 ? "zz1" : "zz2") + " " + data_column + "\"   onclick=\"" + rowSelectable + "\" " + onColumnRender + ">";
+                        if (td.attr("options") == "false")
+                        {
+                            tr += item[td.attr("field")];
+                        } else
+                        {
+
+                            var btn_view_onclick = table.attr("btn-view-onclick");
+                            if (null != btn_view_onclick && undefined != btn_view_onclick && "" != btn_view_onclick) {
+                                btn_view_onclick = 'onclick="' + btn_view_onclick.split("[[__PK__]]").join(item[table.attr("pk")]) + '"';
+                            } else {
+                                btn_view_onclick = "  ";
+                            }
+
+                            var btn_edit_onclick = table.attr("btn-edit-onclick");
+                            if (null != btn_edit_onclick && undefined != btn_edit_onclick && "" != btn_edit_onclick) {
+                                btn_edit_onclick = 'onclick="' + btn_edit_onclick.split("[[__PK__]]").join(item[table.attr("pk")]) + '"';
+                            } else {
+                                btn_edit_onclick = "  ";
+                            }
+
+                            tr += "<div class=\"btn-group\">";
+                            tr += "<button class=\"btn btn-default btn-flat btn-xs btn_view\" pk=\"" + item[table.attr("pk")] + "\"  " + btn_view_onclick + "> <i class=\"fa fa-eye\"></i> </button>";
+                            tr += "<button class=\"btn btn-default btn-flat btn-xs btn_edit\" pk=\"" + item[table.attr("pk")] + "\"  " + btn_edit_onclick + "> <i class=\"fa fa-pencil\"></i> </button>";
+                            tr += "<button class=\"btn btn-default btn-flat btn-xs btn_delete\" pk=\"" + item[table.attr("pk")] + "\"> <i class=\"fa fa-trash-o\"></i> </button>";
+
+                            // add btn
+                            if (null != jQuery(".addon") && undefined != jQuery(".addon")
+                                    && null != jQuery(".addon").html() && undefined != jQuery(".addon").html()) {
+                                tr += jQuery(".addon").html().split("[[__PK__]]").join(item[table.attr("pk")]);
+                            }
 
 
+                            tr += "</div>";
+                        }
+                        tr += "</td>";
+                    });
 
-            table.children('tbody').children('tr.row_data').children('td').each(function() {
-                var onColumnRender = jQuery(this).attr("onColumnRender");
-                if (null != onColumnRender && undefined != onColumnRender && '' != onColumnRender) {
-                    onColumnRender = window[onColumnRender];
-                    onColumnRender.call(this, jQuery(this).parent().data("jsonItem"), jQuery(this));
+                    // tr view
+                    tr += "</tr>";
+                    tr += "<tr class=\"row_opt row_view\">";
+                    tr += "<td colspan=\"" + table.children("thead").children("tr").children("th").size() + "\" style=\"padding: 20px; padding-top: 0px;\">";
+                    tr += jQuery('.view').html().split("[[__PK__]]").join(item[table.attr("pk")]);
+                    tr += "</td>";
+                    tr += "</tr>";
+
+                    // tr edit
+                    tr += "</tr>";
+                    tr += "<tr class=\"row_opt row_edit\">";
+                    tr += "<td colspan=\"" + table.children("thead").children("tr").children("th").size() + "\" style=\"padding: 20px; padding-top: 0px;\">";
+                    tr += jQuery('.edit').html().split("[[__PK__]]").join(item[table.attr("pk")]);
+                    tr += "</td>";
+                    tr += "</tr>";
+
+                    // tr delete
+                    tr += "</tr>";
+                    tr += "<tr class=\"row_opt row_delete\">";
+                    tr += "<td colspan=\"" + table.children("thead").children("tr").children("th").size() + "\" style=\"padding: 20px; padding-top: 0px;\">";
+                    tr += jQuery('.delete').html().split("[[__PK__]]").join(item[table.attr("pk")]);
+                    tr += "</td>";
+                    tr += "</tr>";
                 }
-            });
+                table.append("<tbody>" + tr + "</tbody>");
 
-            msg_fadeOut();
-        });
+                jQuery('.block-xtable .loader').hide();
+                jQuery(".select2_filter").select2({width: '100%'});
+
+
+
+                table.children('tbody').children('tr.row_data').children('td').each(function() {
+                    var onColumnRender = jQuery(this).attr("onColumnRender");
+                    if (null != onColumnRender && undefined != onColumnRender && '' != onColumnRender) {
+                        onColumnRender = window[onColumnRender];
+                        onColumnRender.call(this, jQuery(this).parent().data("jsonItem"), jQuery(this));
+                    }
+                });
+
+                msg_fadeOut();
+            });
+        }, 1000);
     }
 
     jQuery(".prev").on("click", function() {
