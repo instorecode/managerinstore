@@ -25,9 +25,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import jcifs.smb.SmbException;
@@ -453,7 +457,7 @@ public class RequestMusicaGeral implements java.io.Serializable {
         return (long) Math.ceil((double) totalRegistros / totalRegistrosPorPagina);
     }
 
-    public void list(int pagina, int qtd, int order, String titulo, String interprete, String velocidade, String anoGravacao, String letra, String categoria) {
+    public void list(int pagina, int qtd, int order, String titulo, String interprete, String velocidade, String anoGravacao, String letra, String categoria, String dataCadastro) {
 
         if (pagina == 0) {
             pagina = 1;
@@ -542,8 +546,8 @@ public class RequestMusicaGeral implements java.io.Serializable {
 
         if (null != velocidade && !velocidade.isEmpty()) {
             try {
-                query.eq("velocidade", Short.parseShort(velocidade));
-                query2.eq("velocidade", Short.parseShort(velocidade));
+                query.eq("bpm", Short.parseShort(velocidade));
+                query2.eq("bpm", Short.parseShort(velocidade));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -562,6 +566,17 @@ public class RequestMusicaGeral implements java.io.Serializable {
         if (null != letra && !letra.isEmpty()) {
             query.likeAnyWhere("letra", letra);
             query2.likeAnyWhere("letra", letra);
+        }
+        
+        if (null != dataCadastro && !dataCadastro.isEmpty()) {
+            try {
+                System.out.println("passou aqui --->>> " +  new SimpleDateFormat("dd/MM/yyyy").parse(dataCadastro.trim()));
+                query.eq("dataCadastro", new SimpleDateFormat("dd/MM/yyyy").parse(dataCadastro.trim()));
+                query2.eq("dataCadastro", new SimpleDateFormat("dd/MM/yyyy").parse(dataCadastro.trim()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+                System.out.println("passou aqui 2");
+            }
         }
 
         if (null != categoria && !categoria.isEmpty()) {
@@ -611,7 +626,7 @@ public class RequestMusicaGeral implements java.io.Serializable {
             dto.setAfinidade4(bean.getAfinidade4().isEmpty() ? "Sem afinidade definida" : bean.getAfinidade4());
             dto.setAnoGravacao(bean.getAnoGravacao().toString());
             dto.setArquivo(bean.getArquivo());
-            dto.setBpm("" + bean.getBpm() + " BPM");
+            dto.setBpm( (bean.getBpm() == 50 ? "Lenta" : "") + (bean.getBpm() == 100 ? "Media" : "") + (bean.getBpm() == 200 ? "Rápida" : ""));
 
             AudiostoreGravadoraBean agb = repository.find(AudiostoreGravadoraBean.class, bean.getGravadora());
             UsuarioBean u = repository.find(UsuarioBean.class, bean.getUsuario());
@@ -655,6 +670,10 @@ public class RequestMusicaGeral implements java.io.Serializable {
             List<String> partss = Arrays.asList(dto.getArquivo().split("/"));
             if (null != partss && !partss.isEmpty()) {
                 dto.setNomeArquivoFormatado(partss.get(partss.size() - 1));
+            }
+            
+            if (null != bean.getDataCadastro()) {
+                dto.setDataCadastro(new SimpleDateFormat("dd/MM/yyyy").format(bean.getDataCadastro()));
             }
 
             lista2.add(dto);

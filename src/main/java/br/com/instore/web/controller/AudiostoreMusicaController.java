@@ -112,7 +112,7 @@ public class AudiostoreMusicaController implements java.io.Serializable {
     @Restrict
     @Path("/musica/programacao-audiostore/cadastrar/{idmusicaGeral}")
     public void cadastrar(String idmusicaGeral, AudiostoreMusicaBean[] audiostoreMusicaBeanList) {
-        requestAudiostoreMusica.salvar(audiostoreMusicaBeanList);
+        requestAudiostoreMusica.salvar(audiostoreMusicaBeanList, true);
     }
 
     @Get
@@ -134,7 +134,7 @@ public class AudiostoreMusicaController implements java.io.Serializable {
     public void cadastrar(Integer id, AudiostoreMusicaBean audiostoreMusicaBean) {
         AudiostoreMusicaBean[] audiostoreMusicaBeanList = new AudiostoreMusicaBean[1];
         audiostoreMusicaBeanList[0] = audiostoreMusicaBean;
-        requestAudiostoreMusica.salvar(audiostoreMusicaBeanList);
+        requestAudiostoreMusica.salvar(audiostoreMusicaBeanList , false);
     }
 
     @Get

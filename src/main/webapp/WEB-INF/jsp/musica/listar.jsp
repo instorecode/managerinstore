@@ -380,6 +380,24 @@
                         </div>
                     </div>
 
+                </div>
+                        
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Data de cadastro</label>
+                            <div class="input-group date datetime" data-min-view="2" data-date-format="dd/mm/yyyy">
+                                <input type="text" name="dataCadastro" class="form-control datepicker" placeholder="Data de cadastro"                                         
+                                       data-mask="99/99/9999"
+                                       value="${dataCadastro}">
+                                <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+
                     <div class="col-md-12">
                         <div class="form-group">
                             <label>Categoria</label>
@@ -473,6 +491,7 @@
                                 <th><strong>Interprete</strong></th>
                                 <th><strong>Velocidade em BPM</strong></th>
                                 <th><strong>Ano de gravação</strong></th>
+                                <th><strong>Data de cadastro</strong></th>
                             </tr>
                         </thead>
                         <tbody class="no-border-y">
@@ -613,6 +632,7 @@
                                     <td>${item.interprete}</td>
                                     <td>${item.bpm}</td>
                                     <td>${item.anoGravacao}</td>
+                                    <td>${item.dataCadastro}</td>
                                 </tr>
                             </c:forEach>
                         </tbody>

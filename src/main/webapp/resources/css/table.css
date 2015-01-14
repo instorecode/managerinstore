@@ -5,7 +5,7 @@
 }
 .options
 {
-    width: 170px;
+    width: 200px;
 }
 .pag_info
 {
@@ -100,9 +100,16 @@ th.extra {
     display: none;
 }
 
+.xtable tbody tr td.invalidRow
+{
+    background-color: #e44c34 !important; 
+    color: #FFF;
+}
+
 .xtable tbody tr.selected td
 {
-    background-color: #fffbd3 !important;
+    background-color: #ffc401 !important;
+    color: inherit;
 }
 
 .mask_message {

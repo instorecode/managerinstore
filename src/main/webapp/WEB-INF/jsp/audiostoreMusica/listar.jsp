@@ -161,10 +161,11 @@
                         size="0"
                         rows="10" 
                         pk="id"
-                        btn-edit-onclick="javascript:window.location.href='${url}/musica/programacao-audiostore/atualizar/[[__PK__]]'"> 
+                        btn-edit-onclick="javascript:window.location.href='${url}/musica/programacao-audiostore/atualizar/[[__PK__]]'"
+                        renderer="renderer"> 
                     <thead>
                         <tr>
-                            <th options="true" class="options" data-html="">#</th>
+                            <th options="true" class="options" data-html="" >#</th>
                             <!--<th field="id" options="false">ID</th>-->
                             <th field="arquivo" options="false">Arquivo</th>
                             <th field="nome" options="false">Nome</th>
@@ -180,6 +181,9 @@
         
 
         <script type="text/javascript">
+            function renderer(item) {
+                console.log(item);
+            }
             jQuery(document).ready(function() {
                 jQuery.ajaxSetup({
                     timeout: 1000 * 60 * 60 * 24

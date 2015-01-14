@@ -688,14 +688,14 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         return repository.find(MusicaGeralBean.class, id);
     }
 
-    public void salvar(AudiostoreMusicaBean[] beans) {
+    public void salvar(AudiostoreMusicaBean[] beans , Boolean updateAll) {
         repository.setUsuario(sessionUsuario.getUsuarioBean());
         try {
             int ixy = 0;
             for (AudiostoreMusicaBean bean : beans) {
                 if (null != bean) {
-                    if (ixy == 0) {
-                        repository.query("update audiostore_musica set ultima_importacao = 0 where idcliente = " + bean.getCliente().getIdcliente() + " and ultima_importacao = 1;").executeSQL();
+                    if (ixy == 0 && updateAll) {
+                        repository.query("update audiostore_musica set ultima_importacao = 0 where id >= 1 and cliente = " + bean.getCliente().getIdcliente() + " and ultima_importacao = 1;").executeSQLCommand();
                     }
                     ixy++;
                     // verifica se ja existe

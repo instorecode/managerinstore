@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jcifs.smb.NtlmPasswordAuthentication;
@@ -13,8 +15,10 @@ import jcifs.smb.SmbFile;
 import jcifs.smb.SmbFileOutputStream;
 
 public class Main {
-
     public static void main(String[] args) {
+      
+    }
+    public static void main2(String[] args) {
         SmbFileOutputStream sfous = null;
         try {
             sfous = new SmbFileOutputStream(new SmbFile("smb://192.168.1.249/Clientes/POSTOSANMARINO/ENVIO/Intranet/musica.exp" , Utilities.getAuthSmbDefault()), true);

@@ -12,8 +12,6 @@ public class GC {
 
     @AroundCall
     public void intercept(SimpleInterceptorStack stack, ControllerMethod method) {
-        System.gc();
         stack.next();
-        System.gc();
     }
 }

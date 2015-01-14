@@ -763,6 +763,8 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
 
         boolean acontinue = false;
         boolean bcontinue = false;
+        String aerror = "";
+        String berror = "";
 
         if (null != comercialHorarioA && !comercialHorarioA.isEmpty()) {
             acontinue = true;
@@ -793,12 +795,14 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
                         Integer.parseInt(val.trim());
                     } catch (NumberFormatException e) {
                         acontinue = false;
+                        aerror = "O comercial relacionado ao inicio da programação está em um formato incorreto";
                     }
                 } else {
                     try {
                         new SimpleDateFormat("HH:mm:ss").parse(val.trim());
                     } catch (ParseException e) {
                         acontinue = false;
+                        aerror = "o horário( " + val.trim() + " ) relacionado ao inicio da programação está em um formato incorreto";
                     }
                 }
                 i++;
@@ -815,12 +819,14 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
                         Integer.parseInt(val.trim());
                     } catch (NumberFormatException e) {
                         bcontinue = false;
+                        berror = "O comercial relacionado ao final da programação está em um formato incorreto";
                     }
                 } else {
                     try {
                         new SimpleDateFormat("HH:mm:ss").parse(val.trim());
                     } catch (ParseException e) {
                         bcontinue = false;
+                        berror = "o horário( " + val.trim() + " ) relacionado ao final da programação está em um formato incorreto";
                     }
                 }
                 i++;
@@ -829,9 +835,16 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
 
         List<AudiostoreProgramacaoComercialBean> comercialList = new ArrayList<AudiostoreProgramacaoComercialBean>();
 
-        if (!acontinue || !bcontinue) {
+        if (!acontinue) {
             if ((null != comercialHorarioA && !comercialHorarioA.isEmpty()) || (null != comercialHorarioB && !comercialHorarioB.isEmpty())) {
-                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Existe algo errado com os comerciais a programação")).recursive().serialize();
+                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, aerror)).recursive().serialize();
+                return;
+            }
+        }
+        
+        if (!bcontinue) {
+            if ((null != comercialHorarioA && !comercialHorarioA.isEmpty()) || (null != comercialHorarioB && !comercialHorarioB.isEmpty())) {
+                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, berror)).recursive().serialize();
                 return;
             }
         }

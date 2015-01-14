@@ -81,7 +81,7 @@
                         <label>Tipo</label>
                         <select class="select2" name="audiostoreCategoriaBean.tipo" data-rule-required="true">
                             <option value>Selecione um tipo</option>
-                            <option value="1" ${audiostoreCategoriaBean.tipo eq 1 ? 'selected="selected"' : ''}>Mùsica</option>
+                            <option value="1" ${audiostoreCategoriaBean.tipo eq 1 ? 'selected="selected"' : ''}>Música</option>
                             <option value="2" ${audiostoreCategoriaBean.tipo eq 2 ? 'selected="selected"' : ''}>Comercial</option>
                             <option value="3" ${audiostoreCategoriaBean.tipo eq 3 ? 'selected="selected"' : ''}>Video</option>
                         </select>

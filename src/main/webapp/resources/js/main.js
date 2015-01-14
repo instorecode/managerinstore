@@ -691,15 +691,7 @@ function formProccess() {
 
 function dialogAjax(msg) {
     bootbox.hideAll();
-    bootbox.dialog({ 
-        message: msg,
-        title: "Sistema processando informações",
-        buttons: {}
-    });
-
-    setTimeout(function() {
-        bootbox.hideAll();
-    }, 2000);
+    bootbox.alert(msg);;
 }
 
 

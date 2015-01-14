@@ -22,6 +22,7 @@ public class MusicaGeralDTO extends AbstractDTO {
     private String afinidade3;
     private String afinidade4;
     private String arquivo;
+    private String dataCadastro;
 
     public MusicaGeralDTO() {
     }
@@ -171,5 +172,13 @@ public class MusicaGeralDTO extends AbstractDTO {
 
     public void setArquivo(String arquivo) {
         this.arquivo = arquivo;
+    }
+
+    public String getDataCadastro() {
+        return dataCadastro;
+    }
+
+    public void setDataCadastro(String dataCadastro) {
+        this.dataCadastro = dataCadastro;
     }
 }

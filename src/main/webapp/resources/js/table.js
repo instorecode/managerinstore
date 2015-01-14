@@ -28,6 +28,19 @@ function rowsSelected() {
     return arr;
 }
 
+function xtableGetRows() {
+    var arr = [];
+    var index = 0;
+    jQuery('.row_data').each(function() {
+        arr[index] = {
+            tr : jQuery(this),
+            json : jQuery(this).data("jsonItem")
+        };
+        index++;
+    });
+    return arr;
+}
+
 jQuery(document).ready(function() {
 
     jQuery('.btn_sel_tudo').on('click', function() {
@@ -182,7 +195,7 @@ jQuery(document).ready(function() {
                 table.attr("page", json["page"]);
                 jQuery('.pag_info').text("Pagina " + table.attr('page') + " de " + json["size"] + " / Total de registros " + json["count"]);
                 var tr = "<tr>";
-
+                
                 table.children("thead").children("tr").children("th").each(function() {
                     var td = jQuery(this);
                     tr += "<td class=\"filter\" data-name=\"" + td.attr("field") + "\">";
@@ -275,11 +288,11 @@ jQuery(document).ready(function() {
                                 btn_edit_onclick = "  ";
                             }
 
-                            tr += "<div class=\"btn-group\">";
-                            tr += "<button class=\"btn btn-default btn-flat btn-xs btn_view\" pk=\"" + item[table.attr("pk")] + "\"  " + btn_view_onclick + "> <i class=\"fa fa-eye\"></i> </button>";
-                            tr += "<button class=\"btn btn-default btn-flat btn-xs btn_edit\" pk=\"" + item[table.attr("pk")] + "\"  " + btn_edit_onclick + "> <i class=\"fa fa-pencil\"></i> </button>";
-                            tr += "<button class=\"btn btn-default btn-flat btn-xs btn_delete\" pk=\"" + item[table.attr("pk")] + "\"> <i class=\"fa fa-trash-o\"></i> </button>";
-
+                            tr += "<div class=\"btn-group1\">";
+                            tr += "<button data-placement=\"top\" data-toggle=\"tooltip\" data-original-title=\"Ver detalhes do registro\" class=\"btn btn-default btn-flat btn-xs btn_view\" pk=\"" + item[table.attr("pk")] + "\"  " + btn_view_onclick + "> <i class=\"fa fa-eye\"></i> </button>";
+                            tr += "<button data-placement=\"top\" data-toggle=\"tooltip\" data-original-title=\"Atualizar dados do registro\" class=\"btn btn-default btn-flat btn-xs btn_edit\" pk=\"" + item[table.attr("pk")] + "\"  " + btn_edit_onclick + "> <i class=\"fa fa-pencil\"></i> </button>";
+                            tr += "<button data-placement=\"top\" data-toggle=\"tooltip\" data-original-title=\"Remover registro da base de dados\" class=\"btn btn-default btn-flat btn-xs btn_delete\" pk=\"" + item[table.attr("pk")] + "\"> <i class=\"fa fa-trash-o\"></i> </button>";
+                            
                             // add btn
                             if (null != jQuery(".addon") && undefined != jQuery(".addon")
                                     && null != jQuery(".addon").html() && undefined != jQuery(".addon").html()) {
@@ -332,6 +345,8 @@ jQuery(document).ready(function() {
                 });
 
                 msg_fadeOut();
+                table.trigger('renderer');
+                jQuery('[data-toggle="tooltip"]').tooltip();
             });
         }, 1000);
     }
@@ -702,15 +717,7 @@ jQuery(document).ready(function() {
 
 function dialogAjax(msg) {
     bootbox.hideAll();
-    bootbox.dialog({
-        message: msg,
-        title: "Sistema processando dados",
-        buttons: {}
-    });
-
-    setTimeout(function() {
-        bootbox.hideAll();
-    }, 2000);
+    bootbox.alert(msg);
 }
 
 function msg_fadeIn() {
@@ -725,6 +732,7 @@ function msg_fadeIn() {
 
     jQuery('.mask_message').fadeIn();
 }
+
 function msg_fadeOut() {
     jQuery('.mask_message').fadeOut();
 }

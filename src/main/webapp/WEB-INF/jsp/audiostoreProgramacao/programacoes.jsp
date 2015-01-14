@@ -111,7 +111,7 @@
             <button type="button" class="btn btn-default btn-flat btn_export"><i class="fa fa-upload"></i> Exportar arquivo </button>
 
             <div class="addon" style="display: none;">
-                <a href="${url}/audiostore-programacao/cadastrar?clonar=[[__PK__]]" class="btn btn-default btn-flat btn-xs" id="clonar" ><i class="fa fa-plus"></i></a>
+                <a data-placement="top" data-toggle="tooltip" data-original-title="Clonar registro" href="${url}/audiostore-programacao/cadastrar?clonar=[[__PK__]]" class="btn btn-default btn-flat btn-xs" id="clonar" ><i class="fa fa-plus"></i></a>
             </div>
 
             &nbsp;

@@ -193,14 +193,17 @@ var json = [
                     </div>
                 </div>
 
-                <div class="col-md-12">
+<!--                <div class="col-md-12">
                     <div class="form-group">
                         <label>Sensor/monitor</label>
 
                         <label class="radio-inline"> <input type="radio" class="icheck"  name="audiostoreProgramacaoBean.loopback" id="optionsRadios1" value="${true}" ${audiostoreProgramacaoBean.loopback eq true ? 'checked="checked"' : ''} >&nbsp;Sim </label>
                         <label class="radio-inline"> <input type="radio" class="icheck"  name="audiostoreProgramacaoBean.loopback" id="optionsRadios1" value="${false}"  ${audiostoreProgramacaoBean.loopback eq false or audiostoreProgramacaoBean.loopback eq null ? 'checked="checked"' : ''}>&nbsp;Não </label>
                     </div>
-                </div>
+                </div>-->
+
+
+                <input type="hidden" name="audiostoreProgramacaoBean.loopback" value="${false}" />
 
                 <div class="col-md-12">
                     <div class="form-group">
@@ -212,7 +215,7 @@ var json = [
                             <option value="4" ${audiostoreProgramacaoBean.quintaFeira ? 'selected="selected"': ''}>Quinta-Feira</option>
                             <option value="5" ${audiostoreProgramacaoBean.sextaFeira ? 'selected="selected"': ''}>Sexta-Feira</option>
                             <option value="6" ${audiostoreProgramacaoBean.sabado ? 'selected="selected"': ''}>Sábado</option>
-                            <option value="7" ${audiostoreProgramacaoBean.domingo ? 'selected="selected"': ''}>Domíngo</option>
+                            <option value="7" ${audiostoreProgramacaoBean.domingo ? 'selected="selected"': ''}>Domingo</option>
                         </select>
                     </div>
                 </div>
@@ -557,7 +560,7 @@ var json = [
                             <div class="block">
                                 <div class="header">
                                     <h2> 
-                                        <b>Categorías</b> 
+                                        <b>Categorias</b> 
                                         <span class="pull-right contador_l1"> </span>
                                     </h2>
                                     <input type="text" class="form-control lista1_pesq" placeholder="Filtro de Pesquisar">
@@ -600,7 +603,7 @@ var json = [
                             <div class="block">
                                 <div class="header">
                                     <h2> 
-                                        <b>Categorías inclusas</b> 
+                                        <b>Categorias inclusas</b> 
                                         <span class="pull-right contador_l2"> </span>
                                     </h2>
                                     <input type="text" class="form-control lista2_pesq" placeholder="Filtro de Pesquisar">
