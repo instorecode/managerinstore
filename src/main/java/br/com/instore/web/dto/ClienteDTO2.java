@@ -4,6 +4,7 @@ public class ClienteDTO2 extends AbstractDTO {
     private Integer idcliente;
     private Integer parente;
     private String nome;
+    private String codigoInterno;
 
     public Integer getIdcliente() {
         return idcliente;
@@ -27,5 +28,13 @@ public class ClienteDTO2 extends AbstractDTO {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getCodigoInterno() {
+        return codigoInterno;
+    }
+
+    public void setCodigoInterno(String codigoInterno) {
+        this.codigoInterno = codigoInterno;
     }
 }

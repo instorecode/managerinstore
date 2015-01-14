@@ -697,7 +697,7 @@ public class RequestCliente implements java.io.Serializable {
     }
 
     public List<ClienteDTO2> paginaCadastroListaFilial3(Integer id) {
-        List<ClienteDTO2> lista = repository.query("select idcliente , parente , nome  from cliente where matriz = 0 and parente != " + id).executeSQL(ClienteDTO2.class);
+        List<ClienteDTO2> lista = repository.query("select idcliente , parente , nome , codigo_interno as codigoInterno from cliente where matriz = 0 and parente != " + id).executeSQL(ClienteDTO2.class);
         return lista;
     }
 }

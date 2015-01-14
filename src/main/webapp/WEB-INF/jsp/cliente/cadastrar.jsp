@@ -667,7 +667,7 @@
                                         <c:forEach items="${filialBeanList2}" var="filial" varStatus="vs">
                                             <li id="${vs.index}" data-index="${vs.index}">
                                                 <i class="fa fa-cubes"></i>
-                                                <div class="text">${filial.nome}</div>
+                                                <div class="text">Código Interno: ${filial.codigoInterno} / Nome: ${filial.nome}</div>
                                                 <small>
                                                     <c:if test="${filial.parente eq 0}">
                                                         <b style="color: green"></b>
@@ -704,7 +704,7 @@
                                         <c:forEach items="${filialBeanList1}" var="filial" varStatus="vs">
                                             <li id="${vs.index}" data-index="${vs.index}">
                                                 <i class="fa fa-cubes"></i>
-                                                <div class="text">${filial.nome}</div>
+                                                <div class="text">Código Interno: ${filial.codigoInterno} / Nome: ${filial.nome}</div>
                                                 <small>
                                                     <c:if test="${filial.parente eq 0}">
                                                         <b style="color: green"></b>
