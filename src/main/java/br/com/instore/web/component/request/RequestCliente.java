@@ -2,7 +2,9 @@ package br.com.instore.web.component.request;
 
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.view.Results;
+import br.com.instore.core.orm.DataValidatorException;
 import br.com.instore.core.orm.Each;
+import br.com.instore.core.orm.bean.AcessoRemotoBean;
 import br.com.instore.core.orm.bean.BairroBean;
 import br.com.instore.core.orm.bean.CepBean;
 import br.com.instore.core.orm.bean.CidadeBean;
@@ -13,6 +15,9 @@ import br.com.instore.core.orm.bean.DadosClienteBean;
 import br.com.instore.core.orm.bean.EnderecoBean;
 import br.com.instore.core.orm.bean.EstadoBean;
 import br.com.instore.core.orm.bean.IndiceReajusteBean;
+import br.com.instore.core.orm.bean.ProdutoBean;
+import br.com.instore.core.orm.bean.ProdutoClienteBean;
+import br.com.instore.core.orm.bean.TipoAcessoRemotoBean;
 import br.com.instore.core.orm.bean.property.DadosCliente;
 import br.com.instore.core.orm.bean.property.Estado;
 import br.com.instore.web.component.session.SessionUsuario;
@@ -20,15 +25,12 @@ import br.com.instore.web.dto.ClienteDTO;
 import br.com.instore.web.dto.ClienteDTO2;
 import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
-import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import jcifs.smb.SmbException;
-import jcifs.smb.SmbFile;
 
 @RequestScoped
 public class RequestCliente implements java.io.Serializable {
@@ -131,12 +133,12 @@ public class RequestCliente implements java.io.Serializable {
                 String qs = "select \n"
                         + "	idcliente, \n"
                         + "	'' as p \n"
-                        + "from \n" 
+                        + "from \n"
                         + "	cliente \n"
                         + "where \n"
                         + "	parente = " + clienteBean.getIdcliente();
-                
-                System.out.println("---------------------------------------------------------------");       
+
+                System.out.println("---------------------------------------------------------------");
                 System.out.println(qs);
                 System.out.println("---------------------------------------------------------------");
                 final List<Integer> idUnidades = new ArrayList<Integer>();
@@ -687,17 +689,138 @@ public class RequestCliente implements java.io.Serializable {
     }
 
     public List<ClienteDTO2> paginaCadastroListaFilial() {
-        List<ClienteDTO2> lista = repository.query("select idcliente , parente , nome  from cliente where matriz = 0").executeSQL(ClienteDTO2.class);
+        List<ClienteDTO2> lista = repository.query("select idcliente , parente , nome , codigo_interno as codigoInterno  from cliente where matriz = 0").executeSQL(ClienteDTO2.class);
         return lista;
     }
 
     public List<ClienteDTO2> paginaCadastroListaFilial2(Integer id) {
-        List<ClienteDTO2> lista = repository.query("select idcliente , parente , nome  from cliente where matriz = 0 and parente = " + id).executeSQL(ClienteDTO2.class);
+        List<ClienteDTO2> lista = repository.query("select idcliente , parente , nome , codigo_interno as codigoInterno  from cliente where matriz = 0 and parente = " + id).executeSQL(ClienteDTO2.class);
         return lista;
     }
 
     public List<ClienteDTO2> paginaCadastroListaFilial3(Integer id) {
         List<ClienteDTO2> lista = repository.query("select idcliente , parente , nome , codigo_interno as codigoInterno from cliente where matriz = 0 and parente != " + id).executeSQL(ClienteDTO2.class);
         return lista;
+    }
+
+    public class ClienteConf {
+
+        private ClienteBean cliente;
+        private List<ProdutoClienteBean> produtoClienteList;
+        private List<AcessoRemotoBean> acessoRemotoList;
+
+        public ClienteBean getCliente() {
+            return cliente;
+        }
+
+        public void setCliente(ClienteBean cliente) {
+            this.cliente = cliente;
+        }
+
+        public List<ProdutoClienteBean> getProdutoClienteList() {
+            return produtoClienteList;
+        }
+
+        public void setProdutoClienteList(List<ProdutoClienteBean> produtoClienteList) {
+            this.produtoClienteList = produtoClienteList;
+        }
+
+        public List<AcessoRemotoBean> getAcessoRemotoList() {
+            return acessoRemotoList;
+        }
+
+        public void setAcessoRemotoList(List<AcessoRemotoBean> acessoRemotoList) {
+            this.acessoRemotoList = acessoRemotoList;
+        }
+    }
+
+    public List<ClienteConf> carregaUnidades(Integer cliente) {
+        List<ClienteConf> lista = new ArrayList<ClienteConf>();
+        List<ClienteBean> clienteLista = new ArrayList<ClienteBean>();
+        clienteLista = repository.query(ClienteBean.class).eq("parente", cliente).eq("matriz", false).findAll();
+
+        for (ClienteBean item : clienteLista) {
+            ClienteConf cc = new ClienteConf();
+            cc.setCliente(item);
+            cc.setProdutoClienteList((List<ProdutoClienteBean>) repository.query(ProdutoClienteBean.class).eq("cliente.idcliente", item.getIdcliente()).findAll());
+            cc.setAcessoRemotoList((List<AcessoRemotoBean>) repository.query(AcessoRemotoBean.class).eq("cliente.idcliente", item.getIdcliente()).findAll());
+            lista.add(cc);
+        }
+
+        return lista;
+    }
+
+    public List<ProdutoBean> carregaProduto() {
+        List<ProdutoBean> lista = new ArrayList<ProdutoBean>();
+        lista = repository.query(ProdutoBean.class).findAll();
+        return lista;
+    }
+
+    public List<ProdutoClienteBean> carregaProdutoCliente(Integer cliente) {
+        List<ProdutoClienteBean> lista = new ArrayList<ProdutoClienteBean>();
+
+        List<ClienteBean> clienteLista = new ArrayList<ClienteBean>();
+        clienteLista = repository.query(ClienteBean.class).eq("parente", cliente).eq("matriz", false).orderAsc("idcliente").findAll();
+        Integer[] in = new Integer[(null != clienteLista ? clienteLista.size() : 0)];
+        int i = 0;
+        for (ClienteBean item : clienteLista) {
+            in[i] = item.getIdcliente();
+            i++;
+        }
+
+        lista = repository.query(ProdutoClienteBean.class).in("cliente.idcliente", in).orderAsc("id").findAll();
+        return lista;
+    }
+
+    public List<TipoAcessoRemotoBean> carregaTipoAcessoRemoto() {
+        List<TipoAcessoRemotoBean> lista = new ArrayList<TipoAcessoRemotoBean>();
+        lista = repository.query(TipoAcessoRemotoBean.class).orderAsc("id").findAll();
+        return lista;
+    }
+
+    public List<AcessoRemotoBean> carregaAcessoRemoto(Integer cliente) {
+        List<AcessoRemotoBean> lista = new ArrayList<AcessoRemotoBean>();
+
+        List<ClienteBean> clienteLista = new ArrayList<ClienteBean>();
+        clienteLista = repository.query(ClienteBean.class).eq("parente", cliente).eq("matriz", false).orderAsc("idcliente").findAll();
+        Integer[] in = new Integer[(null != clienteLista ? clienteLista.size() : 0)];
+        int i = 0;
+        for (ClienteBean item : clienteLista) {
+            in[i] = item.getIdcliente();
+            i++;
+        }
+
+        lista = repository.query(AcessoRemotoBean.class).in("cliente.idcliente", in).orderAsc("id").findAll();
+        return lista;
+    }
+
+    public void configuracaoAcessoProduto(Integer cliente, List<ProdutoClienteBean> produtoClienteBeanList, List<AcessoRemotoBean> acessoRemotoBeanList) {
+        try {
+            repository.setUsuario(sessionUsuario.getUsuarioBean());
+
+            repository.query("delete from produto_cliente where cliente in ((select idcliente from cliente where parente = " + cliente + "))").executeSQLCommand();
+            repository.query("delete from acesso_remoto where cliente in ((select idcliente from cliente where parente = " + cliente + "))").executeSQLCommand();
+
+            if (null != produtoClienteBeanList) {
+                for (ProdutoClienteBean produtoClienteBean : produtoClienteBeanList) {
+                    if (null != produtoClienteBean) {
+                        repository.save(produtoClienteBean);
+                    }
+                }
+            }
+
+            if (null != acessoRemotoBeanList) {
+                for (AcessoRemotoBean acessoRemotoBean : acessoRemotoBeanList) {
+                    if (null != acessoRemotoBean) {
+                        repository.save(acessoRemotoBean);
+                    }
+                }
+            }
+            repository.finalize();
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Dados salvos com sucesso!")).recursive().serialize();
+        } catch (DataValidatorException e) {
+            e.printStackTrace();
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel salvar os dados!")).recursive().serialize();
+        }
     }
 }

@@ -61,7 +61,7 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
         Integer offset = (page - 1) * rows;
         List<AudiostoreProgramacaoBean> lista = new ArrayList<AudiostoreProgramacaoBean>();
 
-        Query q1 = repository.query(AudiostoreProgramacaoBean.class);
+            Query q1 = repository.query(AudiostoreProgramacaoBean.class);
         Query q2 = repository.query(AudiostoreProgramacaoBean.class);
 
         if (null != id && id > 0) {

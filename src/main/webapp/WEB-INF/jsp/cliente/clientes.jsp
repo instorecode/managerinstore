@@ -2,6 +2,7 @@
 <instore:template isGrid="true">
 
     <jsp:attribute name="submenu">
+        <a href="${url}/cliente/cadastrar" class="btn btn-default"> <i class="fa fa-save"></i> Configurar clientes </a>
         <a href="${url}/cliente/cadastrar" class="btn btn-default"> <i class="fa fa-save"></i> Cadastrar </a>
     </jsp:attribute>
 
@@ -40,6 +41,7 @@
         <a xhref="${url}/contatos" data-toggle="tooltip" data-placement="bottom" data-original-title="Contatos" type="button" class="btn btn-default btnCont"><i class="fa fa-users"></i></a>
         <a xhref="${url}/cliente-configuracao" data-toggle="tooltip" data-placement="bottom" data-original-title="Configurações" type="button" class="btn btn-default btnCont"><i class="fa fa-gear"></i></a>
         <a xhref="${url}/cliente-ou-filial/suspender" data-toggle="tooltip" data-placement="bottom" data-original-title="Suspender cliente" type="button" class="btn btn-default btnCont"><i class="fa fa-calendar"></i></a>
+        <a xhref="${url}/cliente/configuracao/acesso/produto" data-toggle="tooltip" data-placement="bottom" data-original-title="Configurar acesso e produtos do cliente" type="button" class="btn btn-default btnCont"><i class="fa fa-cog"></i></a>
     </jsp:attribute>
         
         

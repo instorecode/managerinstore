@@ -6,9 +6,11 @@ import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Post;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.view.Results;
+import br.com.instore.core.orm.bean.AcessoRemotoBean;
 import br.com.instore.core.orm.bean.ClienteBean;
 import br.com.instore.core.orm.bean.ClienteSuspensoBean;
 import br.com.instore.core.orm.bean.DadosClienteBean;
+import br.com.instore.core.orm.bean.ProdutoClienteBean;
 import br.com.instore.web.annotation.Restrict;
 import br.com.instore.web.component.request.RequestCliente;
 import br.com.instore.web.dto.ClienteDTO;
@@ -22,7 +24,6 @@ public class ClienteController implements java.io.Serializable {
 
     @Inject
     private Result result;
-    
     @Inject
     private RequestCliente requestCliente;
 
@@ -57,7 +58,7 @@ public class ClienteController implements java.io.Serializable {
     @Post
     @Restrict
     @Path("/cliente/cadastrar")
-    public void cadastrar(ClienteBean cliente , DadosClienteBean dadosCliente , Integer [] filialList) {
+    public void cadastrar(ClienteBean cliente, DadosClienteBean dadosCliente, Integer[] filialList) {
         requestCliente.salvar(cliente, dadosCliente, filialList);
     }
 
@@ -69,24 +70,24 @@ public class ClienteController implements java.io.Serializable {
         ClienteBean cliente = requestCliente.clienteBean(id);
         Integer contador1 = 0;
         Integer contador2 = 0;
-        
+
         List<ClienteDTO2> filialBeanList2 = requestCliente.paginaCadastroListaFilial2(id);
         List<ClienteDTO2> filialBeanList3 = requestCliente.paginaCadastroListaFilial3(id);
-        
+
         for (ClienteDTO2 dto : filialBeanList2) {
             contador1++;
         }
-        
+
         for (ClienteDTO2 dto : filialBeanList3) {
             contador2++;
         }
-        
-        
-        
+
+
+
         result.include("filialBeanList1", filialBeanList2);
         result.include("filialBeanList2", filialBeanList3);
-        
-        
+
+
         result.include("contador1", contador1);
         result.include("contador2", contador2);
         result.include("estadoBeanList", requestCliente.estadoBeanList());
@@ -98,7 +99,7 @@ public class ClienteController implements java.io.Serializable {
     @Post
     @Restrict
     @Path("/cliente/atualizar/{id}")
-    public void cadastrar(Integer id , ClienteBean cliente , DadosClienteBean dadosCliente, Integer [] filialList) {
+    public void cadastrar(Integer id, ClienteBean cliente, DadosClienteBean dadosCliente, Integer[] filialList) {
         requestCliente.salvar(cliente, dadosCliente, filialList);
     }
 
@@ -116,7 +117,7 @@ public class ClienteController implements java.io.Serializable {
     public void remover(Integer id, String param) {
         requestCliente.desabilitar(id);
     }
-    
+
     @Get
     @Restrict
     @Path("/cliente-configuracao/{id}")
@@ -125,14 +126,14 @@ public class ClienteController implements java.io.Serializable {
         result.include("cliente", cliente);
         result.include("dadosCliente", requestCliente.dadosClienteBean(id));
     }
-    
+
     @Post
     @Restrict
     @Path("/cliente-configuracao/{id}")
-    public void configuracao(Integer id, String p1,String p2,String p3,String p4,String p5) {
+    public void configuracao(Integer id, String p1, String p2, String p3, String p4, String p5) {
         requestCliente.salvar3(id, p1, p2, p3, p4, p5);
     }
-    
+
     @Get
     @Restrict
     @Path("/cliente-ou-filial/suspender/{id}")
@@ -140,11 +141,30 @@ public class ClienteController implements java.io.Serializable {
         result.include("cliente", requestCliente.clienteBean(id));
         result.include("suspenderList", requestCliente.suspenderList(id));
     }
-    
+
     @Post
     @Restrict
     @Path("/cliente-ou-filial/suspender/{id}")
     public void suspender(ClienteSuspensoBean clienteSuspenso) {
         requestCliente.suspender(clienteSuspenso);
+    }
+
+    @Get
+    @Restrict
+    @Path("/cliente/configuracao/acesso/produto/{cliente}")
+    public void configuracaoAcessoProduto(Integer cliente) {
+        result.include("cliente", cliente);
+        result.include("unidadeList", requestCliente.carregaUnidades(cliente));
+        result.include("produtoList", requestCliente.carregaProduto());
+        result.include("produtoClienteList", requestCliente.carregaProdutoCliente(cliente));
+        result.include("tipoAcessoRemotoList", requestCliente.carregaTipoAcessoRemoto());
+        result.include("acessoRemotoList", requestCliente.carregaAcessoRemoto(cliente));
+    }
+
+    @Post
+    @Restrict
+    @Path("/cliente/configuracao/acesso/produto/{cliente}")
+    public void configuracaoAcessoProduto(Integer cliente, List<ProdutoClienteBean> produtoClienteBeanList, List<AcessoRemotoBean> acessoRemotoBeanList) {
+        requestCliente.configuracaoAcessoProduto(cliente, produtoClienteBeanList, acessoRemotoBeanList);
     }
 }

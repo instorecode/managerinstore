@@ -511,7 +511,7 @@
                     </div>
                 </div>
 
-                <div class="container-fluid" id="pcont" style="background-color: #c3c3c3">
+                <div class="container-fluid" id="pcont" style="background-color: #f1f1f1">
                     <div class="page-head">
                         <h2><i class="fa ${currentFuncionalidadeBean.icone}"></i> Instore ${currentFuncionalidadeBean.nome}</h2>
 
@@ -523,7 +523,7 @@
                         .show-case{margin-bottom:50px;}
                         .show-case img{max-width:362px;width:100%;}
                     </style>
-                    <div class="cl-mcont" style="background-color: #c3c3c3"> 
+                    <div class="cl-mcont" style="background-color: #f1f1f1"> 
                         <jsp:doBody />
                     </div>
                 </div> 
