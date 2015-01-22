@@ -360,6 +360,7 @@
                         <div class="form-group">
                             <label>Velocidade</label>
                             <select class="select2" dara-rule-required="true" name="velocidade">
+                                <option value="" selected="selected">Todos</option>
                                 <option value="50"  ${velocidade eq 50 ? 'selected="selected"' : ''}>Rapida</option>
                                 <option value="100" ${velocidade eq 100 ? 'selected="selected"' : ''}>Media</option>
                                 <option value="200" ${velocidade eq 200 ? 'selected="selected"' : ''}>Lenta</option>
@@ -385,11 +386,23 @@
                 <div class="row">
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label>Data de cadastro</label>
+                            <label>Data de cadastro maior que</label>
                             <div class="input-group date datetime" data-min-view="2" data-date-format="dd/mm/yyyy">
-                                <input type="text" name="dataCadastro" class="form-control datepicker" placeholder="Data de cadastro"                                         
+                                <input type="text" name="dataCadastro1" class="form-control datepicker" placeholder="Data de cadastro"                                         
                                        data-mask="99/99/9999"
-                                       value="${dataCadastro}">
+                                       value="${dataCadastro1}">
+                                <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Data de cadastro menor que</label>
+                            <div class="input-group date datetime" data-min-view="2" data-date-format="dd/mm/yyyy">
+                                <input type="text" name="dataCadastro2" class="form-control datepicker" placeholder="Data de cadastro"                                         
+                                       data-mask="99/99/9999"
+                                       value="${dataCadastro2}">
                                 <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-th"></span></span>
                             </div>
                         </div>

@@ -43,11 +43,11 @@ public class MusicaController implements java.io.Serializable {
     @Get
     @Restrict
     @Path("/musica")
-    public void listar(Boolean datajson, int pagina, int qtd, int order, String titulo, String interprete, String velocidade, String anoGravacao, String letra, String categoria , String dataCadastro) {
+    public void listar(Boolean datajson, int pagina, int qtd, int order, String titulo, String interprete, String velocidade, String anoGravacao, String letra, String categoria , String dataCadastro1 , String dataCadastro2) {
 //        if (null != datajson && datajson) {
 //            result.use(Results.json()).withoutRoot().from(requestMusicaGeral.beanList()).recursive().serialize();
 //        }
-        requestMusicaGeral.list(pagina, qtd, order, titulo, interprete, velocidade, anoGravacao, letra, categoria, dataCadastro);
+        requestMusicaGeral.list(pagina, qtd, order, titulo, interprete, velocidade, anoGravacao, letra, categoria, dataCadastro1, dataCadastro2 );
         result.include("order", order);
         result.include("titulo", titulo);
         result.include("interprete", interprete);
@@ -55,7 +55,8 @@ public class MusicaController implements java.io.Serializable {
         result.include("anoGravacao", anoGravacao);
         result.include("letra", letra);
         result.include("categoria", categoria);
-        result.include("dataCadastro", dataCadastro);
+        result.include("dataCadastro1", dataCadastro1);
+        result.include("dataCadastro2", dataCadastro2);
         result.include("categorias", requestMusicaGeral.categorias());
     }
 

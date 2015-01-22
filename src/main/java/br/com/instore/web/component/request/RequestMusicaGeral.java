@@ -457,7 +457,7 @@ public class RequestMusicaGeral implements java.io.Serializable {
         return (long) Math.ceil((double) totalRegistros / totalRegistrosPorPagina);
     }
 
-    public void list(int pagina, int qtd, int order, String titulo, String interprete, String velocidade, String anoGravacao, String letra, String categoria, String dataCadastro) {
+    public void list(int pagina, int qtd, int order, String titulo, String interprete, String velocidade, String anoGravacao, String letra, String categoria, String dataCadastro1 , String dataCadastro2) {
 
         if (pagina == 0) {
             pagina = 1;
@@ -544,7 +544,7 @@ public class RequestMusicaGeral implements java.io.Serializable {
             query2.likeAnyWhere("interprete", interprete);
         }
 
-        if (null != velocidade && !velocidade.isEmpty()) {
+        if ((null != velocidade && !velocidade.isEmpty()) && ("50".equals(velocidade) || "100".equals(velocidade) || "200".equals(velocidade)) ) {
             try {
                 query.eq("bpm", Short.parseShort(velocidade));
                 query2.eq("bpm", Short.parseShort(velocidade));
@@ -568,14 +568,21 @@ public class RequestMusicaGeral implements java.io.Serializable {
             query2.likeAnyWhere("letra", letra);
         }
         
-        if (null != dataCadastro && !dataCadastro.isEmpty()) {
+        if (null != dataCadastro1 && !dataCadastro1.isEmpty()) {
             try {
-                System.out.println("passou aqui --->>> " +  new SimpleDateFormat("dd/MM/yyyy").parse(dataCadastro.trim()));
-                query.eq("dataCadastro", new SimpleDateFormat("dd/MM/yyyy").parse(dataCadastro.trim()));
-                query2.eq("dataCadastro", new SimpleDateFormat("dd/MM/yyyy").parse(dataCadastro.trim()));
+                query.moreEqual("dataCadastro", new SimpleDateFormat("dd/MM/yyyy").parse(dataCadastro1.trim()));
+                query2.moreEqual("dataCadastro", new SimpleDateFormat("dd/MM/yyyy").parse(dataCadastro1.trim()));
             } catch (ParseException e) {
                 e.printStackTrace();
-                System.out.println("passou aqui 2");
+            }
+        }
+        
+        if (null != dataCadastro2 && !dataCadastro2.isEmpty()) {
+            try {
+                query.lessEqual("dataCadastro", new SimpleDateFormat("dd/MM/yyyy").parse(dataCadastro2.trim()));
+                query2.lessEqual("dataCadastro", new SimpleDateFormat("dd/MM/yyyy").parse(dataCadastro2.trim()));
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
         }
 

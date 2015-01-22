@@ -341,7 +341,7 @@ public class RequestUsuario implements java.io.Serializable {
 
             boolean ajaxResultBool = true;
             String ajaxResultStr = "";
-
+            repository.setUsuario(sessionUsuario.getUsuarioBean());
             if (repository.query(UsuarioBean.class).eq("senha", Utilities.md5(senha_atual)).count() <= 0) {
                 ajaxResultBool = false;
                 ajaxResultStr = "A senha atual está incorreta!";

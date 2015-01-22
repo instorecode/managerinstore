@@ -657,7 +657,7 @@
                                 <div class="header">
                                     <h2> 
                                         <b>Filiais</b> 
-                                        <span class="pull-right contador_l1">Total </span>
+                                        <!--<span class="pull-right contador_l1">Total </span>-->
                                     </h2>
                                     <input type="text" class="form-control lista1_pesq" placeholder="Filtro de Pesquisar">
 
@@ -683,9 +683,9 @@
                                         </c:forEach>
                                     </ul>
                                     <div style="clear: both"></div>
-                                    <button type="button" class="btn btn-default pull-right btn_all_l1" style="margin-top: 10px; margin-right: 10px;">
+<!--                                    <button type="button" class="btn btn-default pull-right btn_all_l1" style="margin-top: 10px; margin-right: 10px;">
                                         Selecionar todos
-                                    </button>
+                                    </button>-->
                                     <div style="clear: both"></div>
                                 </div>
                             </div>
@@ -695,7 +695,7 @@
                                 <div class="header">
                                     <h2> 
                                         <b>Filiais inclusas</b> 
-                                        <span class="pull-right contador_l2">Total </span>
+                                        <!--<span class="pull-right contador_l2">Total </span>-->
                                     </h2>
                                     <input type="text" class="form-control lista2_pesq" placeholder="Filtro de Pesquisar">
                                 </div>
@@ -720,9 +720,9 @@
                                         </c:forEach>
                                     </ul>
                                     <div style="clear: both"></div>
-                                    <button type="button" class="btn btn-default pull-right btn_all_l2" style="margin-top: 10px; margin-right: 10px;">
+<!--                                    <button type="button" class="btn btn-default pull-right btn_all_l2" style="margin-top: 10px; margin-right: 10px;">
                                         Selecionar todos
-                                    </button>
+                                    </button>-->
                                     <div style="clear: both"></div>
                                 </div>
                             </div>

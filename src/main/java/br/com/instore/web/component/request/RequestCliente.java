@@ -404,6 +404,14 @@ public class RequestCliente implements java.io.Serializable {
     public void salvar2(ClienteBean cliente, DadosClienteBean dadosCliente) {
         try {
             repository.setUsuario(sessionUsuario.getUsuarioBean());
+
+
+            dadosCliente.setLocalDestinoExp("");
+            dadosCliente.setLocalDestinoMusica("");
+            dadosCliente.setLocalDestinoSpot("");
+            dadosCliente.setLocalOrigemMusica("");
+            dadosCliente.setLocalOrigemSpot("");
+
             cliente.setInstore(Boolean.FALSE);
 
             if (null == cliente.getSituacao()) {
@@ -432,6 +440,9 @@ public class RequestCliente implements java.io.Serializable {
             repository.save(cidade);
 
 
+            if (bairro.getTipo() == null || bairro.getTipo().isEmpty()) {
+                bairro.setTipo("NÃO FOI INFORMADO");
+            }
             if (bairro.getIdbairro() != null && bairro.getIdbairro() > 0) {
                 bairro = repository.marge(bairro);
             }
@@ -445,8 +456,19 @@ public class RequestCliente implements java.io.Serializable {
             cep.setBairro(bairro);
             repository.save(cep);
 
-
+            
+            
+            if (null == end.getComplemento() || end.getComplemento().isEmpty()) {
+                end.setComplemento("NÃO FOI INFORMADO");
+            }
+            
+            if (null == end.getNumero() || end.getNumero().isEmpty()) {
+                end.setNumero("000");
+            }
+            
+            
             if (end.getIdendereco() != null && end.getIdendereco() > 0) {
+
                 end = repository.marge(end);
             }
             end.setCep(cep);
@@ -473,6 +495,12 @@ public class RequestCliente implements java.io.Serializable {
                 dadosCliente.setNomeFantasia(dcb1.getNomeFantasia());
                 dadosCliente.setRazaoSocial(dcb1.getRazaoSocial());
                 dadosCliente.setRenovacaoAutomatica(dcb1.getRenovacaoAutomatica());
+                dadosCliente.setLocalDestinoExp("");
+                dadosCliente.setLocalDestinoMusica("");
+                dadosCliente.setLocalDestinoSpot("");
+                dadosCliente.setLocalOrigemMusica("");
+                dadosCliente.setLocalOrigemSpot("");
+                dadosCliente.setValorContrato(0.0);
                 repository.save(dadosCliente);
             }
 
@@ -768,7 +796,10 @@ public class RequestCliente implements java.io.Serializable {
             i++;
         }
 
-        lista = repository.query(ProdutoClienteBean.class).in("cliente.idcliente", in).orderAsc("id").findAll();
+        if (in.length > 0) {
+            lista = repository.query(ProdutoClienteBean.class).in("cliente.idcliente", in).findAll();
+        }
+
         return lista;
     }
 
@@ -784,13 +815,16 @@ public class RequestCliente implements java.io.Serializable {
         List<ClienteBean> clienteLista = new ArrayList<ClienteBean>();
         clienteLista = repository.query(ClienteBean.class).eq("parente", cliente).eq("matriz", false).orderAsc("idcliente").findAll();
         Integer[] in = new Integer[(null != clienteLista ? clienteLista.size() : 0)];
+
         int i = 0;
         for (ClienteBean item : clienteLista) {
             in[i] = item.getIdcliente();
             i++;
         }
 
-        lista = repository.query(AcessoRemotoBean.class).in("cliente.idcliente", in).orderAsc("id").findAll();
+        if (in.length > 0) {
+            lista = repository.query(AcessoRemotoBean.class).in("cliente.idcliente", in).findAll();
+        }
         return lista;
     }
 

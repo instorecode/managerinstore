@@ -141,7 +141,7 @@
             </div>
 
             <div class="addon" style="display: none;">
-                <a href="${url}/musica/programacao-audiostore/cadastrar/nulo?clonar=[[__PK__]]" class="btn btn-default btn-flat btn-xs" id="clonar" ><i class="fa fa-plus"></i></a>
+                <!--<a href="${url}/musica/programacao-audiostore/cadastrar/nulo?clonar=[[__PK__]]" class="btn btn-default btn-flat btn-xs" id="clonar" ><i class="fa fa-plus"></i></a>-->
             </div>
 
             <div class="btn-group">
