@@ -15,19 +15,19 @@
 <c:set scope="session" var="url_cz" value="http://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/resources/cz/"></c:set>
 
 
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="">
-        <meta name="author" content="">
-        <link rel="shortcut icon" href="images/favicon.png">
+    <!DOCTYPE html>
+    <html lang="en">
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <meta name="description" content="">
+            <meta name="author" content="">
+            <link rel="shortcut icon" href="images/favicon.png">
 
-        <title>Instore</title>
-        <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,400italic,700,800' rel='stylesheet' type='text/css'>
-        <link href='http://fonts.googleapis.com/css?family=Raleway:300,200,100' rel='stylesheet' type='text/css'>
-        <link href="${url_cz}js/bootstrap/dist/css/bootstrap.css?v=${machine_id}" rel="stylesheet">
+            <title>Instore</title>
+            <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,400italic,700,800' rel='stylesheet' type='text/css'>
+            <link href='http://fonts.googleapis.com/css?family=Raleway:300,200,100' rel='stylesheet' type='text/css'>
+            <link href="${url_cz}js/bootstrap/dist/css/bootstrap.css?v=${machine_id}" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="${url_cz}js/jquery.gritter/css/jquery.gritter.css?v=${machine_id}" />
         <link rel="stylesheet" href="${url_cz}fonts/font-awesome-4/css/font-awesome.min.css?v=${machine_id}">
         <link rel="stylesheet" type="text/css" media="all" href="${url_css}bbGrid.css?v=${machine_id}"/>
@@ -177,9 +177,16 @@
                 });
             });
         </script>
+        <script>
+            jQuery(document).ready(function() {
+                var input = $('input[data-rule-required]');
+                var div = input.closest('div.form-group');
+                div.children("label").append("*");
+                
+            });
+        </script>
 
         <style>
-
             .info .select2-chosen {
                 color: #3380FF !important;
             }
