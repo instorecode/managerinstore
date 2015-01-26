@@ -18,7 +18,7 @@
             </c:if>
             <c:if test="${cliente.idcliente eq null or cliente.idcliente < 1}">
                 <form d="cad_cliente" method="POST" data-form="true" data-success-url="${url}/filial/${id}">
-                </c:if>
+            </c:if>
 
                 <input type="hidden" name="cliente.idcliente" value="${cliente.idcliente}" />
                 <input type="hidden" name="dadosCliente.iddadosCliente" value="${dadosCliente.iddadosCliente}" />
@@ -99,12 +99,12 @@
                     <div class="col-md-2">
                         <div class="form-group"> 
                             <label>CEP</label>
-                            <input type="text" name="cliente.endereco.cep.numero" class="form-control cepload" placeholder="CEP" 
+                            <input type="text" name="cliente.endereco.cep.numero" class="form-control input_load" placeholder="CEP" 
                                    data-mask="99.999-999"
-                                   data-url="${url}/utilidades/cepload" value="${cliente.endereco.cep.numero}"
                                    data-rule-required="true" 
                                    data-rule-minlength="10"
                                    data-rule-maxlength="10">
+                            <a style="float: right; margin-right: 0px; margin-top: -34px;" class="btn btn-primary btn-flat click_search_cep" href="${url}/utilidades/cepload" value="${cliente.endereco.cep.numero}"> <i class="fa fa-search"></i> </a>
                         </div>
                     </div>
 

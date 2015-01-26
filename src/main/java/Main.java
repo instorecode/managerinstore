@@ -1,4 +1,5 @@
 
+import br.com.instore.web.tools.CepService;
 import br.com.instore.web.tools.Utilities;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -13,7 +14,7 @@ import jcifs.smb.SmbFileOutputStream;
 
 public class Main {
     public static void main(String[] args) {
-      
+        System.out.println(CepService.get("53170010"));;
     }
     public static void main2(String[] args) {
         SmbFileOutputStream sfous = null;

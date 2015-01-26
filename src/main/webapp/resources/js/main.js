@@ -457,6 +457,44 @@ jQuery(document).ready(function() {
         });
     });
 
+    jQuery('.click_search_cep').on('click', function() {
+        var self = jQuery('.input_load');
+        var valueOrig = self.val();
+        var cep1 = self.val();
+        var url = jQuery(this).attr('href');
+        cep2 = cep1;
+        
+        cep2 = cep2.replace(".", "");
+        cep2= cep2.replace("-", "");
+
+        jQuery.ajax({
+            type: 'GET',
+            url: url,
+            contentType: 'application/json;charset=UTF-8',
+            data: {cep1: cep1 , cep2:cep2},
+            beforeSend: function() {
+                bootbox.hideAll();
+                bootbox.dialog({
+                    message: "Aguarde enquanto o CEP é consultado...",
+                    title: "Sistema processando informações",
+                    buttons: {}
+                });
+            },
+            success: function(data) {
+                console.log(data);
+                self.val(valueOrig);
+                jQuery('[data-uf="' + data.uf + '"]').attr('selected', true);
+                $('.select2').change();
+                jQuery('.cid').val(data.cidade);
+                jQuery('.bai').val(data.bairro);
+                jQuery('.log').val(data.logradouro);
+                jQuery('.tipo_log').val(data.tipo_logradouro);
+                bootbox.hideAll();
+            }
+        });
+        return false;
+    });
+    
     jQuery('.cepload').on('blur', function() {
         var self = jQuery(this);
         var valueOrig = self.val();

@@ -5,7 +5,7 @@
 <instore:template isGrid="false">
     <jsp:body>
         <c:set scope="session" var="form_access" value="${false}"></c:set>
-        <c:set scope="session" var="update_access" value="${false}"></c:set>
+        <c:set scope="itemssession" var="update_access" value="${false}"></c:set>
         <c:set scope="session" var="delete_access" value="${false}"></c:set>
         <c:forEach items="${funcionalidadeBeanList}" var="func">
             <c:if test="${func.mappingId eq '/voz/cadastrar'}">

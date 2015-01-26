@@ -42,6 +42,13 @@ public class RequestContatoCliente implements java.io.Serializable {
         return lista;
     }
     
+    public List<DadosClienteBean> dadosClienteBeanByClienteList(Integer id) {
+        List<DadosClienteBean> lista = new ArrayList<DadosClienteBean>();
+        ClienteBean cliente = repository.find(ClienteBean.class, id);
+        lista = repository.query(DadosClienteBean.class).eq("cliente.idcliente", cliente.getIdcliente()).findAll();
+        return lista;
+    }
+    
     public List<ContatoClienteDTO> contatoClienteDTOList(Integer id) {
         List<ContatoClienteBean> lista = new ArrayList<ContatoClienteBean>();
         List<ContatoClienteDTO> lista2 = new ArrayList<ContatoClienteDTO>();

@@ -15,7 +15,7 @@ public class CepService {
 
     public static CepResult get(String cep) {
         // a string da url		
-        String urlString = "http://cep.republicavirtual.com.br/web_cep.php";
+        String urlString = "http://webservice.kinghost.net/web_cep.php?auth=d8558363abe2949d486e2d9f03d905cd&formato=xml&cep="+cep;
 
         // os parametros a serem enviados
         Properties parameters = new Properties();

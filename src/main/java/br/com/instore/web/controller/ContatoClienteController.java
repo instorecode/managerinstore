@@ -46,7 +46,7 @@ public class ContatoClienteController implements java.io.Serializable {
     @Path("/contato/cadastrar/{id}")
     public void cadastrar(Integer id) {
         result.include("id",id);
-        result.include("dadosClienteBeanList", requestContatoCliente.dadosClienteBeanList());
+        result.include("dadosClienteBeanList", requestContatoCliente.dadosClienteBeanByClienteList(id));
     }
 
     @Post
@@ -62,7 +62,7 @@ public class ContatoClienteController implements java.io.Serializable {
     public void cadastrar(Integer id, String param1) {
         result.include("id",id);
         result.include("contatoClienteBean", requestContatoCliente.contatoClienteBean(id));
-        result.include("dadosClienteBeanList", requestContatoCliente.dadosClienteBeanList());
+        result.include("dadosClienteBeanList", requestContatoCliente.dadosClienteBeanByClienteList(id));
     }
 
     @Post
