@@ -5,50 +5,58 @@
 
 
 jQuery(document).ready(function() {
-    
-    jQuery.criarCsv = function() {
-        msg_fadeIn();
-        var texto = "";
-        var textoTh = "";
-        var tabela = jQuery("table.xtable");
-        var virgula = "";
-        var th = tabela.children("thead").children("tr").children("th").each(function() {
-            if (jQuery(this).attr('options') == "false") {
-                texto += virgula + jQuery(this).text();
-                virgula = ";";
-            }
 
+    jQuery.criarCsv = function() {
+//        msg_fadeIn();
+        var info = jQuery(".pag_info").text();
+        info = info.split(" ");
+        var last = info.length - 1;
+        info = info[last];
+        var url = document.URL;
+        url = url.replace('#', '');
+        var pagina = url + "?datajson=true&rows=" + info;
+
+        var texto = "";
+        var tabela = jQuery("table.xtable");
+        var pontoVirgula = "";
+        var th = tabela.children("thead").children("tr").children("th").each(function() {
+//            if (jQuery(this).attr('options') == "false") {
+            texto += pontoVirgula + jQuery(this).text();
+            pontoVirgula = ";";
+//            }
         });
-        
-        texto +="\n";
-        
-        var vir = "";
-        var td = tabela.children("tbody").each(function() {
-            if (jQuery(this).children("tr").size() > 0) {
-                jQuery(this).children("tr").each(function() {
-                    if (jQuery(this).attr('class') == "row_data") {
-                        jQuery(this).children("td").each(function() {
-                            if("" != jQuery.trim(jQuery(this).text())) {
-                                texto += vir + jQuery(this).text();
-                                vir = ";";
-                            }
-                        });
-                        texto += "\n";
-                        vir = "";
-                    }
+
+        texto += "\n";
+        pontoVirgula = "";
+
+
+
+        $.ajax({
+            dataType: "json",
+            type: "GET",
+            url: pagina,
+            success: function(dados) {
+                var rows = dados.rows;
+                $.each(dados.rows, function(key1, value) {
+                    $.each(value, function(key, value) {
+                        texto += pontoVirgula + value;
+                        pontoVirgula = ";";
+                    });
+                    texto += "\n";
+                    pontoVirgula = "";
+
                 });
+                var titulo = jQuery("div.page-head").text();
+
+                var a_hidden = document.createElement("a");
+                a_hidden.download = jQuery.trim(titulo) + ".csv";
+                a_hidden.href = 'data:text/csv;charset=utf-8,%EF%BB%BF' + encodeURIComponent(texto);
+                a_hidden.style = 'display: none; visibility: hidden;';
+                a_hidden.click();
+                jQuery(a_hidden).remove();
+
             }
         });
-        
-        var titulo = jQuery("div.page-head").text();
-        
-        var a_hidden = document.createElement("a");
-        a_hidden.download = jQuery.trim(titulo)+".csv";
-        a_hidden.href = 'data:text/csv,' + encodeURIComponent(texto);
-        a_hidden.style = 'display: none; visibility: hidden;ISO-8859-1';
-        a_hidden.click();
-        jQuery(a_hidden).remove();
-        msg_fadeOut();
     };
 
     jQuery('#botaoCsv').on("click", function() {
