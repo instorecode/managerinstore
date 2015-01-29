@@ -3,6 +3,7 @@
 
     <jsp:attribute name="submenu">
         <a href="${url}/contato/cadastrar/${id}" class="btn btn-default"> <i class="fa fa-save"></i> Cadastrar </a>
+        <a href="${url}/clientes" class="btn btn-voltar btn-default"> <i class="fa fa-hand-o-left"></i> Clientes </a>
     </jsp:attribute>
 
     <jsp:attribute name="gridColumn">

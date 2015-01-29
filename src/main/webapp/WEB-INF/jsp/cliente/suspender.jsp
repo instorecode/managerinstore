@@ -4,7 +4,7 @@
 <instore:template isGrid="true">
 
     <jsp:attribute name="submenu">
-        
+        <a href="${url}/clientes" class="btn btn-voltar btn-default"> <i class="fa fa-hand-o-left"></i> Clientes </a>
     </jsp:attribute>
 
     <jsp:attribute name="gridColumn">
@@ -71,7 +71,7 @@
             <hr />
 
             <h2>Histórico</h2>
-            
+
             <ul class="timeline">
                 <c:forEach items="${suspenderList}" var="item">
                     <li>

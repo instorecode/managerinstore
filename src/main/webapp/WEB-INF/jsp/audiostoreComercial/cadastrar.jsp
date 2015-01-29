@@ -5,7 +5,7 @@
 
 <instore:template isGrid="false">
     <jsp:attribute name="submenu">
-        <a href="${url}/audiostore-comercial" class="btn btn-default"> <i class="fa fa-hand-o-left"></i> Comerciais </a>
+        <a href="${url}/audiostore-comercial" class="btn btn-voltar btn-default"> <i class="fa fa-hand-o-left"></i> Comerciais </a>
     </jsp:attribute>
 
     <jsp:body>

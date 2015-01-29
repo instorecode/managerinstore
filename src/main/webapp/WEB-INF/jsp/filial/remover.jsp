@@ -2,7 +2,7 @@
 <instore:template>
     <jsp:attribute name="submenu">
         <a href="${url}/filial/${cliente.parente}" class="btn btn-default"> <i class="fa fa-hand-o-left"></i> Filiais </a>
-        <a href="${url}/filial/cadastrar/${cliente.parente}" class="btn btn-default"> <i class="fa fa-save"></i> Cadastrar </a>
+        <a href="${url}/filial/cadastrar/${cliente.parente}" class="btn btn-voltar btn-default"> <i class="fa fa-save"></i> Cadastrar </a>
     </jsp:attribute>
      
     <jsp:body>

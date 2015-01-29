@@ -4,7 +4,7 @@
 <%@ taglib prefix="cf" uri="CustomFunctions" %> 
 <instore:template>
     <jsp:attribute name="submenu">
-        <a href="${url}/indice-reajuste" class="btn btn-default"> <i class="fa fa-hand-o-left"></i> Lista </a>
+        <a href="${url}/indice-reajuste" class="btn btn-voltar btn-default"> <i class="fa fa-hand-o-left"></i> Lista </a>
         <a href="${url}/indice-reajuste/cadastrar" class="btn btn-default"> <i class="fa fa-save"></i> Cadastrar </a>
     </jsp:attribute>
 

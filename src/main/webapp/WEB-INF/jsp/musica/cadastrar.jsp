@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <instore:template  menucolapse="false">
     <jsp:attribute name="submenu">
-        <a href="${url}/musica" class="btn btn-default"> <i class="fa fa-hand-o-left"></i> Lista</a>
+        <a href="${url}/musica" class="btn btn-voltar btn-default"> <i class="fa fa-hand-o-left"></i> Lista</a>
     </jsp:attribute>
     <jsp:body>   
         <!--<script src="${url_cz}js/fuelux/loader.js" type="text/javascript"></script>-->

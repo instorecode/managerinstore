@@ -3,6 +3,7 @@
 
     <jsp:attribute name="submenu">
         <a href="${url}/filial/cadastrar/${id}" class="btn btn-default"> <i class="fa fa-save"></i> Cadastrar </a>
+        <a href="${url}/clientes" class="btn btn-voltar btn-default"> <i class="fa fa-hand-o-left"></i> Clientes </a>
     </jsp:attribute>
 
     <jsp:attribute name="gridColumn">
@@ -16,23 +17,23 @@
             function onRowDblClick(data) {
 
             }
-            
+
             function onRowClick(data) {
-                jQuery('.btnCont').on('click', function(){
+                jQuery('.btnCont').on('click', function() {
                     var self = jQuery(this);
-                    self.attr('href',self.attr('xhref')+'/'+data.idcliente);
+                    self.attr('href', self.attr('xhref') + '/' + data.idcliente);
                 });
             }
         </script>
     </jsp:attribute>
-        
+
     <jsp:attribute name="detailsButton">
         <a xhref="${url}/contatos" data-toggle="tooltip" data-placement="bottom" data-original-title="Contatos" type="button" class="btn btn-default btnCont"><i class="fa fa-users"></i></a>
         <a xhref="${url}/cliente-configuracao" data-toggle="tooltip" data-placement="bottom" data-original-title="Configurações" type="button" class="btn btn-default btnCont"><i class="fa fa-gear"></i></a>
         <a xhref="${url}/cliente-ou-filial/suspender" data-toggle="tooltip" data-placement="bottom" data-original-title="Suspender cliente" type="button" class="btn btn-default btnCont"><i class="fa fa-calendar"></i></a>
-    </jsp:attribute>
-        
-        
+        </jsp:attribute>
+
+
     <jsp:body> 
         <div class="block-flat">
             <div class="content">
@@ -54,9 +55,9 @@
                             <div data-nome="true"></div> 
                         </div>
                     </div>
-               
 
-                    
+
+
                     <div class="row">
                         <div class="col-md-12 prop"> 
                             CEP

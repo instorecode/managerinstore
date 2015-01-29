@@ -4,6 +4,7 @@
     <jsp:attribute name="submenu">
         <a href="${url}/cliente/cadastrar" class="btn btn-default"> <i class="fa fa-save"></i> Configurar clientes </a>
         <a href="${url}/cliente/cadastrar" class="btn btn-default"> <i class="fa fa-save"></i> Cadastrar </a>
+    
     </jsp:attribute>
 
     <jsp:attribute name="gridColumn">

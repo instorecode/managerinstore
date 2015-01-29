@@ -4,7 +4,7 @@
 <%@ taglib prefix="cf" uri="CustomFunctions" %> 
 <instore:template isGrid="false">
     <jsp:attribute name="submenu">
-        <a href="${url}/ocorrencia" class="btn btn-default"> <i class="fa fa-hand-o-left"></i> Lista </a>
+        <a href="${url}/ocorrencia" class="btn btn-voltar btn-default"> <i class="fa fa-hand-o-left"></i> Lista </a>
     </jsp:attribute>
 
     <jsp:body> 

@@ -99,7 +99,8 @@
         <script src="${url_cz}js/ckeditor/ckeditor.js"></script>
         <script src="${url_cz}js/ckeditor/adapters/jquery.js"></script>
         <script src="${url_js}gerarCsv.js" ></script>
-        
+        <script src="${url_js}shortcut.js" ></script>
+         
         <style type="text/css">
             input{
                 text-transform: uppercase;

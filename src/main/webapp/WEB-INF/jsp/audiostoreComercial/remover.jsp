@@ -1,7 +1,7 @@
 <%@ taglib prefix="instore" tagdir="/WEB-INF/tags/" %> 
 <instore:template>
     <jsp:attribute name="submenu">
-        <a href="${url}/audiostore-comercial" class="btn btn-default"> <i class="fa fa-hand-o-left"></i> Comerciais </a>
+        <a href="${url}/audiostore-comercial" class="btn btn-voltar btn-default"> <i class="fa fa-hand-o-left"></i> Comerciais </a>
         <a href="${url}/audiostore-comercial/cadastrar" class="btn btn-default"> <i class="fa fa-save"></i> Cadastrar </a>
     </jsp:attribute>
      

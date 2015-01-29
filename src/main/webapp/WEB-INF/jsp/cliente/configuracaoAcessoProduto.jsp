@@ -5,14 +5,14 @@
 <%@ taglib prefix="cf" uri="CustomFunctions" %> 
 <instore:template isGrid="false">
     <jsp:attribute name="submenu">
-
+        <a href="${url}/clientes" class="btn btn-voltar btn-default"> <i class="fa fa-hand-o-left"></i> Clientes </a>
     </jsp:attribute>
 
     <jsp:body>
         <c:if test="${null eq unidadeList or empty unidadeList}">
             O cliente selecionado não possui unidades!
         </c:if>
-            
+
         <c:if test="${null ne unidadeList and not empty unidadeList}">
             <form id="cad_cliente" method="POST" data-form="true" data-success-url="${url}/cliente/configuracao/acesso/produto/${cliente}">
                 <input type="hidden" name="cliente" value="${cliente}" />

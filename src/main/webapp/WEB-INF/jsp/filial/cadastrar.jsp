@@ -6,10 +6,10 @@
     <jsp:attribute name="submenu">
 
         <c:if test="${cliente.idcliente ne null and cliente.idcliente > 0}">
-            <a href="${url}/filial/${cliente.parente}" class="btn btn-default"> <i class="fa fa-hand-o-left"></i> Filiais </a>
+            <a href="${url}/filial/${cliente.parente}" class="btn btn-voltar btn-default"> <i class="fa fa-hand-o-left"></i> Filiais </a>
         </c:if>
         <c:if test="${cliente.idcliente eq null or cliente.idcliente < 1}">
-            <a href="${url}/filial/${id}" class="btn btn-default"> <i class="fa fa-hand-o-left"></i> Filiais </a>
+            <a href="${url}/filial/${id}" class="btn btn-voltar btn-default"> <i class="fa fa-hand-o-left"></i> Filiais </a>
         </c:if>
     </jsp:attribute>
     <jsp:body>

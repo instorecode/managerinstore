@@ -6,7 +6,7 @@
 
 <instore:template>
     <jsp:attribute name="submenu">
-        <a href="${url}/lancamento" class="btn btn-default"> <i class="fa fa-hand-o-left"></i> Lançamentos </a>
+        <a href="${url}/lancamento" class="btn btn-voltar btn-default"> <i class="fa fa-hand-o-left"></i> Lançamentos </a>
         <a href="${url}/lancamento/cadastrar" class="btn btn-default"> <i class="fa fa-save"></i> Cadastrar </a>
     </jsp:attribute>
 

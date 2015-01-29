@@ -5,10 +5,10 @@
 <instore:template isGrid="false">
     <jsp:attribute name="submenu">
         <c:if test="${contatoClienteBean.idcontatoCliente ne null and contatoClienteBean.idcontatoCliente > 0}">
-            <a href="${url}/contatos/${contatoClienteBean.dadosCliente.cliente.idcliente}" class="btn btn-default"> <i class="fa fa-hand-o-left"></i> Contatos </a>
+            <a href="${url}/contatos/${contatoClienteBean.dadosCliente.cliente.idcliente}" class="btn btn-voltar btn-default"> <i class="fa fa-hand-o-left"></i> Contatos </a>
         </c:if>
         <c:if test="${contatoClienteBean.idcontatoCliente eq null or contatoClienteBean.idcontatoCliente < 1}">
-            <a href="${url}/contatos/${id}" class="btn btn-default"> <i class="fa fa-hand-o-left"></i> Contatos </a>
+            <a href="${url}/contatos/${id}" class="btn btn-voltar btn-default"> <i class="fa fa-hand-o-left"></i> Contatos </a>
         </c:if>
     </jsp:attribute>
 

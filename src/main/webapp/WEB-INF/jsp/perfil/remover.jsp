@@ -1,7 +1,7 @@
 <%@ taglib prefix="instore" tagdir="/WEB-INF/tags/" %> 
 <instore:template>
     <jsp:attribute name="submenu">
-        <a href="${url}/perfil" class="btn btn-default"> <i class="fa fa-hand-o-left"></i> Perfis </a>
+        <a href="${url}/perfil" class="btn btn-voltar btn-default"> <i class="fa fa-hand-o-left"></i> Perfis </a>
         <a href="${url}/perfil/cadastrar" class="btn btn-default"> <i class="fa fa-save"></i> Cadastrar </a>
     </jsp:attribute>
      
