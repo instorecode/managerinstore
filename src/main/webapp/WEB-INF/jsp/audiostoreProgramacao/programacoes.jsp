@@ -139,7 +139,7 @@
                         <tr> 
                             <th options="true" class="options">#</th>
                             <th field="descricao" options="false">Descrição</th> 
-                            <th field="clienteNome" isfk="true" fk="idcliente" fklabel="nome" fklabelselect="Todos" fkurl="${url}/audiostore-programacao?clientes=true"  options="false">Cliente</th>
+                            <!--<th field="clienteNome" isfk="true" fk="idcliente" fklabel="nome" fklabelselect="Todos" fkurl="${url}/audiostore-programacao?clientes=true"  options="false">Cliente</th>-->
                         </tr>
                     </thead>
                 </table>

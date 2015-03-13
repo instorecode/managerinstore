@@ -242,11 +242,12 @@ jQuery(document).ready(function() {
                     tr += "</td>";
                 });
                 tr += "</tr>";
-
+                var iii = 0;
                 for (i in json["rows"])
                 {
+                    iii++;
                     var item = json["rows"][i];
-                    tr += "<tr id=\"row_data_" + i + "\" class=\"row_data\" data-json-item='" + JSON.stringify(item) + "'>";
+                    tr += "<tr id=\"row_data_" + i + "\" class=\"row_data row_data_"+( iii % 2 == 0 ? "z1" : "z2")+"\" data-json-item='" + JSON.stringify(item) + "'>";
 
                     table.children("thead").children("tr").children("th").each(function() {
                         var td = jQuery(this);

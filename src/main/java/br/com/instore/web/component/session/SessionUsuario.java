@@ -1,5 +1,6 @@
 package br.com.instore.web.component.session;
 
+import br.com.instore.core.orm.bean.ClienteBean;
 import br.com.instore.core.orm.bean.UsuarioBean;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
@@ -11,6 +12,7 @@ public class SessionUsuario implements java.io.Serializable {
     private boolean logado = false; 
     private UsuarioBean usuarioBean; 
     private SmbFile smbFile;
+    private ClienteBean cliente;
 
     public boolean isLogado() {
         return logado;
@@ -34,5 +36,13 @@ public class SessionUsuario implements java.io.Serializable {
 
     public void setSmbFile(SmbFile smbFile) {
         this.smbFile = smbFile;
+    }
+
+    public void setCliente(ClienteBean cliente) {
+        this.cliente = cliente;
+    }
+
+    public ClienteBean getCliente() {
+        return cliente;
     }
 }

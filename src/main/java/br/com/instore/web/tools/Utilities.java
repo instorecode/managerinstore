@@ -303,8 +303,8 @@ public class Utilities {
     }
 
     public static NtlmPasswordAuthentication getAuthSmbDefault() {
-        String user = "Intranet";
-        String pass = "<nsto>re#*12";
+        String user = "geral";
+        String pass = "Instore!@";
         return new NtlmPasswordAuthentication("", user, pass);
     }
 

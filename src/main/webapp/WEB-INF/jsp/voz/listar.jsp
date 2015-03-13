@@ -31,8 +31,9 @@
                         <h2>Cadastro</h2>
                         <hr />
                         <form name="FORM_CADASTRO" method="POST" data-formtable="true" action="${url}/voz/cadastrar">
+                            <input type="hidden"  name="vozBean.cliente.idcliente" value="${sessionUsuario.cliente.idcliente}"/>
                             <div class="row">                                                                    
-                                <div class="col-md-4">
+<!--                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Cliente</label>
                                         <select  class="select2 select_cliente" name="vozBean.cliente.idcliente" data-rule-required="true" >
@@ -41,7 +42,7 @@
                                             </c:forEach>
                                         </select>
                                     </div>
-                                </div>
+                                </div>-->
 
                                 <div class="col-md-4">
                                     <div class="form-group">
@@ -145,9 +146,10 @@
 
                 <form name="FORM_ALTERAR_[[__PK__]]" method="POST" data-formtable="true" action="${url}/voz/cadastrar" >
                     <input type="hidden" name="vozBean.idvoz" value="${vozBean.idvoz}" field="idvoz" />
+                    <input type="hidden"  name="vozBean.cliente.idcliente" value="${sessionUsuario.cliente.idcliente}"/>
 
                     <div class="row">                                                                    
-                        <div class="col-md-4">
+<!--                        <div class="col-md-4">
                             <div class="form-group">
                                 <label>Cliente</label>
                                 <select  class="select2 select_cliente" name="vozBean.cliente.idcliente" data-rule-required="true" >
@@ -156,7 +158,7 @@
                                     </c:forEach>
                                 </select>
                             </div>
-                        </div>
+                        </div>-->
 
                         <div class="col-md-4">
                             <div class="form-group">

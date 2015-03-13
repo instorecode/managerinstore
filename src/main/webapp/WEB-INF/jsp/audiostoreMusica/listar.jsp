@@ -118,7 +118,7 @@
                 </div> 
             </div>
 
-            <button type="button" class="btn btn-default btn-flat btn_cadastro" style="margin-left: 0px;"><i class="fa fa-save"></i> Cadastrar</button>
+            <!--<button type="button" class="btn btn-default btn-flat btn_cadastro" style="margin-left: 0px;"><i class="fa fa-save"></i> Cadastrar</button>-->
 
             <div class="btn-group">
                 <button type="button" class="btn btn-default dropdown-toggle btn-flat" data-toggle="dropdown">
@@ -169,7 +169,7 @@
                             <!--<th field="id" options="false">ID</th>-->
                             <th field="arquivo" options="false">Arquivo</th>
                             <th field="nome" options="false">Nome</th>
-                            <th field="nomeCliente" isfk="true" fk="idcliente" fklabel="nome" fklabelselect="Todos" fkurl="${url}/musica/programacao-audiostore?clientes=true"  options="false"> Cliente </th>
+                            <!--<th field="nomeCliente" isfk="true" fk="idcliente" fklabel="nome" fklabelselect="Todos" fkurl="${url}/musica/programacao-audiostore?clientes=true"  options="false"> Cliente </th>-->
                             <th field="categoria1" isfk="true" fk="codigo" fklabel="categoria" fklabelselect="Todos"  fkurl="${url}/musica/programacao-audiostore?categorias=true"  options="false"> Categoria </th>
                             <th field="ultimaImportacao" isfk="true" fk="bool" fklabel="label" fklabelselect="Todos"  fkurl="${url}/musica/programacao-audiostore?ultimp=true"  options="false"> Ultima importação </th>
                         </tr>

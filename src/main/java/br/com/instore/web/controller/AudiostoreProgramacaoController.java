@@ -78,13 +78,14 @@ public class AudiostoreProgramacaoController implements java.io.Serializable {
     @Path("/audiostore-programacao/atualizar/{id}")
     public void cadastrar(Integer id) {
         AudiostoreProgramacaoBean bean = requestAudiostoreProgramacao.bean(id);
-        result.include("isPageCadastro", false);
-        result.include("programacaoCategoriaBeanList", requestAudiostoreProgramacao.programacaoCategoriaBeanList(id));
         result.include("audiostoreProgramacaoBean", bean);
-        result.include("clienteBeanList", requestAudiostoreProgramacao.clienteBeanList());
-        result.include("categoriaBeanList", requestAudiostoreProgramacao.categoriaBeanList());
-        result.include("comercialList", requestAudiostoreProgramacao.comercialList(bean));
-        result.include("comercialVinculadoList", requestAudiostoreProgramacao.comercialVinculadosAProgramacao(bean));
+        result.include("isPageCadastro", false);
+//        result.include("programacaoCategoriaBeanList", requestAudiostoreProgramacao.programacaoCategoriaBeanList(id));
+//        
+//        result.include("clienteBeanList", requestAudiostoreProgramacao.clienteBeanList());
+//        result.include("categoriaBeanList", requestAudiostoreProgramacao.categoriaBeanList());
+//        result.include("comercialList", requestAudiostoreProgramacao.comercialList(bean));
+//        result.include("comercialVinculadoList", requestAudiostoreProgramacao.comercialVinculadosAProgramacao(bean));
     }
 
     @Post

@@ -6,7 +6,11 @@ import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Post;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.view.Results;
+import br.com.instore.core.orm.bean.ClienteBean;
 import br.com.instore.core.orm.bean.ConfigAppBean;
+import br.com.instore.core.orm.bean.FuncionalidadeBean;
+import br.com.instore.core.orm.bean.PerfilBean;
+import br.com.instore.core.orm.bean.PerfilUsuarioBean;
 import br.com.instore.core.orm.bean.UsuarioBean;
 import br.com.instore.web.annotation.NotRestrict;
 import br.com.instore.web.annotation.Restrict;
@@ -14,8 +18,9 @@ import br.com.instore.web.component.request.RequestUsuario;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.tools.AjaxResult;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
@@ -29,6 +34,8 @@ public class HomeController implements java.io.Serializable {
     private RequestUsuario requestUsuario;
     @Inject
     private Result result;
+    @Inject
+    private HttpServletRequest request;
     
     @Inject
     private HttpServletRequest httpServletRequest;
@@ -36,16 +43,30 @@ public class HomeController implements java.io.Serializable {
     public HomeController() {
     }
 
-    public HomeController(SessionRepository repository, SessionUsuario sessionUsuario, RequestUsuario requestUsuario, Result result) {
+    public HomeController(SessionRepository repository, SessionUsuario sessionUsuario, RequestUsuario requestUsuario, Result result , HttpServletRequest request) {
         this.repository = repository;
         this.sessionUsuario = sessionUsuario;
         this.requestUsuario = requestUsuario;
         this.result = result;
+        this.request = request;
     }    
     
     @Get
     @Path("/test")
     public void test() {
+    }
+
+    @Get
+    @Path("/menu")
+    public void menu() {
+        List<PerfilUsuarioBean> perfilUsuarioBeanList = repository.query(PerfilUsuarioBean.class).eq("usuario.idusuario", sessionUsuario.getUsuarioBean().getIdusuario()).findAll();
+        List<PerfilBean> perfis = new ArrayList<PerfilBean>();
+        
+        for (PerfilUsuarioBean pub : perfilUsuarioBeanList) {
+            pub.getPerfil().setFuncionalidadeBeanList(constructMenu(pub.getPerfil().getIdperfil()));
+            perfis.add(pub.getPerfil());
+        }
+        result.include("perfis", perfis);
     }
     
     @Get
@@ -76,6 +97,20 @@ public class HomeController implements java.io.Serializable {
     @Path("/dashboard")
     @Restrict
     public void dashboard() {
+        
+    }
+    
+    @Post
+    @Path("/dashboard")
+    @Restrict
+    public void dashboard(Integer idcliente) {
+         ClienteBean c = (ClienteBean) repository.find(ClienteBean.class, idcliente);
+         if(null != c) {
+             sessionUsuario.setCliente(c);
+             result.use(Results.json()).withoutRoot().from(1).recursive().serialize();
+         } else {
+             result.use(Results.json()).withoutRoot().from(0).recursive().serialize();
+         }   
     }
     
     @Get
@@ -149,6 +184,67 @@ public class HomeController implements java.io.Serializable {
     }
     
     
+    public List<FuncionalidadeBean> constructMenu(int idperfil) {
+        String url = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+        String html = "";
+        Integer parente = 0;
+
+        String queries = "";
+
+        queries = "select \n"
+                + "    funcionalidade.idfuncionalidade as idfuncionalidade,\n"
+                + "    mapping_id as mappingId,\n"
+                + "    nome,\n"
+                + "    icone,\n"
+                + "    parente,\n"
+                + "    visivel as visivel\n"
+                + "from funcionalidade\n"
+                + "left join perfil_funcionalidade using(idfuncionalidade) \n"
+                + "left join perfil_usuario using(idperfil) \n"
+                + "where\n"
+                + "    parente = " + parente + "\n"
+                + "	and idusuario = " + sessionUsuario.getUsuarioBean().getIdusuario() + "\n"
+                + "     and visivel = 1"
+                + "     and perfil_funcionalidade.idperfil = "+idperfil+"\n"
+                + "     and perfil_usuario.idperfil = "+idperfil+"\n"
+                + "group by funcionalidade.idfuncionalidade order by funcionalidade.nome asc";
+
+        // pega funcionalidades ROOT
+        List<FuncionalidadeBean> funcionalidadeBeanList = repository.query(queries).executeSQL(FuncionalidadeBean.class);
+        return funcionalidadeBeanList;
+    }
     
     
+    public List<FuncionalidadeBean> constructMenuChild(FuncionalidadeBean fb) {
+        if (null == fb) {
+            return new ArrayList<FuncionalidadeBean>();
+        }
+
+        final List<Integer> id_s = new ArrayList<Integer>();
+        String query = "select \n"
+                + "    funcionalidade.idfuncionalidade as id , '' as param\n"
+                + "from\n"
+                + "    funcionalidade\n"
+                + "inner join perfil_funcionalidade using(idfuncionalidade)\n"
+                + "inner join perfil_usuario using(idperfil)\n"
+                + "\n"
+                + "where 	funcionalidade.parente = " + fb.getIdfuncionalidade() + "\n"
+                + "		and perfil_usuario.idusuario = " + sessionUsuario.getUsuarioBean().getIdusuario();
+
+        repository.query(query).executeSQL(new br.com.instore.core.orm.Each() {
+            Integer id;
+            String param;
+
+            @Override
+            public void each() {
+                id_s.add(id);
+            }
+        });
+
+        if (!id_s.isEmpty()) {
+            return repository.query(FuncionalidadeBean.class).in("idfuncionalidade", id_s.toArray(new Integer[id_s.size()])).findAll();
+        } else {
+            return new ArrayList<FuncionalidadeBean>();
+        }
+    }
 }

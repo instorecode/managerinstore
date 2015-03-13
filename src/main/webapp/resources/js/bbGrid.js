@@ -4,6 +4,7 @@
 //     bbGrid may be freely distributed under the MIT license.
 //     For all details and documentation:
 //     http://direct-fuel-injection.github.com/bbGrid/
+var STATIC_INDEX = 0;
 (function () {
     var templateSettings = {
 	    evaluate: /<%([\s\S]+?)%>/g,
@@ -380,6 +381,7 @@
             this.$grid.append(this.rowViews[model.id].render().el);
         },
         renderPage: function (options) {
+           
             options = options || {silent: false};
             var self = this, interval;
             if (this.loadDynamic && !this.autofetch && !options.silent) {
@@ -417,6 +419,14 @@
             if (this.filterBar && !options.silent) {
                 this.filterBar.render();
             }
+            
+            jQuery('.bbGrid-row').each(function(){
+                if (jQuery(this).index() % 2 == 0 ){
+                    jQuery(this).attr('style','background-color:#ebebeb !important');
+                } else {
+                    jQuery(this).attr('style','background-color:#c3c3c3 !important');
+                }
+            });
         },
         onSort: function (event) {
             var $el, col, newSortAttr = true, self = this;
@@ -602,6 +612,8 @@
             }
         },
         render: function () {
+            
+                
             var self = this, isChecked, isDisabled, html,
                 cols = _.filter(this.view.colModel, function (col) {return !col.hidden;});
             isChecked = ($.inArray(this.model.id, this.view.selectedRows) >= 0);
@@ -627,6 +639,7 @@
                 this.$el.addClass('warning');
             }
             this.$el.html(html);
+            
             return this;
         }
     });

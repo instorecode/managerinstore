@@ -67,7 +67,7 @@ public class RequestUsuario implements java.io.Serializable {
             if (repository.query(UsuarioBean.class).eq(Usuario.EMAIL, email).and().eq(Usuario.SENHA, senha).count() >= 0) {
                 UsuarioBean usuario = repository.query(UsuarioBean.class).eq(Usuario.EMAIL, email).and().eq(Usuario.SENHA, senha).findOne();
                 if (null != usuario) {
-                    usuario.getPerfilBeanList();
+//                    usuario.getPerfilBeanList();
                     sessionUsuario.setUsuarioBean(usuario);
                     sessionUsuario.setLogado(true);
 
@@ -95,7 +95,7 @@ public class RequestUsuario implements java.io.Serializable {
         try {
             if (repository.query(UsuarioBean.class).eq(Usuario.IDUSUARIO, id).count() > 0) {
                 UsuarioBean usuario = repository.query(UsuarioBean.class).eq(Usuario.IDUSUARIO, id).findOne();
-                usuario.getPerfilBeanList();
+                //usuario.getPerfilBeanList();
                 sessionUsuario.setUsuarioBean(usuario);
                 sessionUsuario.setLogado(true);
 

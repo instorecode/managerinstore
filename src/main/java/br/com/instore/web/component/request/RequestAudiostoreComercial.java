@@ -65,7 +65,7 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
 
     public AudiostoreComercialJSON beanList(Integer page, Integer rows, Integer id, String titulo, String arquivo, Integer codigo, Integer idcliente) {
         AudiostoreComercialJSON json = new AudiostoreComercialJSON();
-
+        idcliente = sessionUsuario.getCliente().getIdcliente();
         page = (null == page || 0 == page ? 1 : page);
         rows = (null == rows || 0 == rows ? 10 : rows);
 

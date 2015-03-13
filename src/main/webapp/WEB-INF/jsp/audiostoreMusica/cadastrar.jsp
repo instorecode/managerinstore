@@ -142,6 +142,7 @@
                                         </td>
 
                                         <td>
+                                            
                                             <select name="audiostoreMusicaBeanList[${vs.index+1}].cliente.idcliente" class="select2 sel_cat2" data-rule-required="true" disabled="disabled">
                                                 <option>${clienteBean.nome}</option>
                                             </select>
@@ -283,7 +284,9 @@
                             <input class="form-control" value="${musicaGeralBean.titulo}" disabled="disabled"/>
                         </div>
                     </div>
-                    <div class="col-md-12">
+                        
+                    <input type="hidden" name="audiostoreMusicaBean.cliente.idcliente" value="${sessionUsuario.cliente.idcliente}" />
+<!--                    <div class="col-md-12">
                         <div class="form-group">
                             <label>Cliente</label>
                             <br />
@@ -294,7 +297,7 @@
                                 </c:forEach>
                             </select>
                         </div>
-                    </div>
+                    </div>-->
 
                 </div>
 

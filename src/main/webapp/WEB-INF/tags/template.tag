@@ -14,7 +14,6 @@
 <c:set scope="session" var="url_img" value="http://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/resources/img/"></c:set>
 <c:set scope="session" var="url_cz" value="http://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/resources/cz/"></c:set>
 
-
     <!DOCTYPE html>
     <html lang="en">
         <head>
@@ -100,35 +99,43 @@
         <script src="${url_cz}js/ckeditor/adapters/jquery.js"></script>
         <script src="${url_js}gerarCsv.js" ></script>
         <script src="${url_js}shortcut.js" ></script>
-         
+
         <style type="text/css">
             input{
                 text-transform: uppercase;
             } 
+
+            .table > thead > tr > td.warning, .table > tbody > tr > td.warning, .table > tfoot > tr > td.warning, .table > thead > tr > th.warning, .table > tbody > tr > th.warning, .table > tfoot > tr > th.warning, .table > thead > tr.warning > td, .table > tbody > tr.warning > td, .table > tfoot > tr.warning > td, .table > thead > tr.warning > th, .table > tbody > tr.warning > th, .table > tfoot > tr.warning > th {
+                background-color: #2494f2 !important;
+                color: #FFF;
+            }
+           
         </style>
-        
+
         <script type="text/javascript">
-            jQuery(document).ready(function() {
+            jQuery(document).ready(function () {
+                
+                
                 App.init();
                 App.textEditor();
                 $('#some-textarea').wysihtml5();
 
                 $('.md-trigger').modalEffects();
 
-                jQuery.storageAdd = function(name, value) {
-                    if (typeof(Storage) !== "undefined") {
+                jQuery.storageAdd = function (name, value) {
+                    if (typeof (Storage) !== "undefined") {
                         localStorage.setItem(name, value);
                     }
                 };
 
-                jQuery.storage = function(name) {
-                    if (typeof(Storage) !== "undefined") {
+                jQuery.storage = function (name) {
+                    if (typeof (Storage) !== "undefined") {
                         return localStorage.getItem(name);
                     }
                 };
 
-                jQuery.storageClear = function() {
-                    if (typeof(Storage) !== "undefined") {
+                jQuery.storageClear = function () {
+                    if (typeof (Storage) !== "undefined") {
                         window.localStorage.clear();
                     }
                 };
@@ -138,7 +145,7 @@
                     jQuery('.cli_nom_red').text(jQuery.storage("matriz_selecionada_nome"));
                 }
 
-                jQuery('.cliente_selecionado').on('click', function() {
+                jQuery('.cliente_selecionado').on('click', function () {
                     self = jQuery(this);
                     jQuery.storageAdd("matriz_selecionada", self.data('id'));
                     jQuery.storageAdd("matriz_selecionada_nome", self.data('clienteNome'));
@@ -171,11 +178,11 @@
                     jQuery.storageAdd('machine_id', "MACHINEID${machine_id}");
                 }
 
-                jQuery('.btn_up_cache').on('click', function() {
-                    bootbox.confirm("A página será atualizada, tem certeza de que deseja atualizar o cache? ", function(result) {
+                jQuery('.btn_up_cache').on('click', function () {
+                    bootbox.confirm("A página será atualizada, tem certeza de que deseja atualizar o cache? ", function (result) {
                         if (result) {
                             jQuery.storageClear();
-                            setTimeout(function() {
+                            setTimeout(function () {
                                 window.location.reload();
                             }, 1000);
                             return false;
@@ -185,12 +192,13 @@
             });
         </script>
         <script>
-            jQuery(document).ready(function() {
+            jQuery(document).ready(function () {
                 var input = $('input[data-rule-required]');
                 var div = input.closest('div.form-group');
                 div.children("label").append("*");
                 
             });
+            
         </script>
 
         <style>
@@ -210,7 +218,7 @@
             </style>
             <jsp:invoke fragment="gridColumn"></jsp:invoke>
                 <script type="text/javascript" charset="utf-8">
-                    jQuery(document).ready(function() {
+                    jQuery(document).ready(function () {
                         var App = {};
 
                         var url = document.URL;
@@ -234,7 +242,7 @@
 
                         App.exampleCollection.fetch({
                             wait: true,
-                            success: function(collection) {
+                            success: function (collection) {
                                 App.clearGridCollection.reset(collection.models.slice(0, 10000));
                             }
                         });
@@ -259,15 +267,15 @@
                             rowList: [5, 25, 50, 100, 250, 500],
                             colModel: gridColumn,
                             multiselect: false,
-                            onBeforeRender: function() {
+                            onBeforeRender: function () {
                                 valor = 0;
                             },
-                            onReady: function() {
-                                if (typeof(onReady) != "undefined") {
+                            onReady: function () {
+                                if (typeof (onReady) != "undefined") {
                                     onReady(this._collection.models);
                                 }
                             },
-                            onRowClick: function(data, evt) {
+                            onRowClick: function (data, evt) {
                                 if (!evt.ctrlKey) {
                                     var _url = url;
 
@@ -315,10 +323,10 @@
                                     }
 
 
-                                    jQuery('.upd').on('click', function() {
+                                    jQuery('.upd').on('click', function () {
                                         window.location.href = _url_atualizar;
                                     });
-                                    jQuery('.trash').on('click', function() {
+                                    jQuery('.trash').on('click', function () {
                                         window.location.href = _url_remover;
                                     });
 
@@ -346,7 +354,7 @@
                                     jQuery('.xdet').append(clone_view);
                                     clone_view.show();
                                     jQuery("#player_musicas_gerais").jPlayer({
-                                        ready: function() {
+                                        ready: function () {
                                             $(this).jPlayer("setMedia", {
                                                 title: "Musica",
                                                 mp3: "${url}/musica/stream/" + data.attributes.id,
@@ -360,12 +368,12 @@
                                     if (jQuery('.sld_view:hidden')) {
                                         jQuery('.sld_view').show('slow');
                                     }
-                                    jQuery('.xclose').on('click', function() {
+                                    jQuery('.xclose').on('click', function () {
                                         jQuery('.sld_view').hide('slow');
                                     });
                                 }
                             },
-                            onRowDblClick: function(data) {
+                            onRowDblClick: function (data) {
                                 var _url = url;
 
                                 if (null != _url.match(/\/$/)) {
@@ -449,7 +457,14 @@
                                 <li><a href="${url}/minha-senha">Minha senha</a></li>
                                 <li><a class="btn_up_cache" href="#"> <i class="fa fa-refresh"></i>&nbsp;&nbsp;Atualizar Cache da aplicação</a></li>
                                 <li><a class="btn_sair" href="${url}/sair">Sair</a></li>
-
+                                <li>
+                                    <a href="${url}">
+                                        <div style="background-color: #ef3e3e; font-weight: bold; float: left; padding-left: 20px; padding-right: 20px; border-radius: 4px; margin-top: -9px;">
+                                            <h4 style="color: #fff; font-weight: bold;">Cliente: ${sessionUsuario.cliente.nome}</h4>
+                                        </div>
+                                    </a>
+                                </li>
+                               <!--
                                 <li class="button dropdown">
                                     <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
                                         <i class="fa fa-building"></i> 
@@ -471,6 +486,7 @@
                                         </li>
                                     </ul>
                                 </li>
+                               -->
                             </ul>
                         </div>
                     </div><!--/.nav-collapse -->
@@ -525,19 +541,21 @@
                     </div>
                 </div>
 
-                <div class="container-fluid" id="pcont" style="background-color: #f1f1f1">
+                <div class="container-fluid" id="pcont" style="background-color: #c3c3c3">
                     <div class="page-head">
                         <h2><i class="fa ${currentFuncionalidadeBean.icone}"></i> Instore ${currentFuncionalidadeBean.nome}</h2>
 
                         <div style="float: right; margin-top: -40px; margin-right: 7px;">
                             <jsp:invoke fragment="submenu" /> 
                         </div>
+                        
                     </div>		
+                        
                     <style type="text/css">
                         .show-case{margin-bottom:50px;}
                         .show-case img{max-width:362px;width:100%;}
                     </style>
-                    <div class="cl-mcont" style="background-color: #f1f1f1"> 
+                    <div class="cl-mcont" style="background-color: #c3c3c3">
                         <jsp:doBody />
                     </div>
                 </div> 
@@ -545,201 +563,207 @@
             </div>
         </div>
 
-        <div class="mask__menu" style="display: none">
-            <br />
-            <div style="margin-left: 40px;">
-                <a class="_close"> <i class="fa fa-times"></i></a> <h2 style="float: left;">Perfis Do Usuário</h2>
-                <a style="font-size:16px;color: #000" ></a><br>                
-                <nav style="float: left; margin-left: 10px; margin-top: -10px;">
-                    <c:forEach var="item" items="${listaDePerfil}" >
-                        <a href="#">${item.perfil.nome}</a><br/>
-                    </c:forEach>
-                </nav>
-
-            </div>
-
-            <div class="clearfix"></div>
-            <br /><br /><br />
-
-            <ul class="navv">
-                ${menu}
-            </ul>
-        </div>
+       <script type="text/javascript" charset="utf-8"  src="${url_js}angular.min.js"></script>
         <style>
-            .desfoc {
-                -webkit-filter: blur(5px);
-                -moz-filter: blur(5px);
-                -ms-filter: blur(5px);
-                -o-filter: blur(5px);
-                filter: blur(5px);
-
-                opacity: 0.7;
-            }
-            .mask__menu {
+            .sidebar {
                 display: block;
-                width: 100%;
-                height: 100%;
-                /*background-color: rgba(0,0,0,0.8);*/
-                background-color: #fff;
-
-                position: fixed;
-                top:50px;
-                left:0;
-
-                z-index: 99999999;
-                border: 1px solid rgba(255,255,255,0.1);
+                width: 200px; 
+                margin-top: -15px;
+                margin-left: -30px;
+                background-color: white;
+                float: left;
             }
 
-            .mask__menu b {
+            .sidebarContent {
                 display: block;
-                margin-left: 40px; 
-                margin-right: 40px; 
-                margin-top: 25px; 
-                margin-bottom: 40px;
-
-                color: #fff;
-                font-size: 18px;
-            }
-
-            .navv {
-                list-style: none; 
-                margin-left: 40px; 
-                margin-right: 40px; 
-                margin-top: -40px; 
-                margin-bottom: 40px;
-
-                display: block;
-
-                overflow-y: auto;
-            }
-
-
-            .navv::-webkit-scrollbar {
-                width: 10px;
-            }
-
-            .navv::-webkit-scrollbar-track {
-                background-color: transparent;
-            }
-
-            .navv::-webkit-scrollbar-thumb {
-                background-color: #000;
-            }
-
-            .navv li{ margin-left: -40px; }
-            .navv li a { 
-                display: inline-block;
-                width: 250px;
-                height: 71px;
-                padding: 10px;
-                /*background-color: rgba(255,255,255,0.1);*/
-                background: #ebebeb;    
-                margin-left: 10px;
-                margin-top: 10px;
-                border-radius: 2px;
-
-                border: 1px solid rgba(255,255,255,0.0);
-            }
-
-            .navv li a:hover { 
-                /*                    background-color: rgba(255,255,255,0.2);
-                                    border: 1px solid rgba(255,255,255,0.1);*/
-            }
-
-            .navv li a span { 
+                width: 200px; 
+                margin-top: -15px;
                 margin-left: 0px;
-                margin-top: 16px;
-                display: block;
+                overflow-y: auto;
+                overflow-x: hidden;
                 float: left;
+                background-color: #ebebeb;
+                padding-top: 20px;
+                padding-left: 20px;
+                padding-right: 20px;
             }
-            .navv li i { 
-                display: block;
-                /*width: 100px;*/
-                margin: 0 auto;
-                font-size: 36px;
-                padding-bottom: 10px;
-                /*float: left;*/
-                /*text-align: center;*/
-                /*margin-left: 34px;*/
-                color: #000;
 
-                /*                    background: #399df2;*/
-                width: 60px;
-                height: 60px;
+            .sidebar h1 {
+                display: block;
+                width: 200px;
+                font-size: 14px;
+                line-height: 40px;
+                text-indent: 20px;
+                border-bottom: 1px solid #ebebeb;
+            }
+
+            .sidebar ul { list-style: none; margin-left: -40px; }
+            .sidebar ul li { 
+                margin-left: 20px; 
+                padding: 4px; 
+            }
+
+            .sidebar ul li a { 
+                color: #2494F2;
+                font-weight: bold; 
+            }
+
+            .txtPF {
+                display: block;
+                display: block;
+                width: 180px;
+                height: 50px;
+                padding: 20px;
+                font-size: 12px;
                 text-align: center;
-                line-height: 60px;
-                float: left;
-                margin-top: -5px;
-            }
-
-            .navv li a { 
-                font-size: 11px;
-                float: left;
-                text-align: center;
-                color: #000;
-            }
-
-            .navv li.active a { 
-                background-color: #2494F2;
-                color: #fff;
-            }
-            .navv li.active i { 
-                color: #fff;
-            }
-
-            .mask__menu ._close i{ 
-                display: block;
-                margin-left: -4px;
-                margin-top: 2px;
-            }
-
-            .mask__menu ._close {
-                background-color: #fff;
-                color: #000;
+                margin-top: 0px;
+                margin-left: -20px;
+                color: #73B843;
+                font-weight: bold;
                 padding-top: 0px;
                 padding-bottom: 0px;
-                padding-left: 4px;
-                padding-right: 0px;
-
-                margin-right: 10px;
-
-                cursor: pointer;
-
-                float: left;
-                font-size: 30px;
-                display: inline-block;
-                width: 35px;
-                height: 35px;
-                border: 1px solid #000;
-                border-radius: 30px;
-                text-align: center;
             }
 
+            .well2 {
+                display: block;
+                width: 180px;
+                height: 100px;
 
+                padding: 20px;
+
+                background-color: #FFF;
+                margin-top: 40px;
+            }
+
+            .well2 i {
+                display: block;
+                width: 180px;
+                height: 50px; 
+                padding: 20px;
+                font-size: 24px;
+                text-align: center;
+                margin-left: -20px;
+                margin-top: -20px;
+                color: #ef3e3e;
+            }
+            .SidebarApp {
+                display: none;
+                margin-top: 150px;
+                margin-left: 30px;
+                position: absolute;
+                background-color: #ebebeb;
+                z-index: 9999999999999999999999999;
+            }
         </style>
+        <div class="SidebarApp" ng-app="SidebarApp" ng-controller="SidebarController">
+            <div class="sidebar">
+                <h1>Meus perfis</h1>
+                <ul>
+                    <li ng-repeat="p in perfilList" ng-click="selecionarPerfil($index);">
+                        <a href="#"><i class="fa fa-files-o"></i>&nbsp;&nbsp;{{p.nome}}</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebarContent">
+                <div class="row">
+                    <div class="col-md-2" ng-repeat="f in funcionalidades">
+                        <a href="${url}{{f.mid}}">
+                            <div class="well2">
+                                <i class="fa {{f.icone}}"></i> <span class="txtPF">{{f.nome}}</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <div ng-if="null == funcionalidades" style="color: #000;"> Selecione um perfil </div>
+                <div ng-if="funcionalidades.length <= 0" style="color: #000;"> Nenhuma permissão atribuida a este perfil </div>
+            </div>
+        </div>
+
 
         <script type="text/javascript">
-            jQuery(document).ready(function() {
-                jQuery(window).resize(function() {
+            var angular = angular.module('SidebarApp', []);
+            angular.controller('SidebarController', function ($scope) {
+                $scope.perfilList = new Array();
+                <c:forEach items="${perfis}" var="p">
+                    $scope.perfilList.push({
+                        nome: '${p.nome}',
+                        funcionalidades: [
+                            <c:forEach items="${p.funcionalidadeBeanList}" var="f">
+                                    {mid: '${f.mappingId}', nome: '${f.nome}', icone: '${f.icone}'},
+                            </c:forEach>
+                        ]
+                    });
+                </c:forEach> 
+                $scope.funcionalidades = null;
+                $scope.selecionarPerfil = function (index) {
+                    $scope.funcionalidades = new Array();
+                    $scope.funcionalidades = $scope.perfilList[index].funcionalidades;
+                }
+            });
+        </script>
+        <script type="text/javascript">
+            jQuery(document).ready(function () {
+                function autosize() {
+                    var h = jQuery(window).height();
+                    var w = jQuery(window).width();
+                    jQuery('.sidebar').css({
+                        'height': (h - 130) + 'px'
+                    });
+
+                    jQuery('.sidebarContent').css({
+                        'width': (w - 200) + 'px',
+                        'height': (h - 130) + 'px'
+                    });
+                }
+
+                autosize();
+
+                jQuery(window).resize(function () {
+                    autosize();
+                });
+            });
+        </script>
+                        
+        
+        
+        <script type="text/javascript">
+            jQuery(document).ready(function () {
+                jQuery(window).resize(function () {
                     jQuery('.navv').css('height', (jQuery(window).height() - 100) + 'px');
                 });
                 jQuery('.navv').css('height', (jQuery(window).height() - 100) + 'px');
 
-                jQuery('.link_menu').on('click', function() {
+                jQuery('.link_menu').on('click', function () {
 //                        jQuery('.enfoc').addClass('desfoc');
-                    jQuery('.mask__menu').show();
+                    jQuery('.SidebarApp').toggle();
+                    if(jQuery('.SidebarApp').is(':visible')){
+                        jQuery('body').css({
+                            'overflow-x':'hidden',
+                            'overflow-y':'hidden'
+                        });
+                        $(window).scrollTop(0);
+                        jQuery('.sidebar ul li:first a').click();
+                    } else {
+                        jQuery('body').css({
+                            'overflow-x':'auto',
+                            'overflow-y':'auto'
+                        });
+                        $(window).scrollTop(0);
+                    }
                     jQuery('body').css('overflow', 'hidden');
                     return false;
                 });
 
-                jQuery(document).on('keyup', function(e) {
+                jQuery(document).on('keyup', function (e) {
                     if (e.keyCode == 27) {
 //                            jQuery('.enfoc').removeClass('desfoc');
-                        jQuery('.mask__menu').hide();
+                        jQuery('.SidebarApp').hide();
                         jQuery('body').css('overflow', 'auto');
                     }
                 });
-                jQuery('.mask__menu ._close').on('click', function(e) {
+                jQuery('.mask__menu ._close').on('click', function (e) {
                     jQuery('.enfoc').removeClass('desfoc');
                     jQuery('.mask__menu').hide();
                     jQuery('body').css('overflow', 'auto');

@@ -20,7 +20,6 @@ import br.com.instore.web.dto.AudiostoreProgramacaoJSON;
 import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
 import java.io.ByteArrayInputStream;
-import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -54,7 +53,7 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
 
     public AudiostoreProgramacaoJSON beanList(Integer page, Integer rows, Integer id, Integer idcliente, String descricao) {
         AudiostoreProgramacaoJSON json = new AudiostoreProgramacaoJSON();
-
+        idcliente = sessionUsuario.getCliente().getIdcliente();
         page = (null == page || 0 == page ? 1 : page);
         rows = (null == rows || 0 == rows ? 10 : rows);
 
@@ -96,8 +95,8 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
             AudiostoreProgramacaoDTO dto = new AudiostoreProgramacaoDTO();
 
             dto.setClienteNome(prog.getCliente().getNome());
-            dto.setDataFinal(new SimpleDateFormat("dd/MM/yyyy").format(prog.getDataFinal()));
-            dto.setDataInicio(new SimpleDateFormat("dd/MM/yyyy").format(prog.getDataInicio()));
+            dto.setDataFinal(new SimpleDateFormat("dd/MM/yyyy").format(null == prog.getDataFinal() ? new Date() : prog.getDataFinal()));
+            dto.setDataInicio(new SimpleDateFormat("dd/MM/yyyy").format(null == prog.getDataInicio() ? new Date() : prog.getDataInicio()));
             dto.setDescricao(prog.getDescricao());
 
             String diasSemana = "";
@@ -176,8 +175,8 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
 
 
             dto.setClienteNome(prog.getCliente().getNome());
-            dto.setDataFinal(new SimpleDateFormat("dd/MM/yyyy").format(prog.getDataFinal()));
-            dto.setDataInicio(new SimpleDateFormat("dd/MM/yyyy").format(prog.getDataInicio()));
+            dto.setDataFinal(new SimpleDateFormat("dd/MM/yyyy").format(null == prog.getDataFinal() ? new Date() : prog.getDataFinal()));
+            dto.setDataInicio(new SimpleDateFormat("dd/MM/yyyy").format(null == prog.getDataInicio() ? new Date() : prog.getDataInicio()));
             dto.setDescricao(prog.getDescricao());
 
             String diasSemana = "";

@@ -56,6 +56,8 @@
                                 </div>
 
                                 <div class="col-md-3">
+                                    <input type="hidden" name="audiostoreCategoriaBean.cliente.idcliente" value="${sessionUsuario.cliente.idcliente}" />
+                                    <!--
                                     <div class="form-group">
                                         <label>Cliente</label>
                                         <select field="idcliente"  class="select_cliente select2" name="audiostoreCategoriaBean.cliente.idcliente" data-rule-required="true" >
@@ -64,6 +66,7 @@
                                             </c:forEach>
                                         </select>
                                     </div>
+                                    -->
                                 </div>
 
                                 <div class="col-md-3">
@@ -216,6 +219,8 @@
                         </div>
 
                         <div class="col-md-3">
+                            <input type="hidden" name="audiostoreCategoriaBean.cliente.idcliente" value="${sessionUsuario.cliente.idcliente}" />
+                            <!--
                             <div class="form-group">
                                 <label>Cliente</label>
                                 <select field="idcliente"  class="select_cliente" name="audiostoreCategoriaBean.cliente.idcliente" data-rule-required="true" >
@@ -225,6 +230,7 @@
                                     </c:forEach>
                                 </select>
                             </div>
+                            -->
                         </div>
 
                         <div class="col-md-3">
@@ -368,7 +374,7 @@
                             <th options="true" class="options">#</th>
                             <th field="codInterno" options="false">Código</th>
                             <th field="categoria" options="false">Categoria</th>
-                            <th field="clienteNome" isfk="true" fk="idcliente" fklabel="nome" fklabelselect="Todos" fkurl="${url}/audiostore-categorias?clientes=true"  options="false">Cliente</th>
+                            <!--<th field="clienteNome" isfk="true" fk="idcliente" fklabel="nome" fklabelselect="Todos" fkurl="${url}/audiostore-categorias?clientes=true"  options="false">Cliente</th>-->
                             <th field="dataInicio" options="false">Data inicial</th>
                             <th field="dataFinal" options="false">Data final</th>
                             <th field="tipo" options="false">Tipo</th>

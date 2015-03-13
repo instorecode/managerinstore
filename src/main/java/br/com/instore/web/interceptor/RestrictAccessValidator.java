@@ -9,6 +9,9 @@ import br.com.caelum.vraptor.interceptor.AcceptsWithAnnotations;
 import br.com.caelum.vraptor.interceptor.SimpleInterceptorStack;
 import br.com.instore.core.orm.bean.ClienteBean;
 import br.com.instore.core.orm.bean.FuncionalidadeBean;
+import br.com.instore.core.orm.bean.PerfilBean;
+import br.com.instore.core.orm.bean.PerfilUsuarioBean;
+import br.com.instore.core.orm.bean.UsuarioBean;
 import br.com.instore.core.orm.bean.property.Funcionalidade;
 import br.com.instore.web.annotation.Restrict;
 import br.com.instore.web.component.session.SessionRepository;
@@ -36,7 +39,7 @@ public class RestrictAccessValidator {
     @Inject
     private Result result;
     @Inject
-    private SessionRepository requestRepository;
+    private SessionRepository repository;
     @Inject
     private HttpServletRequest httpServletRequest;
 
@@ -45,7 +48,7 @@ public class RestrictAccessValidator {
         Path path = controllerMethod.getMethod().getAnnotation(Path.class);
         if (null != path && sessionUsuario.isLogado()) {
 
-            if (sessionUsuario.getUsuarioBean().getSenha().equals("202cb962ac59075b964b07152d234b70") && !"/minha-senha".equals(path.value()[0]) )  {
+            if (sessionUsuario.getUsuarioBean().getSenha().equals("202cb962ac59075b964b07152d234b70") && !"/minha-senha".equals(path.value()[0])) {
                 result.redirectTo(HomeController.class).minhaSenha();
             }
 
@@ -59,6 +62,7 @@ public class RestrictAccessValidator {
                 loadClienteMatriz();
                 perfilUsuarios();
                 stack.next();
+
             } else if ("/sair".equals(path.value()[0])) {
                 stack.next();
             } else {
@@ -66,11 +70,15 @@ public class RestrictAccessValidator {
                     result.include("currentFuncionalidadeBean", f);
                     result.include("menu", constructMenu(null, path.value()[0]));
                     result.include("funcionalidadeBeanList", constructMenuChild(f));
-                    loadClienteMatriz();
-                    perfilUsuarios();
-                    stack.next();
+                    if (null != sessionUsuario.getCliente()) {
+                        loadClienteMatriz();
+                        perfilUsuarios();
+                        stack.next();
+                    } else {
+                        result.redirectTo(HomeController.class).dashboard();
+                    }
                 } else {
-                    result.redirectTo(HomeController.class).index();
+                    result.redirectTo(HomeController.class).page404();
                 }
             }
         } else {
@@ -104,8 +112,8 @@ public class RestrictAccessValidator {
                 + "inner join funcionalidade using(idfuncionalidade)\n"
                 + "where mapping_id = '" + currentMappinId + "' and idusuario = " + sessionUsuario.getUsuarioBean().getIdusuario() + " \n group by idfuncionalidade";
 
-        if (requestRepository.query(q).executeSQLCount() > 0) {
-            FuncionalidadeBean fb = requestRepository.query(FuncionalidadeBean.class).eq(Funcionalidade.MAPPING_ID, currentMappinId).findOne();
+        if (repository.query(q).executeSQLCount() > 0) {
+            FuncionalidadeBean fb = repository.query(FuncionalidadeBean.class).eq(Funcionalidade.MAPPING_ID, currentMappinId).findOne();
             return fb;
         } else {
             return null;
@@ -133,7 +141,7 @@ public class RestrictAccessValidator {
                 + "where 	funcionalidade.parente = " + fb.getIdfuncionalidade() + "\n"
                 + "		and perfil_usuario.idusuario = " + sessionUsuario.getUsuarioBean().getIdusuario();
 
-        requestRepository.query(query).executeSQL(new br.com.instore.core.orm.Each() {
+        repository.query(query).executeSQL(new br.com.instore.core.orm.Each() {
             Integer id;
             String param;
 
@@ -144,7 +152,7 @@ public class RestrictAccessValidator {
         });
 
         if (!id_s.isEmpty()) {
-            return requestRepository.query(FuncionalidadeBean.class).in("idfuncionalidade", id_s.toArray(new Integer[id_s.size()])).findAll();
+            return repository.query(FuncionalidadeBean.class).in("idfuncionalidade", id_s.toArray(new Integer[id_s.size()])).findAll();
         } else {
             return new ArrayList<FuncionalidadeBean>();
         }
@@ -153,6 +161,7 @@ public class RestrictAccessValidator {
     public String constructMenu(Integer parente, String currentMappinId) {
         String url = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
         String html = "";
+
         if (parente == null) {
             parente = 0;
         }
@@ -176,7 +185,7 @@ public class RestrictAccessValidator {
                 + "group by funcionalidade.idfuncionalidade order by funcionalidade.nome asc";
 
         // pega funcionalidades ROOT
-        List<FuncionalidadeBean> funcionalidadeBeanList = requestRepository.query(queries).executeSQL(FuncionalidadeBean.class);
+        List<FuncionalidadeBean> funcionalidadeBeanList = repository.query(queries).executeSQL(FuncionalidadeBean.class);
         if (funcionalidadeBeanList != null) {
             for (FuncionalidadeBean f : funcionalidadeBeanList) {
                 if (null != f.getMappingId() && !f.getMappingId().isEmpty()) {
@@ -198,14 +207,91 @@ public class RestrictAccessValidator {
     public void perfilUsuarios() {
 //        List<PerfilUsuarioBean> listaDePerfil = requestRepository.query(PerfilUsuarioBean.class).eq("usuario.idusuario", sessionUsuario.getUsuarioBean().getIdusuario()).findAll();
 //        result.include("listaDePerfil", listaDePerfil);
+        constructMenu();
     }
 
     public void clientesMatriz() {
-        List<ClienteBean> lista = requestRepository.query(ClienteBean.class).eq("parente", 0).eq("matriz", true).findAll();
+        List<ClienteBean> lista = repository.query(ClienteBean.class).eq("parente", 0).eq("matriz", true).findAll();
         result.include("listaClientesMatriz", lista);
     }
 
     public void loadClienteMatriz() {
-        result.include("atalhoClienteList", requestRepository.query(ClienteBean.class).eq("parente", 0).eq("matriz", true).findAll());
+        result.include("atalhoClienteList", repository.query(ClienteBean.class).eq("parente", 0).eq("matriz", true).findAll());
+    }
+
+    public void constructMenu() {
+        final List<PerfilUsuarioBean> perfilUsuarioBeanListAux = new ArrayList<PerfilUsuarioBean>();
+        final List<PerfilUsuarioBean> perfilUsuarioBeanList = new ArrayList<PerfilUsuarioBean>();
+        repository.query("select idperfil_usuario as 'idperfilUsuario' , idperfil as idperfil , idusuario as idusuario from perfil_usuario where idusuario = " + sessionUsuario.getUsuarioBean().getIdusuario()).executeSQL(new br.com.instore.core.orm.Each() {
+            private Integer idperfilUsuario;
+            private Integer idperfil;
+            private Integer idusuario;
+
+            @Override
+            public void each() {
+                PerfilUsuarioBean pub = new PerfilUsuarioBean();
+                pub.setIdperfilUsuario(idperfilUsuario);
+                pub.setPerfil(new PerfilBean(idperfil));
+                pub.setUsuario(new UsuarioBean(idusuario));
+                perfilUsuarioBeanListAux.add(pub);
+            }
+        });
+
+        for (final PerfilUsuarioBean pubbbb : perfilUsuarioBeanListAux) {
+            repository.query("select idperfil , nome from perfil where idperfil = " + pubbbb.getPerfil().getIdperfil()).executeSQL(new br.com.instore.core.orm.Each() {
+                private Integer idperfil;
+                private String nome;
+
+                @Override
+                public void each() {
+                    PerfilUsuarioBean pub = new PerfilUsuarioBean();
+                    pub.setIdperfilUsuario(pubbbb.getIdperfilUsuario());
+                    pub.setUsuario(new UsuarioBean(pubbbb.getUsuario().getIdusuario()));
+                    PerfilBean p = new PerfilBean(idperfil);
+                    p.setNome(nome);
+                    pub.setPerfil(p);
+                    perfilUsuarioBeanList.add(pub);
+                }
+            });
+        }
+
+        final List<PerfilBean> perfis = new ArrayList<PerfilBean>();
+
+        for (PerfilUsuarioBean pub : perfilUsuarioBeanList) {
+            pub.getPerfil().setFuncionalidadeBeanList(constructMenu(pub.getPerfil().getIdperfil()));
+            perfis.add(pub.getPerfil());
+        }
+        
+        result.include("perfis", perfis);
+    }
+
+    public List<FuncionalidadeBean> constructMenu(int idperfil) {
+        String url = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+        String html = "";
+        Integer parente = 0;
+
+        String queries = "";
+
+        queries = "select \n"
+                + "    funcionalidade.idfuncionalidade as idfuncionalidade,\n"
+                + "    mapping_id as mappingId,\n"
+                + "    nome,\n"
+                + "    icone,\n"
+                + "    parente,\n"
+                + "    visivel as visivel\n"
+                + "from funcionalidade\n"
+                + "left join perfil_funcionalidade using(idfuncionalidade) \n"
+                + "left join perfil_usuario using(idperfil) \n"
+                + "where\n"
+                + "    parente = " + parente + "\n"
+                + "	and idusuario = " + sessionUsuario.getUsuarioBean().getIdusuario() + "\n"
+                + "     and visivel = 1"
+                + "     and perfil_funcionalidade.idperfil = " + idperfil + "\n"
+                + "     and perfil_usuario.idperfil = " + idperfil + "\n"
+                + "group by funcionalidade.idfuncionalidade order by funcionalidade.nome asc";
+
+        // pega funcionalidades ROOT
+        List<FuncionalidadeBean> funcionalidadeBeanList = repository.query(queries).executeSQL(FuncionalidadeBean.class);
+        return funcionalidadeBeanList;
     }
 }

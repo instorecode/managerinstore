@@ -44,7 +44,9 @@
 
             <div class="row">
 
-                <div class="col-md-3"> 
+                <!--<div class="col-md-3">--> 
+                    <input type="hidden" name="audiostoreComercialBean.cliente.idcliente" value="${sessionUsuario.cliente.idcliente}" />
+                    <!--
                     <div class="form-group">
                         <label>Cliente</label>
                         <select class="form-control ${isPageCadastro eq true ? 'select_cliente' : ''} tag_sel_cli" name="audiostoreComercialBean.cliente.idcliente" data-rule-required="true" >
@@ -53,7 +55,8 @@
                             </c:forEach>
                         </select>
                     </div>
-                </div>
+                    -->
+                <!--</div>-->
 
                 <div class="col-md-3">
                     <div class="form-group">

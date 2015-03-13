@@ -183,6 +183,7 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
     }
 
     public AudiostoreMusicaJSON beanList(Boolean datajson, Boolean view, Integer page, Integer rows, Integer id, Integer idcliente, String arquivo, String nome, Integer codigo, String letra, String ultimaImportacao) {
+        idcliente = sessionUsuario.getCliente().getIdcliente();
         System.out.println("FILTROS");
         System.out.println("================================================");
         System.out.println("DATAJSON: " + datajson);

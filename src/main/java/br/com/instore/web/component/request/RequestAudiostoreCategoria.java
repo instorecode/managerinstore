@@ -54,7 +54,7 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
 
     public AudiostoreCategoriaJSON beanList(Integer page, Integer rows, Integer id, Integer idcliente, String nome, String tipo, String duracao, String dataInicio, String dataFinal, String codInterno) {
         AudiostoreCategoriaJSON json = new AudiostoreCategoriaJSON();
-
+        idcliente = sessionUsuario.getCliente().getIdcliente();
         page = (null == page || 0 == page ? 1 : page);
         rows = (null == rows || 0 == rows ? 10 : rows);
 
