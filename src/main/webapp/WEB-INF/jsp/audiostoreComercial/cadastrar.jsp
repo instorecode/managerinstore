@@ -266,7 +266,7 @@
                                 <h3>Mensagem</h3>
                             </div>
                             <div class="content"> 
-                                <textarea class="ckeditor form-control" name="audiostoreComercialBean.msg" rows="10" data-rule-required="true">${audiostoreComercialBean.msg}</textarea>
+                                <input class="ckeditor form-control" name="audiostoreComercialBean.msg" rows="10" data-rule-required="true" value="${audiostoreComercialBean.msg}" maxlength="40">
                             </div>
                         </div>
                     </div>
@@ -406,22 +406,22 @@
                 }
 
                 function carrega_categorias() {
-                    var idcliente = jQuery(".tag_sel_cli").val();
-                    jQuery.ajax({
-                        type: 'POST',
-                        url: '${url}/audiostore-comercial/vld-categ',
-                        data: {idcliente: idcliente},
-                        success: function(json) {
-                            jQuery('[name="audiostoreComercialBean.audiostoreCategoria.codigo"]').html('');
-                            var option = '';
-                            for (i in json) {
-                                var item = json[i];
-                                option += '<option value="' + item.codigo + '">' + item.categoria + '</option>';
-                            }
-
-                            jQuery('[name="audiostoreComercialBean.audiostoreCategoria.codigo"]').html(option);
-                        }
-                    });
+//                    var idcliente = jQuery(".tag_sel_cli").val();
+//                    jQuery.ajax({
+//                        type: 'POST',
+//                        url: '${url}/audiostore-comercial/vld-categ',
+//                        data: {idcliente: idcliente},
+//                        success: function(json) {
+//                            jQuery('[name="audiostoreComercialBean.audiostoreCategoria.codigo"]').html('');
+//                            var option = '';
+//                            for (i in json) {
+//                                var item = json[i];
+//                                option += '<option value="' + item.codigo + '">' + item.categoria + '</option>';
+//                            }
+//
+//                            jQuery('[name="audiostoreComercialBean.audiostoreCategoria.codigo"]').html(option);
+//                        }
+//                    });
                 }
 
                 jQuery('[name="audiostoreComercialBean.audiostoreCategoria.codigo"]').on("form-control-open", function() {

@@ -26,6 +26,7 @@
         
         <script type="text/javascript">
             jQuery(document).ready(function(){
+                
                 jQuery('.selecionarCliente').on('click' , function(){
                     jQuery.ajax({
                         url : '',
@@ -37,8 +38,10 @@
                             if(response != 1) {
                                 bootbox.alert('Não foi possivel selecionar cliente' , function(){});
                             } else {
-                                jQuery('.link_menu').click();
-                                jQuery('.sidebar ul li:first a').click();
+                                window.location.reload();
+                                if(window.location.href.indexOf('#menu_show')==-1) {
+                                    window.location.href = window.location.href + '#menu_show';
+                                }
                             }
                         } , 
                         error : function(response) {

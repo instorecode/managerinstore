@@ -1,5 +1,4 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="instore" tagdir="/WEB-INF/tags/" %> 
 <%@ taglib prefix="cf" uri="CustomFunctions" %> 
 <instore:template isGrid="false">
@@ -26,7 +25,21 @@
                     <div class="form-group">
                         <label>Funcionalidades</label>
                         <ul class="funcionalidades">
-
+                            <c:forEach items="${perfis.filhos}" var="item">
+                                <li>
+                                    <input type="checkbox" name="funcionalidadeID" value="${item.idfuncionalidade}" ${item.perfilTem ? 'checked="checked"' : ''} style="  width: 25px; height: 25px;" /> 
+                                    <span style="  display: block; margin-top: -29px; margin-left: 35px;">${item.nome}</span>
+                                    <c:if test="${null ne item.filhos and not empty item.filhos}">
+                                        <c:forEach items="${item.filhos}" var="filho">
+                                            <input type="checkbox" value="${filho.idfuncionalidade}" name="funcionalidadeID" ${filho.perfilTem ? 'checked="checked"' : ''} style="width: 25px; height: 25px;" /> 
+                                            <span style="  display: block; margin-top: -29px; margin-left: 35px;">
+                                                &nbsp;-&nbsp;-&nbsp;-&nbsp;-
+                                                ${filho.nome}
+                                            </span>
+                                        </c:forEach>
+                                    </c:if>
+                                </li>
+                            </c:forEach>
                         </ul>
                     </div>
                 </div>
@@ -41,6 +54,7 @@
         </style>
 
         <script type="text/javascript">
+            
             jQuery(document).ready(function() {
                 jQuery(document).on('change', '.chkTree', function() {
                     if (jQuery(this).is(':checked')) {
@@ -67,7 +81,7 @@
                         }
                     }
                 });
-
+                /**
                 var idperfil = '${perfilBean.idperfil}';
                 jQuery.getJSON('${url}/utilidades/funcionalidadetree?idperfil=' + idperfil, function(data) {
                     recursiveNode(data, null);
@@ -120,6 +134,7 @@
                     });
                 }
             });
+            **/
         </script>                    
     </jsp:body>
 </instore:template>

@@ -697,11 +697,11 @@ SENHA: Instore!@
         </c:if>
          
         <c:if test="${isPageCadastro}">
-            <iframe class="ifr" src="http://192.168.1.57/page/programacao/cadastro/${sessionUsuario.cliente.idcliente}"></iframe>
+            <iframe class="ifr" src="http://192.168.1.83:8888/page/programacao/cadastro/${sessionUsuario.cliente.idcliente}"></iframe>
         </c:if>
             
         <c:if test="${!isPageCadastro}">
-            <iframe class="ifr" src="http://192.168.1.57/page/programacao/atualizar/${audiostoreProgramacaoBean.id}"></iframe>
+            <iframe class="ifr" src="http://192.168.1.83:8888/page/programacao/atualizar/${audiostoreProgramacaoBean.id}"></iframe>
         </c:if>
         
         <script type="text/javascript">

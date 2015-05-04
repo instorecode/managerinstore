@@ -61,11 +61,11 @@
                                     <div class="form-group">
                                         <label>Cliente</label>
                                         <select field="idcliente"  class="select_cliente select2" name="audiostoreCategoriaBean.cliente.idcliente" data-rule-required="true" >
-                                            <c:forEach items="${clienteBeanList}" var="cliente">
-                                                <option value="${cliente.idcliente}" ${cliente.idcliente eq audiostoreCategoriaBean.cliente.idcliente ? 'selected="selected"' : ''}>${cliente.nome}</option>
-                                            </c:forEach>
-                                        </select>
-                                    </div>
+                                    <c:forEach items="${clienteBeanList}" var="cliente">
+                                        <option value="${cliente.idcliente}" ${cliente.idcliente eq audiostoreCategoriaBean.cliente.idcliente ? 'selected="selected"' : ''}>${cliente.nome}</option>
+                                    </c:forEach>
+                                </select>
+                            </div>
                                     -->
                                 </div>
 
@@ -225,11 +225,11 @@
                                 <label>Cliente</label>
                                 <select field="idcliente"  class="select_cliente" name="audiostoreCategoriaBean.cliente.idcliente" data-rule-required="true" >
                                     <option value>Selecione um cliente</option>
-                                    <c:forEach items="${clienteBeanList}" var="cliente">
-                                        <option value="${cliente.idcliente}" ${cliente.idcliente eq audiostoreCategoriaBean.cliente.idcliente ? 'selected="selected"' : ''}>${cliente.nome}</option>
-                                    </c:forEach>
-                                </select>
-                            </div>
+                            <c:forEach items="${clienteBeanList}" var="cliente">
+                                <option value="${cliente.idcliente}" ${cliente.idcliente eq audiostoreCategoriaBean.cliente.idcliente ? 'selected="selected"' : ''}>${cliente.nome}</option>
+                            </c:forEach>
+                        </select>
+                    </div>
                             -->
                         </div>
 
@@ -349,7 +349,7 @@
                     <li><a href="100">100</a></li>
                 </ul>
             </div>
-            <button type="button" class="btn btn-default btn-flat btn_export"><i class="fa fa-upload"></i> Exportar arquivo </button>
+            <button type="button" class="btn btn-default btn-flat btn_export"><i class="fa fa-upload"></i> Exportar fichas </button>
             &nbsp;
             &nbsp;
             <div class="btn-group">
@@ -397,8 +397,8 @@
         </style>
 
         <script type="text/javascript">
-            jQuery(document).ready(function() {
-                jQuery('.xtable').on('renderer', function() {
+            jQuery(document).ready(function () {
+                jQuery('.xtable').on('renderer', function () {
                     var arr = xtableGetRows();
                     for (tr in arr) {
                         var row = arr[tr];
@@ -406,84 +406,78 @@
                         var dataFinalTm = new Date(dataFinalArr[2], dataFinalArr[1] - 1, dataFinalArr[0]).getTime();
                         var dataAtualTm = new Date().getTime();
                         if (dataAtualTm > dataFinalTm) {
-                            row.tr.children('td').each(function() {
+                            row.tr.children('td').each(function () {
                                 jQuery(this).addClass('invalidRow');
                             });
                         }
                     }
                 });
-                jQuery('.btn_export').on("click", function() {
-                    var cliente_selecionado = jQuery('[name="idcliente"]').val();
+                jQuery('.btn_export').on("click", function () {
+                    var cliente_selecionado = ${sessionUsuario.cliente.idcliente};
 
-                    if (null == cliente_selecionado || undefined == cliente_selecionado || '' == cliente_selecionado) {
-                        bootbox.alert("Selecione um cliente.", function() {
+                    var arr = rowsSelected();
+                    
+                    var id_list = new Array();
+                    for (i in arr) {
+                        var item = arr[i];
+                        id_list[i] = item.codigo;
+                    }
+
+                    if (id_list.length <= 0) {
+                        bootbox.confirm("Você não selecionou nenhuma categoria, deseja exportar todos os registros?", function (res) {
+                            if (res) {
+                                jQuery.ajax({
+                                    type: 'POST',
+                                    url: '${url}/audiostore-categoria/vld-ctg',
+                                    beforeSend: function () {
+                                        msg_fadeIn();
+                                    },
+                                    data: {
+                                        id_list: id_list,
+                                        idcliente: cliente_selecionado,
+                                        codInterno: jQuery('[name="codInterno"]').val(),
+                                        categoria: jQuery('[name="categoria"]').val(),
+                                        dataInicio: jQuery('[name="dataInicio"]').val(),
+                                        dataFinal: jQuery('[name="dataFinal"]').val(),
+                                    },
+                                    success: function (json) {
+                                        console.log(json);
+                                    },
+                                    error: function (resp) {
+                                        console.log(resp);
+                                    },
+                                    complete: function () {
+                                        msg_fadeOut();
+                                    }
+                                });
+                            }
+                            return true;
                         });
                     } else {
-                        var arr = rowsSelected();
-                        var id_list = new Array();
-                        for (i in arr) {
-                            var item = arr[i];
-                            id_list[i] = item.codigo;
-                        }
-
-                        if (id_list.length <= 0) {
-                            bootbox.confirm("Você não selecionou nenhuma categoria, deseja exportar todos os registros?", function(res) {
-                                if (res) {
-                                    jQuery.ajax({
-                                        type: 'POST',
-                                        url: '${url}/audiostore-categoria/vld-ctg',
-                                        beforeSend: function() {
-                                            msg_fadeIn();
-                                        },
-                                        data: {
-                                            id_list: id_list,
-                                            idcliente: cliente_selecionado,
-                                            codInterno: jQuery('[name="codInterno"]').val(),
-                                            categoria: jQuery('[name="categoria"]').val(),
-                                            dataInicio: jQuery('[name="dataInicio"]').val(),
-                                            dataFinal: jQuery('[name="dataFinal"]').val(),
-                                        },
-                                        success: function(json) {
-                                            console.log(json);
-                                        },
-                                        error: function(resp) {
-                                            console.log(resp);
-                                        },
-                                        complete: function() {
-                                            msg_fadeOut();
-                                        }
-                                    });
-                                }
-                                return true;
-                            });
-                        } else {
-                            jQuery.ajax({
-                                type: 'POST',
-                                url: '${url}/audiostore-categoria/vld-ctg',
-                                beforeSend: function() {
-                                    msg_fadeIn();
-                                },
-                                data: {
-                                    id_list: id_list,
-                                    idcliente: cliente_selecionado,
-                                    codInterno: jQuery('[name="codInterno"]').val(),
-                                    categoria: jQuery('[name="categoria"]').val(),
-                                    dataInicio: jQuery('[name="dataInicio"]').val(),
-                                    dataFinal: jQuery('[name="dataFinal"]').val(),
-                                },
-                                success: function(json) {
-                                    console.log(json);
-                                },
-                                error: function(resp) {
-                                    console.log(resp);
-                                },
-                                complete: function() {
-                                    msg_fadeOut();
-                                }
-                            });
-                        }
-
-
+                        jQuery.ajax({
+                            type: 'POST',
+                            url: '${url}/audiostore-categoria/vld-ctg',
+                            beforeSend: function () {
+                                msg_fadeIn();
+                            },
+                            data: {
+                                id_list: id_list,
+                                idcliente: cliente_selecionado,
+                                codInterno: jQuery('[name="codInterno"]').val(),
+                                categoria: jQuery('[name="categoria"]').val(),
+                                dataInicio: jQuery('[name="dataInicio"]').val(),
+                                dataFinal: jQuery('[name="dataFinal"]').val(),
+                            },
+                            success: function (json) {
+                                console.log(json);
+                            },
+                            error: function (resp) {
+                                console.log(resp);
+                            },
+                            complete: function () {
+                                msg_fadeOut();
+                            }
+                        });
                     }
                 });
 

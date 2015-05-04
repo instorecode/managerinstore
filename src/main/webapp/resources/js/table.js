@@ -22,7 +22,7 @@ function rowsSelected() {
     var arr = [];
     var index = 0;
     jQuery('.row_data.selected').each(function() {
-        arr[index] = jQuery(this).data("jsonItem");
+        arr[index] = JSON.parse(jQuery.base64.decode(jQuery(this).data("jsonItem")));
         index++;
     });
     return arr;
@@ -34,7 +34,7 @@ function xtableGetRows() {
     jQuery('.row_data').each(function() {
         arr[index] = {
             tr : jQuery(this),
-            json : jQuery(this).data("jsonItem")
+            json : JSON.parse(jQuery.base64.decode(jQuery(this).data("jsonItem")))
         };
         index++;
     });
@@ -42,7 +42,6 @@ function xtableGetRows() {
 }
 
 jQuery(document).ready(function() {
-
     jQuery('.btn_sel_tudo').on('click', function() {
         jQuery('table.xtable').children('tbody').children('tr.row_data').each(function() {
             var self = jQuery(this);
@@ -168,9 +167,9 @@ jQuery(document).ready(function() {
                 });
 
                 var json = null;
-//            if (jQuery.storage(url) != null) {
+//                if (jQuery.storage(url) != null) {
                 if (false) {
-                    json = JSON.parse(jQuery.storage(url));
+                    json = JSON.parse(jQuery.base64.decode(jQuery.storage(url)));
                 } else {
                     jQuery.ajax({
                         async: false,
@@ -182,7 +181,7 @@ jQuery(document).ready(function() {
                         }
                     });
 
-                    jQuery.storageAdd(url, JSON.stringify(json));
+//                    jQuery.storageAdd(url, jQuery.base64.encode(JSON.stringify(json)));
                 }
 
 
@@ -247,7 +246,7 @@ jQuery(document).ready(function() {
                 {
                     iii++;
                     var item = json["rows"][i];
-                    tr += "<tr id=\"row_data_" + i + "\" class=\"row_data row_data_"+( iii % 2 == 0 ? "z1" : "z2")+"\" data-json-item='" + JSON.stringify(item) + "'>";
+                    tr += "<tr id=\"row_data_" + i + "\" class=\"row_data row_data_"+( iii % 2 == 0 ? "z1" : "z2")+"\" data-json-item=\"" + jQuery.base64.encode(JSON.stringify(item)) + "\">";
 
                     table.children("thead").children("tr").children("th").each(function() {
                         var td = jQuery(this);

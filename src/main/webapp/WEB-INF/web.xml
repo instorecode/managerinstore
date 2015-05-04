@@ -9,4 +9,31 @@
             30
         </session-timeout>
     </session-config>
+    
+    <filter>
+        <filter-name>vraptor</filter-name>
+        <filter-class>br.com.caelum.vraptor.VRaptor</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>vraptor</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>REQUEST</dispatcher>
+    </filter-mapping>
+    
+    <context-param>    
+        <param-name>br.com.caelum.vraptor.packages</param-name>        
+        <param-value>br.com.caelum.vraptor.converter.l10n</param-value>    
+    </context-param>      
+      
+    <context-param>  
+        <param-name>javax.servlet.jsp.jstl.fmt.locale</param-name>  
+        <param-value>pt_BR</param-value>  
+    </context-param>  
+      
+    <context-param>    
+        <param-name>br.com.caelum.vraptor.encoding</param-name>    
+        <param-value>UTF-8</param-value>    
+    </context-param>   
 </web-app>

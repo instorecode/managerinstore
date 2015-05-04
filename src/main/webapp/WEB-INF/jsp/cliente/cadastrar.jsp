@@ -160,46 +160,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-12">
-                    <div class="form-group"> 
-                        <label>Local dos arquivos de musica</label>
-                        <input type="text" name="dadosCliente.localOrigemMusica" class="form-control" placeholder="Local dos arquivos de musica" 
-                               value="${dadosCliente.localOrigemMusica}">
-                    </div>
-                </div>
-
-                <div class="col-md-12">
-                    <div class="form-group"> 
-                        <label>Destino dos arquivos de musica</label>
-                        <input type="text" name="dadosCliente.localDestinoMusica" class="form-control" placeholder="Destino dos arquivos de musica" 
-                               value="${dadosCliente.localDestinoMusica}">
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="form-group"> 
-                        <label>Local dos arquivos de spot</label>
-                        <input type="text" name="dadosCliente.localOrigemSpot" class="form-control" placeholder="Local dos arquivos de spot" 
-                               value="${dadosCliente.localOrigemSpot}">
-                    </div>
-                </div>
-
-                <div class="col-md-12">
-                    <div class="form-group"> 
-                        <label>Destino dos arquivos de spot</label>
-                        <input type="text" name="dadosCliente.localDestinoSpot" class="form-control" placeholder="Destino dos arquivos de spot" 
-                               value="${dadosCliente.localDestinoSpot}">
-                    </div>
-                </div>
-
-                <div class="col-md-12">
-                    <div class="form-group"> 
-                        <label>Destino dos arquivos Exp</label>
-                        <input type="text" name="dadosCliente.localDestinoExp" class="form-control" placeholder="Destino dos arquivos Exp" 
-                               value="${dadosCliente.localDestinoExp}">
-                    </div>
-                </div>
-
-                <div class="col-md-2">
+<!--                <div class="col-md-2">
                     <div class="form-group"> 
                         <label>CEP</label>
                         <input type="text" name="cliente.endereco.cep.numero" class="form-control cepload" placeholder="CEP" 
@@ -209,7 +170,19 @@
                                data-rule-minlength="10"
                                data-rule-maxlength="10">
                     </div>
-                </div>
+                </div>-->
+                               
+                <div class="col-md-2">
+                        <div class="form-group"> 
+                            <label>CEP</label>
+                            <input type="text" name="cliente.endereco.cep.numero" class="form-control input_load" placeholder="CEP" 
+                                   data-mask="99.999-999"
+                                   data-rule-required="true" 
+                                   data-rule-minlength="10"
+                                   data-rule-maxlength="10">
+                            <a style="float: right; margin-right: 0px; margin-top: -34px;" class="btn btn-primary btn-flat click_search_cep" href="${url}/utilidades/cepload" value="${cliente.endereco.cep.numero}"> <i class="fa fa-search"></i> </a>
+                        </div>
+                    </div>
 
                 <div class="col-md-2">
                     <div class="form-group">
@@ -651,7 +624,9 @@
                             });
                         });
                     </script>
-                    <div class="row">
+                    
+                    <c:if test="${isPageCadastro eq false}">
+                        <div class="row">
                         <div class="col-sm-6">
                             <div class="block">
                                 <div class="header">
@@ -728,6 +703,8 @@
                             </div>
                         </div>
                     </div>
+                    </c:if>
+                    
                 </div>
             </div>
             <button type="submit" class="btn btn-default">

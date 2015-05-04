@@ -50,7 +50,7 @@
 
     </head>
     <body class="texture">
-
+        
         <div id="cl-wrapper" class="login-container">
 
             <div class="middle-login">

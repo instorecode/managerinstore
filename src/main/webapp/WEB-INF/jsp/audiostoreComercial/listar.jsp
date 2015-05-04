@@ -119,8 +119,8 @@
                     <li><a href="100">100</a></li>
                 </ul>
             </div>
-            <button type="button" class="btn btn-default btn-flat btn_export btn_export1" ><i class="fa fa-upload"></i> Exportar arquivo </button>
-            <button type="button" class="btn btn-default btn-flat btn_export btn_export2" ><i class="fa fa-upload"></i> Exportar arquivo com audio</button>
+            <button type="button" class="btn btn-default btn-flat btn_export btn_export1" ><i class="fa fa-upload"></i> Exportar fichas </button>
+            <button type="button" class="btn btn-default btn-flat btn_export btn_export2" ><i class="fa fa-upload"></i> Exportar fichas arquivos com audio</button>
             <!--            <div class="addon" style="display: none;">
                             <a href="${url}/audiostore-comercial/cadastrar?clonar=[[__PK__]]" class="btn btn-default btn-flat btn-xs" id="clonar" ><i class="fa fa-repeat"></i></a>
                         </div>-->
@@ -185,13 +185,9 @@
                 });
 
                 function fnn(exp_arquivo_audio) {
-                    var cliente_selecionado = jQuery('[name="idcliente"]').val();
-
-                    if (null == cliente_selecionado || undefined == cliente_selecionado || '' == cliente_selecionado) {
-                        bootbox.alert("Selecione um cliente.", function() {
-                        });
-                    } else {
-                        var arr = rowsSelected();
+                    var cliente_selecionado = 0;
+                    msg_fadeIn();
+                    var arr = rowsSelected();
                         var id_list = new Array();
                         for (i in arr) {
                             var item = arr[i];
@@ -256,8 +252,7 @@
                             });
                         }
 
-
-                    }
+                    
                     msg_fadeOut();
                 }
             });

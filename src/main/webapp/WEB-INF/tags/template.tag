@@ -17,7 +17,7 @@
     <!DOCTYPE html>
     <html lang="en">
         <head>
-            <meta charset="utf-8">
+            <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <meta name="description" content="">
             <meta name="author" content="">
@@ -75,6 +75,7 @@
         <script type="text/javascript" charset="utf-8" src="${url_js}bootbox.js?v=${machine_id}"></script>
         <script type="text/javascript" charset="utf-8" src="${url_js}jquery.validate.js?v=${machine_id}"></script>
         <script type="text/javascript" charset="utf-8" src="${url_js}additional.methods.js?v=${machine_id}"></script>
+        <script type="text/javascript" charset="utf-8" src="${url_js}base64.js?v=${machine_id}"></script>
         <script type="text/javascript" src="${url_cz}js/bootstrap.datetimepicker/js/bootstrap-datetimepicker.min.js?v=${machine_id}"></script>
         <script type="text/javascript" src="${url_cz}js/jquery.icheck/icheck.min.js?v=${machine_id}"></script>
         <script type="text/javascript" charset="utf-8" src="${url_js}imask.js?v=${machine_id}"></script>
@@ -468,7 +469,7 @@
                                 <li class="button dropdown">
                                     <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
                                         <i class="fa fa-building"></i> 
-                                        <span class="bubble cli_nom_red">${atalhoClienteList.size()} Clientes</span></a> 
+                                        <span class="bubble cli_nom_red"> Clientes</span></a> 
                                     <ul class="dropdown-menu">
                                         <li>
                                             <div class="nano nscroller">
@@ -567,7 +568,7 @@
         <style>
             .sidebar {
                 display: block;
-                width: 200px; 
+                width: 400px; 
                 margin-top: -15px;
                 margin-left: -30px;
                 background-color: white;
@@ -576,7 +577,7 @@
 
             .sidebarContent {
                 display: block;
-                width: 200px; 
+                width: 400px; 
                 margin-top: -15px;
                 margin-left: 0px;
                 overflow-y: auto;
@@ -590,7 +591,7 @@
 
             .sidebar h1 {
                 display: block;
-                width: 200px;
+                width: 400px;
                 font-size: 14px;
                 line-height: 40px;
                 text-indent: 20px;
@@ -713,7 +714,7 @@
                     });
 
                     jQuery('.sidebarContent').css({
-                        'width': (w - 200) + 'px',
+                        'width': (w - 400) + 'px',
                         'height': (h - 130) + 'px'
                     });
                 }
@@ -734,7 +735,17 @@
                     jQuery('.navv').css('height', (jQuery(window).height() - 100) + 'px');
                 });
                 jQuery('.navv').css('height', (jQuery(window).height() - 100) + 'px');
-
+                
+                if(window.location.href.indexOf('#menu_show')!=-1) {
+                    jQuery('body').css({
+                            'overflow-x':'hidden',
+                            'overflow-y':'hidden'
+                        });
+                    jQuery('.SidebarApp').show();
+                    jQuery('.sidebar ul li:first a').click();   
+                    
+                }
+                
                 jQuery('.link_menu').on('click', function () {
 //                        jQuery('.enfoc').addClass('desfoc');
                     jQuery('.SidebarApp').toggle();
@@ -752,7 +763,6 @@
                         });
                         $(window).scrollTop(0);
                     }
-                    jQuery('body').css('overflow', 'hidden');
                     return false;
                 });
 

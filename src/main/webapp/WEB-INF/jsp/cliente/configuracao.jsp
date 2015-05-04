@@ -23,7 +23,7 @@
                     <div class="form-group"> 
                         <label>Local dos arquivos de musica</label>
                         <input type="text" name="p1" class="form-control cid" placeholder="Local dos arquivos de musica" 
-                               value="${dadosCliente.localOrigemMusica}">
+                               value="${dadosCliente.localOrigemMusica}" style="  text-transform: none;">
                     </div>
                 </div>
 
@@ -31,14 +31,14 @@
                     <div class="form-group"> 
                         <label>Destino dos arquivos de musica</label>
                         <input type="text" name="p2" class="form-control cid" placeholder="Destino dos arquivos de musica" 
-                               value="${dadosCliente.localDestinoMusica}">
+                               value="${dadosCliente.localDestinoMusica}" style="  text-transform: none;">
                     </div>
                 </div>
                 <div class="col-md-12">
                     <div class="form-group"> 
                         <label>Local dos arquivos de spot</label>
                         <input type="text" name="p3" class="form-control cid" placeholder="Local dos arquivos de spot" 
-                               value="${dadosCliente.localOrigemSpot}">
+                               value="${dadosCliente.localOrigemSpot}" style="  text-transform: none;">
                     </div>
                 </div>
 
@@ -46,7 +46,7 @@
                     <div class="form-group"> 
                         <label>Destino dos arquivos de spot</label>
                         <input type="text" name="p4" class="form-control cid" placeholder="Destino dos arquivos de spot" 
-                               value="${dadosCliente.localDestinoSpot}">
+                               value="${dadosCliente.localDestinoSpot}" style="  text-transform: none;">
                     </div>
                 </div>
 
@@ -54,7 +54,7 @@
                     <div class="form-group"> 
                         <label>Destino dos arquivos Exp</label>
                         <input type="text" name="p5" class="form-control cid" placeholder="Destino dos arquivos Exp" 
-                               value="${dadosCliente.localDestinoExp}">
+                               value="${dadosCliente.localDestinoExp}" style="  text-transform: none;">
                     </div>
                 </div>
             </div>

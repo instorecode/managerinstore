@@ -108,10 +108,11 @@
                 </ul>
             </div>
 
-            <button type="button" class="btn btn-default btn-flat btn_export"><i class="fa fa-upload"></i> Exportar arquivo </button>
+            <button type="button" class="btn btn-default btn-flat btn_export1"><i class="fa fa-upload"></i> Exportar fichas </button>
+            <button type="button" class="btn btn-default btn-flat btn_export2"><i class="fa fa-upload"></i> Exportar fichas com arquivos de audio</button>
 
             <div class="addon" style="display: none;">
-                <a data-placement="top" data-toggle="tooltip" data-original-title="Clonar registro" href="${url}/audiostore-programacao/cadastrar?clonar=[[__PK__]]" class="btn btn-default btn-flat btn-xs" id="clonar" ><i class="fa fa-plus"></i></a>
+                <!--<a data-placement="top" data-toggle="tooltip" data-original-title="Clonar registro" href="${url}/audiostore-programacao/cadastrar?clonar=[[__PK__]]" class="btn btn-default btn-flat btn-xs" id="clonar" ><i class="fa fa-plus"></i></a>-->
             </div>
 
             &nbsp;
@@ -159,74 +160,75 @@
         </style>
 
         <script type="text/javascript">
-            jQuery(document).ready(function() {
-                jQuery('.btn_export').on("click", function() {
-                    var cliente_selecionado = jQuery('[name="idcliente"]').val();
+            jQuery(document).ready(function () {
+                function fnn(expArquivoAudio) {
+                    var arr = rowsSelected();
+                    var id_list = new Array();
+                    for (i in arr) {
+                        var item = arr[i];
+                        id_list[i] = item.id;
+                    }
 
-                    if (null == cliente_selecionado || undefined == cliente_selecionado || '' == cliente_selecionado) {
-                        bootbox.alert("Selecione um cliente.", function() {
+                    if (id_list.length <= 0) {
+                        bootbox.confirm("Você não selecionou nenhuma programação, deseja exportar todos os registros?", function (res) {
+                            if (res) {
+                                jQuery.ajax({
+                                    type: 'POST',
+                                    url: '${url}/audiostore-programacao/vld-prg',
+                                    beforeSend: function () {
+                                        msg_fadeIn();
+                                    },
+                                    data: {
+                                        id_list: id_list,
+                                        idcliente: 0,
+                                        descricao: jQuery('[name="descricao"]').val(),
+                                        expArquivoAudio:expArquivoAudio
+                                    },
+                                    success: function (json) {
+                                        console.log(json);
+                                    },
+                                    error: function (resp) {
+                                        console.log(resp);
+                                    },
+                                    complete: function () {
+                                        msg_fadeOut();
+                                    }
+                                });
+                            }
+                            return true;
                         });
                     } else {
-                        var arr = rowsSelected();
-                        var id_list = new Array();
-                        for (i in arr) {
-                            var item = arr[i];
-                            id_list[i] = item.id;
-                        }
-
-                        if (id_list.length <= 0) {
-                            bootbox.confirm("Você não selecionou nenhuma categoria, deseja exportar todos os registros?", function(res) {
-                                if (res) {
-                                    jQuery.ajax({
-                                        type: 'POST',
-                                        url: '${url}/audiostore-programacao/vld-prg',
-                                        beforeSend: function() {
-                                            msg_fadeIn();
-                                        },
-                                        data: {
-                                            id_list: id_list,
-                                            idcliente: cliente_selecionado,
-                                            descricao: jQuery('[name="descricao"]').val(),
-                                        },
-                                        success: function(json) {
-                                            console.log(json);
-                                        },
-                                        error: function(resp) {
-                                            console.log(resp);
-                                        },
-                                        complete: function() {
-                                            msg_fadeOut();
-                                        }
-                                    });
-                                }
-                                return true;
-                            });
-                        } else {
-                            jQuery.ajax({
-                                type: 'POST',
-                                url: '${url}/audiostore-programacao/vld-prg',
-                                beforeSend: function() {
-                                    msg_fadeIn();
-                                },
-                                data: {
-                                    id_list: id_list,
-                                    idcliente: cliente_selecionado,
-                                    descricao: jQuery('[name="descricao"]').val(),
-                                },
-                                success: function(json) {
-                                    console.log(json);
-                                },
-                                error: function(resp) {
-                                    console.log(resp);
-                                },
-                                complete: function() {
-                                    msg_fadeOut();
-                                }
-                            });
-                        }
-
-
+                        jQuery.ajax({
+                            type: 'POST',
+                            url: '${url}/audiostore-programacao/vld-prg',
+                            beforeSend: function () {
+                                msg_fadeIn();
+                            },
+                            data: {
+                                id_list: id_list,
+                                idcliente: 0,
+                                descricao: jQuery('[name="descricao"]').val(),
+                                expArquivoAudio:expArquivoAudio
+                            },
+                            success: function (json) {
+                                console.log(json);
+                            },
+                            error: function (resp) {
+                                console.log(resp);
+                            },
+                            complete: function () {
+                                msg_fadeOut();
+                            }
+                        });
                     }
+                }
+                
+                jQuery('.btn_export1').on("click", function () {
+                    fnn(false);
+                });
+                
+                jQuery('.btn_export2').on("click", function () {
+                    fnn(true);
                 });
 
             });
