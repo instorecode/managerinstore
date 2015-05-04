@@ -1,7 +1,8 @@
 package br.com.instore.web.component.request;
 
 import br.com.caelum.vraptor.Result;
-import br.com.caelum.vraptor.observer.download.InputStreamDownload;
+import br.com.caelum.vraptor.interceptor.download.InputStreamDownload;
+import br.com.caelum.vraptor.ioc.Component;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.Each;
 import br.com.instore.core.orm.Query;
@@ -17,9 +18,7 @@ import br.com.instore.web.dto.AudiostoreMusicaDTO;
 import br.com.instore.web.dto.AudiostoreMusicaJSON;
 import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
@@ -29,11 +28,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.enterprise.context.RequestScoped;
+import br.com.caelum.vraptor.ioc.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import jcifs.smb.SmbFileInputStream;
@@ -41,20 +39,14 @@ import jcifs.smb.SmbFileOutputStream;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
+@Component
 @RequestScoped
 public class RequestAudiostoreMusica implements java.io.Serializable {
 
-    @Inject
     private SessionRepository repository;
-    @Inject
     private Result result;
-    @Inject
     private SessionUsuario sessionUsuario;
-    @Inject
     private HttpServletRequest httpServletRequest;
-
-    public RequestAudiostoreMusica() {
-    }
 
     public RequestAudiostoreMusica(SessionRepository repository, Result result, SessionUsuario sessionUsuario, HttpServletRequest httpServletRequest) {
         this.repository = repository;
@@ -85,7 +77,6 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                 List<MusicaGeralBean> lista = loadMusicaGeralList(idList);
                 List<MusicaGeralItem> listaFinal = new ArrayList<MusicaGeralItem>();
                 List<AudiostoreMusicaBean> audiostoreMusicaBeanList = repository.query(AudiostoreMusicaBean.class).eq("cliente.idcliente", idcliente).in("musicaGeral", idList.toArray(new Integer[idList.size()])).findAll();
-
 
                 for (MusicaGeralBean bean : lista) {
                     MusicaGeralItem item = new MusicaGeralItem();
@@ -207,7 +198,6 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         Query q1 = repository.query(AudiostoreMusicaBean.class);
         Query q2 = repository.query(AudiostoreMusicaBean.class);
 
-
         String querySQL1 = "";
         String querySQL2 = "";
 //        querySQL1 = " select \n"
@@ -253,7 +243,6 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                 + "	 group by audiostore_musica.id\n"
                 + " ) as t";
 
-
         if (null != idcliente && idcliente > 0) {
             querySQL1 += " and audiostore_musica.cliente = " + idcliente + " \n";
             querySQL2 = querySQL2.replace("[[MAIS_WHERE]]", " and audiostore_musica.cliente = " + idcliente + " [[MAIS_WHERE]] \n");
@@ -288,7 +277,6 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
             json.setCodigo(codigo);
         }
 
-
         if (null != letra && !letra.trim().isEmpty()) {
             querySQL1 = querySQL1.replace("[INNER_JOIN_MUSICA_GERAL]", "inner join musica_geral on musica_geral.id = audiostore_musica.musica_geral\n");
             querySQL1 = querySQL1.replace("[INNER_JOIN_CATEGORIA_MUSICA_GERAL]", "left join categoria_musica_geral on categoria_musica_geral.musica = musica_geral.id\n");
@@ -301,15 +289,14 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
             querySQL2 = querySQL2.replace("[[MAIS_WHERE]]", " and musica_geral.letra like '%" + letra + "%' \"[[MAIS_WHERE]]\" \n");
             json.setLetra(letra);
         }
-        
+
         if (null != ultimaImportacao && !ultimaImportacao.isEmpty()) {
             querySQL1 += " and audiostore_musica.ultima_importacao = '" + (ultimaImportacao.equals("true") ? "1" : "0") + "' \n";
             querySQL2 = querySQL2.replace("[[MAIS_WHERE]]", " and audiostore_musica.ultima_importacao = '" + (ultimaImportacao.equals("true") ? "1" : "0") + "'  [[MAIS_WHERE]]  \n");
             json.setUltimaImportacao(ultimaImportacao);
             json.setBool(ultimaImportacao);
         }
-        
-        
+
         if (null != arquivo && !arquivo.trim().isEmpty()) {
             querySQL1 = querySQL1.replace("[INNER_JOIN_MUSICA_GERAL]", "inner join musica_geral on musica_geral.id = audiostore_musica.musica_geral\n");
             querySQL1 = querySQL1.replace("[INNER_JOIN_CATEGORIA_MUSICA_GERAL]", "left join categoria_musica_geral on categoria_musica_geral.musica = musica_geral.id\n");
@@ -335,24 +322,24 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
 
         final List<BigDecimal> countBD = new ArrayList<BigDecimal>();
         final List<Integer> idList = new ArrayList<Integer>();
-                
+
         System.out.println("");
         System.out.println("");
         System.out.println("");
         System.out.println("SQLDUMP");
         System.out.println(querySQL1);
-        
+
         System.out.println("");
         System.out.println("");
         System.out.println("");
-        
+
         System.out.println("SQLDUMP");
         System.out.println(querySQL2);
-        
+
         System.out.println("");
         System.out.println("");
         System.out.println("");
-        
+
         repository.query(querySQL1).executeSQL(new Each() {
             public Integer id_musica;
             public String param;
@@ -384,7 +371,6 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         int size = iniValue / rows + ((q1.count().intValue() % rows == 0) ? 0 : 1);
         json.setPage(page);
         json.setSize(size);
-
 
         if (null != idList && !idList.isEmpty()) {
             lista = repository.query(AudiostoreMusicaBean.class).in("id", idList.toArray(new Integer[idList.size()])).findAll();
@@ -444,7 +430,6 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         Query q1 = repository.query(AudiostoreMusicaBean.class);
         Query q2 = repository.query(AudiostoreMusicaBean.class);
 
-
         String querySQL1 = "";
         String querySQL2 = "";
 //        querySQL1 = " select \n"
@@ -490,7 +475,6 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                 + "	 group by audiostore_musica.id\n"
                 + " ) as t";
 
-
         if (null != idcliente && idcliente > 0) {
             querySQL1 += " and audiostore_musica.cliente = " + idcliente + " \n";
             querySQL2 = querySQL2.replace("[[MAIS_WHERE]]", " and audiostore_musica.cliente = " + idcliente + " [[MAIS_WHERE]] \n");
@@ -524,7 +508,6 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
             querySQL2 = querySQL2.replace("[[MAIS_WHERE]]", " or audiostore_musica.categoria2 = " + codigo + ") [[MAIS_WHERE]] \n");
             json.setCodigo(codigo);
         }
-
 
         if (null != letra && !letra.trim().isEmpty()) {
             querySQL1 = querySQL1.replace("[INNER_JOIN_MUSICA_GERAL]", "inner join musica_geral on musica_geral.id = audiostore_musica.musica_geral\n");
@@ -596,7 +579,6 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         int size = iniValue / rows + ((q1.count().intValue() % rows == 0) ? 0 : 1);
         json.setPage(page);
         json.setSize(size);
-
 
         if (null != idList && !idList.isEmpty()) {
             lista = repository.query(AudiostoreMusicaBean.class).in("id", idList.toArray(new Integer[idList.size()])).findAll();
@@ -689,7 +671,7 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         return repository.find(MusicaGeralBean.class, id);
     }
 
-    public void salvar(AudiostoreMusicaBean[] beans , Boolean updateAll) {
+    public void salvar(AudiostoreMusicaBean[] beans, Boolean updateAll) {
         repository.setUsuario(sessionUsuario.getUsuarioBean());
         try {
             int ixy = 0;
@@ -1173,9 +1155,9 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         Integer idclienteAux = 0;
         if (ajaxResultBool) {
 
-            System.out.println("IDENT CLIENTE::"+idcliente);
+            System.out.println("IDENT CLIENTE::" + idcliente);
             if (null != beanList && !beanList.isEmpty()) {
-                for (AudiostoreMusicaBean bean : beanList) {                   
+                for (AudiostoreMusicaBean bean : beanList) {
                     if (null != idcliente && idcliente > 0) {
                         if (!idcliente.equals(bean.getCliente().getIdcliente())) {
                             ajaxResultBool = false;
@@ -1201,19 +1183,18 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
 
             dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", idcliente).findOne();
             String destino = dados.getLocalDestinoExp();
-            if (!Utilities.verifyTaskLock(dados.getLocalDestinoExp() , Utilities.TaskLock.MUSICA)) {
+            if (!Utilities.verifyTaskLock(dados.getLocalDestinoExp(), Utilities.TaskLock.MUSICA)) {
                 ajaxResultBool = false;
-                ajaxResultStr = Utilities.verifyInfoMessageTaskLock(destino , Utilities.TaskLock.MUSICA);
+                ajaxResultStr = Utilities.verifyInfoMessageTaskLock(destino, Utilities.TaskLock.MUSICA);
             }
         }
 
-
         if (ajaxResultBool) {
             try {
-                Utilities.createTaskLock(dados.getLocalDestinoExp(), sessionUsuario.getUsuarioBean().getNome(), httpServletRequest , Utilities.TaskLock.MUSICA);
-                
+                Utilities.createTaskLock(dados.getLocalDestinoExp(), sessionUsuario.getUsuarioBean().getNome(), httpServletRequest, Utilities.TaskLock.MUSICA);
+
                 Utilities.removerLogMusica(dados.getLocalDestinoExp());
-                
+
                 upload(beanList, expArquivoAudio, idcliente, dados);
                 ajaxResultBool = true;
                 ajaxResultStr = "Arquivo exportando com sucesso!";
@@ -1222,19 +1203,18 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                 ajaxResultBool = false;
                 ajaxResultStr = e.getMessage();
             } finally {
-                Utilities.deleteTaskLock(dados.getLocalDestinoExp() , Utilities.TaskLock.MUSICA);
+                Utilities.deleteTaskLock(dados.getLocalDestinoExp(), Utilities.TaskLock.MUSICA);
             }
         }
 
         result.use(Results.json()).withoutRoot().from(new AjaxResult(ajaxResultBool, ajaxResultStr, ajaxResultObject)).recursive().serialize();
     }
 
-    public void upload(List<AudiostoreMusicaBean> list, Boolean expArquivoAudio, Integer idcliente, DadosClienteBean dados) throws SmbException , MalformedURLException , UnknownHostException , IOException , Exception {
+    public void upload(List<AudiostoreMusicaBean> list, Boolean expArquivoAudio, Integer idcliente, DadosClienteBean dados) throws SmbException, MalformedURLException, UnknownHostException, IOException, Exception {
         try {
 
             StringBuffer conteudo = new StringBuffer();
             String quebraLinha = "";
-
 
             for (AudiostoreMusicaBean bean : list) {
                 if (bean != null) {
@@ -1257,7 +1237,6 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                             }
                             conteudo.append(Utilities.formatarHexExp(arq));
                         }
-
 
                         // interprete
                         String interprete = mgb.getInterprete();
@@ -1419,18 +1398,46 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
 
                     if (expArquivoAudio) {
 
+                        NtlmPasswordAuthentication auth1 = Utilities.getAuthSmbDefault();
+                        NtlmPasswordAuthentication auth2 = Utilities.getAuthSmbDefault();
+
                         String origem = mgb.getArquivo();
                         String destino = dados.getLocalDestinoExp();
 
-                        SmbFile smbOrigem = new SmbFile(origem, Utilities.getAuthSmbDefault());
+                        if (origem.endsWith("/")) {
+                            origem = origem.substring(0, origem.length() - 1);
+                        }
+
+                        if (origem.startsWith("smb://srv-arquivos")) {
+                            auth1 = Utilities.getAuthSmbDefault();
+                        }
+
+                        if (origem.startsWith("smb://192.168.1.249")) {
+                            auth1 = Utilities.getAuthSmbDefault1921681249();
+                        }
+
+                        // -- 
+                        if (destino.endsWith("/")) {
+                            destino = destino.substring(0, destino.length() - 1);
+                        }
+
+                        if (destino.startsWith("smb://srv-arquivos")) {
+                            auth2 = Utilities.getAuthSmbDefault();
+                        }
+
+                        if (destino.startsWith("smb://192.168.1.249")) {
+                            auth2 = Utilities.getAuthSmbDefault1921681249();
+                        }
+
+                        SmbFile smbOrigem = new SmbFile(origem, auth1);
                         if (smbOrigem.exists()) {
                             Utilities.createLogMusica(dados.getLocalDestinoExp(), true, smbOrigem.getName());
-                            SmbFile smbDestino = new SmbFile(destino + smbOrigem.getName(), Utilities.getAuthSmbDefault());
+                            SmbFile smbDestino = new SmbFile(destino.concat("/").concat(smbOrigem.getName()), auth2);
 
                             SmbFileInputStream sfis = new SmbFileInputStream(smbOrigem);
                             SmbFileOutputStream sfous = new SmbFileOutputStream(smbDestino, true);
                             IOUtils.copy(sfis, sfous);
-                             
+
                             sfis.close();
                             sfous.flush();
                             sfous.close();
@@ -1443,23 +1450,37 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
             }
 
             if (null != list && !list.isEmpty()) {
-                
+
                 String destino = dados.getLocalDestinoExp();
-                SmbFile smb = new SmbFile(destino, Utilities.getAuthSmbDefault());
-                SmbFile smb2 = new SmbFile(destino + "musica.exp", Utilities.getAuthSmbDefault());
+
+                NtlmPasswordAuthentication auth = Utilities.getAuthSmbDefault();
+
+                if (destino.endsWith("/")) {
+                    destino = destino.substring(0, destino.length() - 1);
+                }
+
+                if (destino.startsWith("smb://srv-arquivos")) {
+                    auth = Utilities.getAuthSmbDefault();
+                }
+
+                if (destino.startsWith("smb://192.168.1.249")) {
+                    auth = Utilities.getAuthSmbDefault1921681249();
+                }
+
+                SmbFile smb = new SmbFile(destino, auth);
+                SmbFile smb2 = new SmbFile(destino.concat("/").concat("musica.exp"), auth);
 
                 if (!smb.exists()) {
                     smb.mkdirs();
                 }
 
-                
-                if(smb2.exists()) {
+                if (smb2.exists()) {
                     StringBuffer aux = conteudo;
                     conteudo = new StringBuffer();
                     conteudo.append(Utilities.quebrarLinhaComHexa());
                     conteudo.append(aux.toString());
                 }
-                
+
                 SmbFileOutputStream sfous = new SmbFileOutputStream(smb2, true);
                 sfous.write(conteudo.toString().getBytes());
 
@@ -1483,7 +1504,7 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
             throw e;
         }
     }
-    
+
     public void logs(Integer idcliente) {
         ClienteBean cliente = repository.find(ClienteBean.class, idcliente);
     }

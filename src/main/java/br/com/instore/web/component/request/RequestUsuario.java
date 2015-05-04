@@ -2,23 +2,20 @@ package br.com.instore.web.component.request;
 
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.ioc.Component;
+import br.com.caelum.vraptor.ioc.RequestScoped;
 import br.com.caelum.vraptor.view.Results;
-import br.com.instore.core.orm.Each;
-import br.com.instore.core.orm.bean.AudiostoreGravadoraBean;
 import br.com.instore.core.orm.bean.BairroBean;
 import br.com.instore.core.orm.bean.CepBean;
 import br.com.instore.core.orm.bean.CidadeBean;
 import br.com.instore.core.orm.bean.EnderecoBean;
 import br.com.instore.core.orm.bean.EstadoBean;
-import br.com.instore.core.orm.bean.FuncionalidadeBean;
 import br.com.instore.core.orm.bean.PerfilBean;
 import br.com.instore.core.orm.bean.PerfilUsuarioBean;
 import br.com.instore.core.orm.bean.UsuarioBean;
 import br.com.instore.core.orm.bean.property.Estado;
-import br.com.instore.core.orm.bean.property.Perfil;
 import br.com.instore.core.orm.bean.property.Usuario;
 import br.com.instore.web.component.session.SessionUsuario;
-import br.com.instore.web.dto.AudiostoreGravadoraDTO;
 import br.com.instore.web.dto.UsuarioDTO;
 import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
@@ -27,32 +24,18 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.swing.tree.TreeNode;
 
+@Component
 @RequestScoped
 public class RequestUsuario implements java.io.Serializable {
 
-    @Inject
     private Result result;
-    @Inject
     private SessionRepository repository;
-    @Inject
     private SessionUsuario sessionUsuario;
-    @Inject
     private HttpSession httpSession;
-    @Inject
     private HttpServletResponse httpServletResponse;
-
-    public RequestUsuario() {
-    }
 
     public RequestUsuario(Result result, SessionRepository requestRepository, SessionUsuario sessionUsuario, HttpSession httpSession) {
         this.result = result;
@@ -64,24 +47,16 @@ public class RequestUsuario implements java.io.Serializable {
     public void logIn(String email, String senha) {
         try {
             senha = Utilities.md5(senha);
-            if (repository.query(UsuarioBean.class).eq(Usuario.EMAIL, email).and().eq(Usuario.SENHA, senha).count() >= 0) {
-                UsuarioBean usuario = repository.query(UsuarioBean.class).eq(Usuario.EMAIL, email).and().eq(Usuario.SENHA, senha).findOne();
-                if (null != usuario) {
+            UsuarioBean usuario = repository.query(UsuarioBean.class).eq(Usuario.EMAIL, email).and().eq(Usuario.SENHA, senha).findOne();
+            if (null != usuario) {
 //                    usuario.getPerfilBeanList();
-                    sessionUsuario.setUsuarioBean(usuario);
-                    sessionUsuario.setLogado(true);
+                sessionUsuario.setUsuarioBean(usuario);
+                sessionUsuario.setLogado(true);
 
-                    repository.setUsuario(sessionUsuario.getUsuarioBean());
-                    Utilities.historicoUsuarioLogin(repository);
+                repository.setUsuario(sessionUsuario.getUsuarioBean());
+                Utilities.historicoUsuarioLogin(repository);
 
-                    Cookie cookie1 = new Cookie("managerinstore_machine_userck", usuario.getIdusuario().toString());
-
-                    httpServletResponse.addCookie(cookie1);
-
-                    result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Usuário logado com sucesso")).recursive().serialize();
-                } else {
-                    result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "E-mail / Senha inválidos.")).recursive().serialize();
-                }
+                result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Usuário logado com sucesso")).recursive().serialize();
             } else {
                 result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "E-mail / Senha inválidos.")).recursive().serialize();
             }
@@ -169,7 +144,6 @@ public class RequestUsuario implements java.io.Serializable {
             }
         }
 
-
         try {
             repository.setUsuario(sessionUsuario.getUsuarioBean());
 
@@ -190,20 +164,17 @@ public class RequestUsuario implements java.io.Serializable {
             }
             repository.save(cidade);
 
-
             if (bairro.getIdbairro() != null && bairro.getIdbairro() > 0) {
                 bairro = repository.marge(bairro);
             }
             bairro.setCidade(cidade);
             repository.save(bairro);
 
-
             if (cep.getIdcep() != null && cep.getIdcep() > 0) {
                 cep = repository.marge(cep);
             }
             cep.setBairro(bairro);
             repository.save(cep);
-
 
             if (end.getIdendereco() != null && end.getIdendereco() > 0) {
                 end = repository.marge(end);
@@ -272,7 +243,6 @@ public class RequestUsuario implements java.io.Serializable {
             }
         }
 
-
         try {
             UsuarioBean b = repository.find(UsuarioBean.class, bean.getIdusuario());
             repository.setUsuario(sessionUsuario.getUsuarioBean());
@@ -294,13 +264,11 @@ public class RequestUsuario implements java.io.Serializable {
             }
             repository.save(cidade);
 
-
             if (bairro.getIdbairro() != null && bairro.getIdbairro() > 0) {
                 bairro = repository.marge(bairro);
             }
             bairro.setCidade(cidade);
             repository.save(bairro);
-
 
             if (cep.getIdcep() != null && cep.getIdcep() > 0) {
                 cep = repository.marge(cep);
@@ -308,14 +276,11 @@ public class RequestUsuario implements java.io.Serializable {
             cep.setBairro(bairro);
             repository.save(cep);
 
-
             if (end.getIdendereco() != null && end.getIdendereco() > 0) {
                 end = repository.marge(end);
             }
             end.setCep(cep);
             repository.save(end);
-
-
 
             String updateUsuario = "UPDATE usuario SET nome = ? , cpf = ? , email = ? , senha = ? , idendereco = ? where idusuario = " + bean.getIdusuario();
             updateUsuario = updateUsuario.replaceFirst("\\?", "'" + bean.getNome() + "'");
@@ -323,7 +288,6 @@ public class RequestUsuario implements java.io.Serializable {
             updateUsuario = updateUsuario.replaceFirst("\\?", "'" + bean.getEmail() + "'");
             updateUsuario = updateUsuario.replaceFirst("\\?", "'" + bean.getSenha() + "'");
             updateUsuario = updateUsuario.replaceFirst("\\?", "'" + end.getIdendereco() + "'");
-
 
             repository.query(updateUsuario).executeSQLCommand();
 

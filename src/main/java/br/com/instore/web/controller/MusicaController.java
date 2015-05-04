@@ -1,11 +1,11 @@
 package br.com.instore.web.controller;
 
-import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Post;
+import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
-import br.com.caelum.vraptor.observer.download.InputStreamDownload;
+import br.com.caelum.vraptor.interceptor.download.InputStreamDownload;
 import br.com.instore.core.orm.bean.CategoriaMusicaGeralBean;
 import br.com.instore.core.orm.bean.MusicaGeralBean;
 import br.com.instore.web.annotation.NaoDeslogar;
@@ -21,18 +21,12 @@ import javax.inject.Inject;
 import jcifs.smb.SmbFile;
 import jcifs.smb.SmbFileInputStream;
 
-@Controller
+@Resource
 public class MusicaController implements java.io.Serializable {
 
-    @Inject
     private Result result;
-    @Inject
     private RequestMusicaGeral requestMusicaGeral;
-    @Inject
     private RequestAudiostoreMusica requestAudiostoreMusica;
-
-    public MusicaController() {
-    }
 
     public MusicaController(Result result, RequestMusicaGeral requestMusicaGeral, RequestAudiostoreMusica requestAudiostoreMusica) {
         this.result = result;
@@ -132,8 +126,8 @@ public class MusicaController implements java.io.Serializable {
         try {
             String caminho = requestMusicaGeral.bean(id).getArquivo();
             SmbFile smbDir = new SmbFile(caminho, Utilities.getAuthSmbDefault());
-            SmbFileInputStream fileInputStream = new SmbFileInputStream(smbDir);
             if (smbDir.exists()) {
+                SmbFileInputStream fileInputStream = new SmbFileInputStream(smbDir);
                 return new InputStreamDownload(fileInputStream, smbDir.getContentType(), smbDir.getName());
             } else {
                 return new InputStreamDownload(new ByteArrayInputStream("Arquivo não encontrado".getBytes()), "", "text.txt");
