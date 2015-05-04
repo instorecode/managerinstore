@@ -1,8 +1,8 @@
 package br.com.instore.web.component.request;
 
 import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.ioc.Component;
 import br.com.caelum.vraptor.view.Results;
-import br.com.instore.core.orm.bean.ClienteBean;
 import br.com.instore.core.orm.bean.DadosClienteBean;
 import br.com.instore.core.orm.bean.IndiceReajusteBean;
 import br.com.instore.core.orm.bean.IndiceReajusteHistoricoBean;
@@ -11,28 +11,19 @@ import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.dto.IndiceReajusteDTO;
 import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
-import java.text.DecimalFormat;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
+import br.com.caelum.vraptor.ioc.RequestScoped;
 import javax.inject.Inject;
 
+@Component
 @RequestScoped
 public class RequestIndiceReajuste implements java.io.Serializable {
 
-    @Inject
     private SessionRepository repository;
-    
-    @Inject
     private Result result;
-    
-    @Inject
     private SessionUsuario sessionUsuario;
-
-    public RequestIndiceReajuste() {
-    }
 
     public RequestIndiceReajuste(SessionRepository repository, Result result, SessionUsuario sessionUsuario) {
         this.repository = repository;

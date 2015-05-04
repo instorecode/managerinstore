@@ -1,6 +1,8 @@
 package br.com.instore.web.component.request;
 
 import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.ioc.Component;
+import br.com.caelum.vraptor.ioc.RequestScoped;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.DataValidator;
 import br.com.instore.core.orm.DataValidatorException;
@@ -16,21 +18,14 @@ import br.com.instore.web.tools.AjaxResult;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 
+@Component
 @RequestScoped
 public class RequestAjuda implements Serializable {
 
-    @Inject
     private SessionRepository repository;
-    @Inject
     private Result result;
-    @Inject
     private SessionUsuario sessionUsuario;
-
-    public RequestAjuda() {
-    }
 
     public RequestAjuda(SessionRepository repository, Result result, SessionUsuario sessionUsuario) {
         this.repository = repository;

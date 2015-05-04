@@ -1,6 +1,7 @@
 package br.com.instore.web.component.request;
 
 import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.ioc.Component;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.Query;
 import br.com.instore.core.orm.bean.OcorrenciaProblemaBean;
@@ -18,21 +19,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
+import br.com.caelum.vraptor.ioc.RequestScoped;
 
+@Component
 @RequestScoped
 public class RequestOcorrenciaSolucao implements java.io.Serializable {
 
-    @Inject
     private SessionRepository repository;
-    @Inject
     private Result result;
-    @Inject
     private SessionUsuario sessionUsuario;
-
-    public RequestOcorrenciaSolucao() {
-    }
 
     public RequestOcorrenciaSolucao(SessionRepository repository, Result result, SessionUsuario sessionUsuario) {
         this.repository = repository;

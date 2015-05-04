@@ -1,7 +1,5 @@
 package br.com.instore.web.annotation;
 
-import br.com.caelum.vraptor.interceptor.AcceptsConstraint;
-import br.com.caelum.vraptor.interceptor.WithAnnotationAcceptor;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;

@@ -1,11 +1,11 @@
 package br.com.instore.web.controller;
 
-import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Post;
+import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
-import br.com.caelum.vraptor.observer.download.InputStreamDownload;
+import br.com.caelum.vraptor.interceptor.download.InputStreamDownload;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.bean.AudiostoreMusicaBean;
 import br.com.instore.core.orm.bean.ClienteBean;
@@ -22,22 +22,15 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Inject;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
-@Controller
+@Resource
 public class AudiostoreMusicaController implements java.io.Serializable {
 
-    @Inject
     private Result result;
-    @Inject
     private RequestAudiostoreMusica requestAudiostoreMusica;
-    @Inject
     private SessionRepository repository;
-
-    public AudiostoreMusicaController() {
-    }
 
     public AudiostoreMusicaController(Result result, RequestAudiostoreMusica requestAudiostoreMusica, SessionRepository repository) {
         this.result = result;

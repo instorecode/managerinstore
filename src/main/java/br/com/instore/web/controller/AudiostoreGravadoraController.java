@@ -1,32 +1,22 @@
 package br.com.instore.web.controller;
 
-import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Post;
+import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
-import br.com.caelum.vraptor.observer.download.InputStreamDownload;
+import br.com.caelum.vraptor.interceptor.download.InputStreamDownload;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.bean.AudiostoreGravadoraBean;
-import br.com.instore.core.orm.bean.ContatoClienteBean;
-import br.com.instore.core.orm.bean.VozBean;
 import br.com.instore.web.annotation.Restrict;
 import br.com.instore.web.component.request.RequestAudiostoreGravadora;
-import br.com.instore.web.component.request.RequestContatoCliente;
-import br.com.instore.web.component.request.RequestVoz;
 import javax.inject.Inject;
 
-@Controller
+@Resource
 public class AudiostoreGravadoraController implements java.io.Serializable {
 
-    @Inject
     private Result result;
-    
-    @Inject
     private RequestAudiostoreGravadora requestAudiostoreGravadora;
-
-    public AudiostoreGravadoraController() {
-    }
 
     public AudiostoreGravadoraController(Result result, RequestAudiostoreGravadora requestAudiostoreGravadora) {
         this.result = result;

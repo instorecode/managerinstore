@@ -1,9 +1,9 @@
 package br.com.instore.web.controller;
 
-import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Post;
+import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.bean.AcessoRemotoBean;
@@ -15,20 +15,15 @@ import br.com.instore.web.annotation.Restrict;
 import br.com.instore.web.component.request.RequestCliente;
 import br.com.instore.web.dto.ClienteDTO;
 import br.com.instore.web.dto.ClienteDTO2;
+import br.com.instore.web.dto.ClienteDTOInternal;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Inject;
 
-@Controller
+@Resource
 public class ClienteController implements java.io.Serializable {
 
-    @Inject
     private Result result;
-    @Inject
     private RequestCliente requestCliente;
-
-    public ClienteController() {
-    }
 
     public ClienteController(Result result, RequestCliente requestCliente) {
         this.result = result;
@@ -40,7 +35,8 @@ public class ClienteController implements java.io.Serializable {
     @Path("/clientes")
     public void clientes(Boolean datajson) {
         if (null != datajson && datajson) {
-            result.use(Results.json()).withoutRoot().from(requestCliente.clienteDTOList()).recursive().serialize();
+            List<ClienteDTOInternal> list = requestCliente.clienteDTOList();
+            result.use(Results.json()).withoutRoot().from(list).recursive().serialize();
         }
     }
 
@@ -82,11 +78,8 @@ public class ClienteController implements java.io.Serializable {
             contador2++;
         }
 
-
-
         result.include("filialBeanList1", filialBeanList2);
         result.include("filialBeanList2", filialBeanList3);
-
 
         result.include("contador1", contador1);
         result.include("contador2", contador2);

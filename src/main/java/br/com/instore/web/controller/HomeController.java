@@ -1,9 +1,9 @@
 package br.com.instore.web.controller;
 
-import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Post;
+import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.bean.ClienteBean;
@@ -23,25 +23,15 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
-@Controller
+@Resource
 public class HomeController implements java.io.Serializable {
     
-    @Inject
     private SessionRepository repository;
-    @Inject
     private SessionUsuario sessionUsuario;
-    @Inject
     private RequestUsuario requestUsuario;
-    @Inject
     private Result result;
-    @Inject
     private HttpServletRequest request;
-    
-    @Inject
     private HttpServletRequest httpServletRequest;
-    
-    public HomeController() {
-    }
 
     public HomeController(SessionRepository repository, SessionUsuario sessionUsuario, RequestUsuario requestUsuario, Result result , HttpServletRequest request) {
         this.repository = repository;

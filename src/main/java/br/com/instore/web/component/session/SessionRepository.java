@@ -1,25 +1,21 @@
 package br.com.instore.web.component.session;
 
+import br.com.caelum.vraptor.ioc.Component;
+import br.com.caelum.vraptor.ioc.RequestScoped;
 import br.com.instore.core.orm.RepositoryViewer;
-import br.com.instore.web.component.application.Initialize;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
+import org.hibernate.Session;
+
  
+@Component
 @RequestScoped
 public class SessionRepository extends RepositoryViewer implements java.io.Serializable {
-    
-    @Inject
-    private SessionUsuario sessaoUsuario;
 
-    
     public SessionRepository() {
-        
+        verifySession();
     }
-
-    public SessionRepository(SessionUsuario sessaoUsuario) {
-        this.sessaoUsuario = sessaoUsuario;
-        this.sessaoUsuario = sessaoUsuario;
-        setUsuario(sessaoUsuario.getUsuarioBean());
+    
+    public Session getSession() {
+        return getSession();
     }
     
     public void cleanAndClose() {
