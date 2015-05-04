@@ -1,7 +1,6 @@
 package br.com.instore.web.component.application;
 
 import br.com.instore.core.orm.SessionFactoryUtils;
-import javax.enterprise.context.SessionScoped;
 import org.hibernate.ResourceClosedException;
 import org.hibernate.Session;
 import org.hibernate.TransactionException;

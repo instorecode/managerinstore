@@ -1,8 +1,10 @@
 package br.com.instore.web.component.request;
 
 import br.com.caelum.vraptor.Result;
-import br.com.caelum.vraptor.observer.upload.UploadedFile;
-import br.com.caelum.vraptor.validator.Validator;
+import br.com.caelum.vraptor.Validator;
+import br.com.caelum.vraptor.interceptor.multipart.UploadedFile;
+import br.com.caelum.vraptor.ioc.Component;
+
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.Each;
 import br.com.instore.core.orm.Query;
@@ -30,9 +32,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.enterprise.context.RequestScoped;
+import br.com.caelum.vraptor.ioc.RequestScoped;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import jcifs.smb.SmbFileInputStream;
@@ -40,22 +45,15 @@ import jcifs.smb.SmbFileOutputStream;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
+@Component
 @RequestScoped
 public class RequestAudiostoreComercial implements java.io.Serializable {
 
-    @Inject
     private SessionRepository repository;
-    @Inject
     private Result result;
-    @Inject
     private Validator validator;
-    @Inject
     private SessionUsuario sessionUsuario;
-    @Inject
     private HttpServletRequest httpServletRequest;
-
-    public RequestAudiostoreComercial() {
-    }
 
     public RequestAudiostoreComercial(SessionRepository repository, Result result, SessionUsuario sessionUsuario) {
         this.repository = repository;
@@ -105,11 +103,9 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
             json.setCodigo(codigo);
         }
 
-
         json.setCount(q1.count().intValue());
         int size = q1.count().intValue() / rows + ((q1.count().intValue() % rows == 0) ? 0 : 1);
         lista = q2.limit(offset, rows).findAll();
-
 
         json.setPage(page);
         json.setSize(size);
@@ -183,7 +179,6 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
         AudiostoreComercialBean bean = repository.find(AudiostoreComercialBean.class, pk);
         AudiostoreComercialDTO dto = new AudiostoreComercialDTO();
         if (null != bean) {
-
 
             dto.setId(Utilities.leftPad(bean.getId()));
             dto.setArquivo(bean.getArquivo());
@@ -264,12 +259,12 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
     }
 
     public List<AudiostoreCategoriaBean> categoriaBeanList() {
-        List<AudiostoreCategoriaBean> audiostoreCategoriaBeanList = repository.query(AudiostoreCategoriaBean.class).eq("tipo", new Short("2")).findAll();
+        List<AudiostoreCategoriaBean> audiostoreCategoriaBeanList = repository.query(AudiostoreCategoriaBean.class).eq("tipo", new Short("2")).eq("cliente.idcliente", sessionUsuario.getCliente().getIdcliente()).findAll();
         return audiostoreCategoriaBeanList;
     }
 
     public List<AudiostoreCategoriaBean> categoriaBeanListByCliente(Integer idcliente) {
-        List<AudiostoreCategoriaBean> audiostoreCategoriaBeanList = repository.query(AudiostoreCategoriaBean.class).eq("tipo", new Short("2")).eq("cliente.idcliente", idcliente).findAll();
+        List<AudiostoreCategoriaBean> audiostoreCategoriaBeanList = repository.query(AudiostoreCategoriaBean.class).eq("tipo", new Short("2")).eq("cliente.idcliente", sessionUsuario.getCliente().getIdcliente()).findAll();
         return audiostoreCategoriaBeanList;
     }
 
@@ -349,13 +344,28 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
 
             try {
                 if (null != dados) {
-                    SmbFile dir = new SmbFile(dados.getLocalDestinoSpot(), Utilities.getAuthSmbDefault());
+
+                    NtlmPasswordAuthentication auth = Utilities.getAuthSmbDefault();
+                    String dirStr = dados.getLocalOrigemSpot();
+                    if (dirStr.endsWith("/")) {
+                        dirStr = dirStr.substring(0, dirStr.length() - 1);
+                    }
+
+                    if (dirStr.startsWith("smb://srv-arquivos")) {
+                        auth = Utilities.getAuthSmbDefault();
+                    }
+
+                    if (dirStr.startsWith("smb://192.168.1.249")) {
+                        auth = Utilities.getAuthSmbDefault1921681249();
+                    }
+
+                    SmbFile dir = new SmbFile(dirStr, auth);
 
                     if (!dir.exists()) {
                         dir.mkdirs();
                     }
 
-                    SmbFile file = new SmbFile(dados.getLocalDestinoSpot() + arquivo.getFileName() + "/", Utilities.getAuthSmbDefault());
+                    SmbFile file = new SmbFile(dirStr.concat("/").concat(arquivo.getFileName()), auth);
                     SmbFileOutputStream smbFos = new SmbFileOutputStream(file);
                     byte[] bytes = IOUtils.toByteArray(arquivo.getFile());
 
@@ -423,7 +433,6 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
             query = "DELETE FROM audiostore_comercial_sh WHERE comercial = " + bean.getId();
             repository.query(query).executeSQLCommand2();
 
-
             for (AudiostoreComercialShBean bbean : sh) {
                 if (null != bbean) {
                     query = "INSERT INTO audiostore_comercial_sh VALUES(null, ?,?,?,?)";
@@ -434,7 +443,6 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
                     repository.query(query).executeSQLCommand2();
                 }
             }
-
 
             repository.finalize();
             result.redirectTo(AudiostoreComercialController.class).listar(null, null, null, null, null, null, null, null, null, null, null, null);
@@ -457,7 +465,21 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
 
             try {
                 if (null != dados) {
-                    SmbFile file = new SmbFile(dados.getLocalDestinoSpot() + bean.getArquivo() + "/", Utilities.getAuthSmbDefault());
+                    NtlmPasswordAuthentication auth = Utilities.getAuthSmbDefault();
+                    String dirStr = dados.getLocalDestinoSpot();
+                    if (dirStr.endsWith("/")) {
+                        dirStr = dirStr.substring(0, dirStr.length() - 1);
+                    }
+
+                    if (dirStr.startsWith("smb://srv-arquivos")) {
+                        auth = Utilities.getAuthSmbDefault();
+                    }
+
+                    if (dirStr.startsWith("smb://192.168.1.249")) {
+                        auth = Utilities.getAuthSmbDefault1921681249();
+                    }
+
+                    SmbFile file = new SmbFile(dirStr.concat(System.getProperty("file.separator")).concat(bean.getArquivo()).concat(System.getProperty("file.separator")), auth);
                     file.delete();
                 }
             } catch (SmbException e) {
@@ -653,7 +675,6 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
                         }
                         msg = Utilities.formatarHexExp(msg);
 
-
                         conteudo += arquivo;
                         conteudo += cliente;
                         conteudo += titulo;
@@ -724,9 +745,37 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
                             String origem = dados.getLocalOrigemSpot();
                             String destino = dados.getLocalDestinoExp();
 
-                            SmbFile smbOrigem = new SmbFile(origem, Utilities.getAuthSmbDefault());
-                            SmbFile smb2Origem = new SmbFile(origem + bean.getArquivo() + "/", Utilities.getAuthSmbDefault());
-                            SmbFile smbDestino = new SmbFile(destino + smbArquivoNome.trim(), Utilities.getAuthSmbDefault());
+                            NtlmPasswordAuthentication auth1 = Utilities.getAuthSmbDefault();
+                            NtlmPasswordAuthentication auth2 = Utilities.getAuthSmbDefault();
+
+                            if (origem.endsWith("/")) {
+                                origem = origem.substring(0, origem.length() - 1);
+                            }
+
+                            if (origem.startsWith("smb://srv-arquivos")) {
+                                auth1 = Utilities.getAuthSmbDefault();
+                            }
+
+                            if (origem.startsWith("smb://192.168.1.249")) {
+                                auth1 = Utilities.getAuthSmbDefault1921681249();
+                            }
+
+                            // -- 
+                            if (destino.endsWith("/")) {
+                                destino = destino.substring(0, destino.length() - 1);
+                            }
+
+                            if (destino.startsWith("smb://srv-arquivos")) {
+                                auth2 = Utilities.getAuthSmbDefault();
+                            }
+
+                            if (destino.startsWith("smb://192.168.1.249")) {
+                                auth2 = Utilities.getAuthSmbDefault1921681249();
+                            }
+
+                            SmbFile smbOrigem = new SmbFile(origem, auth1);
+                            SmbFile smb2Origem = new SmbFile(origem.concat("/").concat(bean.getArquivo()), auth1);
+                            SmbFile smbDestino = new SmbFile(destino.concat("/").concat(smbArquivoNome.trim()), auth2);
 
                             if (!smbOrigem.exists()) {
                                 smbOrigem.mkdirs();
@@ -748,8 +797,23 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
 
             DadosClienteBean dados = repository.query(DadosClienteBean.class).eq("cliente.idcliente", list.get(0).getCliente().getIdcliente()).findOne();
             String destino = dados.getLocalDestinoExp();
-            SmbFile smb = new SmbFile(destino, Utilities.getAuthSmbDefault());
-            SmbFile smb2 = new SmbFile(destino + "comercial.exp", Utilities.getAuthSmbDefault());
+
+            NtlmPasswordAuthentication auth = Utilities.getAuthSmbDefault();
+
+            if (destino.endsWith("/")) {
+                destino = destino.substring(0, destino.length() - 1);
+            }
+
+            if (destino.startsWith("smb://srv-arquivos")) {
+                auth = Utilities.getAuthSmbDefault();
+            }
+
+            if (destino.startsWith("smb://192.168.1.249")) {
+                auth = Utilities.getAuthSmbDefault1921681249();
+            }
+
+            SmbFile smb = new SmbFile(destino, auth);
+            SmbFile smb2 = new SmbFile(destino.concat(System.getProperty("file.separator")).concat("comercial.exp"), auth);
 
             if (!smb.exists()) {
                 smb.mkdirs();
@@ -759,10 +823,35 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
                 conteudo = Utilities.quebrarLinhaComHexa() + conteudo;
             }
 
-            SmbFileOutputStream sfous = new SmbFileOutputStream(smb2);
+            SmbFileOutputStream sfous = new SmbFileOutputStream(smb2,true);
             sfous.write(conteudo.getBytes());
             sfous.close();
+            
+            BufferedReader br = new BufferedReader(new InputStreamReader(smb2.getInputStream()));
+            String line;
+            List<String> lines = new ArrayList<String>();
 
+            while (null != (line = br.readLine())) {
+                if (!line.replace("\\s", "").trim().isEmpty()) {
+                    lines.add(line);
+                }
+            }
+            br.close();
+
+            conteudo = "";
+            String quebraLinha = "";
+            for (String l : lines) {
+                conteudo = conteudo.concat(quebraLinha).concat(l);
+                quebraLinha = "\r\n";
+            }
+
+            smb2.delete();
+
+            smb2.createNewFile();
+            sfous = new SmbFileOutputStream(smb2);
+            sfous.write(conteudo.getBytes());
+            sfous.close();
+            
         } catch (Exception e) {
             e.printStackTrace();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "")).recursive().serialize();
@@ -803,7 +892,22 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
             }
 
             try {
-                SmbFile fileValid = new SmbFile(dados.getLocalDestinoSpot() + nomeArquivo + "/", Utilities.getAuthSmbDefault());
+                String dir = dados.getLocalOrigemSpot();
+                NtlmPasswordAuthentication auth = Utilities.getAuthSmbDefault();
+
+                if (dir.endsWith("/")) {
+                    dir = dir.substring(0, dir.length() - 1);
+                }
+
+                if (dir.startsWith("smb://srv-arquivos")) {
+                    auth = Utilities.getAuthSmbDefault();
+                }
+
+                if (dir.startsWith("smb://192.168.1.249")) {
+                    auth = Utilities.getAuthSmbDefault1921681249();
+                }
+
+                SmbFile fileValid = new SmbFile(dir.concat("/").concat(nomeArquivo), auth);
                 if (fileValid.exists()) {
                     mensagem = "Já existe um comercial com este arquivo!";
                     bool = false;
@@ -827,6 +931,7 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
     }
 
     public void validarComercial(Integer[] id_list, Boolean expArquivoAudio, Integer idcliente, String titulo, String arquivo, Integer codigo) {
+        idcliente = sessionUsuario.getCliente().getIdcliente();
         List<AudiostoreComercialBean> list = null;
 
         if (null != id_list && id_list.length > 0) {
@@ -893,7 +998,6 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
             ajaxResultBool = false;
             ajaxResultStr = "Não foi possivel gerar arquivo.";
         }
-
 
     }
 

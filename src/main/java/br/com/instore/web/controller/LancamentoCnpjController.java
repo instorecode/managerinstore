@@ -1,9 +1,9 @@
 package br.com.instore.web.controller;
 
-import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Post;
+import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.bean.LancamentoCnpjBean;
@@ -14,16 +14,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.inject.Inject;
 
-@Controller
+@Resource
 public class LancamentoCnpjController implements java.io.Serializable {
 
-    @Inject
     private Result result;
-    @Inject
     private RequestLancamentoCnpj requestLancamentoCnpj;
-
-    public LancamentoCnpjController() {
-    }
 
     public LancamentoCnpjController(Result result, RequestLancamentoCnpj requestLancamentoCnpj) {
         this.result = result;

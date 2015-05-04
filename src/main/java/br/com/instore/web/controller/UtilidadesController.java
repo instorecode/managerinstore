@@ -1,8 +1,8 @@
 package br.com.instore.web.controller;
 
-import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
+import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.Each;
@@ -10,24 +10,16 @@ import br.com.instore.core.orm.RepositoryViewer;
 import br.com.instore.core.orm.bean.CepBean;
 import br.com.instore.core.orm.bean.property.Cep;
 import br.com.instore.web.component.session.SessionRepository;
-import br.com.instore.web.dto.AbstractDTO;
+import br.com.instore.web.dto.FuncionalidadeTreeDTO;
 import br.com.instore.web.tools.CepResult;
 import br.com.instore.web.tools.CepService;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
 
-@Controller
+@Resource
 public class UtilidadesController implements java.io.Serializable {
 
-    @Inject
     private SessionRepository repository;
-    @Inject
     private Result result;
-
-    public UtilidadesController() {
-    }
 
     public UtilidadesController(SessionRepository repository, Result result) {
         this.repository = repository;
@@ -85,25 +77,16 @@ public class UtilidadesController implements java.io.Serializable {
             public void each() {
                 FuncionalidadeTreeDTO filho = new FuncionalidadeTreeDTO();
 
-                filho.idfuncionalidade = idfuncionalidade;
-                filho.nome = nome;
-                filho.parente = parente;
-                filho.perfilTem = (perfilTem.longValue() > 0 ? true : false);
+                filho.setIdfuncionalidade(idfuncionalidade);
+                filho.setNome(nome);
+                filho.setParente(parente);
+                filho.setPerfilTem((perfilTem.longValue() > 0 ? true : false));
 
                 if (temFilhos.longValue() > 0) {
-                    loadfucionalidadeTree(filho, filho.idfuncionalidade, idperfil);
+                    loadfucionalidadeTree(filho, filho.getIdfuncionalidade(), idperfil);
                 }
-                root.filhos.add(filho);
+                root.getFilhos().add(filho);
             }
         });
-    }
-
-    public class FuncionalidadeTreeDTO extends AbstractDTO {
-
-        Integer idfuncionalidade;
-        String nome;
-        Boolean perfilTem;
-        Integer parente;
-        List<FuncionalidadeTreeDTO> filhos = new ArrayList<FuncionalidadeTreeDTO>();
     }
 }

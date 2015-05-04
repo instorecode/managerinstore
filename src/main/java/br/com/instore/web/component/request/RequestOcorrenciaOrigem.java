@@ -2,33 +2,26 @@ package br.com.instore.web.component.request;
 
 import br.com.instore.web.dto.OcorrenciaOrigemJSON;
 import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.ioc.Component;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.Query;
-import br.com.instore.core.orm.bean.ClienteBean;
 import br.com.instore.core.orm.bean.OcorrenciaOrigemBean;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.dto.OcorrenciaOrigemDTO;
 import br.com.instore.web.tools.AjaxResult;
-import com.mysql.fabric.xmlrpc.Client;
 import java.util.ArrayList;
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
+import br.com.caelum.vraptor.ioc.RequestScoped;
 import javax.inject.Inject;
-import javax.swing.text.Utilities;
 
+@Component
 @RequestScoped
 public class RequestOcorrenciaOrigem implements java.io.Serializable {
 
-    @Inject
     private SessionRepository repository;
-    @Inject
     private Result result;
-    @Inject
     private SessionUsuario sessionUsuario;
-
-    public RequestOcorrenciaOrigem() {
-    }
 
     public RequestOcorrenciaOrigem(SessionRepository repository, Result result, SessionUsuario sessionUsuario) {
         this.repository = repository;

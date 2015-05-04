@@ -5,8 +5,6 @@ import br.com.instore.core.orm.Each;
 import br.com.instore.core.orm.RepositoryViewer;
 import br.com.instore.core.orm.bean.UsuarioBean;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;

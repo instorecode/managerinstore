@@ -1,41 +1,25 @@
 package br.com.instore.web.controller;
 
-import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Post;
+import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
-import br.com.caelum.vraptor.observer.download.InputStreamDownload;
-import br.com.caelum.vraptor.observer.upload.UploadedFile;
-import br.com.caelum.vraptor.validator.SimpleMessage;
+import br.com.caelum.vraptor.interceptor.download.InputStreamDownload;
+import br.com.caelum.vraptor.interceptor.multipart.UploadedFile;
+
 import br.com.caelum.vraptor.view.Results;
-import br.com.instore.core.orm.bean.AudiostoreCategoriaBean;
 import br.com.instore.core.orm.bean.AudiostoreComercialBean;
 import br.com.instore.core.orm.bean.AudiostoreComercialShBean;
-import br.com.instore.core.orm.bean.ClienteBean;
-import br.com.instore.core.orm.bean.DadosClienteBean;
 import br.com.instore.web.annotation.Restrict;
 import br.com.instore.web.component.request.RequestAudiostoreComercial;
-import br.com.instore.web.tools.Utilities;
-import java.net.MalformedURLException;
-import java.util.Date;
-import java.util.List;
 import javax.inject.Inject;
-import jcifs.smb.SmbException;
-import jcifs.smb.SmbFile;  
 
-@Controller
+@Resource
 public class AudiostoreComercialController implements java.io.Serializable {
 
-    @Inject
     private Result result;
-    @Inject
     private RequestAudiostoreComercial requestAudiostoreComercial;
-    
-
-    public AudiostoreComercialController() {
-        
-    }     
 
     public AudiostoreComercialController(Result result, RequestAudiostoreComercial requestAudiostoreComercial) {
         this.result = result;
@@ -99,7 +83,7 @@ public class AudiostoreComercialController implements java.io.Serializable {
         result.include("audiostoreComercialBean", bean);
         result.include("isPageCadastro", false);
         result.include("shs", requestAudiostoreComercial.shs(id));
-        result.include("categoriaBeanList", requestAudiostoreComercial.categoriaBeanList(bean.getId()));
+        result.include("categoriaBeanList", requestAudiostoreComercial.categoriaBeanList());
         result.include("clienteBeanList", requestAudiostoreComercial.clienteBeanList());
         result.include("audiostoreComercialShBeanList", requestAudiostoreComercial.audiostoreComercialShBeanList());
         
