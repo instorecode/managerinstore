@@ -1,6 +1,7 @@
 package br.com.instore.web.component.request;
 
 import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.ioc.Component;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.bean.ClienteBean;
 import br.com.instore.core.orm.bean.ContatoClienteBean;
@@ -12,23 +13,16 @@ import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
 import java.util.ArrayList;
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
+import br.com.caelum.vraptor.ioc.RequestScoped;
 import javax.inject.Inject;
 
+@Component
 @RequestScoped
 public class RequestContatoCliente implements java.io.Serializable {
 
-    @Inject
     private SessionRepository repository;
-    
-    @Inject
     private Result result;
-    
-    @Inject
     private SessionUsuario sessionUsuario;
-
-    public RequestContatoCliente() {
-    }
 
     public RequestContatoCliente(SessionRepository repository, Result result, SessionUsuario sessionUsuario) {
         this.repository = repository;

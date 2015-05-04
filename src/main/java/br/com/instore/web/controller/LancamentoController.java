@@ -1,29 +1,22 @@
 package br.com.instore.web.controller;
 
-import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Post;
+import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.bean.LancamentoBean;
 import br.com.instore.web.annotation.Restrict;
 import br.com.instore.web.component.request.RequestLancamento;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.inject.Inject;
 
-@Controller
+@Resource
 public class LancamentoController implements java.io.Serializable {
 
-    @Inject
     private Result result;
-    
-    @Inject
     private RequestLancamento requestLancamento;
-
-    public LancamentoController() {
-    }
 
     public LancamentoController(Result result, RequestLancamento requestLancamento) {
         this.result = result;

@@ -1,12 +1,11 @@
 package br.com.instore.web.component.application;
 
-import br.com.caelum.vraptor.observer.upload.DefaultMultipartConfig;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Specializes;
+import br.com.caelum.vraptor.interceptor.multipart.DefaultMultipartConfig;
 
 
-@Specializes
-@ApplicationScoped
+
+
+
 public class CustomMultipartConfig extends DefaultMultipartConfig {
 
     public long getFileSizeLimit() {
@@ -16,5 +15,4 @@ public class CustomMultipartConfig extends DefaultMultipartConfig {
     public long getSizeLimit() {
         return 50 * 1024 * 1024; // 50MB
     }
-
 }

@@ -1,13 +1,14 @@
 package br.com.instore.web.component.session;
 
+import br.com.caelum.vraptor.ioc.Component;
+import br.com.caelum.vraptor.ioc.SessionScoped;
 import br.com.instore.core.orm.bean.ClienteBean;
 import br.com.instore.core.orm.bean.UsuarioBean;
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Named;
 import jcifs.smb.SmbFile;
 
+
+@Component
 @SessionScoped
-@Named
 public class SessionUsuario implements java.io.Serializable {
     private boolean logado = false; 
     private UsuarioBean usuarioBean; 

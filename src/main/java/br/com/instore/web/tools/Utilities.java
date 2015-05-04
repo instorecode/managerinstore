@@ -27,8 +27,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import jcifs.smb.NtlmPasswordAuthentication;
 
@@ -303,8 +301,14 @@ public class Utilities {
     }
 
     public static NtlmPasswordAuthentication getAuthSmbDefault() {
-        String user = "geral";
-        String pass = "Instore!@";
+        String user = "manager.instore";
+        String pass = "M#0000I";
+        return new NtlmPasswordAuthentication("", user, pass);
+    }
+
+    public static NtlmPasswordAuthentication getAuthSmbDefault1921681249() {
+        String user = "admin";
+        String pass = "q1a2s3";
         return new NtlmPasswordAuthentication("", user, pass);
     }
 
@@ -317,33 +321,10 @@ public class Utilities {
     }
 
     public static String formatarURLConfigCliente(String url) {
-        if (!url.endsWith("/")) {
-            url += "/";
-
-        }
-
-        url = url.replace("smb://", "$$");
         url = url.replace("\\", "/");
-        url = url.replace("//", "/");
-        url = url.replace("$$", "smb://");
-
-        if (url.startsWith("/")) {
-            url = url.substring(1, url.length());
+        if (!url.startsWith("smb")) {
+            url = "smb:".concat(url.replace("\\", "/"));
         }
-
-        if (!url.startsWith("smb://")) {
-            url = "smb://" + url;
-        }
-
-        if (StringUtils.countMatches(url, "smb://") > 1) {
-            url = url.replace("smb://", "");
-            url = "smb://" + url;
-        }
-
-        if (url.equals("smb://")) {
-            url = "";
-        }
-
         return url;
     }
 
@@ -424,7 +405,7 @@ public class Utilities {
             content += "[" + (new SimpleDateFormat("dd/MM/yyyy")).format(new Date()) + "]\n";
             content += "[" + (new SimpleDateFormat("HH:mm:ss")).format(new Date()) + "]\n";
             content += "[" + username + "]\n";
-            content += "[" + req.getRemoteAddr() + "]\n";
+//            content += "[" + req.getRemoteAddr() + "]\n";
 
             switch (taskLock) {
                 case CATEGORIA:
@@ -443,8 +424,24 @@ public class Utilities {
                     taskLockStrCode = "005";
                     break;
             }
+            
+            NtlmPasswordAuthentication auth = Utilities.getAuthSmbDefault();
 
-            SmbFileOutputStream sfos = new SmbFileOutputStream(new SmbFile(path + "task" + taskLockStrCode + ".lock", getAuthSmbDefault()));
+            if (path.endsWith("/")) {
+                path = path.substring(0, path.length() - 1);
+            }
+
+            if (path.startsWith("smb://srv-arquivos")) {
+                auth = Utilities.getAuthSmbDefault();
+            }
+
+            if (path.startsWith("smb://192.168.1.249")) {
+                auth = Utilities.getAuthSmbDefault1921681249();
+            }
+            
+            SmbFile smb = new SmbFile(path.concat("/").concat("task").concat(taskLockStrCode).concat(".lock"), auth);
+
+            SmbFileOutputStream sfos = new SmbFileOutputStream(smb);
             sfos.write(content.getBytes());
             sfos.flush();
             sfos.close();
@@ -480,7 +477,22 @@ public class Utilities {
         }
 
         try {
-            SmbFile smb = new SmbFile(path + "task" + taskLockStrCode + ".lock", getAuthSmbDefault());
+            NtlmPasswordAuthentication auth = Utilities.getAuthSmbDefault();
+
+            if (path.endsWith("/")) {
+                path = path.substring(0, path.length() - 1);
+            }
+
+            if (path.startsWith("smb://srv-arquivos")) {
+                auth = Utilities.getAuthSmbDefault();
+            }
+
+            if (path.startsWith("smb://192.168.1.249")) {
+                auth = Utilities.getAuthSmbDefault1921681249();
+            }
+            
+            SmbFile smb = new SmbFile(path.concat("/").concat("task").concat(taskLockStrCode).concat(".lock"), auth);
+            
             if (smb.exists()) {
                 smb.delete();
             }
@@ -513,8 +525,22 @@ public class Utilities {
                     taskLockStrCode = "005";
                     break;
             }
+            
+            NtlmPasswordAuthentication auth = Utilities.getAuthSmbDefault();
 
-            SmbFile file = new SmbFile(path + "task" + taskLockStrCode + ".lock", Utilities.getAuthSmbDefault());
+            if (path.endsWith("/")) {
+                path = path.substring(0, path.length() - 1);
+            }
+
+            if (path.startsWith("smb://srv-arquivos")) {
+                auth = Utilities.getAuthSmbDefault();
+            }
+
+            if (path.startsWith("smb://192.168.1.249")) {
+                auth = Utilities.getAuthSmbDefault1921681249();
+            }
+            
+            SmbFile file = new SmbFile(path.concat("/").concat("task").concat(taskLockStrCode).concat(".lock"), auth);
 
             if (file.exists()) {
                 $return = false;
@@ -532,7 +558,7 @@ public class Utilities {
 
     public static String verifyInfoMessageTaskLock(String path, TaskLock taskLock) {
         String $return = "";
-        
+
         String taskLockStrCode = "001";
         switch (taskLock) {
             case CATEGORIA:
@@ -551,28 +577,41 @@ public class Utilities {
                 taskLockStrCode = "005";
                 break;
         }
-        
-        
+
         try {
-            SmbFile file = new SmbFile(path + "task" + taskLockStrCode + ".lock", Utilities.getAuthSmbDefault());
+            NtlmPasswordAuthentication auth = Utilities.getAuthSmbDefault();
+
+            if (path.endsWith("/")) {
+                path = path.substring(0, path.length() - 1);
+            }
+
+            if (path.startsWith("smb://srv-arquivos")) {
+                auth = Utilities.getAuthSmbDefault();
+            }
+
+            if (path.startsWith("smb://192.168.1.249")) {
+                auth = Utilities.getAuthSmbDefault1921681249();
+            }
             
+            SmbFile file = new SmbFile(path.concat("/").concat("task").concat(taskLockStrCode).concat(path), auth);
+
             if (file.exists()) {
                 BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream()));
-                
+
                 List<String> lines = new ArrayList<String>();
                 String line;
-                
-                while(null != (line = br.readLine())) {
+
+                while (null != (line = br.readLine())) {
                     lines.add(line.replace("[", "").replace("]", ""));
                 }
-                
+
                 String dateStr = lines.get(0);
                 String hourStr = lines.get(1);
                 String usernameStr = lines.get(2);
                 String machineIpStr = lines.get(3);
 
                 $return = "Lamento, não é possivel gerar os arquivos agora, na data " + dateStr + " ás " + hourStr + " o usuário " + usernameStr + " iniciou este processo e ainda não foi finalizado. Por favor tente mais tarde.";
-                
+
                 br.close();
             }
         } catch (MalformedURLException e) {
@@ -584,10 +623,24 @@ public class Utilities {
         }
         return $return;
     }
-    
-    public static void createLogMusica(String path , Boolean existe, String nomeArquivo) {
+
+    public static void createLogMusica(String path, Boolean existe, String nomeArquivo) {
         try {
-            SmbFile file = new SmbFile(path + "musica_files_"+(existe ? "" : "not_")+"exists.log", getAuthSmbDefault());
+            NtlmPasswordAuthentication auth = Utilities.getAuthSmbDefault();
+
+            if (path.endsWith("/")) {
+                path = path.substring(0, path.length() - 1);
+            }
+
+            if (path.startsWith("smb://srv-arquivos")) {
+                auth = Utilities.getAuthSmbDefault();
+            }
+
+            if (path.startsWith("smb://192.168.1.249")) {
+                auth = Utilities.getAuthSmbDefault1921681249();
+            }
+            
+            SmbFile file = new SmbFile(path.concat("/").concat("musica_files_").concat((existe ? "" : "not_")).concat("exists.log"), auth);
             String content = "";
             content += "[" + (new SimpleDateFormat("dd/MM/yyyy")).format(new Date()) + "] ";
             content += "" + nomeArquivo + "";
@@ -607,16 +660,31 @@ public class Utilities {
             e.printStackTrace();
         }
     }
-    
-    public static void createLogComercial(String path , Boolean existe, String nomeArquivo) {
+
+    public static void createLogComercial(String path, Boolean existe, String nomeArquivo) {
         try {
-            SmbFile file = new SmbFile(path + "comercial_files_"+(existe ? "" : "not_")+"exists.log", getAuthSmbDefault());
+            
+            NtlmPasswordAuthentication auth = Utilities.getAuthSmbDefault();
+
+            if (path.endsWith("/")) {
+                path = path.substring(0, path.length() - 1);
+            }
+
+            if (path.startsWith("smb://srv-arquivos")) {
+                auth = Utilities.getAuthSmbDefault();
+            }
+
+            if (path.startsWith("smb://192.168.1.249")) {
+                auth = Utilities.getAuthSmbDefault1921681249();
+            }
+            
+            SmbFile file = new SmbFile(path.concat("/").concat("comercial_files_").concat((existe ? "" : "not_")).concat("exists.log"), auth);
             String content = "";
             content += "[" + (new SimpleDateFormat("dd/MM/yyyy")).format(new Date()) + "] ";
             content += "" + nomeArquivo + "";
             content += "\n";
 
-            SmbFileOutputStream sfos = new SmbFileOutputStream(file , true);
+            SmbFileOutputStream sfos = new SmbFileOutputStream(file, true);
             sfos.write(content.getBytes());
             sfos.flush();
             sfos.close();
@@ -630,17 +698,31 @@ public class Utilities {
             e.printStackTrace();
         }
     }
-    
+
     public static void removerLogMusica(String path) {
         try {
-            SmbFile file = new SmbFile(path + "musica_files_exists.log", getAuthSmbDefault());
-            SmbFile file2 = new SmbFile(path + "musica_files_not_exists.log", getAuthSmbDefault());
+            NtlmPasswordAuthentication auth = Utilities.getAuthSmbDefault();
 
-            if(file.exists()) {
+            if (path.endsWith("/")) {
+                path = path.substring(0, path.length() - 1);
+            }
+
+            if (path.startsWith("smb://srv-arquivos")) {
+                auth = Utilities.getAuthSmbDefault();
+            }
+
+            if (path.startsWith("smb://192.168.1.249")) {
+                auth = Utilities.getAuthSmbDefault1921681249();
+            }
+            
+            SmbFile file = new SmbFile(path.concat("/").concat("comercial_files_exists.log")  , auth);
+            SmbFile file2 = new SmbFile(path.concat("/").concat("comercial_files_not_exists.log") , auth);
+
+            if (file.exists()) {
                 file.delete();
             }
 
-            if(file2.exists()) {
+            if (file2.exists()) {
                 file2.delete();
             }
         } catch (MalformedURLException e) {
@@ -651,17 +733,31 @@ public class Utilities {
             e.printStackTrace();
         }
     }
-    
+
     public static void removerLogComercial(String path) {
         try {
-            SmbFile file = new SmbFile(path + "comercial_files_exists.log", getAuthSmbDefault());
-            SmbFile file2 = new SmbFile(path + "comercial_files_not_exists.log", getAuthSmbDefault());
+            NtlmPasswordAuthentication auth = Utilities.getAuthSmbDefault();
 
-            if(file.exists()) {
+            if (path.endsWith("/")) {
+                path = path.substring(0, path.length() - 1);
+            }
+
+            if (path.startsWith("smb://srv-arquivos")) {
+                auth = Utilities.getAuthSmbDefault();
+            }
+
+            if (path.startsWith("smb://192.168.1.249")) {
+                auth = Utilities.getAuthSmbDefault1921681249();
+            }
+            
+            SmbFile file = new SmbFile(path.concat("/").concat("comercial_files_exists.log")  , auth);
+            SmbFile file2 = new SmbFile(path.concat("/").concat("comercial_files_not_exists.log") , auth);
+
+            if (file.exists()) {
                 file.delete();
             }
 
-            if(file2.exists()) {
+            if (file2.exists()) {
                 file2.delete();
             }
         } catch (MalformedURLException e) {
@@ -672,5 +768,4 @@ public class Utilities {
             e.printStackTrace();
         }
     }
-    
 }

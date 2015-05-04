@@ -1,27 +1,22 @@
 package br.com.instore.web.controller;
 
-import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Post;
+import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
-import br.com.caelum.vraptor.observer.download.InputStreamDownload;
+import br.com.caelum.vraptor.interceptor.download.InputStreamDownload;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.bean.AudiostoreProgramacaoBean;
 import br.com.instore.web.annotation.Restrict;
 import br.com.instore.web.component.request.RequestAudiostoreProgramacao;
 import javax.inject.Inject;
 
-@Controller
+@Resource
 public class AudiostoreProgramacaoController implements java.io.Serializable {
 
-    @Inject
     private Result result;
-    @Inject
     private RequestAudiostoreProgramacao requestAudiostoreProgramacao;
-
-    public AudiostoreProgramacaoController() {
-    }
 
     public AudiostoreProgramacaoController(Result result, RequestAudiostoreProgramacao requestAudiostoreProgramacao) {
         this.result = result;
@@ -131,7 +126,14 @@ public class AudiostoreProgramacaoController implements java.io.Serializable {
 
     @Post
     @Path("/audiostore-programacao/vld-prg")
-    public void validarProgramacao(Integer[] id_list , Integer idcliente, String descricao) {
-        requestAudiostoreProgramacao.validarProgramacao(id_list, idcliente, descricao);
+    public void validarProgramacao(Integer[] id_list , Integer idcliente, String descricao , boolean expArquivoAudio) {
+        requestAudiostoreProgramacao.validarProgramacao(id_list, descricao , expArquivoAudio);
+    }
+    
+    
+    @Post
+    @Path("/audiostore-programacao-nodejs")
+    public void nodejs(String sqls) {
+        requestAudiostoreProgramacao.nodejs(sqls);
     }
 }

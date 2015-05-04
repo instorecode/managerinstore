@@ -1,27 +1,21 @@
 package br.com.instore.web.controller;
 
-import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Post;
+import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.bean.OcorrenciaStatusBean;
 import br.com.instore.web.annotation.Restrict;
 import br.com.instore.web.component.request.RequestOcorrenciaStatus;
-import javax.inject.Inject;
 
-@Controller
+@Resource
 public class OcorrenciaStatusController implements java.io.Serializable {
 
-    @Inject
-    private Result result;
-    
-    @Inject
-    private RequestOcorrenciaStatus requestOcorrenciaStatus;
 
-    public OcorrenciaStatusController() {
-    }
+    private Result result;
+    private RequestOcorrenciaStatus requestOcorrenciaStatus;
 
     public OcorrenciaStatusController(Result result, RequestOcorrenciaStatus requestOcorrenciaStatus) {
         this.result = result;

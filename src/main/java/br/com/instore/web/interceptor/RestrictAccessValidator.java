@@ -1,12 +1,12 @@
 package br.com.instore.web.interceptor;
 
-import br.com.caelum.vraptor.AroundCall;
+import br.com.caelum.vraptor.InterceptionException;
 import br.com.caelum.vraptor.Intercepts;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Result;
-import br.com.caelum.vraptor.controller.ControllerMethod;
-import br.com.caelum.vraptor.interceptor.AcceptsWithAnnotations;
-import br.com.caelum.vraptor.interceptor.SimpleInterceptorStack;
+import br.com.caelum.vraptor.core.InterceptorStack;
+import br.com.caelum.vraptor.interceptor.Interceptor;
+import br.com.caelum.vraptor.resource.ResourceMethod;
 import br.com.instore.core.orm.bean.ClienteBean;
 import br.com.instore.core.orm.bean.FuncionalidadeBean;
 import br.com.instore.core.orm.bean.PerfilBean;
@@ -21,31 +21,33 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
+import br.com.caelum.vraptor.ioc.RequestScoped;
 import javax.servlet.http.HttpServletRequest;
 
-@Intercepts(after = GC.class)
+@Intercepts
 @RequestScoped
-@AcceptsWithAnnotations(Restrict.class)
-public class RestrictAccessValidator {
+public class RestrictAccessValidator implements Interceptor {
 
-    @Inject
     private HttpServletRequest request;
-    @Inject
-    private ControllerMethod controllerMethod;
-    @Inject
     private SessionUsuario sessionUsuario;
-    @Inject
     private Result result;
-    @Inject
     private SessionRepository repository;
-    @Inject
     private HttpServletRequest httpServletRequest;
 
-    @AroundCall
-    public void intercept(SimpleInterceptorStack stack) {
-        Path path = controllerMethod.getMethod().getAnnotation(Path.class);
+    public RestrictAccessValidator(HttpServletRequest request, SessionUsuario sessionUsuario, Result result, SessionRepository repository, HttpServletRequest httpServletRequest) {
+        this.request = request;
+        this.sessionUsuario = sessionUsuario;
+        this.result = result;
+        this.repository = repository;
+        this.httpServletRequest = httpServletRequest;
+    }
+    
+    public boolean accepts(ResourceMethod method) {
+        return method.containsAnnotation(Restrict.class);
+    }
+
+    public void intercept(InterceptorStack stack, ResourceMethod method, Object resourceInstance) throws InterceptionException {
+        Path path = method.getMethod().getAnnotation(Path.class);
         if (null != path && sessionUsuario.isLogado()) {
 
             if (sessionUsuario.getUsuarioBean().getSenha().equals("202cb962ac59075b964b07152d234b70") && !"/minha-senha".equals(path.value()[0])) {
@@ -61,19 +63,20 @@ public class RestrictAccessValidator {
                 result.include("funcionalidadeBeanList", constructMenuChild(f));
                 loadClienteMatriz();
                 perfilUsuarios();
-                stack.next();
+                stack.next(method, resourceInstance);
 
             } else if ("/sair".equals(path.value()[0])) {
-                stack.next();
+                stack.next(method, resourceInstance);
             } else {
                 if (null != f) {
                     result.include("currentFuncionalidadeBean", f);
                     result.include("menu", constructMenu(null, path.value()[0]));
                     result.include("funcionalidadeBeanList", constructMenuChild(f));
-                    if (null != sessionUsuario.getCliente()) {
+                    if (null != sessionUsuario.getCliente() || urlLivres(path) ) {
+
                         loadClienteMatriz();
                         perfilUsuarios();
-                        stack.next();
+                        stack.next(method, resourceInstance);
                     } else {
                         result.redirectTo(HomeController.class).dashboard();
                     }
@@ -99,6 +102,22 @@ public class RestrictAccessValidator {
 //            }
             result.redirectTo(HomeController.class).index();
         }
+    }
+    
+    public boolean urlLivres(Path path) {
+        if("/clientes".equals(path.value()[0])) {
+            return true;
+        }
+        
+        if("/cliente/cadastrar".equals(path.value()[0])) {
+            return true;
+        }
+        
+        if(path.value()[0].contains("/cliente/atualizar/")) {
+            return true;
+        }
+        
+        return false;
     }
 
     public FuncionalidadeBean current(String currentMappinId) {

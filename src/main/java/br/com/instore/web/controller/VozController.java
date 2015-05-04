@@ -1,37 +1,26 @@
 package br.com.instore.web.controller;
 
-import br.com.caelum.vraptor.Controller;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Post;
+import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.view.Results;
-import br.com.instore.core.orm.bean.ContatoClienteBean;
 import br.com.instore.core.orm.bean.VozBean;
 import br.com.instore.web.annotation.Restrict;
-import br.com.instore.web.component.request.RequestContatoCliente;
 import br.com.instore.web.component.request.RequestVoz;
-import javax.inject.Inject;
 
-@Controller
+@Resource
 public class VozController implements java.io.Serializable {
 
-    @Inject
     private Result result;
-    
-    @Inject
     private RequestVoz requestVoz;
-
-    public VozController() {
-    }
 
     public VozController(Result result, RequestVoz requestVoz) {
         this.result = result;
         this.requestVoz = requestVoz;
     }
-
     
-
     @Get
     @Restrict
     @Path("/voz") 

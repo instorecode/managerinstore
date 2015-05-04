@@ -1,34 +1,28 @@
 package br.com.instore.web.component.request;
 
 import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.ioc.Component;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.Query;
 import br.com.instore.core.orm.bean.ClienteBean;
-import br.com.instore.core.orm.bean.VozBean;
 import br.com.instore.core.orm.bean.VozBean;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.dto.VozDTO;
 import br.com.instore.web.dto.VozJSON;
 import br.com.instore.web.tools.AjaxResult;
-import br.com.instore.web.tools.Utilities;
 import java.util.ArrayList;
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
+import br.com.caelum.vraptor.ioc.RequestScoped;
 import javax.inject.Inject;
 
+@Component
 @RequestScoped
 public class RequestVoz implements java.io.Serializable {
 
-    @Inject
     private SessionRepository repository;
-    @Inject
     private Result result;
-    @Inject
     private SessionUsuario sessionUsuario;
-
-    public RequestVoz() {
-    }
 
     public RequestVoz(SessionRepository repository, Result result, SessionUsuario sessionUsuario) {
         this.repository = repository;
@@ -106,7 +100,14 @@ public class RequestVoz implements java.io.Serializable {
 
             VozDTO dto = new VozDTO();
             dto.setIdvoz(bean.getIdvoz());
-            dto.setClienteNome(bean.getCliente().getNome());
+
+            ClienteBean cb = repository.find(ClienteBean.class, bean.getIdcliente());
+            if (null != cb) {
+                dto.setClienteNome(cb.getNome());
+            } else {
+                dto.setClienteNome("");
+            }
+
             dto.setGenero((bean.isGenero() == true) ? "Masculino" : "Feminino");
             dto.setTipo("A");
             dto.setNome(bean.getNome());
@@ -129,7 +130,14 @@ public class RequestVoz implements java.io.Serializable {
         VozBean bean = repository.find(VozBean.class, id);
 
         dto.setIdvoz(bean.getIdvoz());
-        dto.setClienteNome(bean.getCliente().getNome());
+
+        ClienteBean cb = repository.find(ClienteBean.class, bean.getIdcliente());
+        if (null != cb) {
+            dto.setClienteNome(cb.getNome());
+        } else {
+            dto.setClienteNome("");
+        }
+
         dto.setGenero((bean.isGenero() == true) ? "Masculino" : "Feminino");
         dto.setTipo("A");
         dto.setNome(bean.getNome());
