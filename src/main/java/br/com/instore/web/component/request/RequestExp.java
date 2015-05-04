@@ -1,6 +1,7 @@
 package br.com.instore.web.component.request;
 
 import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.ioc.Component;
 import br.com.instore.core.orm.RepositoryViewer;
 import br.com.instore.core.orm.bean.AudiostoreCategoriaBean;
 import br.com.instore.core.orm.bean.AudiostoreComercialBean;
@@ -10,15 +11,14 @@ import br.com.instore.core.orm.bean.AudiostoreProgramacaoBean;
 import br.com.instore.core.orm.bean.ClienteBean;
 import java.util.ArrayList;
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
+import br.com.caelum.vraptor.ioc.RequestScoped;
 import javax.inject.Inject;
 
+@Component
 @RequestScoped
 public class RequestExp implements java.io.Serializable {
 
-    @Inject
     private Result result;
-    @Inject
     private RepositoryViewer rv;
 
     public void gerarExp(String tipo_exp, String orderBy, String idcliente) {
