@@ -79,6 +79,18 @@
                 </div>
 
                 <div class="row">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Tipo</label> 
+                            <select class="select2" name="tipo" class="form-control" data-rule-required="true">
+                                <option value="1">Radio interna</option>
+                                <option value="2">Radio externa</option>
+                                <option value="3">URA</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
                             <input type="text" name="usuarioBean.nome" class="form-control" placeholder="Nome"  
@@ -909,17 +921,83 @@
     <button type="button" class="btn btn-primary btn-salvar-tudo" style="margin-left: 30px; margin-top: -50px;">Salvar</button>
     <button type="button" class="btn btn-primary btn-salvar-tudo-email" style="margin-left: 10px; margin-top: -50px;">Salvar e enviar e-mail</button>
 
+    <div class="mask_progress">
+        <div class="body">
+            <div class="pg">
+                <span>25% Aguarde, estamos salvando informações da orden de serviço</span>
+                <div class="color"></div>
+            </div>
+        </div>
+    </div>
+
+    <style type="text/css">
+        .mask_progress {
+            display: none;
+            width: 100%;
+            height: 100%;
+
+            position: fixed;
+            top:0;
+            left: 0;
+
+            background-color: rgba(0,0,0,0.8);
+        }
+
+        .mask_progress .body {
+            display: block;
+            width: 480px;
+            height: 40px;
+
+            position: fixed;
+            top:50%;
+            left: 50%;
+            margin-left: -250px;
+
+            background-color: #FFF;
+            border: 1px solid #c3c3c3;
+
+            padding: 10px;
+        }
+
+        .mask_progress .body .pg {
+            display: block;
+            width: 100%;
+            height: 10px;
+            background-color: #0d3556;
+            padding: 10px;
+        }
+
+        .mask_progress .body .pg span {
+            display: block;
+            margin-top: -8px;
+            z-index: 9999;
+            position: absolute;
+            color: white;
+        }
+
+        .mask_progress .body .pg .color {
+            display: block;
+            width: 30%;
+            height: 20px;
+            position: absolute;
+            background-color: #2494f2;
+            margin-top: -10px;
+            margin-left: -10px;
+        }
+    </style>
+
     <!-- Include the Quill library -->
     <script src="${url_resources}quill/quill.js"></script>
 
     <script>
         jQuery(document).ready(function () {
             var json_post = {
+                "enviar_email": 0,
                 "cliente": 1,
                 "nome": "xxx",
-                "quemsolicitou": "smjsjsj",
-                "quandosolicitou": "01/01/2050",
-                "datadistribuicao": "01/01/2050",
+                "quem_solicitou": "smjsjsj",
+                "quando_solicitou": "01/01/2050",
+                "data_distribuicao": "01/01/2050",
                 "usuario": 1,
                 "data": "01/01/2050",
                 "locutor": 1,
@@ -933,9 +1011,9 @@
                 "dfinal": "01/01/2050",
                 "dvencimento": "01/01/2050",
                 "horarios": [
-                    { "interromper": 1, "horario": "00:01:00", "dias": [1, 1, 1, 1, 1, 1, 1] },
-                    { "interromper": 1, "horario": "00:01:00", "dias": [1, 1, 1, 1, 1, 1, 1] },
-                    { "interromper": 1, "horario": "00:01:00", "dias": [1, 1, 1, 1, 1, 1, 1] }
+                    {"interromper": 1, "horario": "00:01:00", "dias": [1, 1, 1, 1, 1, 1, 1]},
+                    {"interromper": 1, "horario": "00:01:00", "dias": [1, 1, 1, 1, 1, 1, 1]},
+                    {"interromper": 1, "horario": "00:01:00", "dias": [1, 1, 1, 1, 1, 1, 1]}
                 ],
                 "obs": [
                     {"usuario": "1", "data": "01/01/2050", "texto": "aaa", "tipo": 0},
@@ -948,112 +1026,204 @@
             //-> VALIDAR DADOS
             jQuery('.btn-salvar-tudo').on('click', function () {
                 var pkcm = jQuery('[name="cliente_matriz"]').val();
-                if ('' == pkcm || null == pkcm || undefined == pkcm) {
-                    bootbox.alert('Selecione um cliente', function () {
-                    });
-                    jQuery('[name="cliente_matriz"]').focus();
-                    return;
-                }
+//                if ('' == pkcm || null == pkcm || undefined == pkcm) {
+//                    bootbox.alert('Selecione um cliente', function () {
+//                    });
+//                    jQuery('[name="cliente_matriz"]').focus();
+//                    return;
+//                }
+//
+//                if ('' == jQuery('[name="campanha"]').val() || null == jQuery('[name="campanha"]').val() || undefined == jQuery('[name="campanha"]').val()) {
+//                    bootbox.alert('Informe o nome / campanha ', function () {
+//                    });
+//                    jQuery('[name="campanha"]').focus();
+//                    return;
+//                }
+//
+//                if ('' == jQuery('[name="quem_solicitou"]').val() || null == jQuery('[name="quem_solicitou"]').val() || undefined == jQuery('[name="quem_solicitou"]').val()) {
+//                    bootbox.alert('Informe o quem solicitou ', function () {
+//                    });
+//                    jQuery('[name="quem_solicitou"]').focus();
+//                    return;
+//                }
+//
+//                if ('' == jQuery('[name="quando_solicitou"]').val() || null == jQuery('[name="quando_solicitou"]').val() || undefined == jQuery('[name="quando_solicitou"]').val()) {
+//                    bootbox.alert('Informe o quando solicitou ', function () {
+//                    });
+//                    jQuery('[name="quando_solicitou"]').focus();
+//                    return;
+//                }
+//
+//                if ('' == jQuery('[name="data_max_distribuicao"]').val() || null == jQuery('[name="data_max_distribuicao"]').val() || undefined == jQuery('[name="data_max_distribuicao"]').val()) {
+//                    bootbox.alert('Informe a data máxima para distribuição ', function () {
+//                    });
+//                    jQuery('[name="quando_solicitou"]').focus();
+//                    return;
+//                }
+//
+//                if ('' == jQuery('[name="locutores_lista"]').val() || null == jQuery('[name="locutores_lista"]').val() || undefined == jQuery('[name="locutores_lista"]').val()) {
+//                    bootbox.alert('Selecione um locutor  ', function () {
+//                    });
+//                    jQuery('[name="locutores_lista"]').focus();
+//                    return;
+//                }
+//
+//                if ('' == jQuery('[name="prazo_locucao"]').val() || null == jQuery('[name="prazo_locucao"]').val() || undefined == jQuery('[name="prazo_locucao"]').val()) {
+//                    bootbox.alert('Informe a data máxima para a finalização da locução ', function () {
+//                    });
+//                    jQuery('[name="prazo_locucao"]').focus();
+//                    return;
+//                }
+//
+//                if ('' == jQuery('[name="prazo_max_estudio"]').val() || null == jQuery('[name="prazo_max_estudio"]').val() || undefined == jQuery('[name="prazo_max_estudio"]').val()) {
+//                    bootbox.alert('Informe a data máxima para a finalização de processamento de audio ', function () {
+//                    });
+//                    jQuery('[name="prazo_max_estudio"]').focus();
+//                    return;
+//                }
+//
+//                if ('' == jQuery('[name="cliente_frequencia"]').val() || null == jQuery('[name="cliente_frequencia"]').val() || undefined == jQuery('[name="cliente_frequencia"]').val()) {
+//                    bootbox.alert('Informe a frequencia de reprodução do audio ', function () {
+//                    });
+//                    jQuery('[name="cliente_frequencia"]').focus();
+//                    return;
+//                }
+//
+//                if ('' == jQuery('[name="cliente_datai"]').val() || null == jQuery('[name="cliente_datai"]').val() || undefined == jQuery('[name="cliente_datai"]').val()) {
+//                    bootbox.alert('Informe a data de inicio do comercial ', function () {
+//                    });
+//                    jQuery('[name="cliente_datai"]').focus();
+//                    return;
+//                }
+//
+//                if ('' == jQuery('[name="cliente_dataf"]').val() || null == jQuery('[name="cliente_dataf"]').val() || undefined == jQuery('[name="cliente_dataf"]').val()) {
+//                    bootbox.alert('Informe a data final do comercial ', function () {
+//                    });
+//                    jQuery('[name="cliente_dataif"]').focus();
+//                    return;
+//                }
+//
+//                // validação mais complexa
+//                if (jQuery('input:radio.tipo_comerciala').is(':checked')) {
+//                    if ('' == jQuery('[data-cat="' + pkcm + '"]').val() || null == jQuery('[data-cat="' + pkcm + '"]').val() || undefined == jQuery('[data-cat="' + pkcm + '"]').val()) {
+//                        bootbox.alert('Selecione uma categoria ', function () {
+//                        });
+//                        jQuery('[name="cliente_dataif"]').focus();
+//                        return;
+//                    }
+//                } else {
+//                    if (jQuery('.hdet').size() == 0) {
+//                        bootbox.alert('Adicione um horário determinado', function () {
+//                        });
+//                        return;
+//                    }
+//                }
+//                var alguma_unidade_marcada = false;
+//                jQuery('[data-pkcm="' + pkcm + '"] tbody tr').each(function () {
+//                    var input = jQuery(this).children('td:nth-child(1)').children('label').children('div').children('input');
+//                    if (input.is(':checked')) {
+//                        alguma_unidade_marcada = true;
+//                        return false;
+//                    }
+//                });
+//
+//                if (!alguma_unidade_marcada) {
+//                    bootbox.alert('Selecione uma unidade', function () {
+//                    });
+//                    return;
+//                }
+//
+                json_post.cliente = pkcm;
+                json_post.nome = jQuery('[name="campanha"]').val();
+                json_post.quem_solicitou = jQuery('[name="quem_solicitou"]').val();
+                json_post.quando_solicitou = jQuery('[name="quando_solicitou"]').val();
+                json_post.data_distribuicao = jQuery('[name="data_max_distribuicao"]').val();
+                json_post.usuario = "${sessionUsuario.usuarioBean.idusuario}";
+                json_post.data = "${dataAtualStr}";
+                json_post.locutor = jQuery('[name="locutores_lista"]').val();
+                json_post.texto_comercial = jQuery('#locutor_texto').val();
+                json_post.prazo_locucao = jQuery('[name="prazo_locucao"]').val();
+                json_post.prazo_estudio = jQuery('[name="prazo_max_estudio"]').val();
+                json_post.tipo_comercial = jQuery('[name="tipo"]').val();
+                json_post.categoria = jQuery('[data-cat="' + pkcm + '"]').val();
+                json_post.frequencia = jQuery('[name="cliente_frequencia"]').val();
+                json_post.dinicial = jQuery('[name="cliente_datai"]').val();
+                json_post.dfinal = jQuery('[name="cliente_dataf"]').val();
+                json_post.dvencimento = jQuery('[name="cliente_datav"]').val();
 
-                if ('' == jQuery('[name="campanha"]').val() || null == jQuery('[name="campanha"]').val() || undefined == jQuery('[name="campanha"]').val()) {
-                    bootbox.alert('Informe o nome / campanha ', function () {
-                    });
-                    jQuery('[name="campanha"]').focus();
-                    return;
-                }
 
-                if ('' == jQuery('[name="quem_solicitou"]').val() || null == jQuery('[name="quem_solicitou"]').val() || undefined == jQuery('[name="quem_solicitou"]').val()) {
-                    bootbox.alert('Informe o quem solicitou ', function () {
+                jQuery('.obs1_container').children('.modelo_obs:not(.obs1_clonar)').each(function () {
+                    json_post.obs.push({
+                        "usuario": "${sessionUsuario.usuarioBean.idusuario}",
+                        "data": "${dataAtualStr}",
+                        "texto": jQuery(this).children('.body').children('.content').html(),
+                        "tipo": 1
                     });
-                    jQuery('[name="quem_solicitou"]').focus();
-                    return;
-                }
-
-                if ('' == jQuery('[name="quando_solicitou"]').val() || null == jQuery('[name="quando_solicitou"]').val() || undefined == jQuery('[name="quando_solicitou"]').val()) {
-                    bootbox.alert('Informe o quando solicitou ', function () {
-                    });
-                    jQuery('[name="quando_solicitou"]').focus();
-                    return;
-                }
-
-                if ('' == jQuery('[name="data_max_distribuicao"]').val() || null == jQuery('[name="data_max_distribuicao"]').val() || undefined == jQuery('[name="data_max_distribuicao"]').val()) {
-                    bootbox.alert('Informe a data máxima para distribuição ', function () {
-                    });
-                    jQuery('[name="quando_solicitou"]').focus();
-                    return;
-                }
-
-                if ('' == jQuery('[name="locutores_lista"]').val() || null == jQuery('[name="locutores_lista"]').val() || undefined == jQuery('[name="locutores_lista"]').val()) {
-                    bootbox.alert('Selecione um locutor  ', function () {
-                    });
-                    jQuery('[name="locutores_lista"]').focus();
-                    return;
-                }
-
-                if ('' == jQuery('[name="prazo_locucao"]').val() || null == jQuery('[name="prazo_locucao"]').val() || undefined == jQuery('[name="prazo_locucao"]').val()) {
-                    bootbox.alert('Informe a data máxima para a finalização da locução ', function () {
-                    });
-                    jQuery('[name="prazo_locucao"]').focus();
-                    return;
-                }
-
-                if ('' == jQuery('[name="prazo_max_estudio"]').val() || null == jQuery('[name="prazo_max_estudio"]').val() || undefined == jQuery('[name="prazo_max_estudio"]').val()) {
-                    bootbox.alert('Informe a data máxima para a finalização de processamento de audio ', function () {
-                    });
-                    jQuery('[name="prazo_max_estudio"]').focus();
-                    return;
-                }
-
-                if ('' == jQuery('[name="cliente_frequencia"]').val() || null == jQuery('[name="cliente_frequencia"]').val() || undefined == jQuery('[name="cliente_frequencia"]').val()) {
-                    bootbox.alert('Informe a frequencia de reprodução do audio ', function () {
-                    });
-                    jQuery('[name="cliente_frequencia"]').focus();
-                    return;
-                }
-
-                if ('' == jQuery('[name="cliente_datai"]').val() || null == jQuery('[name="cliente_datai"]').val() || undefined == jQuery('[name="cliente_datai"]').val()) {
-                    bootbox.alert('Informe a data de inicio do comercial ', function () {
-                    });
-                    jQuery('[name="cliente_datai"]').focus();
-                    return;
-                }
-
-                if ('' == jQuery('[name="cliente_dataf"]').val() || null == jQuery('[name="cliente_dataf"]').val() || undefined == jQuery('[name="cliente_dataf"]').val()) {
-                    bootbox.alert('Informe a data final do comercial ', function () {
-                    });
-                    jQuery('[name="cliente_dataif"]').focus();
-                    return;
-                }
-                
-                // validação mais complexa
-                if (jQuery('input:radio.tipo_comerciala').is(':checked')) {
-                    if ('' == jQuery('[data-cat="' + pkcm + '"]').val() || null == jQuery('[data-cat="' + pkcm + '"]').val() || undefined == jQuery('[data-cat="' + pkcm + '"]').val()) {
-                        bootbox.alert('Selecione uma categoria ', function () {
-                        });
-                        jQuery('[name="cliente_dataif"]').focus();
-                        return;
-                    }
-                } else {
-                    if (jQuery('.hdet').size() == 0) {
-                        bootbox.alert('Adicione um horário determinado', function () {
-                        });
-                        return;
-                    }
-                }
-                var alguma_unidade_marcada = false;
-                jQuery('[data-pkcm="' + pkcm + '"] tbody tr').each(function () {
-                    var input = jQuery(this).children('td:nth-child(1)').children('label').children('div').children('input');
-                    if (input.is(':checked')) {
-                        alguma_unidade_marcada = true;
-                        return false;
-                    }
                 });
 
-                if (!alguma_unidade_marcada) {
-                    bootbox.alert('Selecione uma unidade', function () {
-                    });
-                    return;
-                }
+                jQuery('.mask_progress .body .pg span').text('25% Aguarde, estamos salvando informações da orden de serviço');
+                jQuery('.mask_progress').show();
+
+                jQuery.ajax({
+                    type: 'POST',
+                    url: '${url}/orden-servico/salvar-parte1',
+                    data: {
+                        cliente: pkcm,
+                        nome: jQuery('[name="campanha"]').val(),
+                        quemSolicitou: jQuery('[name="quem_solicitou"]').val(),
+                        quandoSolicitou: jQuery('[name="quando_solicitou"]').val(),
+                        dataMaxDistr: jQuery('[name="data_max_distribuicao"]').val(),
+                        tipo: jQuery('[name="tipo"]').val(),
+                    },
+                    success: function (res1) {
+                        if (res1.int > 0) {
+                            jQuery('.mask_progress .body .pg span').text('35% Aguarde, estamos salvando as observações');
+                            jQuery('.mask_progress').show();
+
+                            jQuery('.obs1_container').children('.modelo_obs:not(.obs1_clonar)').each(function () {
+                                
+                                jQuery.ajax({
+                                    async : false,
+                                    type: 'POST',
+                                    url: '${url}/orden-servico/salvar-obs',
+                                    data: {
+                                        "fk": res1.int,
+                                        "data": "${dataAtualStr}",
+                                        "html": jQuery(this).children('.body').children('.content').html(),
+                                        "tipo": 1
+                                    },
+                                    success: function (res2) {
+                                        console.log(res2);
+                                    },
+                                    error: function (res2) {
+                                        console.log(res2);
+                                    }
+                                });
+                            });
+                            
+                            jQuery.ajax({
+                                async : false,
+                                type: 'POST',
+                                url: '${url}/orden-servico/salvar-parte2',
+                                data: {
+                                    "fk": res1.int,
+                                    "locutor": parseInt(jQuery('[name="locutores_lista"]').val()),
+                                    "texto": jQuery('#locutor_texto').html(),
+                                    "prazo":  jQuery('[name="prazo_locucao"]').val()
+                                },
+                                success: function (res3) {
+                                    console.log(res3);
+                                },
+                                error: function (res3) {
+                                    console.log(res3);
+                                }
+                            });
+                        }
+                    },
+                    error: function (res1) {
+                        console.log(res1);
+                    }
+                });
             });
             //-> FIMVALIDAR DADOS
 
