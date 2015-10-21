@@ -22,7 +22,7 @@
             <meta name="author" content="">
             <link rel="shortcut icon" href="images/favicon.png">
 
-            <title>Centro de Produtividade da Instore</title>
+            <title>Instore</title>
             <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,400italic,700,800' rel='stylesheet' type='text/css'>
             <link href='http://fonts.googleapis.com/css?family=Raleway:300,200,100' rel='stylesheet' type='text/css'>
             <link href="${url_cz}js/bootstrap/dist/css/bootstrap.css?v=${machine_id}" rel="stylesheet">
@@ -109,13 +109,13 @@
                 background-color: #2494f2 !important;
                 color: #FFF;
             }
-
+           
         </style>
 
         <script type="text/javascript">
             jQuery(document).ready(function () {
-
-
+                
+                
                 App.init();
                 App.textEditor();
                 $('#some-textarea').wysihtml5();
@@ -196,12 +196,14 @@
                 var input = $('input[data-rule-required]');
                 var div = input.closest('div.form-group');
                 div.children("label").append("*");
+                
             });
+            
         </script>
 
         <style>
             #head-nav {
-                min-width: 1120px;
+                  min-width: 1120px;
             }
             .info .select2-chosen {
                 color: #3380FF !important;
@@ -438,83 +440,348 @@
     </head>
 
     <body>
-        <!-- Fixed navbar -->
-        <div id="head-nav" class="navbar navbar-default navbar-fixed-top">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="fa fa-gear"></span>
-                    </button>
-                    <a class="navbar-brand" href="#"><span>CPI</span></a>
-                </div>
-                <div class="navbar-collapse collapse">
-
-                    <ul class="nav navbar-nav navbar-right user-nav">
-                        <li><a href="${url}/dashboard" style="color:white;"> Cliente: ${sessionUsuario.cliente.nome} </a></li>
-                        <li><a href="javascript:void(0);">Usuário: ${sessionUsuario.usuarioBean.nome}</a></li>
-                        <li><a href="${url}/sair" class="btn_sair"><i class="fa fa-sign-out"></i>&nbsp;&nbsp;Encerrar sessão</a></li>
-                    </ul>			
-
-                </div><!--/.nav-collapse -->
-            </div>
-        </div>
-
-        <div id="cl-wrapper" class="fixed-menu">
-            <div class="cl-sidebar">
-                <div class="cl-toggle"><i class="fa fa-bars"></i></div>
-                <div class="cl-navblock">
-                    <div class="menu-space">
-                        <div class="content">
-                            <div class="side-user">
-                                <div class="info">
-                                    <a href="#">Centro de Processamento da Instore</a>
-                                    <span>www.instore.com.br</span>
-                                </div>
-                            </div>
-                            <ul class="cl-vnavigation">
-                                <c:forEach items="${perfilBeanList}" var="perfil">
-                                    <li>
-                                        <a href="#"><i class="${perfil.icone}"></i><span>${perfil.nome}</span></a>
-                                        <ul class="sub-menu">
-                                            <c:forEach items="${perfil.funcionalidadeBeanList}" var="funcionalidade">
-                                                <c:if test="${funcionalidade.visivel eq true }">
-                                                    <li class="${funcionalidadeBeanAtual.idfuncionalidade eq funcionalidade.idfuncionalidade ? 'active' : ''}">
-                                                        <a href="${url}${funcionalidade.mappingId}">
-                                                            <!--<span class="label label-primary pull-right">New</span>--> 
-                                                            ${funcionalidade.nome}
-                                                        </a>
-                                                    </li>
-                                                </c:if>
-                                            </c:forEach>
-
-
-                                        </ul>
-                                    </li>
-                                </c:forEach>
+        <div class="enfoc">
+            <!-- Fixed navbar -->
+            <div id="head-nav" class="navbar navbar-default navbar-fixed-top">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                            <span class="fa fa-gear"></span>
+                        </button>
+                        <a class="navbar-brand" href="#"><span>ManagerInstore</span></a>
+                    </div>
+                    <div class="navbar-collapse collapse">
+                        <div class="navbar-collapse collapse">
+                            <ul class="nav navbar-nav">
+                                <li><a href="#menu" class="link_menu">Menu</a></li>
+                                <li class="active"><a href="${url}">Dashboard</a></li>
+                                <li><a href="#ajuda">Ajuda</a></li>
+                                <li><a href="${url}/meus-dados">Meus Dados</a></li>
+                                <li><a href="${url}/minha-senha">Minha senha</a></li>
+                                <li><a class="btn_up_cache" href="#"> <i class="fa fa-refresh"></i>&nbsp;&nbsp;Atualizar Cache da aplicação</a></li>
+                                <li><a class="btn_sair" href="${url}/sair">Sair</a></li>
+                                <li>
+                                    <a href="${url}">
+                                        <div style="background-color: #ef3e3e; font-weight: bold; float: left; padding-left: 20px; padding-right: 20px; border-radius: 4px; margin-top: -9px;">
+                                            <h4 style="color: #fff; font-weight: bold;">Cliente: ${sessionUsuario.cliente.nome}</h4>
+                                        </div>
+                                    </a>
+                                </li>
+                               <!--
+                                <li class="button dropdown">
+                                    <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
+                                        <i class="fa fa-building"></i> 
+                                        <span class="bubble cli_nom_red"> Clientes</span></a> 
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <div class="nano nscroller">
+                                                <div class="content">
+                                                    <ul>
+                                                        <c:forEach items="${atalhoClienteList}" var="item">
+                                                            <li> 
+                                                                <a data-cliente-nome="${item.nome}" class="cliente_selecionado" href="#cliente_selecionado=${item.idcliente}" data-id="${item.idcliente}"><i class="fa fa-building info"></i><b>Cliente</b> ${item.nome} <span class="date">${item.matriz ? 'Matriz' : 'Filial'}</span></a>
+                                                            </li>
+                                                        </c:forEach>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <ul class="foot"><li><a href="${url}/clientes">Ver todos</a></li></ul>           
+                                        </li>
+                                    </ul>
+                                </li>
+                               -->
                             </ul>
                         </div>
-                    </div>
-                    <div class="text-right collapse-button" style="padding:7px 9px;">
-                        <!--<input type="text" class="form-control search" placeholder="Search..." />-->
-                        <button id="sidebar-collapse" class="btn btn-default" style=""><i style="color:#fff;" class="fa fa-angle-left"></i></button>
-                    </div>
+                    </div><!--/.nav-collapse -->
                 </div>
             </div>
 
-            <div class="container-fluid" id="pcont">
 
-                <div class="cl-mcont">
-                    <div class="row submenu">
-                        <div style="margin-left: 15px;"> 
-                            <jsp:invoke fragment="submenu"></jsp:invoke>
-                        </div>
-                    </div>
-                    <jsp:doBody />
-                </div>
-
-            </div> 
+            <div id="cl-wrapper" class="fixed-menu  ${menucolapse ? "sb-collapsed" : ""}">
+                <!--                    <div class="cl-sidebar">
+                                        <div class="cl-toggle"><i class="fa fa-bars"></i></div>
+                                        <div class="cl-navblock">
+                                            <div class="menu-space">
+                                                <div class="content">
+                                                    <div class="side-user">
+                                                        <div class="avatar"><img src="${url_cz}/images/logo.png" alt="Avatar" style="max-width: 170px;" /></div>
+                                                        <hr style="border: 0px; border-top: 1px solid rgba(255,255,255,0.1)" />
+                                                        <div class="info">
+                                                            <a href="#">${sessionUsuario.usuarioBean.nome}</a>
+                                                            <br /> 
+                                                            <select class="select2" name="matriz_selecionada" style="color: #3380FF;">
+                                                                <option value="0">Selecione uma matriz</option>
+                <c:forEach items="${atalhoClienteList}" var="item">
+                    <option value="${item.idcliente}">${item.nome}</option>
+                </c:forEach>
+            </select>
 
         </div>
+    </div>
+    <ul class="cl-vnavigation">
+                ${menu}
+            </ul>
+        </div>
+    </div>
+    <div class="text-right collapse-button" style="padding:7px 9px;">
+        <button id="sidebar-collapse" class="btn btn-default" style=""><i style="color:#fff;" class="fa fa-angle-left"></i></button>
+    </div>
+</div>
+</div>-->
+                <div class="page-aside sld_view" style="display: none;">
+                    <div class="fixed fixed_aside1" style="overflow-y: auto;">
+                        <div class="content"> 
+                            <h2>Detalhes 
+                                <br />
+                                <button data-toggle="tooltip" data-placement="bottom" data-original-title="Fechar area" type="button" class="btn btn-default xclose"><i class="fa fa-long-arrow-left"></i></button>
+                                <button data-toggle="tooltip" data-placement="bottom" data-original-title="Atualizar dados" type="button" class="btn btn-default upd"><i class="fa fa-pencil"></i></button>
+                                <button data-toggle="tooltip" data-placement="bottom" data-original-title="Remover dados" type="button" class="btn btn-default trash"><i class="fa fa-trash-o"></i></button>
+                                    <jsp:invoke fragment="detailsButton" /> 
+                            </h2>
+                            <hr />
+                            <div class="xdet"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container-fluid" id="pcont" style="background-color: #c3c3c3">
+                    <div class="page-head">
+                        <h2><i class="fa ${currentFuncionalidadeBean.icone}"></i> Instore ${currentFuncionalidadeBean.nome}</h2>
+
+                        <div style="float: right; margin-top: -40px; margin-right: 7px;">
+                            <jsp:invoke fragment="submenu" /> 
+                        </div>
+                        
+                    </div>		
+                        
+                    <style type="text/css">
+                        .show-case{margin-bottom:50px;}
+                        .show-case img{max-width:362px;width:100%;}
+                    </style>
+                    <div class="cl-mcont" style="background-color: #c3c3c3">
+                        <jsp:doBody />
+                    </div>
+                </div> 
+
+            </div>
+        </div>
+
+       <script type="text/javascript" charset="utf-8"  src="${url_js}angular.min.js"></script>
+        <style>
+            .sidebar {
+                display: block;
+                width: 400px; 
+                margin-top: -15px;
+                margin-left: -30px;
+                background-color: white;
+                float: left;
+            }
+
+            .sidebarContent {
+                display: block;
+                width: 400px; 
+                margin-top: -15px;
+                margin-left: 0px;
+                overflow-y: auto;
+                overflow-x: hidden;
+                float: left;
+                background-color: #ebebeb;
+                padding-top: 20px;
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
+            .sidebar h1 {
+                display: block;
+                width: 400px;
+                font-size: 14px;
+                line-height: 40px;
+                text-indent: 20px;
+                border-bottom: 1px solid #ebebeb;
+            }
+
+            .sidebar ul { list-style: none; margin-left: -40px; }
+            .sidebar ul li { 
+                margin-left: 20px; 
+                padding: 4px; 
+            }
+
+            .sidebar ul li a { 
+                color: #2494F2;
+                font-weight: bold; 
+            }
+
+            .txtPF {
+                display: block;
+                display: block;
+                width: 180px;
+                height: 50px;
+                padding: 20px;
+                font-size: 12px;
+                text-align: center;
+                margin-top: 0px;
+                margin-left: -20px;
+                color: #73B843;
+                font-weight: bold;
+                padding-top: 0px;
+                padding-bottom: 0px;
+            }
+
+            .well2 {
+                display: block;
+                width: 180px;
+                height: 100px;
+
+                padding: 20px;
+
+                background-color: #FFF;
+                margin-top: 40px;
+            }
+
+            .well2 i {
+                display: block;
+                width: 180px;
+                height: 50px; 
+                padding: 20px;
+                font-size: 24px;
+                text-align: center;
+                margin-left: -20px;
+                margin-top: -20px;
+                color: #ef3e3e;
+            }
+            .SidebarApp {
+                display: none;
+                margin-top: 150px;
+                margin-left: 30px;
+                position: absolute;
+                background-color: #ebebeb;
+                z-index: 9999999999999999999999999;
+            }
+        </style>
+        <div class="SidebarApp" ng-app="SidebarApp" ng-controller="SidebarController">
+            <div class="sidebar">
+                <h1>Meus perfis</h1>
+                <ul>
+                    <li ng-repeat="p in perfilList" ng-click="selecionarPerfil($index);">
+                        <a href="#"><i class="fa fa-files-o"></i>&nbsp;&nbsp;{{p.nome}}</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebarContent">
+                <div class="row">
+                    <div class="col-md-2" ng-repeat="f in funcionalidades">
+                        <a href="${url}{{f.mid}}">
+                            <div class="well2">
+                                <i class="fa {{f.icone}}"></i> <span class="txtPF">{{f.nome}}</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <div ng-if="null == funcionalidades" style="color: #000;"> Selecione um perfil </div>
+                <div ng-if="funcionalidades.length <= 0" style="color: #000;"> Nenhuma permissão atribuida a este perfil </div>
+            </div>
+        </div>
+
+
+        <script type="text/javascript">
+            var angular = angular.module('SidebarApp', []);
+            angular.controller('SidebarController', function ($scope) {
+                $scope.perfilList = new Array();
+                <c:forEach items="${perfis}" var="p">
+                    $scope.perfilList.push({
+                        nome: '${p.nome}',
+                        funcionalidades: [
+                            <c:forEach items="${p.funcionalidadeBeanList}" var="f">
+                                    {mid: '${f.mappingId}', nome: '${f.nome}', icone: '${f.icone}'},
+                            </c:forEach>
+                        ]
+                    });
+                </c:forEach> 
+                $scope.funcionalidades = null;
+                $scope.selecionarPerfil = function (index) {
+                    $scope.funcionalidades = new Array();
+                    $scope.funcionalidades = $scope.perfilList[index].funcionalidades;
+                }
+            });
+        </script>
+        <script type="text/javascript">
+            jQuery(document).ready(function () {
+                function autosize() {
+                    var h = jQuery(window).height();
+                    var w = jQuery(window).width();
+                    jQuery('.sidebar').css({
+                        'height': (h - 130) + 'px'
+                    });
+
+                    jQuery('.sidebarContent').css({
+                        'width': (w - 400) + 'px',
+                        'height': (h - 130) + 'px'
+                    });
+                }
+
+                autosize();
+
+                jQuery(window).resize(function () {
+                    autosize();
+                });
+            });
+        </script>
+                        
+        
+        
+        <script type="text/javascript">
+            jQuery(document).ready(function () {
+                jQuery(window).resize(function () {
+                    jQuery('.navv').css('height', (jQuery(window).height() - 100) + 'px');
+                });
+                jQuery('.navv').css('height', (jQuery(window).height() - 100) + 'px');
+                
+                if(window.location.href.indexOf('#menu_show')!=-1) {
+                    jQuery('body').css({
+                            'overflow-x':'hidden',
+                            'overflow-y':'hidden'
+                        });
+                    jQuery('.SidebarApp').show();
+                    jQuery('.sidebar ul li:first a').click();   
+                    
+                }
+                
+                jQuery('.link_menu').on('click', function () {
+//                        jQuery('.enfoc').addClass('desfoc');
+                    jQuery('.SidebarApp').toggle();
+                    if(jQuery('.SidebarApp').is(':visible')){
+                        jQuery('body').css({
+                            'overflow-x':'hidden',
+                            'overflow-y':'hidden'
+                        });
+                        $(window).scrollTop(0);
+                        jQuery('.sidebar ul li:first a').click();
+                    } else {
+                        jQuery('body').css({
+                            'overflow-x':'auto',
+                            'overflow-y':'auto'
+                        });
+                        $(window).scrollTop(0);
+                    }
+                    return false;
+                });
+
+                jQuery(document).on('keyup', function (e) {
+                    if (e.keyCode == 27) {
+//                            jQuery('.enfoc').removeClass('desfoc');
+                        jQuery('.SidebarApp').hide();
+                        jQuery('body').css('overflow', 'auto');
+                    }
+                });
+                jQuery('.mask__menu ._close').on('click', function (e) {
+                    jQuery('.enfoc').removeClass('desfoc');
+                    jQuery('.mask__menu').hide();
+                    jQuery('body').css('overflow', 'auto');
+                });
+            });
+        </script>
     </body>
 </html>
 
