@@ -42,6 +42,11 @@ public class HomeController implements java.io.Serializable {
     }    
     
     @Get
+    @Path("/template1")
+    public void template1() {
+    }
+    
+    @Get
     @Path("/test")
     public void test() {
     }
@@ -86,8 +91,10 @@ public class HomeController implements java.io.Serializable {
     @Get
     @Path("/dashboard")
     @Restrict
-    public void dashboard() {
-        
+    public void dashboard(String ... params) {
+        if (null != params && params.length > 0) {
+            result.include("proxUrl", params[0]);
+        }
     }
     
     @Post

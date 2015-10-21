@@ -13,7 +13,6 @@ import br.com.instore.web.tools.AjaxResult;
 import java.util.ArrayList;
 import java.util.List;
 import br.com.caelum.vraptor.ioc.RequestScoped;
-import javax.inject.Inject;
 
 @Component
 @RequestScoped

@@ -1,6 +1,5 @@
 package br.com.instore.web.tools;
 
-import br.com.instore.core.orm.Main;
 import java.util.Properties;
 import javax.mail.Address;
 import javax.mail.Authenticator;
@@ -11,15 +10,14 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import org.apache.commons.codec.binary.Base64;
 
 public class JavaMail {
 
     private static JavaMail instance;
     private Properties prop = new Properties();
     private Session session = null;
-    private String email = "alex.goncalves@instore.com.br,";
-    private String senha = new String(Base64.decodeBase64("MTMwNzExYWE=".getBytes()));
+    private String email = "teste@instore.com.br";
+    private String senha = "instore321";
     private JavaMail() {
         
         
@@ -66,5 +64,9 @@ public class JavaMail {
 
     public static void send(String title , String text  , String emails) {
         getInstance()._send(title , text , emails);
+    }
+    
+    public static void main(String[] args) {
+        JavaMail.send("lala", "alalalala", "alex.goncalves@instore.com.br");
     }
 }

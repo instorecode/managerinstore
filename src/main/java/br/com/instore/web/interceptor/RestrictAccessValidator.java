@@ -62,7 +62,8 @@ public class RestrictAccessValidator implements Interceptor {
                 result.include("menu", constructMenu(null, path.value()[0]));
                 result.include("funcionalidadeBeanList", constructMenuChild(f));
                 loadClienteMatriz();
-                perfilUsuarios();
+                carregarPerfil();
+                result.include("funcionalidadeBeanAtual", f);
                 stack.next(method, resourceInstance);
 
             } else if ("/sair".equals(path.value()[0])) {
@@ -75,10 +76,11 @@ public class RestrictAccessValidator implements Interceptor {
                     if (null != sessionUsuario.getCliente() || urlLivres(path) ) {
 
                         loadClienteMatriz();
-                        perfilUsuarios();
+                        carregarPerfil();
+                        result.include("funcionalidadeBeanAtual", f);
                         stack.next(method, resourceInstance);
                     } else {
-                        result.redirectTo(HomeController.class).dashboard();
+                        result.redirectTo(HomeController.class).dashboard(path.value());
                     }
                 } else {
                     result.redirectTo(HomeController.class).page404();
@@ -102,6 +104,25 @@ public class RestrictAccessValidator implements Interceptor {
 //            }
             result.redirectTo(HomeController.class).index();
         }
+    }
+    
+    public void carregarPerfil() {
+        List<PerfilUsuarioBean> perfilUsuarioBeanList = repository.query(PerfilUsuarioBean.class).eq("usuario.idusuario", sessionUsuario.getUsuarioBean().getIdusuario()).findAll();
+        
+        List<Integer> idList = new ArrayList<Integer>();
+        
+        for (PerfilUsuarioBean b : perfilUsuarioBeanList) {
+            idList.add(b.getPerfil().getIdperfil());
+        }
+        
+        List<PerfilBean> perfilBeanList = repository.query(PerfilBean.class).in("idperfil", idList.toArray(new Integer[idList.size()])).findAll();
+        
+        result.include("perfilBeanList", perfilBeanList);
+    }
+    
+    public void carregarFuncionalidadeAtual(String map) {
+        FuncionalidadeBean funcionalidadeBeanAtual = repository.query(FuncionalidadeBean.class).eq("mappingId", map).findOne();
+        result.include("funcionalidadeBeanAtual", funcionalidadeBeanAtual);
     }
     
     public boolean urlLivres(Path path) {

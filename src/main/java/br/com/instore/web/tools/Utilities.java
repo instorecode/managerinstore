@@ -768,4 +768,15 @@ public class Utilities {
             e.printStackTrace();
         }
     }
+    
+    public static String absoluteLeftPad(String str , Integer size , String replace) {
+        if(str.length() > size) {
+            str = str.substring(0 , size);
+        } 
+        
+        if(str.length() < size) {
+            str = StringUtils.leftPad(str, size, replace);
+        }
+        return str;
+    }
 }

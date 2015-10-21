@@ -1,44 +1,46 @@
 package br.com.instore.web.component.request;
 
+
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.ioc.Component;
 import br.com.caelum.vraptor.view.Results;
-import br.com.instore.core.orm.Each;
 import br.com.instore.core.orm.Query;
+import br.com.instore.core.orm.bean.OcorrenciaPrioridadeBean;
+import br.com.instore.web.component.session.SessionRepository;
+import br.com.instore.web.component.session.SessionUsuario;
+import br.com.instore.web.tools.AjaxResult;
+import java.util.ArrayList;
+import java.util.List;
+import br.com.caelum.vraptor.ioc.RequestScoped;
+import br.com.instore.core.orm.Each;
 import br.com.instore.core.orm.bean.ClienteBean;
 import br.com.instore.core.orm.bean.OcorrenciaBean;
 import br.com.instore.core.orm.bean.OcorrenciaOrigemBean;
-import br.com.instore.core.orm.bean.OcorrenciaPrioridadeBean;
 import br.com.instore.core.orm.bean.OcorrenciaProblemaBean;
 import br.com.instore.core.orm.bean.OcorrenciaSolucaoBean;
 import br.com.instore.core.orm.bean.OcorrenciaStatusBean;
 import br.com.instore.core.orm.bean.OcorrenciaUsuarioBean;
 import br.com.instore.core.orm.bean.UsuarioBean;
-import br.com.instore.web.component.session.SessionRepository;
-import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.dto.OcorrenciaDTO;
 import br.com.instore.web.dto.OcorrenciaFormDTO;
 import br.com.instore.web.dto.OcorrenciaJSON;
 import br.com.instore.web.dto.OcorrenciaRelatorioRapidoDTO;
-import br.com.instore.web.tools.AjaxResult;
 import br.com.instore.web.tools.Utilities;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import br.com.caelum.vraptor.ioc.RequestScoped;
-import javax.inject.Inject;
+
+
 
 @Component
 @RequestScoped
 public class RequestOcorrencia implements java.io.Serializable {
 
-
     private SessionRepository repository;
     private Result result;
     private SessionUsuario sessionUsuario;
+    
 
-    public RequestOcorrencia(SessionRepository repository, Result result, SessionUsuario sessionUsuario) {
+    public RequestOcorrencia(SessionRepository repository, Result result, SessionUsuario sessionUsuario ) {
         this.repository = repository;
         this.result = result;
         this.sessionUsuario = sessionUsuario;
@@ -98,21 +100,20 @@ public class RequestOcorrencia implements java.io.Serializable {
                     id_list.add(id);
                 }
             });
-            
-            if(null != id_list && !id_list.isEmpty()) {
+
+            if (null != id_list && !id_list.isEmpty()) {
                 q1.in("id", id_list.toArray(new Integer[id_list.size()]));
                 q2.in("id", id_list.toArray(new Integer[id_list.size()]));
             } else {
                 q2.eq("id", 0);
             }
-            
+
             json.setIdstatus(idstatus.toString());
         }
-        
+
         json.setCount(q1.count().intValue());
         int size = q1.count().intValue() / rows + ((q1.count().intValue() % rows == 0) ? 0 : 1);
         lista = q2.limit(offset, rows).findAll();
-
 
         json.setPage(page);
         json.setSize(size);
@@ -228,13 +229,18 @@ public class RequestOcorrencia implements java.io.Serializable {
     }
 
     public void salvar(OcorrenciaBean bean, Integer idstatus) {
-        if (null == bean) {
+        if (null == bean.getCliente()) {
             result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Os dados não podem ser nulos!")).recursive().serialize();
             return;
         }
-        
-        if (null == bean.getCliente() || null == bean.getCliente().getIdcliente() || bean.getCliente().getIdcliente() <= 0 ) {
+
+        if (null == bean.getCliente() || null == bean.getCliente().getIdcliente() || bean.getCliente().getIdcliente() <= 0) {
             result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Selecione um cliente!")).recursive().serialize();
+            return;
+        }
+        
+        if (null == bean.getDescricao() || bean.getDescricao().trim().isEmpty()) {
+            result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Descrição obrigatória!")).recursive().serialize();
             return;
         }
 
@@ -248,22 +254,26 @@ public class RequestOcorrencia implements java.io.Serializable {
                 bean.setOcorrenciaSolucao(0);
             }
 
-            if (bean != null && bean.getId() != null && bean.getId() > 0) {
-                repository.save(repository.marge(bean));
-                repository.query("delete from ocorrencia_usuario where ocorrencia = " + bean.getId()).executeSQLCommand2();
+            if (null == bean.getDescricao() || bean.getDescricao().trim().isEmpty()) {
+                result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "O campo descrição é obrigatório")).recursive().serialize();
             } else {
-                bean.setDataCadastro(new Date());
-                repository.save(bean);
+                if (bean != null && bean.getId() != null && bean.getId() > 0) {
+                    repository.save(repository.marge(bean));
+                    repository.query("delete from ocorrencia_usuario where ocorrencia = " + bean.getId()).executeSQLCommand2();
+                } else {
+                    bean.setDataCadastro(new Date());
+                    repository.save(bean);
+                }
+
+                OcorrenciaUsuarioBean bean2 = new OcorrenciaUsuarioBean();
+                bean2.setOcorrenciaBean(bean);
+                bean2.setOcorrenciaStatus(new OcorrenciaStatusBean(idstatus));
+                bean2.setUsuario(sessionUsuario.getUsuarioBean());
+                repository.save(bean2);
+
+                repository.finalize();
+                result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Dados salvos com sucesso!")).recursive().serialize();
             }
-
-            OcorrenciaUsuarioBean bean2 = new OcorrenciaUsuarioBean();
-            bean2.setOcorrenciaBean(bean);
-            bean2.setOcorrenciaStatus(new OcorrenciaStatusBean(idstatus));
-            bean2.setUsuario(sessionUsuario.getUsuarioBean());
-            repository.save(bean2);
-
-            repository.finalize();
-            result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Dados salvos com sucesso!")).recursive().serialize();
         } catch (Exception e) {
             e.printStackTrace();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel salvar os dados!")).recursive().serialize();

@@ -17,9 +17,6 @@ public class OcorrenciaProblemaController implements java.io.Serializable {
     private Result result;
     private RequestOcorrenciaProblema requestOcorrenciaProblema;
 
-    public OcorrenciaProblemaController() {
-    }
-
     public OcorrenciaProblemaController(Result result, RequestOcorrenciaProblema requestOcorrenciaProblema) {
         this.result = result;
         this.requestOcorrenciaProblema = requestOcorrenciaProblema;

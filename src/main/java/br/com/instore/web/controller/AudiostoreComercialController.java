@@ -13,7 +13,6 @@ import br.com.instore.core.orm.bean.AudiostoreComercialBean;
 import br.com.instore.core.orm.bean.AudiostoreComercialShBean;
 import br.com.instore.web.annotation.Restrict;
 import br.com.instore.web.component.request.RequestAudiostoreComercial;
-import javax.inject.Inject;
 
 @Resource
 public class AudiostoreComercialController implements java.io.Serializable {
