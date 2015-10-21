@@ -56,7 +56,7 @@
             <div class="middle-login">
                 <div class="block-flat">
                     <div class="header">							
-                        <h3 class="text-center"><img class="logo-img" src="${url_cz}images/logo.png" alt="logo" style="max-width: 48px;"/>ManagerInstore</h3> 
+                        <h3 class="text-center" style="margin-left: -48px;"><img class="logo-img" src="${url_cz}images/logo.png" alt="logo" style="max-width: 48px;"/>CPI</h3> 
                     </div>
                     <div>
                         <form id="login" method="POST" data-form="true" data-success-url="${url}/dashboard" data-notify="0">
@@ -86,7 +86,7 @@
                         </form>
                     </div>
                 </div>
-                <div class="text-center out-links"><a href="http://www.instore.com.br">&copy; 2013 Instore - www.instore.com.br </a></div>
+                <div class="text-center out-links"> <a href="http://www.instore.com.br"> &copy; 2013 Instore - www.instore.com.br </a></div>
             </div> 
 
         </div>

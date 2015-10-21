@@ -17,7 +17,7 @@
                 <div class="col-md-2">
                     <div class="well2">
                         <a class="selecionarCliente" href="${item.idcliente}">
-                            <i class="fa fa-building"></i> <span class="txtPF">${item.nome}</span>
+                            <span class="txtPF">${item.nome}</span>
                         </a>
                     </div>
                 </div>
@@ -40,7 +40,7 @@
                             } else {
                                 window.location.reload();
                                 if(window.location.href.indexOf('#menu_show')==-1) {
-                                    window.location.href = window.location.href + '#menu_show';
+                                    window.location.href = '${url}${proxUrl}';
                                 }
                             }
                         } , 

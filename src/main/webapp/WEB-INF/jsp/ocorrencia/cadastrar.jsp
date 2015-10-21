@@ -19,15 +19,7 @@
                     <div class="form-group">
                         <label>Descrição</label>
                         
-                        <div class="block-flat">
-                            <div class="header">							
-                                <h3>Letra</h3>
-                            </div>
-                            <div class="content">
-                                <!--<textarea class="ckeditor form-control"  name="musicaGeralBean.letra" class="form-control" style="height: 150px;">${musicaGeralBean.letra}</textarea>-->
-                                <textarea class="ckeditor form-control" name="ocorrenciaBean.descricao" rows="10" data-rule-required="true">${ocorrenciaBean.descricao}</textarea>
-                            </div>
-                        </div>
+                        <textarea class="form-control" name="ocorrenciaBean.descricao" rows="10" data-rule-required="true">${ocorrenciaBean.descricao}</textarea>
                         
                     </div>
                 </div>
@@ -45,11 +37,14 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label>Cliente</label>
+                        <label>Cliente </label>
                         <select class="select2 select_cliente" name="ocorrenciaBean.cliente.idcliente"  data-rule-required="true">
-                            <c:if test="${ocorrenciaBean.cliente.idcliente ne null}">
-                                <option value="${ocorrenciaBean.cliente.idcliente}">${ocorrenciaBean.cliente.nome}</option>
-                            </c:if>
+                            <c:forEach items="${clienteList}" var="cli">
+                                <c:if test="${cli.matriz eq true}">
+                                    <option value="${cli.idcliente}"  ${ocorrenciaBean.cliente.idcliente eq cli.idcliente ? 'selected="selected"' : ''}>${cli.nome}</option>
+                                </c:if>
+                            </c:forEach>
+                            
                         </select>
                     </div>
                 </div>
@@ -77,7 +72,7 @@
                     <div class="form-group">
                         <label>Possivel Problema</label>
                         <select class="select2" name="ocorrenciaBean.ocorrenciaProblema">
-                            <option>Nenhum</option>
+                            <option value="0">Nenhum</option>
                             <c:forEach items="${ocorrenciaProblemaList}" var="item">
                                 <option value="${item.id}" ${ocorrenciaBean.ocorrenciaProblema eq item.id ? 'selected="selected"' :''}>${item.descricao}</option>
                             </c:forEach>
@@ -88,7 +83,7 @@
                     <div class="form-group">
                         <label>Possivel Solução</label>
                         <select class="select2" name="ocorrenciaBean.ocorrenciaSolucao">
-                            <option>Nenhum</option>
+                            <option value="0">Nenhum</option>
                             <c:forEach items="${ocorrenciaSolucaoList}" var="item">
                                 <option value="${item.id}" ${ocorrenciaBean.ocorrenciaSolucao eq item.id ? 'selected="selected"' :''}>${item.descricao}</option>
                             </c:forEach>

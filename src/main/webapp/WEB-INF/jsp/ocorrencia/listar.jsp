@@ -189,6 +189,7 @@
 
         <script type="text/javascript">
             function onColumnRender(item, self){
+                item = JSON.parse(jQuery.base64.decode(item));
                 self.css({
                     'background-color' : item.statusCor + ' !important',
                     'background' : item.statusCor + ' !important',
