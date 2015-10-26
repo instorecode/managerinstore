@@ -19,8 +19,8 @@ import br.com.instore.core.orm.bean.IndiceReajusteBean;
 import br.com.instore.core.orm.bean.ProdutoBean;
 import br.com.instore.core.orm.bean.ProdutoClienteBean;
 import br.com.instore.core.orm.bean.TipoAcessoRemotoBean;
-import br.com.instore.core.orm.bean.property.DadosCliente;
-import br.com.instore.core.orm.bean.property.Estado;
+import br.com.instore.core.orm.property.DadosCliente;
+import br.com.instore.core.orm.property.Estado;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.dto.ClienteDTO;
 import br.com.instore.web.dto.ClienteDTO2;
@@ -56,7 +56,7 @@ public class RequestCliente implements java.io.Serializable {
         List<ClienteBean> clienteBeanList = repository.query(ClienteBean.class).eq("matriz", false).findAll();
         if (null != clienteBeanList && !clienteBeanList.isEmpty()) {
             for (ClienteBean clienteBean : clienteBeanList) {
-                DadosClienteBean dados = repository.query(DadosClienteBean.class).eq(DadosCliente.IDCLIENTE, clienteBean.getIdcliente()).findOne();
+                DadosClienteBean dados = repository.query(DadosClienteBean.class).eq(DadosCliente.CLIENTE, clienteBean.getIdcliente()).findOne();
                 ClienteDTO dto = new ClienteDTO();
                 dto.setIdcliente(Utilities.leftPad(clienteBean.getIdcliente()));
                 dto.setInstore(clienteBean.getInstore() ? "Sim" : "Não");
@@ -107,7 +107,7 @@ public class RequestCliente implements java.io.Serializable {
         List<ClienteBean> clienteBeanList = repository.query(ClienteBean.class).eq("matriz", true).eq("parente", 0).findAll();
         if (null != clienteBeanList && !clienteBeanList.isEmpty()) {
             for (ClienteBean clienteBean : clienteBeanList) {
-                DadosClienteBean dados = repository.query(DadosClienteBean.class).eq(DadosCliente.IDCLIENTE, clienteBean.getIdcliente()).findOne();
+                DadosClienteBean dados = repository.query(DadosClienteBean.class).eq(DadosCliente.CLIENTE, clienteBean.getIdcliente()).findOne();
 
                 String qs = "select \n"
                         + "	idcliente, \n"
@@ -201,7 +201,7 @@ public class RequestCliente implements java.io.Serializable {
 
         if (null != clienteBeanList && !clienteBeanList.isEmpty()) {
             for (ClienteBean clienteBean : clienteBeanList) {
-                DadosClienteBean dados = repository.query(DadosClienteBean.class).eq(DadosCliente.IDCLIENTE, clienteBean.getIdcliente()).findOne();
+                DadosClienteBean dados = repository.query(DadosClienteBean.class).eq(DadosCliente.CLIENTE, clienteBean.getIdcliente()).findOne();
                 ClienteDTO dto = new ClienteDTO();
                 dto.setIdcliente(Utilities.leftPad(clienteBean.getIdcliente()));
                 dto.setInstore(clienteBean.getInstore() ? "Sim" : "Não");
@@ -268,7 +268,7 @@ public class RequestCliente implements java.io.Serializable {
     }
 
     public DadosClienteBean dadosClienteBean(Integer id) {
-        return repository.query(DadosClienteBean.class).eq(DadosCliente.IDCLIENTE, id).findOne();
+        return repository.query(DadosClienteBean.class).eq(DadosCliente.CLIENTE, id).findOne();
     }
 
     public void salvar(ClienteBean cliente, DadosClienteBean dadosCliente, Integer[] filialList) {
@@ -552,7 +552,7 @@ public class RequestCliente implements java.io.Serializable {
 
         if (null != clienteBeanList && !clienteBeanList.isEmpty()) {
             for (ClienteBean clienteBean : clienteBeanList) {
-                DadosClienteBean dados = repository.query(DadosClienteBean.class).eq(DadosCliente.IDCLIENTE, clienteBean.getIdcliente()).findOne();
+                DadosClienteBean dados = repository.query(DadosClienteBean.class).eq(DadosCliente.CLIENTE, clienteBean.getIdcliente()).findOne();
                 ClienteDTO dto = new ClienteDTO();
                 dto.setIdcliente(Utilities.leftPad(clienteBean.getIdcliente()));
                 dto.setInstore(clienteBean.getInstore() ? "Sim" : "Não");

@@ -1,6 +1,6 @@
 package br.com.instore.web.dto;
 
-import br.com.instore.core.orm.bean.property.AudiostoreCategoria;
+import br.com.instore.core.orm.property.AudiostoreCategoria;
 import java.util.ArrayList;
 import java.util.List;
 

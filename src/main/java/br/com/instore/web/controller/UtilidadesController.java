@@ -8,7 +8,7 @@ import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.Each;
 import br.com.instore.core.orm.RepositoryViewer;
 import br.com.instore.core.orm.bean.CepBean;
-import br.com.instore.core.orm.bean.property.Cep;
+import br.com.instore.core.orm.property.Cep;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.dto.FuncionalidadeTreeDTO;
 import br.com.instore.web.tools.CepResult;

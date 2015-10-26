@@ -12,7 +12,7 @@ import br.com.instore.core.orm.bean.FuncionalidadeBean;
 import br.com.instore.core.orm.bean.PerfilBean;
 import br.com.instore.core.orm.bean.PerfilUsuarioBean;
 import br.com.instore.core.orm.bean.UsuarioBean;
-import br.com.instore.core.orm.bean.property.Funcionalidade;
+import br.com.instore.core.orm.property.Funcionalidade;
 import br.com.instore.web.annotation.Restrict;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.component.session.SessionUsuario;

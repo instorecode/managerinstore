@@ -5,7 +5,7 @@ import br.com.caelum.vraptor.ioc.Component;
 import br.com.caelum.vraptor.view.Results;
 import br.com.instore.core.orm.bean.LancamentoBean;
 import br.com.instore.core.orm.bean.LancamentoCnpjBean;
-import br.com.instore.core.orm.bean.property.Lancamento;
+import br.com.instore.core.orm.property.Lancamento;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.dto.LancamentoCnpjDTO;

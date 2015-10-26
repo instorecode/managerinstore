@@ -112,10 +112,6 @@ public class RequestProjeto implements java.io.Serializable {
         return dto;
     }
 
-    public static void main(String[] args) {
-
-    }
-
     public void salvar(ProjetoBean bean, String dataCriacao) {
         try {
             String urlRegex = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";

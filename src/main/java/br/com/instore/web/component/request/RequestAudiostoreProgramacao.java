@@ -14,7 +14,7 @@ import br.com.instore.core.orm.bean.AudiostoreProgramacaoComercialBean;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.core.orm.bean.ClienteBean;
 import br.com.instore.core.orm.bean.DadosClienteBean;
-import br.com.instore.core.orm.bean.property.AudiostoreProgramacaoCategoria;
+import br.com.instore.core.orm.property.AudiostoreProgramacaoCategoria;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.dto.AudiostoreProgramacaoDTO;
 import br.com.instore.web.dto.AudiostoreProgramacaoJSON;
@@ -29,7 +29,7 @@ import java.util.Date;
 import java.util.List;
 import br.com.caelum.vraptor.ioc.RequestScoped;
 import br.com.instore.core.orm.bean.AudiostoreMusicaBean;
-import com.sun.javafx.scene.control.skin.VirtualFlow;
+//import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.sql.Connection;
@@ -170,7 +170,7 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
     }
 
     public List<AudiostoreProgramacaoCategoriaBean> programacaoCategoriaBeanList(Integer id) {
-        List<AudiostoreProgramacaoCategoriaBean> audiostoreCategoriaBeanList = repository.query(AudiostoreProgramacaoCategoriaBean.class).eq(AudiostoreProgramacaoCategoria.ID, id).findAll();
+        List<AudiostoreProgramacaoCategoriaBean> audiostoreCategoriaBeanList = repository.query(AudiostoreProgramacaoCategoriaBean.class).eq(AudiostoreProgramacaoCategoria.IDAUDIOSTORE_PROGRAMACAO_CATEGORIA, id).findAll();
         return audiostoreCategoriaBeanList;
     }
 
@@ -348,7 +348,7 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
         try {
             repository.setUsuario(sessionUsuario.getUsuarioBean());
 
-            List<AudiostoreProgramacaoCategoriaBean> lista = repository.query(AudiostoreProgramacaoCategoriaBean.class).eq(AudiostoreProgramacaoCategoria.ID, id).findAll();
+            List<AudiostoreProgramacaoCategoriaBean> lista = repository.query(AudiostoreProgramacaoCategoriaBean.class).eq(AudiostoreProgramacaoCategoria.IDAUDIOSTORE_PROGRAMACAO_CATEGORIA, id).findAll();
             for (AudiostoreProgramacaoCategoriaBean bean : lista) {
                 repository.delete(bean);
             }
@@ -375,7 +375,7 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
                 List<String> alphabList = Arrays.asList(alphab.split(""));
                 String conteudo = "";
                 String lineBreak = "";
-                List<AudiostoreProgramacaoCategoriaBean> audiostoreProgramacaoCategoriaBeanList = repository.query(AudiostoreProgramacaoCategoriaBean.class).eq(AudiostoreProgramacaoCategoria.ID, id).findAll();
+                List<AudiostoreProgramacaoCategoriaBean> audiostoreProgramacaoCategoriaBeanList = repository.query(AudiostoreProgramacaoCategoriaBean.class).eq(AudiostoreProgramacaoCategoria.IDAUDIOSTORE_PROGRAMACAO_CATEGORIA, id).findAll();
                 if (audiostoreProgramacaoCategoriaBeanList.size() > 24) {
                     int ia = 1;
                     String descr = audiostoreProgramacaoBean.getDescricao() + "-" + alphabList.get(ia);
@@ -487,7 +487,7 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
                     List<String> alphabList = Arrays.asList(alphab.split(""));
 
                     String lineBreak = "";
-                    List<AudiostoreProgramacaoCategoriaBean> audiostoreProgramacaoCategoriaBeanList = repository.query(AudiostoreProgramacaoCategoriaBean.class).eq(AudiostoreProgramacaoCategoria.ID, audiostoreProgramacaoBean.getId()).findAll();
+                    List<AudiostoreProgramacaoCategoriaBean> audiostoreProgramacaoCategoriaBeanList = repository.query(AudiostoreProgramacaoCategoriaBean.class).eq(AudiostoreProgramacaoCategoria.IDAUDIOSTORE_PROGRAMACAO_CATEGORIA, audiostoreProgramacaoBean.getId()).findAll();
 
                     if (audiostoreProgramacaoCategoriaBeanList.size() > 24) {
                         List<List<AudiostoreProgramacaoCategoriaBean>> listaDeLista = new ArrayList<List<AudiostoreProgramacaoCategoriaBean>>();

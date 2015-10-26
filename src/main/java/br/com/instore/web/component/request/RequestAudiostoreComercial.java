@@ -13,7 +13,7 @@ import br.com.instore.core.orm.bean.ClienteBean;
 import br.com.instore.core.orm.bean.AudiostoreComercialShBean;
 import br.com.instore.core.orm.bean.AudiostoreComercialBean;
 import br.com.instore.core.orm.bean.DadosClienteBean;
-import br.com.instore.core.orm.bean.property.AudiostoreComercialSh;
+import br.com.instore.core.orm.property.AudiostoreComercialSh;
 import br.com.instore.web.component.session.SessionRepository;
 import br.com.instore.web.component.session.SessionUsuario;
 import br.com.instore.web.controller.AudiostoreComercialController;
@@ -288,7 +288,7 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
     }
 
     public List<AudiostoreComercialShBean> shs(Integer id) {
-        return repository.query(AudiostoreComercialShBean.class).eq(AudiostoreComercialSh.COMERCIAL_ID, id).orderAsc("horario").findAll();
+        return repository.query(AudiostoreComercialShBean.class).eq(AudiostoreComercialSh.COMERCIAL, id).orderAsc("horario").findAll();
     }
 
     public void salvar(AudiostoreComercialBean bean, String tempoTotalString, AudiostoreComercialShBean[] sh, UploadedFile arquivo) {
