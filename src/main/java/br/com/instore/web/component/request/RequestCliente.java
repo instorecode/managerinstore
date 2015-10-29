@@ -117,9 +117,6 @@ public class RequestCliente implements java.io.Serializable {
                         + "where \n"
                         + "	parente = " + clienteBean.getIdcliente();
 
-                System.out.println("---------------------------------------------------------------");
-                System.out.println(qs);
-                System.out.println("---------------------------------------------------------------");
                 final List<Integer> idUnidades = new ArrayList<Integer>();
 
                 repository.query(qs).executeSQL(new Each() {

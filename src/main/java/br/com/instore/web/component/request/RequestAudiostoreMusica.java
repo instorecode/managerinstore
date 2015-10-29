@@ -175,18 +175,6 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
 
     public AudiostoreMusicaJSON beanList(Boolean datajson, Boolean view, Integer page, Integer rows, Integer id, Integer idcliente, String arquivo, String nome, Integer codigo, String letra, String ultimaImportacao) {
         idcliente = sessionUsuario.getCliente().getIdcliente();
-        System.out.println("FILTROS");
-        System.out.println("================================================");
-        System.out.println("DATAJSON: " + datajson);
-        System.out.println("VIEW: " + view);
-        System.out.println("PAGE: " + page);
-        System.out.println("ROWS: " + rows);
-        System.out.println("ID: " + id);
-        System.out.println("IDCLIENTE: " + idcliente);
-        System.out.println("NOME: " + nome);
-        System.out.println("CODIGO: " + codigo);
-        System.out.println("LETRA: " + letra);
-        System.out.println("================================================");
 
         AudiostoreMusicaJSON json = new AudiostoreMusicaJSON();
         List<AudiostoreMusicaBean> lista = new ArrayList<AudiostoreMusicaBean>();
@@ -323,23 +311,6 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         final List<BigDecimal> countBD = new ArrayList<BigDecimal>();
         final List<Integer> idList = new ArrayList<Integer>();
 
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
-        System.out.println("SQLDUMP");
-        System.out.println(querySQL1);
-
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
-
-        System.out.println("SQLDUMP");
-        System.out.println(querySQL2);
-
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
-
         repository.query(querySQL1).executeSQL(new Each() {
             public Integer id_musica;
             public String param;
@@ -407,18 +378,6 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
     }
 
     public AudiostoreMusicaJSON beanList2(Boolean datajson, Boolean view, Integer page, Integer rows, Integer id, Integer idcliente, String arquivo, String nome, Integer codigo, String letra) {
-        System.out.println("FILTROS");
-        System.out.println("================================================");
-        System.out.println("DATAJSON: " + datajson);
-        System.out.println("VIEW: " + view);
-        System.out.println("PAGE: " + page);
-        System.out.println("ROWS: " + rows);
-        System.out.println("ID: " + id);
-        System.out.println("IDCLIENTE: " + idcliente);
-        System.out.println("NOME: " + nome);
-        System.out.println("CODIGO: " + codigo);
-        System.out.println("LETRA: " + letra);
-        System.out.println("================================================");
 
         AudiostoreMusicaJSON json = new AudiostoreMusicaJSON();
         List<AudiostoreMusicaBean> lista = new ArrayList<AudiostoreMusicaBean>();
@@ -804,8 +763,6 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
                     sql = sql.replaceFirst("\\?", bean.getCliente().getIdcliente().toString()); // cliente
                     sql = sql.replaceFirst("\\?", bean.getUltimaImportacao() ? "1" : "0"); // cliente
 
-                    System.out.println("SCRIPT");
-                    System.out.println(sql);
                     repository.query(sql).executeSQLCommand2();
                 }
             }
@@ -1155,7 +1112,6 @@ public class RequestAudiostoreMusica implements java.io.Serializable {
         Integer idclienteAux = 0;
         if (ajaxResultBool) {
 
-            System.out.println("IDENT CLIENTE::" + idcliente);
             if (null != beanList && !beanList.isEmpty()) {
                 for (AudiostoreMusicaBean bean : beanList) {
                     if (null != idcliente && idcliente > 0) {

@@ -102,8 +102,6 @@ public class AudiostoreGravadoraController implements java.io.Serializable {
     @Post
     @Path("/audiostore-gravadora/exp")
     public void gerarExp (Integer [] id_list, Integer id_cliente){
-//        System.out.println("id cliente " + id_cliente);
-//        System.out.println("id list " + id_list);
        requestAudiostoreGravadora.validarGravadora(id_list, id_cliente);
     }
 }

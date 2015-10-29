@@ -77,8 +77,7 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
             json.setCategoria(nome);
         }
 
-        if (null != tipo && !tipo.isEmpty()) {
-            System.out.println("TIPOOO: " + tipo.trim());
+        if (null != tipo && !tipo.isEmpty()) {           
             if ("musica".equals(tipo.trim())) {
                 q1.eq("tipo", new Short("1"));
                 json.setTipo("musica");
@@ -457,7 +456,6 @@ public class RequestAudiostoreCategoria implements java.io.Serializable {
         boolean ajaxResultBool = true;
         String ajaxResultStr = "";
         if (null != id_list && id_list.length > 0) {
-            System.out.println("tamanho da lista ");
             // verifica se todos são do mesmo cliente
             Integer idclienteAux = list.get(0).getCliente().getIdcliente();
             for (AudiostoreCategoriaBean bean : list) {

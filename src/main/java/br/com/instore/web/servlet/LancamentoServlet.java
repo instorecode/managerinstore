@@ -33,14 +33,6 @@ public class LancamentoServlet extends HttpServlet {
                 @Override
                 public void each() {
                     try {
-                        System.out.println("SCRIPT");
-                        System.out.println(query);
-                        System.out.println("----------------------------------------------------------");
-                        System.out.println("DEBITO: " + debito);
-                        System.out.println("CREDITO: " + credito);
-                        System.out.println("----------------------------------------------------------");
-                        System.out.println("");
-                        
                         rv.query(debito).executeSQLCommand();
                         rv.query(credito).executeSQLCommand();
                     } catch (DataValidatorException e) {

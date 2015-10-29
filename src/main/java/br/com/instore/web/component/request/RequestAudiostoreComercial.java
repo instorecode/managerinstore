@@ -425,9 +425,7 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
             query = query.replaceFirst("\\?", "'" + (bean.getSemSom() ? 1 : 0) + "'"); // sem_som
             query = query.replaceFirst("\\?", "'" + bean.getCliente().getIdcliente().toString() + "'"); // cliente
             query = query.replaceFirst("\\?", "'" + bean.getTexto() + "'"); // texto
-            System.out.println("-------------------------------------------------------");
-            System.out.println(query);
-            System.out.println("-------------------------------------------------------");
+
             repository.query(query).executeSQLCommand2();
 
             query = "DELETE FROM audiostore_comercial_sh WHERE comercial = " + bean.getId();
@@ -516,7 +514,6 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
             List<AudiostoreComercialBean> list = repository.query(AudiostoreComercialBean.class).in("id", id_list).findAll();
             String conteudo = "";
             String breakLine = "";
-            System.out.println("TAMANHO DA LISTA " + id_list.length);
             for (AudiostoreComercialBean bean : list) {
                 if (bean != null) {
                     String queryHoraSemana = "";
@@ -685,11 +682,6 @@ public class RequestAudiostoreComercial implements java.io.Serializable {
                         int index = 1;
 
                         for (int i = ((multiplo_24 * 24) - 24); i < ((multiplo_24 * 24)); i++) {
-
-                            System.out.println("tamanho da lista dentro do foreach" + horasDiasList.size());
-                            System.out.println("posicao do index" + i);
-                            System.out.println("eh true" + (i < horasDiasList.size()));
-
                             if (i == 0) {
                                 try {
                                     conteudo += horasDiasList.get(i);

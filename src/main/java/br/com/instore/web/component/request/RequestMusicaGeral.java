@@ -367,12 +367,7 @@ public class RequestMusicaGeral implements java.io.Serializable {
 
             // Retrieve the necessary info from metadata
             // Names - title, xmpDM:artist etc. - mentioned below may differ based
-            System.out.println("----------------------------------------------");
-            System.out.println("Title: " + metadata.get("title"));
-            System.out.println("Artists: " + metadata.get("xmpDM:artist"));
-            System.out.println("Composer : " + metadata.get("xmpDM:composer"));
-            System.out.println("Genre : " + metadata.get("xmpDM:genre"));
-            System.out.println("Album : " + metadata.get("xmpDM:album"));
+
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();

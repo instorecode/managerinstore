@@ -41,7 +41,7 @@ public class RestrictAccessValidator implements Interceptor {
         this.repository = repository;
         this.httpServletRequest = httpServletRequest;
     }
-    
+
     public boolean accepts(ResourceMethod method) {
         return method.containsAnnotation(Restrict.class);
     }
@@ -53,7 +53,6 @@ public class RestrictAccessValidator implements Interceptor {
             if (sessionUsuario.getUsuarioBean().getSenha().equals("202cb962ac59075b964b07152d234b70") && !"/minha-senha".equals(path.value()[0])) {
                 result.redirectTo(HomeController.class).minhaSenha();
             }
-
             result.include("machine_id", request.getRemoteAddr().replace(".", "").replace(":", "") + new SimpleDateFormat("ddMMyyyy").format(new Date()));
             FuncionalidadeBean f = current(path.value()[0]);
 
@@ -68,13 +67,17 @@ public class RestrictAccessValidator implements Interceptor {
 
             } else if ("/sair".equals(path.value()[0])) {
                 stack.next(method, resourceInstance);
-            } else {
+            } else {                
+//                System.out.println(method);
+//                System.out.println(resourceInstance);
+//                System.out.println(f);
+//                System.out.println(path);
+//                System.out.println(path.value()[0]);
                 if (null != f) {
                     result.include("currentFuncionalidadeBean", f);
                     result.include("menu", constructMenu(null, path.value()[0]));
                     result.include("funcionalidadeBeanList", constructMenuChild(f));
-                    if (null != sessionUsuario.getCliente() || urlLivres(path) ) {
-
+                    if (null != sessionUsuario.getCliente() || urlLivres(path)) {
                         loadClienteMatriz();
                         carregarPerfil();
                         result.include("funcionalidadeBeanAtual", f);
@@ -105,39 +108,39 @@ public class RestrictAccessValidator implements Interceptor {
             result.redirectTo(HomeController.class).index();
         }
     }
-    
+
     public void carregarPerfil() {
         List<PerfilUsuarioBean> perfilUsuarioBeanList = repository.query(PerfilUsuarioBean.class).eq("usuario.idusuario", sessionUsuario.getUsuarioBean().getIdusuario()).findAll();
-        
+
         List<Integer> idList = new ArrayList<Integer>();
-        
+
         for (PerfilUsuarioBean b : perfilUsuarioBeanList) {
             idList.add(b.getPerfil().getIdperfil());
         }
-        
+
         List<PerfilBean> perfilBeanList = repository.query(PerfilBean.class).in("idperfil", idList.toArray(new Integer[idList.size()])).findAll();
-        
+
         result.include("perfilBeanList", perfilBeanList);
     }
-    
+
     public void carregarFuncionalidadeAtual(String map) {
         FuncionalidadeBean funcionalidadeBeanAtual = repository.query(FuncionalidadeBean.class).eq("mappingId", map).findOne();
         result.include("funcionalidadeBeanAtual", funcionalidadeBeanAtual);
     }
-    
+
     public boolean urlLivres(Path path) {
-        if("/clientes".equals(path.value()[0])) {
+        if ("/clientes".equals(path.value()[0])) {
             return true;
         }
-        
-        if("/cliente/cadastrar".equals(path.value()[0])) {
+
+        if ("/cliente/cadastrar".equals(path.value()[0])) {
             return true;
         }
-        
-        if(path.value()[0].contains("/cliente/atualizar/")) {
+
+        if (path.value()[0].contains("/cliente/atualizar/")) {
             return true;
         }
-        
+
         return false;
     }
 
@@ -151,7 +154,7 @@ public class RestrictAccessValidator implements Interceptor {
                 + "left join perfil_usuario using(idperfil)\n"
                 + "inner join funcionalidade using(idfuncionalidade)\n"
                 + "where mapping_id = '" + currentMappinId + "' and idusuario = " + sessionUsuario.getUsuarioBean().getIdusuario() + " \n group by idfuncionalidade";
-
+        
         if (repository.query(q).executeSQLCount() > 0) {
             FuncionalidadeBean fb = repository.query(FuncionalidadeBean.class).eq(Funcionalidade.MAPPING_ID, currentMappinId).findOne();
             return fb;
@@ -235,7 +238,6 @@ public class RestrictAccessValidator implements Interceptor {
                         html += "<li><a href=\"" + url + f.getMappingId() + "\"><i class=\"fa  " + f.getIcone() + "\"></i><span>" + f.getNome() + "</span></a></li>";
                     }
                 } else {
-
                     html += "<li><a href=\"" + url + f.getMappingId() + "\"><i class=\"fa  " + f.getIcone() + "\"></i><span>" + f.getNome() + "</span></a></li>";
                 }
             }
@@ -257,6 +259,7 @@ public class RestrictAccessValidator implements Interceptor {
 
     public void loadClienteMatriz() {
         result.include("atalhoClienteList", repository.query(ClienteBean.class).eq("parente", 0).eq("matriz", true).findAll());
+
     }
 
     public void constructMenu() {
@@ -301,7 +304,7 @@ public class RestrictAccessValidator implements Interceptor {
             pub.getPerfil().setFuncionalidadeBeanList(constructMenu(pub.getPerfil().getIdperfil()));
             perfis.add(pub.getPerfil());
         }
-        
+
         result.include("perfis", perfis);
     }
 

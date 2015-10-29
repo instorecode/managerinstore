@@ -47,7 +47,6 @@ public class RequestOcorrencia implements java.io.Serializable {
     }
 
     public void beanList(Integer page, Integer rows, Integer id, String descricao, Integer idcliente, Integer idusuario, Integer idprioridade, Integer idstatus) {
-        System.out.println("identificador status " + idstatus);
         OcorrenciaJSON json = new OcorrenciaJSON();
         page = (null == page || 0 == page ? 1 : page);
         rows = (null == rows || 0 == rows ? 10 : rows);

@@ -562,8 +562,6 @@ public class OrdemServicoController implements java.io.Serializable {
                 + "    ordem_servico_parte1.id = ordem_servico_fila.fk\n"
                 + "ORDER BY prioridade ASC";
 
-        System.out.println(sql);
-
         final List<OSFila> osfilaList = new ArrayList<OSFila>();
         repository.query(sql).executeSQL(new Each() {
             public String cod;

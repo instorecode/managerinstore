@@ -1126,8 +1126,7 @@ public class RequestAudiostoreProgramacao implements java.io.Serializable {
                     }
                     if (null != sql && !sql.trim().replace("\\s", "").isEmpty()) {
                         Statement statement = connection.createStatement();
-                        statement.execute(sql);
-                        System.out.println(sql);
+                        statement.execute(sql);                        
                     }
                 }
             }
