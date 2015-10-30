@@ -1,5 +1,4 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="instore" tagdir="/WEB-INF/tags/" %> 
 <%@ taglib prefix="cf" uri="CustomFunctions" %> 
 <instore:template isGrid="false">

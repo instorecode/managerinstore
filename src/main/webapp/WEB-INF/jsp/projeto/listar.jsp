@@ -70,7 +70,7 @@
 
                     <c:if test="${not form_access}">
                         <br />
-                        <h2>Acesso não permitdo a essa funcionaliade</h2>
+                        <h2>Acesso não permitido a essa funcionaliade</h2>
                     </c:if>
 
                 </div>

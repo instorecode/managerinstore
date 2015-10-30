@@ -159,12 +159,12 @@
             <artifactId>reflections</artifactId>
             <version>0.9.9-RC1</version>
         </dependency>
-        <!--        
+              
         <dependency>
             <groupId>hxtt</groupId>
             <artifactId>pxjdbc</artifactId>
             <version>1.0</version>
-        </dependency>-->
+        </dependency>
         
         <dependency>
             <groupId>com.yahoo.platform.yui</groupId>
