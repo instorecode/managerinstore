@@ -22,18 +22,8 @@
                         <hr />
                         <form name="FORM_DUMP_PARADOX" method="POST" data-formtable="true" action="${url}/dump-paradox">
                             <div class="row">
-
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label>Caminho</label>
-                                        <input type="text" name="path" class="form-control" placeholder="Caminho"  
-                                               data-rule-required="true" 
-                                               data-rule-minlength="3"
-                                               value="${path}">
-                                    </div>
-                                </div>
                                 <button type="submit" class="btn btn-success btn-flat" style="margin-left: 0px;">
-                                    <i class="fa fa-save"></i> Salvar
+                                    <i class="fa fa-save"></i> Gerar Dump
                                 </button>
                         </form>
                     </c:if>

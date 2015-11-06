@@ -29,8 +29,8 @@ public class DumpParadoxController implements java.io.Serializable {
     @Post
     @Restrict
     @Path("/dump-paradox")
-    public void gerarDump(String path) {
-        requestDumpParadox.gerarDump(path);
+    public void gerarDumpPost() {
+        requestDumpParadox.gerarDump();
     }
 
 }
