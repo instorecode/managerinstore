@@ -20,6 +20,8 @@ import javax.inject.Inject;
 @RequestScoped
 public class RequestContatoCliente implements java.io.Serializable {
 
+
+
     private SessionRepository repository;
     private Result result;
     private SessionUsuario sessionUsuario;
@@ -29,37 +31,37 @@ public class RequestContatoCliente implements java.io.Serializable {
         this.result = result;
         this.sessionUsuario = sessionUsuario;
     }
-    
+
     public List<DadosClienteBean> dadosClienteBeanList() {
         List<DadosClienteBean> lista = new ArrayList<DadosClienteBean>();
         lista = repository.query(DadosClienteBean.class).findAll();
         return lista;
     }
-    
+
     public List<DadosClienteBean> dadosClienteBeanByClienteList(Integer id) {
         List<DadosClienteBean> lista = new ArrayList<DadosClienteBean>();
         ClienteBean cliente = repository.find(ClienteBean.class, id);
         lista = repository.query(DadosClienteBean.class).eq("cliente.idcliente", cliente.getIdcliente()).findAll();
         return lista;
     }
-    
+
     public List<ContatoClienteDTO> contatoClienteDTOList(Integer id) {
         List<ContatoClienteBean> lista = new ArrayList<ContatoClienteBean>();
         List<ContatoClienteDTO> lista2 = new ArrayList<ContatoClienteDTO>();
-        
-        DadosClienteBean dcb = repository.query(DadosClienteBean.class).eq("cliente.idcliente",id).findOne();        
-        lista = repository.query(ContatoClienteBean.class).eq("dadosCliente.iddadosCliente",dcb.getIddadosCliente()).findAll();
+
+        DadosClienteBean dcb = repository.query(DadosClienteBean.class).eq("cliente.idcliente", id).findOne();
+        lista = repository.query(ContatoClienteBean.class).eq("dadosCliente.iddadosCliente", dcb.getIddadosCliente()).findAll();
         for (ContatoClienteBean ccb : lista) {
             ContatoClienteDTO dto = new ContatoClienteDTO();
             dto.setClienteNome(ccb.getDadosCliente().getCliente().getNome());
             dto.setClienteNomeFantasia(ccb.getDadosCliente().getNomeFantasia());
             dto.setEmail(ccb.getEmail());
-            dto.setIdcontatoCliente( Utilities.leftPad(ccb.getIdcontatoCliente()) );
+            dto.setIdcontatoCliente(Utilities.leftPad(ccb.getIdcontatoCliente()));
             dto.setPrincipal(ccb.isPrincipal() ? "Sim" : "Não");
             dto.setSetor(ccb.getSetor());
             dto.setTel(ccb.getTel());
             dto.setNome(ccb.getNome());
-            lista2.add(dto);        
+            lista2.add(dto);
         }
         return lista2;
     }
@@ -71,13 +73,13 @@ public class RequestContatoCliente implements java.io.Serializable {
     public void salvar(ContatoClienteBean contato) {
         try {
             repository.setUsuario(sessionUsuario.getUsuarioBean());
-            
-            if(contato != null && contato.getIdcontatoCliente() != null && contato.getIdcontatoCliente() > 0) {
+
+            if (contato != null && contato.getIdcontatoCliente() != null && contato.getIdcontatoCliente() > 0) {
                 repository.save(repository.marge(contato));
             } else {
                 repository.save(contato);
             }
-            
+
             repository.finalize();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Dados salvos com sucesso!")).recursive().serialize();
         } catch (Exception e) {
@@ -85,14 +87,14 @@ public class RequestContatoCliente implements java.io.Serializable {
             result.use(Results.json()).withoutRoot().from(new AjaxResult(false, "Não foi possivel salvar os dados!")).recursive().serialize();
         }
     }
-    
+
     public void remover(Integer id) {
         try {
             repository.setUsuario(sessionUsuario.getUsuarioBean());
-            
+
             ContatoClienteBean contato = repository.marge((ContatoClienteBean) repository.find(ContatoClienteBean.class, id));
             repository.delete(contato);
-            
+
             repository.finalize();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Contato removido com sucesso!")).recursive().serialize();
         } catch (Exception e) {

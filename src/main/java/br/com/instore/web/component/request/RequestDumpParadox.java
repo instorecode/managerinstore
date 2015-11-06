@@ -52,7 +52,7 @@ public class RequestDumpParadox {
     private Result result;
     private SessionUsuario sessionUsuario;
 //    private String path = "jdbc:paradox:smb://manager.instore:M#0000I@192.168.1.200/DESENVOLVIMENTO/dump_paradox/";
-    private String path = "jdbc:paradox:/C:/Users/instore/Desktop/paradox2/";
+    private String path = "jdbc:paradox:/C:/Users/instore/Desktop/paradox/";
     private List<String> insertsProgramacaoVersao = new ArrayList<String>();
 
     public ResultSet rs = null;
@@ -61,25 +61,13 @@ public class RequestDumpParadox {
     private List<AudiostoreCategoriaBean> audiostoreCategoriaBeans = new ArrayList<AudiostoreCategoriaBean>();
     private HashMap<String, Bean> map = new HashMap<String, Bean>();
 
-    public static void main(String[] args) {
-        String semana = "xxxxxx "
-        Boolean[] dias = new Boolean[]{false, false, false, false, false, false, false};
-        for (int j = 1; j <= 7; j++) {
-            System.out.println(String.valueOf(semana.charAt(i - 1)));
-//            if (semana.length() < j &&  String.valueOf(semana.charAt(i - 1))  ) {;
-
-//            }
-        }
-
-    }
-
     public RequestDumpParadox(SessionRepository repository, SessionUsuario sessionUsuario, Result result) {
         this.repository = repository;
         this.sessionUsuario = sessionUsuario;
         this.result = result;
     }
 
-    public static void main2(String[] args) {
+    public static void main(String[] args) {
         new RequestDumpParadox(new SessionRepository(), new SessionUsuario(), new Result() {
 
             @Override
@@ -182,10 +170,8 @@ public class RequestDumpParadox {
 
     public void gerarDump() {
         try {
-
-            SmbFile smb = new SmbFile("smb://srv-arquivos/DESENVOLVIMENTO/dump_paradox/", Utilities.getAuthSmbDefault());
             popularCategoriaBean();
-//            popularProgramacaoBean();
+            popularProgramacaoBean();
             popularComercialBean();
             result.use(Results.json()).withoutRoot().from(new AjaxResult(true, "Dump realizado com sucesso")).recursive().serialize();
         } catch (Exception e) {
@@ -242,82 +228,80 @@ public class RequestDumpParadox {
                 map.put(audiostoreCategoriaBean.getCodInterno(), audiostoreCategoriaBean);
                 repository.finalize();
             }
-            System.out.println("----------------------------------------------------------------------------------------------------");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     public void popularProgramacaoBean() {
-//        armarzenarResultSet("Programacao");
-////        repository.setUsuario(sessionUsuario.getUsuarioBean());
-//        repository.setUsuario(new UsuarioBean(22));
-//
-//        try {
-//            while (rs.next()) {
-//                AudiostoreProgramacaoBean programacao = new AudiostoreProgramacaoBean();
-//                programacao.setDescricao(rs.getString(1));
-//                programacao.setCliente(new ClienteBean(idclienteFinal));
-//                programacao.setDataInicio(new SimpleDateFormat("yyyy-MM-dd").parse(rs.getString(4) + "-" + rs.getString(3) + "-" + rs.getString(2)));
-//                programacao.setDataFinal(new SimpleDateFormat("yyyy-MM-dd").parse(rs.getString(7) + "-" + rs.getString(6) + "-" + rs.getString(5)));
-//
-//                programacao.setHoraInicio(new SimpleDateFormat("HH:mm:ss").parse(new SimpleDateFormat("HH:mm:ss").format(rs.getDate(9))));
-//                programacao.setHoraFinal(new SimpleDateFormat("HH:mm:ss").parse(new SimpleDateFormat("HH:mm:ss").format(rs.getDate(10))));
-//
-//                String diasSemana = rs.getString(8);
-//                int tamanho = diasSemana.length();
-//
-//                boolean segunda = false;
-//                boolean terca = false;
-//                boolean quarta = false;
-//                boolean quinta = false;
-//                boolean sexta = false;
-//                boolean sabado = false;
-//                boolean domingo = false;
-//
-//                if (null != diasSemana && tamanho < 8 && tamanho > 0) {
-//                    segunda = (tamanho == 1) ? diasSemana.substring(0, 1).equalsIgnoreCase("x") : diasSemana.substring(0, tamanho - (tamanho - 1)).equalsIgnoreCase("x");
-//                    terca = (tamanho == 1) ? diasSemana.substring(0, 1).equalsIgnoreCase("x") : (tamanho >= 2) ? diasSemana.substring(0, tamanho - (tamanho - 2)).equalsIgnoreCase("x") : false;
-//                    quarta = (tamanho == 1) ? diasSemana.substring(0, 1).equalsIgnoreCase("x") : (tamanho >= 3) ? diasSemana.substring(0, tamanho - (tamanho - 3)).equalsIgnoreCase("x") : false;
-//                    quinta = (tamanho == 1) ? diasSemana.substring(0, 1).equalsIgnoreCase("x") : (tamanho >= 4) ? diasSemana.substring(0, tamanho - (tamanho - 4)).equalsIgnoreCase("x") : false;
-//                    sexta = (tamanho == 1) ? diasSemana.substring(0, 1).equalsIgnoreCase("x") : (tamanho >= 5) ? diasSemana.substring(0, tamanho - (tamanho - 5)).equalsIgnoreCase("x") : false;
-//                    sabado = (tamanho == 1) ? diasSemana.substring(0, 1).equalsIgnoreCase("x") : (tamanho >= 6) ? diasSemana.substring(0, tamanho - (tamanho - 6)).equalsIgnoreCase("x") : false;
-//                    domingo = (tamanho == 7) ? diasSemana.substring(6, 7).equalsIgnoreCase("x") : (tamanho == 7) ? diasSemana.substring(6, tamanho - (tamanho - 7)).equalsIgnoreCase("x") : false;
-//                }
-//
-//                programacao.setSegundaFeira(segunda);
-//                programacao.setTercaFeira(terca);
-//                programacao.setQuartaFeira(quarta);
-//                programacao.setQuintaFeira(quinta);
-//                programacao.setSextaFeira(sexta);
-//                programacao.setSabado(sabado);
-//                programacao.setDomingo(domingo);
-//
-//                programacao.setConteudo((null == rs.getString(35) || rs.getString(35).isEmpty()) ? "" : rs.getString(35));
-//                programacao.setLoopback(rs.getBoolean(36));
-//
-//                Integer idProgramacao = repository.save(programacao);
-//                repository.finalize();
-//                programacao.setId(idProgramacao);
-//                System.out.println(programacao);
-//
-//                for (int i = 11; i <= 34; i++) {
-//                    AudiostoreCategoriaBean categoria = (AudiostoreCategoriaBean) map.get(rs.getString(i));
-////
-//                    if (null != categoria) {
-//                        AudiostoreProgramacaoCategoriaBean programacaoCategoria = new AudiostoreProgramacaoCategoriaBean();
-//                        programacaoCategoria.setAudiostoreCategoria(categoria);
-//                        programacaoCategoria.setAudiostoreProgramacao(programacao);
-//                        repository.save(programacaoCategoria);
-//                    }
-//                }
-//                repository.finalize();
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
+        armarzenarResultSet("Programacao");
+//        repository.setUsuario(sessionUsuario.getUsuarioBean());
+        repository.setUsuario(new UsuarioBean(22));
+
+        try {
+            while (rs.next()) {
+                AudiostoreProgramacaoBean programacao = new AudiostoreProgramacaoBean();
+                programacao.setDescricao(rs.getString(1).concat(new SimpleDateFormat("HHmmss").format(new Date())));
+                programacao.setCliente(new ClienteBean(idclienteFinal));
+                programacao.setDataInicio(new SimpleDateFormat("yyyy-MM-dd").parse(rs.getString(4) + "-" + rs.getString(3) + "-" + rs.getString(2)));
+                programacao.setDataFinal(new SimpleDateFormat("yyyy-MM-dd").parse(rs.getString(7) + "-" + rs.getString(6) + "-" + rs.getString(5)));
+
+                programacao.setHoraInicio(new SimpleDateFormat("HH:mm:ss").parse(new SimpleDateFormat("HH:mm:ss").format(rs.getDate(9))));
+                programacao.setHoraFinal(new SimpleDateFormat("HH:mm:ss").parse(new SimpleDateFormat("HH:mm:ss").format(rs.getDate(10))));
+
+                String diasSemana = rs.getString(8);
+                int tamanho = diasSemana.length();
+
+                boolean segunda = false;
+                boolean terca = false;
+                boolean quarta = false;
+                boolean quinta = false;
+                boolean sexta = false;
+                boolean sabado = false;
+                boolean domingo = false;
+
+                if (null != diasSemana && tamanho < 8 && tamanho > 0) {
+                    segunda = (tamanho == 1) ? diasSemana.substring(0, 1).equalsIgnoreCase("x") : diasSemana.substring(0, tamanho - (tamanho - 1)).equalsIgnoreCase("x");
+                    terca = (tamanho == 1) ? diasSemana.substring(0, 1).equalsIgnoreCase("x") : (tamanho >= 2) ? diasSemana.substring(0, tamanho - (tamanho - 2)).equalsIgnoreCase("x") : false;
+                    quarta = (tamanho == 1) ? diasSemana.substring(0, 1).equalsIgnoreCase("x") : (tamanho >= 3) ? diasSemana.substring(0, tamanho - (tamanho - 3)).equalsIgnoreCase("x") : false;
+                    quinta = (tamanho == 1) ? diasSemana.substring(0, 1).equalsIgnoreCase("x") : (tamanho >= 4) ? diasSemana.substring(0, tamanho - (tamanho - 4)).equalsIgnoreCase("x") : false;
+                    sexta = (tamanho == 1) ? diasSemana.substring(0, 1).equalsIgnoreCase("x") : (tamanho >= 5) ? diasSemana.substring(0, tamanho - (tamanho - 5)).equalsIgnoreCase("x") : false;
+                    sabado = (tamanho == 1) ? diasSemana.substring(0, 1).equalsIgnoreCase("x") : (tamanho >= 6) ? diasSemana.substring(0, tamanho - (tamanho - 6)).equalsIgnoreCase("x") : false;
+                    domingo = (tamanho == 7) ? diasSemana.substring(6, 7).equalsIgnoreCase("x") : (tamanho == 7) ? diasSemana.substring(6, tamanho - (tamanho - 7)).equalsIgnoreCase("x") : false;
+                }
+
+                programacao.setSegundaFeira(segunda);
+                programacao.setTercaFeira(terca);
+                programacao.setQuartaFeira(quarta);
+                programacao.setQuintaFeira(quinta);
+                programacao.setSextaFeira(sexta);
+                programacao.setSabado(sabado);
+                programacao.setDomingo(domingo);
+
+                programacao.setConteudo((null == rs.getString(35) || rs.getString(35).isEmpty()) ? "" : rs.getString(35));
+                programacao.setLoopback(rs.getBoolean(36));
+
+                Integer idProgramacao = repository.save(programacao);
+                repository.finalize();
+                programacao.setId(idProgramacao);
+
+                for (int i = 11; i <= 34; i++) {
+                    AudiostoreCategoriaBean categoria = (AudiostoreCategoriaBean) map.get(rs.getString(i));
+
+                    if (null != categoria) {
+                        AudiostoreProgramacaoCategoriaBean programacaoCategoria = new AudiostoreProgramacaoCategoriaBean();
+                        programacaoCategoria.setAudiostoreCategoria(categoria);
+                        programacaoCategoria.setAudiostoreProgramacao(programacao);
+                        repository.save(programacaoCategoria);
+                    }
+                }
+                repository.finalize();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     public void popularComercialBean() {
@@ -353,8 +337,9 @@ public class RequestDumpParadox {
                 comercial.setDependencia3(rs.getString(68));
                 comercial.setFrameInicio(rs.getInt(69));
                 comercial.setFrameFinal(rs.getInt(70));
-                comercial.setMsg(rs.getString(71));
+                comercial.setMsg(null == rs.getString(71) ? "" : rs.getString(71));
                 comercial.setSemSom(rs.getBoolean(72));
+                comercial.setInterromperMusicaTocada(Boolean.TRUE);
                 comercial.setTexto("");
 
                 Integer codigoComercial = repository.save(comercial);
@@ -362,44 +347,48 @@ public class RequestDumpParadox {
                 comercial.setId(codigoComercial);
 
                 AudiostoreComercialShBean comercialShBean = null;
-
+                System.out.println(comercial.getArquivo());
                 for (int i = 9; i < 57; i++) {
-                    String semana = "";
                     String horario = "";
-                    if (i % 2 == 1) {
-                        semana = (null == rs.getString(i)) ? "" : rs.getString(i);
+
+                    if (i % 2 == 1) {                        
+                        String semana = (null == rs.getString(i)) ? "" : rs.getString(i);                        
                         comercialShBean = new AudiostoreComercialShBean();
                         comercialShBean.setSemana(semana);
                         comercialShBean.setComercial(comercial);
                     } else {
-                        if (!semana.isEmpty()) {
+                        if (!comercialShBean.getSemana().isEmpty()) {
                             comercialShBean.setHorario(new SimpleDateFormat("HH:mm:ss").parse(rs.getString(i)));
-                            // 6
-                            Boolean[] dias = new Boolean[]{false, false, false, false, false, false, false};
-                            for (int j = 1; j <= 7; j++) {
-                                if (semana.length() < j) {
+                            String[] dias = new String[]{"Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sabado", "Domingo"};
 
+                            for (int j = 1; j <= 7; j++) {
+                                System.out.println(comercialShBean.getSemana());
+                                System.out.println(comercialShBean.getSemana().length());
+                                System.out.println(j <= comercialShBean.getSemana().length());
+                                System.out.println(!String.valueOf(comercialShBean.getSemana().charAt(j - 1)).equals(" "));
+                                System.out.println(!String.valueOf(comercialShBean.getSemana().charAt(j - 1)).isEmpty());
+                                if (j <= comercialShBean.getSemana().length() && !String.valueOf(comercialShBean.getSemana().charAt(j - 1)).equals(" ") && !String.valueOf(comercialShBean.getSemana().charAt(j - 1)).isEmpty()) {
+                                    comercialShBean.setSemana(dias[j - 1]);
+                                    comercialShBean.setInterromperMusicaTocada(false);
+                                    System.out.println("Aquiiiiiiiiiiiiii");
+                                    if (String.valueOf(comercialShBean.getSemana().charAt(j - 1)).equalsIgnoreCase("n")) {
+                                        comercialShBean.setInterromperMusicaTocada(true);
+                                    }
+
+                                    repository.save(comercialShBean);
+                                    repository.finalize();
                                 }
                             }
-
                         }
+                        System.out.println("-----------------------------------------------------------");
                     }
-
-                    String a = (i % 2 == 1) ? "semana" : "horario";
-
-                    comercialShBean.setComercial(comercial);
-//                    comercialShBean.setHorario(null);
-//                    comercialShBean.setSemana(semana);
-
                 }
 
-//                System.out.println(comercial);
-//                System.out.println("-+---");
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ParseException ex) {
-            Logger.getLogger(RequestDumpParadox.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
 
     }
