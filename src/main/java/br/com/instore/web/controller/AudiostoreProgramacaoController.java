@@ -60,6 +60,12 @@ public class AudiostoreProgramacaoController implements java.io.Serializable {
         result.include("clienteBeanList", requestAudiostoreProgramacao.clienteBeanList());
         result.include("categoriaBeanList", requestAudiostoreProgramacao.categoriaBeanList());
     }
+    
+    @Get
+    @Restrict
+    @Path("/audiostore-programacao/cadastrar/pagina-unica")
+    public void cadastroPaginaUnica() {
+    }
 
     @Post
     @Restrict

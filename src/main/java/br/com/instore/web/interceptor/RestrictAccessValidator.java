@@ -165,7 +165,7 @@ public class RestrictAccessValidator implements Interceptor {
 
     class Each {
 
-        public Object size;
+        public Object size; 
     }
 
     public List<FuncionalidadeBean> constructMenuChild(FuncionalidadeBean fb) {
@@ -180,9 +180,9 @@ public class RestrictAccessValidator implements Interceptor {
                 + "    funcionalidade\n"
                 + "inner join perfil_funcionalidade using(idfuncionalidade)\n"
                 + "inner join perfil_usuario using(idperfil)\n"
-                + "\n"
+                + "\n" 
                 + "where 	funcionalidade.parente = " + fb.getIdfuncionalidade() + "\n"
-                + "		and perfil_usuario.idusuario = " + sessionUsuario.getUsuarioBean().getIdusuario();
+                + "		and perfil_usuario.idusuario = " + sessionUsuario.getUsuarioBean().getIdusuario() + " order by funcionalidade.nome";
 
         repository.query(query).executeSQL(new br.com.instore.core.orm.Each() {
             Integer id;
@@ -195,7 +195,7 @@ public class RestrictAccessValidator implements Interceptor {
         });
 
         if (!id_s.isEmpty()) {
-            return repository.query(FuncionalidadeBean.class).in("idfuncionalidade", id_s.toArray(new Integer[id_s.size()])).findAll();
+            return repository.query(FuncionalidadeBean.class).in("idfuncionalidade", id_s.toArray(new Integer[id_s.size()])).orderAsc("nome").findAll();
         } else {
             return new ArrayList<FuncionalidadeBean>();
         }
